@@ -3,18 +3,23 @@
 = User Experience =
 
   * Simple straighforward layout
-  * Focused on content (cat show photos)  
+  * using mostly short texts that are hyperlinks instead of icons  
+  * focuses on content (cat show photos)
+  * first photos provided instantly on front page  
+  * easy to switch between English and Finnish and everything changes when switching
+  * some user-configurable features and a simple page to do the configuration
+  * Facebook share on photos
+  * photo browsing logic: thumbnails - big photo         
 
 = What's included =
 
   * instant find as you type based on real time partial string matching
-  * a detailed search engine for advanced users
+  * a detailed search engine with feature-rich syntax for advanced users
+  * a simple news system with RSS feed to announce site changes    
 
 = What's excluded =
 
-  * forums, user comments, ratings (this is not a user community portal)
+  * forums, user comments, ratings (this is not a community portal but some of these features might be added later)
 
-= Feature details = 
  
-   * URLs shouldn't use GET parameters
-   * URL to a photo should also be a permanent URL
+    
