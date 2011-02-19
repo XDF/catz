@@ -29,7 +29,7 @@ use warnings;
 
 use parent 'Catz::Action::Base';
 
-use Catz::Model::Lister;
+use Catz::Model::List;
 use Catz::Setup;
 
 use I18N::AcceptLanguage;
@@ -58,7 +58,7 @@ sub root {
  
  my $stash = $self->{stash};
  
- $stash->{links} = lister_links ( $stash->{lang}, 'albums' ); 
+ $stash->{links} = list_links ( $stash->{lang}, 'albums' ); 
    
  $self->render( template => 'page/root' );
 
@@ -101,7 +101,6 @@ sub setup {
  defined $stash->{reset} and do {
   $stash->{robots} = 'noindex,nofollow';
   setup_reset ( $self ); 
-  #die "reset not yet implemented";
  }; 
  
  defined $stash->{key} and 

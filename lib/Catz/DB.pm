@@ -25,10 +25,8 @@
 package Catz::DB;
 
 #
-# the database access layer - all database access should use this layer
+# the database access module - all database access should use this module
 # provides result set caching using Catz::Cache
-#
-# every package needing database access should inherit from this
 #
 
 use strict;
@@ -36,9 +34,13 @@ use warnings;
 
 use feature qw( switch );
 
-use parent 'Catz::Cache';
+use parent 'Exporter';
+
+our @EXPORT = qw ( db_one db_row db_col db_all );
 
 use Apache::DBI;
+
+use Catz::Cache;
 
 use constant DBDRIVER => 'dbi:SQLite'; 
 
@@ -47,13 +49,13 @@ use constant DBFILE => '/catz/db/data.db';
 
 use constant DBARGS => { PrintError => 1, RaiseError => 1, AutoCommit => 0 };
 
+# a static database connection
 my $db = DBI->connect( DBDRIVER.':dbname='.DBFILE, undef, undef, DBARGS ) 
  || die ( $DBI::errstr );
   
 Apache::DBI->setPingTimeOut($db, 5);
-
-# a static method doing the actual database access  
-sub _fetch {
+  
+sub fetch {
 
  my $res;
     
@@ -83,10 +85,10 @@ sub _fetch {
  
 }
  
-# shift is used to skip self 
-sub db_one { shift; _fetch( 'one', @_ ); }
-sub db_row { shift; _fetch( 'row', @_ ); }
-sub db_col { shift; _fetch( 'col', @_ ); }
-sub db_all { shift; _fetch( 'all', @_ ); }
+# the exported subs are simple pass-thrus to internal fetch  
+sub db_one { fetch ( 'one', @_ ) }
+sub db_row { fetch ( 'row', @_ ) }
+sub db_col { fetch ( 'col', @_ ) }
+sub db_all { fetch ( 'all', @_ ) }
 
 1; 

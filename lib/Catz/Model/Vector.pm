@@ -30,7 +30,6 @@ use warnings;
 use feature qw( switch );
 
 use parent 'Exporter';
-
 our @EXPORT = qw( vector_bit vector_array vector_pager vector_pointer vector_count );
 
 use Bit::Vector;
@@ -38,10 +37,11 @@ use POSIX qw( floor ceil );
 
 use Catz::Cache;
 use Catz::DB;
+use Catz::Model::Meta;
 
-my $empty =  Bit::Vector->new( $MAXX ); 
+my $empty =  Bit::Vector->new( meta_maxx ); 
 
-my $full = Bit::Vector->new( $MAXX );
+my $full = Bit::Vector->new( meta_maxx );
 $full->Fill;
 
 sub bsearch {
@@ -103,7 +103,7 @@ sub vectorize {
 
  }
       
- my $bvec = Bit::Vector->new( $MAXX );
+ my $bvec = Bit::Vector->new( meta_maxx );
    
  $bvec->Index_List_Store ( @$res );
  

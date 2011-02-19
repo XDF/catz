@@ -29,20 +29,9 @@ use warnings;
 
 use parent 'Mojolicious::Controller';
 
-our $MAXX = db_one( 'select max(x) from _fid_x' );
-
-
-
-our $T_EN;
-our $T_FI;
-
-do { $T_EN->{$_->[0]} = $_->[1] } foreach 
- @{ db_all( 'select tag,text_en from metatext' ) };
-
-do { $T_FI->{$_->[0]} = $_->[1] } foreach 
-@{ db_all( 'select tag,text_fi from metatext' ) };  
-
 sub redirect_perm {
+
+ # this is a modified copy from Mojolicious
 
  my $self = shift;
 
@@ -62,12 +51,15 @@ sub redirect_perm {
 
  return $self;
  
-}
 
+}
+ 
 sub redirect_temp {
 
- my $self = shift;
+ # this is a modified copy from Mojolicious
 
+ my $self = shift;
+ 
  # Response
  my $res = $self->res;
 
