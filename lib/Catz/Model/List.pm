@@ -118,7 +118,7 @@ sub list_links {
    
    }
 
-   when ( 'lists' ) {
+   when ( 'pris' ) {
 
     $links =  db_all("select pri,count(distinct sec_$lang) from _class_pri_sec_x where pri<>'out' group by pri order by pri");
    
@@ -126,7 +126,7 @@ sub list_links {
 
    when ( 'ideas' ) {
 
-    $links = db_all("select pri,sec_$lang,count(distinct x) from _class_pri_sec_x where pri group by pri,sec_$lang order by count(distinct x) desc");
+    $links = db_all("select pri,sec_$lang,count(distinct x) from _class_pri_sec_x group by pri,sec_$lang order by count(distinct x) desc limit 20");
   
    }
 

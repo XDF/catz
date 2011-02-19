@@ -99,12 +99,20 @@ sub before {
  
  my $stash = $self->{stash};
   
+ substr ( $self->req->url, -1 ) ne '/' and do {
+ 
+  die "URLs ending with slash are not handled by this development version";
+
+  # old mod_perl code snippet:
+  #$x::r->headers_out->set( Location => $x::u . '/' );
+ 
+ };
+ 
  $stash->{robots} = 'index,follow';
 
+ # temporary hard-coded setting for initial development
  $stash->{base_photo} = 'http://www.heikkisiltala.com/galleries';
- 
- #die substr ( $self->req->url, 3 );
-   
+    
  if ( substr ( $self->req->url, 3 ) eq '/fi' ) {
  
   $stash->{lang} = 'fi';

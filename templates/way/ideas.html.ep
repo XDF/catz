@@ -20,13 +20,10 @@
 %# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 %# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 %# THE SOFTWARE.
-%# 
-% layout 'page';
-<table class="full"><tr><td class="tri top">
-%== include 'way/news';
-%== include 'way/albums';
-</td><td class="trix top">
-%== include 'way/pris';
-</td><td class="tri top">
-%== include 'way/ideas';
-</td></tr></table>
+%#
+<h2><%= $t->{IDEAS} %></h2>
+<ul>
+% foreach my $row ( @$ideas ) {
+<li><a href="/<%= $lang %>/<%= $row->[0] %>/<%= $row->[1] %>/1-<%= $thumbsperpage %>/"><%= $row->[1] %></a></li>
+% }
+</ul>

@@ -30,6 +30,7 @@ use warnings;
 use parent 'Catz::Action::Base';
 
 use Catz::Model::List;
+use Catz::Model::Meta;
 use Catz::Setup;
 
 use I18N::AcceptLanguage;
@@ -58,8 +59,12 @@ sub root {
  
  my $stash = $self->{stash};
  
- $stash->{links} = list_links ( $stash->{lang}, 'albums' ); 
-   
+ foreach my $key ( qw ( news albums pris ideas ) ) {
+ 
+  $stash->{$key} = list_links ( $stash->{lang}, $key );
+ 
+ }
+    
  $self->render( template => 'page/root' );
 
 }

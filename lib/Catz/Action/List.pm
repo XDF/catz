@@ -31,7 +31,7 @@ use feature qw( switch );
 
 use parent 'Catz::Action::Base';
 
-use Catz::Model::Lister;
+use Catz::Model::List;
 
 # This action will render a template
 
@@ -41,7 +41,7 @@ sub main {
  
  my $stash = $self->{stash};
  
- $stash->{list} = lister_list(
+ $stash->{list} = list_list(
   $stash->{lang},
   $stash->{subject},
   $stash->{mode}
