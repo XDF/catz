@@ -1,0 +1,27 @@
+#summary The technologies chosen for the service
+
+This page lists and describes the technologies that I have chosen for the service.
+
+= Language =
+
+Perl 5
+
+= Framework =
+
+Mojolicious
+
+= Database =
+
+SQLite
+
+= Caching =
+
+Memcached
+
+= Development OS =
+
+Windows 7
+
+= Production OS =
+
+Debian Linux
