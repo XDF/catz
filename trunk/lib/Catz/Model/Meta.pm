@@ -22,7 +22,43 @@
 # THE SOFTWARE.
 # 
 
-use Catz::Model::Base;
+package Catz::Model::Meta;
 
-# models need access to database
-use parent 'Catz::DB';
+use parent 'Exporter';
+our @EXPORT = qw ( meta_text meta_maxx );
+
+# a generic module to provide access various meta data stuff
+# stored in the database
+
+use Catz::DB;
+
+my %text = ();
+
+my $maxx;
+
+sub meta_text { 
+
+ my $lang = shift;
+
+ exists $text{$lang} or do {
+  $text{$lang} = {};
+  do { 
+   $text{$lang}->{$_->[0]} = $_->[1] 
+  } foreach @{ db_all( "select tag,text_$lang from metatext" ) };
+ };
+ 
+ return $text{$lang};  
+ 
+}
+
+sub meta_maxx {
+ 
+ defined $maxx or $maxx = db_one ( 'select max(x) from _fid_x' );
+ 
+ return $maxx; 
+ 
+}
+
+1;
+
+ 

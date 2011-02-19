@@ -25,12 +25,11 @@
 package Catz::Setup;
 
 use parent 'Exporter';
-
 our @EXPORT = qw ( setup_defaultize setup_verify setup_signature setup_colors setup_values setup_reset );
 
 use List::MoreUtils qw ( any );
 
-# some dummy hard-coded value for initial testing
+# just some dummy hard-coded value for initial testing
 my $signature = 'o_!+9akjJJ209-*&&';
 
 sub setup_signature { $signature }

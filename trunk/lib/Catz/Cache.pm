@@ -25,13 +25,17 @@
 package Catz::Cache;
 
 #
-# a simple set/get layer over Cache::Memcached::Fast
+# a simple set/get module over Cache::Memcached::Fast
 #
-# every package needing cache access should inherit from this
+# every package in need of caching should use this module
 #
  
 use strict;
 use warnings;
+
+use parent 'Exporter';
+
+our @EXPORT = qw ( cache_get cache_set );
 
 use Cache::Memcached::Fast;
 use Digest::MD5 qw( md5_base64 );
@@ -52,29 +56,25 @@ use constant SEP => '|';
 # force the cache key to be 250 characters or less
 # all characters after 228 are hashed to md5 hash in base64 encoding
 # so the key is 228 + 22 = 250 characters
-sub _shrink { substr ( $_[0], 0 , 228 ) . md5_base64 ( substr ( $_[0], 228 ) ) }
+sub shrink { substr ( $_[0], 0 , 228 ) . md5_base64 ( substr ( $_[0], 228 ) ) }
   
 sub cache_set {
 
- shift; # reads and discards self
- 
  my $val = pop @_;
  
  my $key = join SEP, @_;
   
- length $key > 250 and $key = _shrink ( $key ); 
+ length $key > 250 and $key = shrink ( $key ); 
       
  $cache->set( $key, $val );
 
 }
 
 sub cache_get {
-
- shift; # reads and discards self
  
  my $key = join SEP, @_;
   
- length $key > 250 and $key = _shrink ( $key ); 
+ length $key > 250 and $key = shrink ( $key ); 
   
  return $cache->get( $key );
    

@@ -585,22 +585,6 @@ sub exid {
  return \%output;
 }
  
-
-#print c_cat ("FIFE CH, TICA CAFA DK*{AngelWaves} My Dream of Changes (Sintti) [TUV d 23 23] \"miisu|mikki\" %Xpanel"), "\n";
-#print c_country ("FIFE CH, TICA CAFA DK*{AngelWaves} My Dream of Changes (Sintti) [TUV d 23 23] \"miisu|mikki\" %Xpanel"), "\n";
-#print c_country ("{AngelWaves}*PL"), "\n";
-#print scalar c_ems_comps("[TUV x 23 non 34]"), "\n";
-#print c_breeder("GC DK*{AngelWaves} My Dream of Changes (Sintti) [CRX]");
-#print c_cat("GC DK*{AngelWaves} My Dream of Changes (Sintti) [CRX]");
-
-
-#print expand_phrase ("FIFE CH, TICA CAFA DK*{AngelWaves} My Dream of Changes (Sintti) [TUV d 23 23] \"miisu|mikki\" %Xpanel",'en'), "\n";
-
-#my %x = i_exif("/Users/master/Documents/www/galleries/20100424helsinki_gala/SRK_6145.JPG","0017285085135");
-#print map { "$_ => $x{$_}\n" } sort keys %x;
-#rint join "\n",values %x; 
-
-
 sub fix_gap {
  
  my @photos = sort @_;

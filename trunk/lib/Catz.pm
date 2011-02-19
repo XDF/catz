@@ -30,10 +30,8 @@ use warnings;
 use parent 'Mojolicious';
 
 use Catz::DB;
+use Catz::Model::Meta;
 use Catz::Setup;
-
-my $t_en;
-my $t_fi;
 
 sub startup {
 
@@ -126,7 +124,7 @@ sub before {
  
  }
   
- $stash->{t} = $stash->{lang} eq 'fi' ? $T_FI : $T_EN;
+ $stash->{t} = meta_text( $stash->{lang} );
                                                                                 
  setup_defaultize ( $self );
    

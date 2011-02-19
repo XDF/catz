@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Model::Lister;
+package Catz::Model::List;
 
 use strict;
 use warnings;
@@ -30,13 +30,12 @@ use warnings;
 use feature qw( switch );
 
 use parent 'Exporter';
-
-our @EXPORT = qw ( lister_list lister_links );
+our @EXPORT = qw ( list_list list_links );
 
 use Catz::DB;
 use Catz::Util qw( expand_ts );
 
-sub lister_list {
+sub list_list {
 
  my ( $lang, $subject, $mode ) = @_;
  
@@ -97,7 +96,7 @@ sub lister_list {
  
 }
 
-sub lister_links {
+sub list_links {
 
   my ( $lang, $type ) = @_;
     

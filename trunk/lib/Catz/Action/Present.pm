@@ -30,6 +30,7 @@ use warnings;
 use parent 'Catz::Action::Base';
 
 use Catz::DB;
+use Catz::Model::Meta;
 use Catz::Model::Vector;
 use Catz::Util qw ( pik2pid );
 
@@ -42,7 +43,7 @@ sub browse {
  my ( $lower, $upper ) = split /\-/, $stash->{range};
  
  # verify the range
- ( ( $lower > 0 ) and ( $upper < $MAXX + 1 ) and ( ( $lower + 9 ) <= $upper ) and
+ ( ( $lower > 0 ) and ( $upper < meta_maxx + 1 ) and ( ( $lower + 9 ) <= $upper ) and
   ( ( $upper - $lower ) <= 49 ) and ( ( $lower - 1 ) % 5 == 0 ) and ( $upper % 5 == 0 ) )
   or $self->render(status => 404);
   
