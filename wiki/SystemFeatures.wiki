@@ -1,0 +1,20 @@
+#summary Listing some of the features of the system
+
+= User Experience =
+
+  * Simple straighforward layout
+  * Focused on content (cat show photos)  
+
+= What's included =
+
+  * instant find as you type based on real time partial string matching
+  * a detailed search engine for advanced users
+
+= What's excluded =
+
+  * forums, user comments, ratings (this is not a user community portal)
+
+= Feature details = 
+ 
+   * URLs shouldn't use GET parameters
+   * URL to a photo should also be a permanent URL

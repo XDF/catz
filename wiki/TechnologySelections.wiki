@@ -1,0 +1,10 @@
+#summary A word or two about technology selections
+
+= Technologies =
+
+Here are some technologies that I'm using in my project. I've also listed some technologies that I've evaluated or tested for this project but then decided not to use them. These are (marked this way).
+
+  * Language: Perl 5 (PHP, Python, Ruby)
+  * Framework: Mojolicious (Mason, Dancer, Catalyst) 
+  * Database: SQLite (PostgreSQL, Redis, BerkeleyDB)
+  * Caching: Memcached (Redis)

@@ -1,1 +1,0 @@
-#summary The design principles of the system
