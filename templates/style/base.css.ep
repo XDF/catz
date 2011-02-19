@@ -1,0 +1,197 @@
+%#
+%# The MIT License
+%# 
+%# Copyright (c) 1994-2011 Heikki Siltala
+%# 
+%# Permission is hereby granted, free of charge, to any person obtaining a copy
+%# of this software and associated documentation files (the "Software"), to deal
+%# in the Software without restriction, including without limitation the rights
+%# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+%# copies of the Software, and to permit persons to whom the Software is
+%# furnished to do so, subject to the following conditions:
+%# 
+%# The above copyright notice and this permission notice shall be included in
+%# all copies or substantial portions of the Software.
+%# 
+%# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+%# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+%# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+%# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+%# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+%# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+%# THE SOFTWARE.
+%# 
+<%
+
+ use Math::Round qw ( round );
+ 
+ my $color_back  = 'EEEEEE';
+ my $color_front  = '000000';
+ my $color_box1  = '444444';
+ my $color_box2 = '999999';
+ my $color_alt1 = 'FFFFFF';
+ my $color_alt2 = '772211';
+ 
+ my $font_default = 'Verdana, Arial, sans-serif';
+ my $font_title = 'Arial Black, Verdana, Arial, sans-serif';
+ 
+ my $size_normal = 95;
+ my $size_tiny = round ( $size_normal * 0.79 ); 
+ my $size_small = round ( $size_normal * 0.93 ); 
+ my $size_big = round ( $size_normal * 1.21 ); 
+ my $size_huge = round ( $size_normal * 1.75 );
+ 
+ my $pre = '#';
+ my $post = '%';
+ 
+ my $roundness = '3px';
+ 
+ my $rounding = qq(-moz-border-radius: $roundness;
+ -webkit-border-radius: $roundness;
+ -khtml-border-radius: $roundness;
+ border-radius: $roundness;);  
+ 
+%>
+
+body {
+ color: #<%== $color->{text} %>;
+ background-color: #<%== $color->{canvas} %>;
+ font-family: <%== $font_default %>; 
+ font-size: <%== $size_normal %><%== $post %>;
+ text-align: center;
+}
+
+.page {
+ margin: 1em auto;
+ text-align: left;
+ min-width: 800px;
+ max-width: 1400px;
+}
+
+.heavy { font-weight: bold; }
+
+.lean { font-style: italic; }
+
+.sparse { letter-spacing: 1px; }
+
+.shrink { font-size: 84%; }
+
+.enlarge { font-size: 111%; }
+
+.aero { padding-left: 0.5em; padding-right: 0.5em; }
+
+.roomy { padding-left: 4em; padding-right: 4em; }
+
+.unit { margin-top: 0.6em; margin-bottom: 0.6em; }
+
+.box { 
+ border: 1px <%== $pre %><%== $color_front %> solid;
+}
+
+.banner { 
+ background-color: <%== $pre %><%== $color_alt1 %>;
+ padding: 0.4em; 
+}
+
+.odd { 
+ background-color: <%== $pre %><%== $color_box1 %>;
+ padding: 0.1em;
+ margin: 0.1em;
+ <%== $rounding %> 
+}
+
+.even { 
+ background-color: <%== $pre %><%== $color_box2 %>;
+ padding: 0.1em;
+ margin: 0.1em;
+ <%== $rounding %> 
+}
+
+.bar { 
+ background-color: <%== $pre %><%== $color_box2 %>; 
+ padding: 0;
+ <%== $rounding %>  
+}
+
+.alt {
+ color:  <%== $pre %><%== $color_alt2 %>; 
+}
+
+.big { width: 75%; }
+.small { width: 25%; }
+.full { width: 100%; }
+.fifth { width: 20%; }
+.half { width: 50%; padding: 0.2em; }
+.wide { width: 66%; padding: 1em; }
+.narrow { width: 34%; padding: 1em; }
+.tri { width: 33%; padding: 0.25em; }
+.trix { width: 34%; padding: 1em; }
+
+
+.left { text-align: left; padding-left: 0.5em; }
+.center { text-align: center; }
+.right { text-align: right; padding-right: 0.5em; }
+
+.top { vertical-align: top; }
+
+.sep { 
+ width: 85%;
+ height: 1px; 
+ border: 0px; 
+ color: <%== $pre %><%== $color_front %>; 
+ background-color: <%== $pre %><%== $color_front %>;
+ text-align: left;
+}
+             
+h1 {
+ font-size: <%== $size_huge %><%== $post %>;
+ color: #<%== $color->{alt1} %>;
+ font-family: <%== $font_title %>;
+ letter-spacing: 2px;
+}
+
+h2,h3,h4,h5,h6 {
+ font-size: <%== $size_big %><%== $post %>;
+ display: inline;
+ color: #<%== $color->{alt1} %>;
+ font-family: <%== $font_title %>;
+ letter-spacing: 2px;
+}
+
+
+a:link, a:visited, a:active { 
+ color: #<%== $color->{text} %>;
+ text-decoration: underline;
+}
+
+a:hover {
+ color: #<%== $color->{text} %>;
+ background-color: <%== $pre %><%== $color_front %>;
+ text-decoration: none;   
+}
+
+.thumb {
+ border: 1px;
+ border-style: solid;
+ border-color: <%== $pre %><%== $color_box1 %>;
+ margin-left: 1px;
+ margin-right: 1px;
+}
+
+form { display: inline; }
+
+ul { margin-left: 1em; }
+
+li { 
+ list-style: square outside; 
+ line-height: 1.4em; 
+}
+
+hr {
+ color: <%== $color_front %>;
+ background: transparent;
+ margin: 0;
+ padding: 0;
+ border: 0;
+ border-bottom: 1px <%== $pre %><%== $color_box2 %> solid;
+}

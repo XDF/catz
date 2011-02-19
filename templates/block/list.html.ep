@@ -1,0 +1,43 @@
+%#
+%# The MIT License
+%# 
+%# Copyright (c) 1994-2011 Heikki Siltala
+%# 
+%# Permission is hereby granted, free of charge, to any person obtaining a copy
+%# of this software and associated documentation files (the "Software"), to deal
+%# in the Software without restriction, including without limitation the rights
+%# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+%# copies of the Software, and to permit persons to whom the Software is
+%# furnished to do so, subject to the following conditions:
+%# 
+%# The above copyright notice and this permission notice shall be included in
+%# all copies or substantial portions of the Software.
+%# 
+%# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+%# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+%# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+%# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+%# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+%# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+%# THE SOFTWARE.
+%# 
+% use Catz::Util qw ( pid2pik enurl );
+<table class="full">
+% foreach my $rec ( @$list ) {
+<tr>
+% if ( defined $rec->[0] ) {
+<td><h2><%= $rec->[0] %></h2></td>
+% } else {
+<td>&nbsp;</td>
+%} 
+%  my $to = "1-$thumbsperpage";
+%  $rec->[3] == 1 and do {
+%   $to = pid2pik ( $rec->[5] ); 
+%  };
+% my $text = $rec->[3] == 1 ? $t->{PHOTO} : $t->{PHOTOS};    
+<td class="half"><a href="/<%= $lang %>/<%= $rec->[1] %>/<%== enurl( $rec->[2] ) %>/<%= $to %>/"><%= $rec->[2] %></a></td>
+<td class="shrink"><%= $rec->[3] %> <%= $text %></td>
+<td class="shrink">12.10.2005 - 15.10.2010</td>
+</tr>
+% }
+</table>

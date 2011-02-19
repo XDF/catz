@@ -1,0 +1,91 @@
+#
+# The MIT License
+# 
+# Copyright (c) 1994-2011 Heikki Siltala
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+# 
+
+package Catz::Action::Base;
+
+use strict;
+use warnings;
+
+use parent 'Mojolicious::Controller';
+
+our $MAXX = db_one( 'select max(x) from _fid_x' );
+
+
+
+our $T_EN;
+our $T_FI;
+
+do { $T_EN->{$_->[0]} = $_->[1] } foreach 
+ @{ db_all( 'select tag,text_en from metatext' ) };
+
+do { $T_FI->{$_->[0]} = $_->[1] } foreach 
+@{ db_all( 'select tag,text_fi from metatext' ) };  
+
+sub redirect_perm {
+
+ my $self = shift;
+
+ # Response
+ my $res = $self->res;
+
+ # Code
+ $res->code(301);
+
+ # Headers
+ my $headers = $res->headers;
+ $headers->location($self->url_for(@_)->to_abs);
+ $headers->content_length(0);
+
+ # Rendered
+ $self->rendered;
+
+ return $self;
+ 
+}
+
+sub redirect_temp {
+
+ my $self = shift;
+
+ # Response
+ my $res = $self->res;
+
+ # Code
+ $res->code(302);
+
+ # Headers
+ my $headers = $res->headers;
+ $headers->location($self->url_for(@_)->to_abs);
+ $headers->content_length(0);
+
+ # Rendered
+ $self->rendered;
+
+ return $self;
+ 
+}
+
+
+1;
+
