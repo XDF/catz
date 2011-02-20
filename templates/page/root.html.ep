@@ -1,4 +1,21 @@
 % layout 'page';
+<div class="full center">
+<a href=0050.html><img src="<%= $photobase %>/20110129lahti/SLA_0401_LR.JPG" vspace=2 hspace=2 class="tn" height=120 width=101></a>
+<a href=0051.html><img src="<%= $photobase %>/20110129lahti/SLA_0402_LR.JPG" vspace=2 hspace=2 class="tn" height=120 width=101></a>
+<a href=0052.html><img src="<%= $photobase %>/20110129lahti/SLA_0413_LR.JPG" vspace=2 hspace=2 class="tn" height=120 width=104></a>
+<a href=0053.html><img src="<%= $photobase %>/20110129lahti/SLA_0419_LR.JPG" vspace=2 hspace=2 class="tn" height=120 width=93></a>
+<a href=0054.html><img src="<%= $photobase %>/20110129lahti/SLA_0433_LR.JPG" vspace=2 hspace=2 class="tn" height=120 width=190></a>
+<a href=0055.html><img src="<%= $photobase %>/20110129lahti/SLA_0443_LR.JPG" vspace=2 hspace=2 class="tn" height=120 width=121></a>
+<a href=0056.html><img src="<%= $photobase %>/20110129lahti/SLA_0445_LR.JPG" vspace=2 hspace=2 class="tn" height=120 width=132></a>
+<a href=0057.html><img src="<%= $photobase %>/20110129lahti/SLA_0447_LR.JPG" vspace=2 hspace=2 class="tn" height=120 width=81></a>
+<a href=0058.html><img src="<%= $photobase %>/20110129lahti/SLA_0449_LR.JPG" vspace=2 hspace=2 class="tn" height=120 width=94></a>
+<a href=0059.html><img src="<%= $photobase %>/20110129lahti/SLA_0459_LR.JPG" vspace=2 hspace=2 class="tn" height=120 width=67></a>
+<a href=0060.html><img src="<%= $photobase %>/20110129lahti/SLA_0470_LR.JPG" vspace=2 hspace=2 class="tn" height=120 width=128></a>
+</div>
+<table class="full"><tr>
+<td class="wide center"><%== include 'way/find' %></td>
+<td class="narrow left"><%= $t->{SEARCH} %></td>
+</tr></table>
 <table class="full"><tr><td class="tri top">
 %== include 'way/news';
 %== include 'way/albums';

@@ -277,12 +277,4 @@ sub to_lines {
           
 }
 
-sub line_flesh_put {
-
- my ( $album, $n, $line ) = @_;
- 
- 
-}
-
-
 1;

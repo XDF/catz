@@ -42,14 +42,17 @@ sub startup {
  my $r = $self->routes;
  
  $self->renderer->layout_prefix( 'layout' );
-  
+ 
+ # All controllers are Actions 
  $r->namespace( 'Catz::Action' );
 
+ # if the site root is requested then detect the correct language
  $r->route('/')->to( "main#detect" );
  
  $r->route( '/style/reset' )->to( 'main#reset' );
  $r->route( '/style/:palette' )->to( 'main#base' );
  
+ # all site content are located under /en or /fi
  my $l = $r->route ('/:lang', lang => qr/(en|fi)/ );
  
  $l->route( '/' )->to( 'main#root' );
@@ -66,32 +69,28 @@ sub startup {
  $l->route( '/search/(*args)' )->to ( "search#main" );
 
  # browse all photos
- $l->route('/:range', range => qr/\d{1,5}\-\d{1,5}/)->to("present#browse"); 
+ # current setting 1,6 supports photo sets up to 999,999 photos
+ $l->route('/:range', range => qr/\d{1,6}\-\d{1,6}/)->to("present#browse"); 
 
  # view a photo from all photos
  # expects base32 encoded photo id
  $l->route('/:photo', photo => qr/[0-9a-hjkmnp-tv-z]{1,8}/ )->to("present#view");
-  
+ 
+ # view a photo based on the search pattern 
  # current setting 1,6 supports photo sets up to 999,999 photos  
  $l->route( '/(*path)/:range', range => qr/\d{1,6}\-\d{1,6}/ )->to (
   "present#browse"
  ); 
 
-
+ # view a photo based on the search pattern
+ # expects base32 encoded photo id
  $l->route( '/(*path)/:photo', photo => qr/[0-9a-hjkmnp-tv-z]{1,8}/ )->to (
   "present#view"
  );
 
- $self->hook ( before_dispatch => \&before );
-  
+ # add hooks to subs that are executed before and after the dispatch
+ $self->hook ( before_dispatch => \&before );  
  $self->hook( after_dispatch => \&after );
-
- #do { $t_en->{$_->[0]} = $_->[1] } foreach 
- # @{ $self->fetch_all( 'select tag,text_en from metatext' ) };
-
- #do { $t_en->{fi}->{$_->[0]} = $_->[1] } foreach 
- # @{ $self->fetch_all( 'select tag,text_fi from metatext' ) }; 
- 
  
 }
 
@@ -100,20 +99,37 @@ sub before {
  my $self = shift;
  
  my $stash = $self->{stash};
-  
- substr ( $self->req->url, -1 ) ne '/' and do {
  
-  die "URLs ending with slash are not handled by this development version";
+ # force all URLs to end with slash 
+ substr ( $self->req->url, -1 ) ne '/' and do {
+   
+  # this redirect code is a modified version from Mojolicious core
+  # and appears to work as expected
+       
+  my $res = $self->res;
+  $res->code(301); # a permanent redirect
 
-  # old mod_perl code snippet:
-  #$x::r->headers_out->set( Location => $x::u . '/' );
+  my $headers = $res->headers;
+  $headers->location($self->req->url.'/'); # add slash to the end
+  $headers->content_length(0);
+
+  $self->rendered;
+
+  return $self;
  
  };
- 
+
+ # default to "index,follow", actions may modify it as needed 
  $stash->{robots} = 'index,follow';
 
  # temporary hard-coded setting for initial development
- $stash->{base_photo} = 'http://www.heikkisiltala.com/galleries';
+ # for testing all photos are fetched from the current prod website
+ $stash->{photobase} = 'http://www.heikkisiltala.com/galleries';
+ 
+ # the language detection
+ # - detect correct langauge based on the beginning of URL
+ # - store the language to stash
+ # - prepare the URL for language change feature 
     
  if ( substr ( $self->req->url, 3 ) eq '/fi' ) {
  
@@ -129,11 +145,18 @@ sub before {
 
  } else {
  
+  # default to english
+ 
   $stash->{lang} = 'en';
   $stash->{otherlang} = '/fi' . substr ( $self->req->url, 3 ); 
  
  }
-  
+ 
+ # let the url be in the stash also
+ $stash->{url} = $self->req->url;
+ 
+ # fetch texts for the current language and make them available to all
+ # templates as $t 
  $stash->{t} = meta_text( $stash->{lang} );
                                                                                 
  setup_defaultize ( $self );
@@ -143,6 +166,8 @@ sub before {
 sub after {
 
  my $self = shift;
+ 
+ # currently NOP, perhaps something here in the future
  
 }
 
