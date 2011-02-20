@@ -1,9 +1,13 @@
-<h2><%= $t->{IDEAS} %></h2>
-<ul>
-% foreach my $row ( @$ideas ) {
-<li><a href="/<%= $lang %>/<%= $row->[0] %>/<%= $row->[1] %>/1-<%= $thumbsperpage %>/"><%= $row->[1] %></a></li>
+% layout 'page';
+<h1><%= $t->{NEWS_ALL} %></h1>
+% foreach my $row ( @{ $news } ) {
+<div class="unit">
+<a name="<%= $row->[0] %>"><h2><%= $row->[2] %></a></h2>
+<%= $row->[1] %>
+<p>
+<%= $row->[3] %> 
+</p></div>
 % }
-</ul>
 %#
 %# The MIT License
 %# 

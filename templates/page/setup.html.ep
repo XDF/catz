@@ -1,7 +1,24 @@
+% layout 'page';
+<h1><%= $t->{SETUP} %></h1>
+<table>
+% foreach my $key ( sort keys %{ $values } ) {
+% my $current = $self->session( $key );
+<tr><td class="right"><h2><%= $t->{'SETUP'.$key.'TITLE'} %></h2></td><td class="sparse">
+% foreach my $value ( @{ $values->{$key} } ) {
+% if ( $self->session( $key ) eq $value ) {
+<span class="heavy"><%= $t->{'SETUP'.$key.$value} %></span>
+% } else {
+<a href="/<%= $lang %>/setup/<%= $key %>/<%= $value %>/"><%= $t->{'SETUP'.$key.$value} %></a>
+% } 
+% }
+</td></tr>
+% }
+</table>
+<a href="/<%= $lang %>/setup/reset/"><%= $t->{'SETUPreset'} %></a>
 %#
 %# The MIT License
 %# 
-%# Copyright (c) 1994-2011 Heikki Siltala
+%# Copyright (c) 2010-2011 Heikki Siltala
 %# 
 %# Permission is hereby granted, free of charge, to any person obtaining a copy
 %# of this software and associated documentation files (the "Software"), to deal
@@ -20,21 +37,4 @@
 %# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 %# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 %# THE SOFTWARE.
-%# 
-% layout 'page';
-<h1><%= $t->{SETUP} %></h1>
-<table>
-% foreach my $key ( sort keys %{ $values } ) {
-% my $current = $self->session( $key );
-<tr><td class="right"><h2><%= $t->{'SETUP'.$key.'TITLE'} %></h2></td><td class="sparse">
-% foreach my $value ( @{ $values->{$key} } ) {
-% if ( $self->session( $key ) eq $value ) {
-<span class="heavy"><%= $t->{'SETUP'.$key.$value} %></span>
-% } else {
-<a href="/<%= $lang %>/setup/<%= $key %>/<%= $value %>/"><%= $t->{'SETUP'.$key.$value} %></a>
-% } 
-% }
-</td></tr>
-% }
-</table>
-<a href="/<%= $lang %>/setup/reset/"><%= $t->{'SETUPreset'} %></a>
+%#

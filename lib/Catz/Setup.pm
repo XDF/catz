@@ -1,7 +1,7 @@
 #
 # The MIT License
 # 
-# Copyright (c) 1994-2011 Heikki Siltala
+# Copyright (c) 2010-2011 Heikki Siltala
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 # 
-
 package Catz::Setup;
 
 use parent 'Exporter';

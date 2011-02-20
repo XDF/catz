@@ -1,7 +1,7 @@
 #
 # The MIT License
 # 
-# Copyright (c) 1994-2011 Heikki Siltala
+# Copyright (c) 2010-2011 Heikki Siltala
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -66,6 +66,18 @@ sub root {
  }
     
  $self->render( template => 'page/root' );
+
+}
+
+sub news {
+
+ my $self = shift;
+ 
+ my $stash = $self->{stash};
+ 
+ $stash->{news} = meta_news ( $stash->{lang} );
+     
+ $self->render( template => 'page/news' );
 
 }
 

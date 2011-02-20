@@ -1,7 +1,7 @@
 #
 # The MIT License
 # 
-# Copyright (c) 1994-2011 Heikki Siltala
+# Copyright (c) 2010-2011 Heikki Siltala
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,7 +25,7 @@
 package Catz::Model::Meta;
 
 use parent 'Exporter';
-our @EXPORT = qw ( meta_text meta_maxx meta_news_latest meta_news_all );
+our @EXPORT = qw ( meta_text meta_maxx meta_news );
 
 # a generic module to provide access various meta data stuff
 # stored in the database
@@ -60,7 +60,7 @@ sub meta_maxx {
  
 }
 
-sub meta_news_all {
+sub meta_news {
 
  my $lang = shift;
   
@@ -75,23 +75,6 @@ sub meta_news_all {
  return $res;
  
 }
-
-sub meta_news_latest {
-
- my $lang = shift;
-   
- my $res = db_all ( "select dt,null,title_$lang from metanews order by dt desc limit 6" );
-   
- foreach my $row ( @$res ) {
-  
-  $row->[1] = expand_ts ( substr ( $row->[0], 0, 8 ), $lang );
- 
- }
- 
- return $res;
- 
-}
-
 
 1;
 
