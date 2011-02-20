@@ -359,7 +359,8 @@ sub expand_phrase {
  
 }
 
-# lens resolving function
+# the lens resolving function
+# please regard this legacy sub as a bad example of Perl programming 
 # in: lens mode, focal length, aperture 
 # out: lens code 
 sub lens {

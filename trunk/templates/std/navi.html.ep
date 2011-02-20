@@ -1,5 +1,9 @@
 % use feature qw( switch );
+% if ($url =~ /^\/(en|fi)\/$/ ) {
+<%= $t->{SLOGAN} %>
+% } else {
 <a href="/<%= $lang %>/"><%= $t->{SITE} %></a>
+% }
 %#
 %# The MIT License
 %# 

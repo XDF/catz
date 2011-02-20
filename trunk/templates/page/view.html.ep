@@ -6,7 +6,7 @@
 </div><div>
 %= include 'block/details'
 </div>
-<img src="<%== $base_photo %>/<%== $image->[0] %>/<%== $image->[1] %>">
+<img src="<%== $photobase %>/<%== $image->[0] %>/<%== $image->[1] %>">
 </div>
 %#
 %# The MIT License
