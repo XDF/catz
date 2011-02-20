@@ -1,7 +1,7 @@
 #
 # The MIT License
 # 
-# Copyright (c) 1994-2011 Heikki Siltala
+# Copyright (c) 2010-2011 Heikki Siltala
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -53,6 +53,8 @@ sub startup {
  my $l = $r->route ('/:lang', lang => qr/(en|fi)/ );
  
  $l->route( '/' )->to( 'main#root' );
+ 
+ $l->route( '/news' )->to ( "main#news" );
  
  $l->route( '/setup' )->to ( "main#setup" );
  $l->route( '/setup/reset' )->to ( "main#setup", reset => 1 );
