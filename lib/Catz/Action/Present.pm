@@ -46,9 +46,12 @@ sub browse {
  ( ( $lower > 0 ) and ( $upper < meta_maxx + 1 ) and ( ( $lower + 9 ) <= $upper ) and
   ( ( $upper - $lower ) <= 49 ) and ( ( $lower - 1 ) % 5 == 0 ) and ( $upper % 5 == 0 ) )
   or $self->render(status => 404);
+ 
+ my @args = ();
   
- # split arguments into an array, filter out empty arguments 
- my @args = grep { defined $_ } split /\//, $stash->{path};
+ # split arguments into an array, filter out empty arguments
+ # if path is not defined then browsing all photos and skip processing
+ $stash->{path} and ( @args = grep { defined $_ } split /\//, $stash->{path} );
  
  # store the new argument array back to stash
  $stash->{args_string} = join '/', @args;
@@ -104,8 +107,11 @@ sub view {
  
  #warn "fid: $stash->{photo}";  
  
-# split arguments into an array, filter out empty arguments 
- my @args = grep { defined $_ } split /\//, $stash->{path};
+ my @args = ();
+  
+ # split arguments into an array, filter out empty arguments
+ # if path is not defined then browsing all photos and skip processing
+ $stash->{path} and ( @args = grep { defined $_ } split /\//, $stash->{path} );
  
  # store the new argument array back to stash
  $stash->{args_string} = join '/', @args;

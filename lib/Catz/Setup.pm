@@ -45,22 +45,28 @@ my $colors = {
  dark => {
   canvas => '000000',
   text => 'FFFFFF',
-  alt1 => 'FF2222'
-   
-
+  alt1 => 'BB0505'
  },
+ medium => {
+  canvas => 'B9B9B9',
+  text => '000000',
+  alt1 => '772211'
+ },
+
  bright => {
   canvas => 'EEEEEE',
   text => '000000',
   alt1 => '772211'
- }
+ },
+
+
 };
 
 sub setup_colors { $colors } 
 
 my $defaults = {
  keycommands => 'off', 
- palette => 'bright',
+ palette => 'medium',
  resize => 'auto',
  thumbsperpage => 15,
  thumbsize => 150,
@@ -72,7 +78,7 @@ my $defaults = {
               
 my $values = {
  keycommands => [ qw ( on off ) ], 
- palette => [ qw ( bright dark ) ],
+ palette => [ qw ( bright medium dark ) ],
  resize => [ qw ( auto full ) ],
  thumbsperpage => [ qw( 10 15 20 25 30 35 40 45 50 ) ],
  thumbsize => [ qw ( 125 150 175 200 ) ],
