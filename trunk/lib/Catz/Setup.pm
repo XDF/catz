@@ -24,9 +24,11 @@
 package Catz::Setup;
 
 use parent 'Exporter';
-our @EXPORT = qw ( setup_defaultize setup_verify setup_signature setup_colors setup_values setup_reset );
+our @EXPORT = qw ( setup_defaultize setup_verify setup_signature setup_colors setup_values setup_reset setup_next setup_prev setup_circ );
 
 use List::MoreUtils qw ( any );
+
+use Data::Dumper;
 
 # just some dummy hard-coded value for initial testing
 my $signature = 'o_!+9akjJJ209-*&&';
@@ -59,7 +61,6 @@ my $colors = {
   alt1 => '772211'
  },
 
-
 };
 
 sub setup_colors { $colors } 
@@ -69,7 +70,7 @@ my $defaults = {
  palette => 'medium',
  resize => 'auto',
  thumbsperpage => 15,
- thumbsize => 150,
+ thumbsize => 140,
  comment => 'on',
  camera => 'on',
  result => 'on',
@@ -78,15 +79,62 @@ my $defaults = {
               
 my $values = {
  keycommands => [ qw ( on off ) ], 
- palette => [ qw ( bright medium dark ) ],
+ palette => [ qw ( dark medium bright ) ],
  resize => [ qw ( auto full ) ],
  thumbsperpage => [ qw( 10 15 20 25 30 35 40 45 50 ) ],
- thumbsize => [ qw ( 125 150 175 200 ) ],
+ thumbsize => [ qw ( 100 120 140 160 180 200 ) ],
  comment => [ qw ( on off ) ],
  camera => [ qw ( on off ) ],
  related => [ qw ( on off ) ],
  result => [ qw ( on off ) ]
 };
+
+# hashrefs containing pre-build previous and next values of setups
+my $nexts = {};
+my $prevs = {};
+
+# populate $nexts and $prevs
+foreach my $key ( keys %{ $values } ) {
+
+ my $i = 0;
+ 
+ my $prev = undef;
+
+ while ( $i < scalar ( @{ $values->{$key} } ) ) {
+ 
+  #warn $i;
+ 
+  my $next = $values->{$key}->[$i+1] // undef;  
+  
+  $nexts->{$key}->{$values->{$key}->[$i]} = $next;
+
+  $prevs->{$key}->{$values->{$key}->[$i]} = $prev;
+
+  $prev = $values->{$key}->[$i];
+  
+  #warn "prev $prev"; 
+  #warn "next $next";
+ 
+  $i++;
+  
+ }
+
+}
+
+#die Dumper ( $nexts );
+
+sub setup_next { $nexts->{$_[0]}->{$_[1]} }
+
+sub setup_prev { $prevs->{$_[0]}->{$_[1]} }
+
+sub setup_circ {
+ 
+ defined $nexts->{$_[0]}->{$_[1]} and 
+  return $nexts->{$_[0]}->{$_[1]};
+  
+ $values->{$_[0]}->[0];
+   
+}
 
 sub setup_defaultize {
  
@@ -105,12 +153,6 @@ sub setup_defaultize {
  
 }
 
-sub setup_values {
-
- return $values;
-
-}
-
 sub setup_verify {
 
  my ( $key, $value ) = @_;
@@ -123,18 +165,4 @@ sub setup_verify {
 
 }
 
-sub setup_reset {
-
- my $app = shift;
-
- foreach my $key ( keys %{ $defaults } ) {
-
-  $app->session( $key => $defaults->{$key} );
-
-  $app->stash->{$key} = $app->session($key);
-
- }
-
-}
-
- 
+1;

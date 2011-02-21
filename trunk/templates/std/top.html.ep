@@ -1,10 +1,12 @@
+% use Catz::Setup;
 % use Catz::Util qw ( enurl );
-<table class="full bar"><tr>
+<table class="full"><tr>
 <td class="left">
 %== include 'std/navi';
 </td>
 <td class="right">
-<a href=""><%= $t->{OTHERLANG} %></a> . <a href="/<%= $lang %>/setup/"><%= $t->{SETUP} %></a>
+<a href=""><%= $t->{OTHERLANG} %></a> .
+ <a href="<%= $url %>?palette=<%= setup_circ('palette',$palette) %>"><%= $t->{SETUP} %></a>
 </td>
 </tr></table>
 %#
