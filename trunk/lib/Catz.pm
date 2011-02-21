@@ -57,6 +57,8 @@ sub startup {
  
  $l->route( '/' )->to( 'main#root' );
  
+ $l->route( '/feed' )->to ( "main#feed" );
+ 
  $l->route( '/news' )->to ( "main#news" );
  
  $l->route( '/setup' )->to ( "main#setup" );
@@ -102,6 +104,8 @@ sub before {
  
  # force all URLs to end with slash 
  substr ( $self->req->url, -1 ) ne '/' and do {
+ 
+  die  $self->req->url;
    
   # this redirect code is a modified version from Mojolicious core
   # and appears to work as expected
@@ -129,9 +133,17 @@ sub before {
  # the language detection
  # - detect correct langauge based on the beginning of URL
  # - store the language to stash
- # - prepare the URL for language change feature 
-    
- if ( substr ( $self->req->url, 3 ) eq '/fi' ) {
+ # - prepare the URL for language change feature
+ 
+ if ( length ( $self->req->url ) < 3 ) {
+ 
+  # too short to detect language
+  # default to english
+ 
+  $stash->{lang} = 'en';
+  $stash->{otherlang} = '/fi/'; 
+ 
+  } elsif ( substr ( $self->req->url, 3 ) eq '/fi' ) {
  
   $stash->{lang} = 'fi';
 

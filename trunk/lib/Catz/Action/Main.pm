@@ -29,9 +29,12 @@ use warnings;
 
 use parent 'Catz::Action::Base';
 
+use XML::RSS;
+
 use Catz::Model::List;
 use Catz::Model::Meta;
 use Catz::Setup;
+use Catz::Util qw ( sys_ts );
 
 use I18N::AcceptLanguage;
 
@@ -58,7 +61,7 @@ sub root {
  my $self = shift;
  
  my $stash = $self->{stash};
- 
+  
  foreach my $key ( qw ( news albums pris ideas ) ) {
  
   $stash->{$key} = list_links ( $stash->{lang}, $key );
@@ -131,5 +134,37 @@ sub setup {
  $stash->{values} = setup_values;
 
  $self->render ( template => 'page/setup' );
+
+}
+
+sub feed {
+
+ my $self = shift;
+ 
+ my $stash = $self->{stash};
+ 
+ my $news = meta_news ( $stash->{lang} );
+   
+ my $rss = XML::RSS->new( version => '2.0' );
+
+ $rss->channel(
+  title => $stash->{t}->{SITE},
+  link => 'http://' . $stash->{t}->{SITE} . '/',
+  lastBuildDate => sys_ts,
+  managingEditor => $stash->{t}->{AUTHOR}
+ );
+  
+ foreach my $item (@$news) {
+  $rss->add_item(
+   title =>  $item->[2],
+   link => 'http://' . $stash->{t}->{SITE} . '/' . $stash->{lang} . '/news/#'.$item->[0],
+   description => $item->[3],
+   pubDate => $item->[1],
+  );
+ }
+ 
+ $self->render ( text => $rss->as_string, format => 'xml' )
+ 
+
 
 }

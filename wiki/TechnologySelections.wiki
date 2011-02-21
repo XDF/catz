@@ -19,4 +19,5 @@ Here are some technologies that I'm using in my project. I've also listed some t
    * all text strings are to be separated from logic and layout
    * user-configurable features stored in cookie (by default Mojolicious session implementation) 
    * database access via DBI and a Memcached caching layer above it
-   * database result sets as arrayrefs and positional access (hashrefs needs hash construction on DBI and according to my test impose a significant overhead)                
+   * database result sets as arrayrefs and positional access (hashrefs needs hash construction on DBI and according to my test impose a significant overhead)
+   * implement automatic system tests procedures for all actions (Test::Mojo)                   

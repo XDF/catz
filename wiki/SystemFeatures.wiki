@@ -2,14 +2,15 @@
 
 = User Experience =
 
-  * Simple straighforward layout
-  * using mostly short texts that are hyperlinks instead of icons  
+  * cool new domain name
+  * simple straighforward layout
+  * using mostly short texts as hyperlinks instead of icons  
   * focuses on content (cat show photos)
   * first photos provided instantly on front page  
   * easy to switch between English and Finnish and everything changes when switching
   * some user-configurable features and a simple page to do the configuration
   * Facebook share on photos
-  * photo browsing logic: thumbnails - big photo         
+  * photo browsing logic as always: thumbnails - big photo         
 
 = What's included =
 

@@ -31,47 +31,36 @@ use parent 'Mojolicious::Controller';
 
 sub redirect_perm {
 
- # this is a modified copy from Mojolicious
+ # this is a modified copy from Mojolicious core
 
  my $self = shift;
-
- # Response
  my $res = $self->res;
-
- # Code
+ 
  $res->code(301);
 
- # Headers
  my $headers = $res->headers;
  $headers->location($self->url_for(@_)->to_abs);
  $headers->content_length(0);
 
- # Rendered
  $self->rendered;
 
  return $self;
  
-
 }
  
 sub redirect_temp {
 
- # this is a modified copy from Mojolicious
+ # this is a modified copy from Mojolicious core  
 
  my $self = shift;
- 
- # Response
  my $res = $self->res;
-
- # Code
+ 
  $res->code(302);
 
- # Headers
  my $headers = $res->headers;
  $headers->location($self->url_for(@_)->to_abs);
  $headers->content_length(0);
 
- # Rendered
  $self->rendered;
 
  return $self;
