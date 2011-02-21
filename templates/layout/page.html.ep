@@ -15,7 +15,7 @@
 <meta meta="author" content="<%= $t->{AUTHOR} %>">
 <meta meta="copyright" content="<%= $t->{COPYRIGHT} %>">
 <meta meta="credits" content="<%= $t->{CREDITS} %>">
-<meta meta="robots" content="<%= $robots %>">
+<meta meta="robots" content="<%== $meta_index ? 'index' : 'noindex' %>,<%== $meta_follow ? 'follow' : 'nofollow' %>">
 </head>
 <body lang="<%= $lang %>"><div class="page">
 %== include 'std/top';

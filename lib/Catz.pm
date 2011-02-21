@@ -36,7 +36,7 @@ use Catz::Setup;
 sub startup {
 
  my $self = shift;
- 
+  
  $self->secret( setup_signature );
     
  my $r = $self->routes;
@@ -61,10 +61,6 @@ sub startup {
  
  $l->route( '/news' )->to ( "main#news" );
  
- $l->route( '/setup' )->to ( "main#setup" );
- $l->route( '/setup/reset' )->to ( "main#setup", reset => 1 );
- $l->route( '/setup/:key/:value' )->to ( "main#setup" );
-
  $l->route('/list/:subject/:mode')->to('list#main');
  
  $l->route( '/search' )->to ( "search#main" ); 
@@ -99,13 +95,11 @@ sub startup {
 sub before {
 
  my $self = shift;
- 
+
  my $stash = $self->{stash};
  
  # force all URLs to end with slash 
- substr ( $self->req->url, -1 ) ne '/' and do {
- 
-  die  $self->req->url;
+ $self->req->url->path->trailing_slash or do {
    
   # this redirect code is a modified version from Mojolicious core
   # and appears to work as expected
@@ -114,7 +108,11 @@ sub before {
   $res->code(301); # a permanent redirect
 
   my $headers = $res->headers;
-  $headers->location($self->req->url.'/'); # add slash to the end
+  
+  # add slash to the end of the path
+  $headers->location($self->req->url->path->to_string.'/'); 
+  # if there was query parameters, they get dropped on redirect
+  
   $headers->content_length(0);
 
   $self->rendered;
@@ -122,9 +120,33 @@ sub before {
   return $self;
  
  };
-
+ 
  # default to "index,follow", actions may modify it as needed 
- $stash->{robots} = 'index,follow';
+ $stash->{meta_index} = 1;
+ $stash->{meta_follow} = 1;
+
+ #warn $self->req->url;
+ 
+ # process query params, they are setup change attempts
+ foreach my $key ( $self->req->url->query->param ) {
+ 
+   # prevent indexing if parameters present
+   $stash->{meta_index} = 0;
+
+   my $value = $self->req->url->query->param ( $key ); 
+
+   if ( setup_verify ( $key, $value ) ) {
+    # verified parameters go to session
+    $self->session($key => $value);
+   }
+   
+   # all parameters are removed from the request
+   $self->req->url->query->remove( $key );
+ 
+ }
+ 
+# warn $self->req->url; 
+
 
  # temporary hard-coded setting for initial development
  # for testing all photos are fetched from the current prod website
@@ -165,6 +187,7 @@ sub before {
  }
  
  # let the url be in the stash also
+ # and there are no query params since they are dropped earlier
  $stash->{url} = $self->req->url;
  
  # fetch texts for the current language and make them available to all
