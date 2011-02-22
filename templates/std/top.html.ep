@@ -6,7 +6,7 @@
 </td>
 <td class="right">
 <a href=""><%= $t->{OTHERLANG} %></a> .
- <a href="<%= $url %>?palette=<%= setup_circ('palette',$palette) %>"><%= $t->{SETUP} %></a>
+ <a href="<%= $url %>?palette=<%= setup_circ('palette',$palette) %>"><%= $t->{SETUP_palette_circ} %></a>
 </td>
 </tr></table>
 %#

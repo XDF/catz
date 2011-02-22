@@ -1,0 +1,16 @@
+% use Catz::Setup;
+% my $sep = '.';
+% my $sprev = setup_prev ( 'thumbsperpage', $thumbsperpage );
+% my $snext = setup_next ( 'thumbsperpage', $thumbsperpage );
+<!-- <%= "current $thumbsperpage prev $sprev next $snext" %> -->
+% if ( defined $sprev ) {
+<a href="../<%= $from %>-<%= $from + $sprev - 1 %>/"><%= $t->{SETUP_thumbsperpage_prev} %></a>
+% } else {
+<%= $t->{SETUP_thumbsperpage_prev} %>
+% }
+<%== $sep %>   
+% if ( defined $snext ) {
+<a href="../<%= $from %>-<%= $from + $snext - 1 %>/"><%= $t->{SETUP_thumbsperpage_next} %></a>
+% } else {
+<%= $t->{SETUP_thumbsperpage_next} %>
+% }

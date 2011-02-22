@@ -56,7 +56,7 @@ my $colors = {
  },
 
  bright => {
-  canvas => 'EEEEEE',
+  canvas => 'FFFFFF',
   text => '000000',
   alt1 => '772211'
  },
@@ -68,7 +68,7 @@ sub setup_colors { $colors }
 my $defaults = {
  keycommands => 'off', 
  palette => 'medium',
- resize => 'auto',
+ photosize => 'auto',
  thumbsperpage => 15,
  thumbsize => 140,
  comment => 'on',
@@ -80,7 +80,7 @@ my $defaults = {
 my $values = {
  keycommands => [ qw ( on off ) ], 
  palette => [ qw ( dark medium bright ) ],
- resize => [ qw ( auto full ) ],
+ photosize => [ qw ( auto full ) ],
  thumbsperpage => [ qw( 10 15 20 25 30 35 40 45 50 ) ],
  thumbsize => [ qw ( 100 120 140 160 180 200 ) ],
  comment => [ qw ( on off ) ],
@@ -101,27 +101,20 @@ foreach my $key ( keys %{ $values } ) {
  my $prev = undef;
 
  while ( $i < scalar ( @{ $values->{$key} } ) ) {
- 
-  #warn $i;
- 
+  
   my $next = $values->{$key}->[$i+1] // undef;  
   
-  $nexts->{$key}->{$values->{$key}->[$i]} = $next;
+  $nexts->{$key}->{ $values->{$key}->[$i] } = $next;
 
-  $prevs->{$key}->{$values->{$key}->[$i]} = $prev;
+  $prevs->{$key}->{ $values->{$key}->[$i] } = $prev;
 
   $prev = $values->{$key}->[$i];
-  
-  #warn "prev $prev"; 
-  #warn "next $next";
- 
+   
   $i++;
   
  }
 
 }
-
-#die Dumper ( $nexts );
 
 sub setup_next { $nexts->{$_[0]}->{$_[1]} }
 

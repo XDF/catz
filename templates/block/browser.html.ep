@@ -35,6 +35,10 @@
 <%== $sep %>
 <%= $t->{PHOTO_PREV} %>
 % }
+<%== $sep %>
+%== include 'elem/thumbsize';
+<%== $sep %>
+%== include 'elem/thumbsperpage';
 %#
 %# The MIT License
 %# 

@@ -47,7 +47,9 @@ my $acceptor = I18N::AcceptLanguage->new(
 sub detect {
   
  my $self = shift;
-  
+ 
+ #warn "url is now at detect ".$self->req->url;
+ 
  my $lang = $acceptor->accepts(
   $self->req->headers->accept_language, $languages
  );
