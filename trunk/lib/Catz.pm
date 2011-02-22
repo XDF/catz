@@ -125,7 +125,7 @@ sub before {
  $stash->{meta_index} = 1;
  $stash->{meta_follow} = 1;
 
- #warn $self->req->url;
+ #warn "url is now ".$self->req->url;
  
  # process query params, they are setup change attempts
  foreach my $key ( $self->req->url->query->param ) {

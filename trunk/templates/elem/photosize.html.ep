@@ -1,0 +1,15 @@
+% use Catz::Setup;
+% my $sep = '.';
+% my $sprev = setup_prev ( 'thumbsize', $thumbsize );
+% my $snext = setup_next ( 'thumbsize', $thumbsize );
+% if ( defined $sprev ) {
+<a href="<%= $url %>?thumbsize=<%= $sprev %>"><%= $t->{SETUP_thumbsize_prev} %></a>
+% } else {
+<%= $t->{SETUP_thumbsize_prev} %>
+% }
+<%== $sep %>  
+% if ( defined $snext ) {
+<a href="<%= $url %>?thumbsize=<%= $snext %>"><%= $t->{SETUP_thumbsize_next} %></a>
+% } else {
+<%= $t->{SETUP_thumbsize_next} %>
+% }

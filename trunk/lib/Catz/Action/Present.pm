@@ -61,10 +61,12 @@ sub browse {
  # arguments must come in as pairs
  scalar @args % 2 == 0 or $self->render(status => 404);  
     
- # set this amount of photos to session to be used now and later
- my $perpage = $upper - $lower + 1; 
+ # set this amount of photos to both stash and session
+ # so session gets changed automatically by url 
+ my $perpage = $upper - $lower + 1;
+ $stash->{thumbsperpage} = $perpage; 
  $self->session( thumbsperpage => $perpage );
-
+ 
  my ( $total, $page, $pages, $from, $to, $first, $prev, $next, $last, $xs ) = 
   @{ vector_pager( $lower, $upper, $perpage, $stash->{lang}, @args ) };
      
@@ -81,7 +83,7 @@ sub browse {
  $stash->{prev} = $prev;
  $stash->{next} = $next;
  $stash->{last} = $last;
- $stash->{thumbsize} = $self->session('thumbsize');
+ #$stash->{thumbsize} = $self->session('thumbsize');
 
  my $thumbs = db_all( "select flesh.fid,album,file||'_LR.JPG',width_lr,height_lr from photo natural join flesh natural join _fid_x where x in (" 
   . ( join ',', @$xs ) .  ') order by x' );
