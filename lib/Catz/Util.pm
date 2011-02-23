@@ -28,8 +28,8 @@ use strict;
 use warnings;
 
 use Digest::MD5 qw(md5_base64);
-use Encode::Base32::Crockford qw(:all);
-#use Encode::Base58;
+#no longer needed 2011-02-23
+#use Encode::Base32::Crockford qw(:all);
 use Image::ExifTool qw(:Public);
 use Image::Size;
 use File::stat;
@@ -44,7 +44,7 @@ use MIME::Base32 qw ( RFC );
 use base 'Exporter';
 
 our @EXPORT_OK = 
- qw( nobreak round float encode decode ucc lcc ucclcc trim folder_file expand_ts sys_ts sys_ts_lang filesize filenum finddirs copyfile findfiles finddb findphotos width_height thumbfile readfile dna folder_dna tnresize thisyear enurl deurl pid2pik pik2pid ); 
+ qw( nobreak round float encode decode ucc lcc ucclcc trim folder_file expand_ts sys_ts sys_ts_lang filesize filenum finddirs copyfile findfiles finddb findphotos width_height thumbfile readfile dna folder_dna tnresize thisyear enurl deurl ); 
 
 my $formatter_en = new Number::Format(-thousands_sep   => ',', -decimal_point   => '.' );
 my $formatter_fi = new Number::Format(-thousands_sep   => ' ', -decimal_point   => ',' );
@@ -295,8 +295,8 @@ sub enurl { join '/', ( map { uri_escape( $_ ) } split /\//, $_[0] ) }
 
 sub deurl { join '/', ( map { uri_unescape( $_ ) } split /\//, $_[0] ) }
 
-sub pid2pik { lc ( base32_encode( shift ) ) }
-
-sub pik2pid { base32_decode ( shift ) }
+# no longer needed 2011-02-23
+# sub pid2pik { lc ( base32_encode( shift ) ) }
+# sub pik2pid { base32_decode ( shift ) }
 
 1;

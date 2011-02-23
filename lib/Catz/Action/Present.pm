@@ -32,7 +32,7 @@ use parent 'Catz::Action::Base';
 use Catz::DB;
 use Catz::Model::Meta;
 use Catz::Model::Vector;
-use Catz::Util qw ( pik2pid );
+#use Catz::Util qw ( pik2pid );
 
 sub browse {
 
@@ -69,7 +69,7 @@ sub browse {
  
  my ( $total, $page, $pages, $from, $to, $first, $prev, $next, $last, $xs ) = 
   @{ vector_pager( $lower, $upper, $perpage, $stash->{lang}, @args ) };
-     
+       
  $total == 0 and $self->render(status => 404); # no photos found by search 
  scalar @{ $xs } == 0 and $self->render(status => 404); # no photos in this page
   
@@ -102,13 +102,7 @@ sub view {
  my $self = shift;
   
  my $stash = $self->{stash};
-
- #warn "fik: $stash->{photo}";  
-
- $stash->{photo} = pik2pid ( $stash->{photo} );
- 
- #warn "fid: $stash->{photo}";  
- 
+  
  my @args = ();
   
  # split arguments into an array, filter out empty arguments
@@ -126,11 +120,9 @@ sub view {
  my $perpage =  $self->session('thumbsperpage');
   
  my ( $total, $pos, $x, $page, $first, $prev, $next, $last ) = @{ vector_pointer( 
-  $stash->{photo}, $perpage, $stash->{lang}, split /\//, $stash->{args} 
+  $stash->{photo}, $perpage, $stash->{lang}, @args 
  ) };
-
- #warn "x: $x";
- 
+  
  my $details = db_all ( qq{select pri,sec_$self->{stash}->{lang} from _class_pri_sec_x where x=? order by class,pri,sec_$self->{stash}->{lang}}, $x );
 
  my $texts = db_col ( qq{select sec_$self->{stash}->{lang} from _class_pri_sec_x where x=? and pri='cat'}, $x );

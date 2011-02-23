@@ -53,39 +53,52 @@ sub startup {
  $r->route( '/style/:palette' )->to( 'main#base' );
  
  # all site content are located under /en or /fi
- my $l = $r->route ('/:lang', lang => qr/(en|fi)/ );
+ my $l = $r->route ('/:lang', lang => qr/en|fi/ );
  
  $l->route( '/' )->to( 'main#root' );
+  
+ $l->route( '/news' )->to ( "main#news" );
  
  $l->route( '/feed' )->to ( "main#feed" );
- 
- $l->route( '/news' )->to ( "main#news" );
+
+ $l->route( '/sample/(*path)/:count', count => qr/\d{1,2}/ )->to (
+  "gate#sample"
+ );
+
+ $l->route( '/sample/:count', count => qr/\d{1,2}/ )->to (
+  "gate#sample", path => undef
+ );
+
  
  $l->route('/list/:subject/:mode')->to('list#main');
  
  $l->route( '/search' )->to ( "search#main" ); 
  $l->route( '/search/(*args)' )->to ( "search#main" );
-
- # browse all photos
- # current setting 1,6 supports photo sets up to 999,999 photos
- $l->route('/:range', range => qr/\d{1,6}\-\d{1,6}/)->to("present#browse"); 
-
- # view a photo from all photos
- # expects base32 encoded photo id
- $l->route('/:photo', photo => qr/[0-9a-hjkmnp-tv-z]{1,8}/ )->to("present#view");
  
- # view a photo based on the search pattern 
- # current setting 1,6 supports photo sets up to 999,999 photos  
- $l->route( '/(*path)/:range', range => qr/\d{1,6}\-\d{1,6}/ )->to (
-  "present#browse"
- ); 
+ # browse photos based on the search pattern or no pattern 
+ # current setting 1,5 supports photo sets up to 99,999 photos
 
- # view a photo based on the search pattern
- # expects base32 encoded photo id
- $l->route( '/(*path)/:photo', photo => qr/[0-9a-hjkmnp-tv-z]{1,8}/ )->to (
+ $l->route( '/show/(*path)/:range', range => qr/\d{1,5}\-\d{1,5}/ )->to (
+  "present#browse"
+ );
+ 
+ $l->route( '/show/:range', range => qr/\d{1,5}\-\d{1,5}/ )->to (
+  "present#browse", path => undef
+ );
+  
+  
+ # view a photo based on the search pattern or no pattern
+ # current setting 1,5 supports photo sets up to 99,999 photos
+ 
+ $l->route( '/show/(*path)/:photo', photo => qr/\d{1,6}/ )->to (
   "present#view"
  );
 
+ 
+ $l->route( '/show/:photo', photo => qr/\d{1,6}/ )->to (
+  "present#view", path => undef
+ );
+ 
  # add hooks to subs that are executed before and after the dispatch
  $self->hook ( before_dispatch => \&before );  
  $self->hook( after_dispatch => \&after );

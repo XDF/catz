@@ -1,12 +1,11 @@
-% use Catz::Util qw ( pid2pik );
 % if ( defined $first ) {
-<a href="../<%= pid2pik($first) %>/"><%= $t->{PHOTO_FIRST} %></a>
+<a href="../<%= $first %>/"><%= $t->{PHOTO_FIRST} %></a>
 % } else { 
 <%= $t->{PHOTO_FIRST} %>
 % }
 |
 % if ( defined $prev ) {
-<a href="../<%== pid2pik($prev) %>/"><%= $t->{PHOTO_PREV} %></a>
+<a href="../<%== $prev %>/"><%= $t->{PHOTO_PREV} %></a>
 % } else {
 <%= $t->{PHOTO_PREV} %>
 % }
@@ -17,13 +16,13 @@
 <a href="../<%== $target %>/"><%= $t->{THUMBS} %></a>
 |
 % if ( defined $next ) {
-<a href="../<%== pid2pik($next) %>/"><%= $t->{PHOTO_NEXT} %></a>
+<a href="../<%== $next %>/"><%= $t->{PHOTO_NEXT} %></a>
 % } else { 
 <%= $t->{PHOTO_NEXT} %>
 % }
 |
 % if ( defined $last ) {
-<a href="../<%== pid2pik($last) %>/"><%= $t->{PHOTO_LAST} %></a>
+<a href="../<%== $last %>/"><%= $t->{PHOTO_LAST} %></a>
 % } else {
 <%= $t->{PHOTO_LAST} %>
 % }

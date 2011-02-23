@@ -1,4 +1,4 @@
- % use Catz::Util qw ( pid2pik enurl );
+ % use Catz::Util qw ( enurl );
 <table class="full">
 % foreach my $rec ( @$list ) {
 <tr>
@@ -9,10 +9,10 @@
 %} 
 %  my $to = "1-$thumbsperpage";
 %  $rec->[3] == 1 and do {
-%   $to = pid2pik ( $rec->[5] ); 
+%   $to = $rec->[5]; 
 %  };
 % my $text = $rec->[3] == 1 ? $t->{PHOTO} : $t->{PHOTOS};    
-<td class="half"><a href="/<%= $lang %>/<%= $rec->[1] %>/<%== enurl( $rec->[2] ) %>/<%= $to %>/"><%= $rec->[2] %></a></td>
+<td class="half"><a href="/<%= $lang %>/show/<%= $rec->[1] %>/<%== enurl( $rec->[2] ) %>/<%= $to %>/"><%= $rec->[2] %></a></td>
 <td class="shrink"><%= $rec->[3] %> <%= $text %></td>
 <td class="shrink">12.10.2005 - 15.10.2010</td>
 </tr>
