@@ -1,0 +1,3 @@
+<div id="sample">
+%== include 'block/thumbs';
+</div>

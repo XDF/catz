@@ -22,63 +22,47 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Model::Meta;
+package Catz::Action::Gate;
 
-use parent 'Exporter';
-our @EXPORT = qw ( meta_text meta_maxx meta_news );
-
-# a generic module to provide access various meta data stuff
-# stored in the database
+use strict; 
+use warnings;
 
 use Catz::DB;
-use Catz::Util qw ( expand_ts );
+use Catz::Model::Vector;
 
-my %text = ();
+use parent 'Catz::Action::Base';
 
-my $maxx;
+sub sample {
 
-sub meta_text { 
-
- my $lang = shift;
-
- exists $text{$lang} or do {
-  $text{$lang} = {};
-  do { 
-   $text{$lang}->{$_->[0]} = $_->[1] 
-  } foreach @{ db_all( "select tag,text_$lang from metatext" ) };
- };
+ my $self = shift;
  
- return $text{$lang};  
+ my $stash = $self->{stash};
  
-}
-
-sub meta_maxx {
- 
- defined $maxx or $maxx = db_one ( 'select max(x) from _fid_x' ) + 1;
- 
- # notice: adding 1 to make room for indexing from 1 to n
- # to be on a safe size, not only from 0 to n-1
- 
- return $maxx; 
- 
-}
-
-sub meta_news {
-
- my $lang = shift;
+ my @args = ();
   
- my $res = db_all ( "select dt,null,title_$lang,text_$lang from metanews order by dt desc" );
-   
- foreach my $row ( @$res ) {
+ # split arguments into an array, filter out empty arguments
+ # if path is not defined then browsing all photos and skip processing
+ $stash->{path} and ( @args = grep { defined $_ } split /\//, $stash->{path} );
  
-  $row->[1] = expand_ts ( $row->[0], $lang );
-   
- }
+ # store the new argument array back to stash
+ $stash->{args_string} = join '/', @args;
+ $stash->{args_array} = \@args;
+ $stash->{args_count} = scalar @args;
+  
+ # arguments must come in as pairs
+ scalar @args % 2 == 0 or $self->render(status => 404);
  
- return $res;
+ my $xs = vector_array_random ( $stash->{lang}, @args );
  
+ warn 'count ' . $stash->{count};
+ 
+ my @set = @{ $xs } [ 0 .. $stash->{count} - 1 ];
+ 
+ $stash->{thumbs} = db_all( "select flesh.fid,album,file||'_LR.JPG',width_lr,height_lr from photo natural join flesh natural join _fid_x where x in (" 
+  . ( join ',', @set ) .  ') order by x' );
+ 
+ $self->render( template => 'elem/sample' );
+      
 }
 
-1;
-
- 
+1; 

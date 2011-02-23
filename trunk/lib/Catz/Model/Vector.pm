@@ -30,9 +30,10 @@ use warnings;
 use feature qw( switch );
 
 use parent 'Exporter';
-our @EXPORT = qw( vector_bit vector_array vector_pager vector_pointer vector_count );
+our @EXPORT = qw( vector_bit vector_array vector_pager vector_pointer vector_count vector_array_random );
 
 use Bit::Vector;
+use List::Util qw ( shuffle );
 use POSIX qw( floor ceil );
 
 use Catz::Cache;
@@ -179,6 +180,22 @@ sub vector_array {
   
  return \@arr;
 
+}
+
+sub vector_array_random {
+
+ my $res;
+
+ if( $res = cache_get( (caller(0))[3], @_ ) ) { return $res } 
+
+ my $arr = vector_array ( @_ );
+ 
+ my @rand = shuffle ( @{ $arr } );
+
+ cache_set( (caller(0))[3], @_, \@rand );
+ 
+ return \@rand;
+  
 }
 
 
