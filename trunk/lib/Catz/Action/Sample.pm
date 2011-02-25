@@ -22,40 +22,36 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Action::Present;
+package Catz::Action::Sample;
 
-use strict;
+use strict; 
 use warnings;
-
-use parent 'Catz::Action::Base';
 
 use Catz::DB;
 use Catz::Model::Meta;
 use Catz::Model::Vector;
-#use Catz::Util qw ( pik2pid );
 
+use parent 'Catz::Action::Present';
 
-sub args {
+sub count {
 
  my $self = shift;
+
+ $self->args;
  
  my $stash = $self->{stash};
-   
- my @args = ();
-  
- # split arguments into an array, filter out empty arguments
- # if path is not defined then browsing all photos and skip processing
- $stash->{path} and ( @args = grep { defined $_ } split /\//, $stash->{path} );
  
- # store the new argument array back to stash
- $stash->{args_string} = join '/', @args;
- $stash->{args_array} = \@args;
- $stash->{args_count} = scalar @args;
+ my $xs = vector_array_random ( $stash->{lang}, @{ $stash->{args_array} } );
  
- # arguments must come in as pairs
- scalar @args % 2 == 0 or $self->render(status => 404);
-
+ #warn 'count ' . $stash->{count};
+ 
+ my @set = @{ $xs } [ 0 .. $stash->{count} - 1 ];
+ 
+ $stash->{thumbs} = db_all( "select flesh.fid,album,file||'_LR.JPG',width_lr,height_lr from photo natural join flesh natural join _fid_x where x in (" 
+  . ( join ',', @set ) .  ') order by x' );
+ 
+ $self->render( template => 'elem/sample' );
+      
 }
 
-1;
-
+1; 

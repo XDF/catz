@@ -61,14 +61,13 @@ sub startup {
  
  $l->route( '/feed' )->to ( "main#feed" );
 
- $l->route( '/sample/(*path)/:count', count => qr/\d{1,2}/ )->to (
-  "gate#sample"
+  $l->route( '/sample/(*path)/:count', count => qr/\d{1,4}/ )->to (
+  "sample#count"
  );
 
- $l->route( '/sample/:count', count => qr/\d{1,2}/ )->to (
-  "gate#sample", path => undef
+ $l->route( '/sample/:count', count => qr/\d{1,4}/ )->to (
+  "sample#count", path => undef
  );
-
  
  $l->route('/list/:subject/:mode')->to('list#main');
  
@@ -79,11 +78,11 @@ sub startup {
  # current setting 1,5 supports photo sets up to 99,999 photos
 
  $l->route( '/show/(*path)/:range', range => qr/\d{1,5}\-\d{1,5}/ )->to (
-  "present#browse"
+  "browse#browse"
  );
  
  $l->route( '/show/:range', range => qr/\d{1,5}\-\d{1,5}/ )->to (
-  "present#browse", path => undef
+  "browse#browse", path => undef
  );
   
   
@@ -91,12 +90,12 @@ sub startup {
  # current setting 1,5 supports photo sets up to 99,999 photos
  
  $l->route( '/show/(*path)/:photo', photo => qr/\d{1,6}/ )->to (
-  "present#view"
+  "view#view"
  );
 
  
  $l->route( '/show/:photo', photo => qr/\d{1,6}/ )->to (
-  "present#view", path => undef
+  "view#view", path => undef
  );
  
  # add hooks to subs that are executed before and after the dispatch
