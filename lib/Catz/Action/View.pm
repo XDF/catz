@@ -22,47 +22,52 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Action::Gate;
+package Catz::Action::View;
 
-use strict; 
+use strict;
 use warnings;
 
+use parent 'Catz::Action::Present';
+
 use Catz::DB;
+use Catz::Model::Meta;
 use Catz::Model::Vector;
 
-use parent 'Catz::Action::Base';
-
-sub sample {
+sub view {
 
  my $self = shift;
- 
+  
  my $stash = $self->{stash};
- 
- my @args = ();
   
- # split arguments into an array, filter out empty arguments
- # if path is not defined then browsing all photos and skip processing
- $stash->{path} and ( @args = grep { defined $_ } split /\//, $stash->{path} );
- 
- # store the new argument array back to stash
- $stash->{args_string} = join '/', @args;
- $stash->{args_array} = \@args;
- $stash->{args_count} = scalar @args;
+ $self->args;
   
- # arguments must come in as pairs
- scalar @args % 2 == 0 or $self->render(status => 404);
+ my $perpage =  $self->session('thumbsperpage');
+  
+ my ( $total, $pos, $x, $page, $first, $prev, $next, $last ) = @{ vector_pointer( 
+  $stash->{photo}, $perpage, $stash->{lang}, @{ $stash->{args_array} } 
+ ) };
+  
+ my $details = db_all ( qq{select pri,sec_$self->{stash}->{lang} from _class_pri_sec_x where x=? order by class,pri,sec_$self->{stash}->{lang}}, $x );
+
+ my $texts = db_col ( qq{select sec_$self->{stash}->{lang} from _class_pri_sec_x where x=? and pri='cat'}, $x );
+
+ my $image = db_row ( 'select folder,file_hr,width_hr,height_hr from _x_photo where x=?',$x);
+  
+ $self->{stash}->{total} = $total;
+ $self->{stash}->{pos} = $pos;
+ $self->{stash}->{page} = $page;
+ $self->{stash}->{perpage} = $perpage;
+ $self->{stash}->{first} = $first;
+ $self->{stash}->{prev} = $prev;
+ $self->{stash}->{next} = $next;
+ $self->{stash}->{last} = $last;
  
- my $xs = vector_array_random ( $stash->{lang}, @args );
- 
- warn 'count ' . $stash->{count};
- 
- my @set = @{ $xs } [ 0 .. $stash->{count} - 1 ];
- 
- $stash->{thumbs} = db_all( "select flesh.fid,album,file||'_LR.JPG',width_lr,height_lr from photo natural join flesh natural join _fid_x where x in (" 
-  . ( join ',', @set ) .  ') order by x' );
- 
- $self->render( template => 'elem/sample' );
-      
+ $self->{stash}->{texts} = $texts;
+ $self->{stash}->{details} = $details;
+ $self->{stash}->{image} = $image;
+     
+ $self->render( template => 'page/view' );
+
 }
 
-1; 
+1;
