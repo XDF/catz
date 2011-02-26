@@ -8,13 +8,15 @@
   * Tons of plugins
   * Gigantic user community
   * Routing rules are divided to controllers which I don't like
-  * Feature-list is long: what I really like is a natural automatic way to load Models and to access them without a hassle
+  * Feature-list is long: what I really like is a natural automatic loading of Models and to access them without a hassle
   * Very hard to get the idea behind Chained actions: there are various simple examples but I still don't get it how to use them in my cases
   * The most documented Perl MVC framework
+  * Restart is a real restart: slower than with Mojolicious reload but appears to work in every case
 
 = Dancer =
   * Sits nicely between the component-based Catalyst and web-in-a-box Mojolicious also on weight
-  * DSL features are two-sided sword, depends on what you like
+  * Very easy to start work with
+  * DSL features are a two-sided sword, depends on what you like, I prefer pure Perl against DSL
   * Has stabilized to the level that can be used in production
   * Lots of followers
 
@@ -28,3 +30,4 @@
   * Simplicity has been taken to extremes: almost everything is accessed thru $self, Catalyst separation between $self and $c might be clearer
   * Some issues rise due to the fact that when you are running router or before/after hook, you are not running a controller and so $self doesn't provide all the services available for controllers
   * Enough documentation at least for a user on my level 
+  * Reload is very fast but is not as bullet-proof as Catalyst restart 
