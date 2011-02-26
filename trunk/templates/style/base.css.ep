@@ -71,6 +71,8 @@ body {
 
 #sample { display: none; }
 
+#suggest { display: none; }
+
 .heavy { font-weight: bold; }
 
 .lean { font-style: italic; }

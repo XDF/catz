@@ -61,6 +61,8 @@ sub startup {
  
  $l->route( '/feed' )->to ( "main#feed" );
 
+ $l->route( '/suggest/:what' )->to ( "locate#suggest" );
+
   $l->route( '/sample/(*path)/:count', count => qr/\d{1,4}/ )->to (
   "sample#count"
  );
