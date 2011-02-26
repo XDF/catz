@@ -1,6 +1,6 @@
 % use Catz::Util qw ( enurl );
 % foreach my $thumb ( @{ $thumbs } ) {
-<a href="/<%= $lang %>/show/<%== enurl($args_string) %>/<%== $thumb->[0] %>/"><img src="<%== $photobase %>/<%== $thumb->[1] %>/<%== $thumb->[2] %>" height="<%= $thumbsize %>"></a>
+<a href="/<%= $lang %>/show/<%== enurl($args_string) %><%== scalar @{ $args_array } > 0 ? '/' : '' %><%== $thumb->[0] %>/"><img src="<%== $photobase %>/<%== $thumb->[1] %>/<%== $thumb->[2] %>" height="<%= $thumbsize %>"></a>
 % }
 %#
 %# The MIT License

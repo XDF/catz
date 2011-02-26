@@ -177,13 +177,13 @@ sub before {
   $stash->{lang} = 'en';
   $stash->{otherlang} = '/fi/'; 
  
-  } elsif ( substr ( $self->req->url, 3 ) eq '/fi' ) {
+ } elsif ( substr ( $self->req->url, 0, 3 ) eq '/fi' ) {
  
   $stash->{lang} = 'fi';
 
   $stash->{otherlang} = '/en' . substr ( $self->req->url, 3 );
   
- } elsif( substr ( $self->req->url, 3 ) eq '/en' ) {
+ } elsif( substr ( $self->req->url, 0, 3 ) eq '/en' ) {
  
   $stash->{lang} = 'en';
  
