@@ -22,70 +22,32 @@
 # THE SOFTWARE.
 #  
 
-package Catz::Action::Search;
+package Catz::Model::Locate;
 
 use strict;
 use warnings;
 
-use parent 'Catz::Action::Base';
+use parent 'Exporter';
+our @EXPORT = qw( locate_suggest locate_search );
 
-use Catz::Util;
+use Catz::DB;
 
-use Catz::Model::Provider;
+sub locate_suggest {
 
-my $p = Catz::Model::Provider->new();
+ my ( $lang, $pattern ) = @_;
 
-sub search2args {
+ $pattern = '%' . $pattern . '%';
 
- # the search string parser
+ my $res = db_all (qq{select pri,sec_$lang,count from ( select pri,sec_$lang,count(distinct x) as count from _class_pri_sec_x where pri <> 'out' and sec_en like ? group by pri,sec_$lang order by random() limit 20 ) order by sec_$lang},$pattern);
 
- my $self = shift;
-
- my $search = $self->stash->{search};
- 
- defined $search or return;
-
- $search = trim( $search ); 
- $search =~ s/ +/ /g;
- 
- my @ag = split / /, $search;
- 
- my @args = ();
- 
- foreach my $arg ( @ag ) {
- 
-  my ( $key, $value ) = split /=/, $arg;
-  
-  push @args, ( $key, $value );
- 
- } 
- 
- $self->{stash}->{args} = join '/', @args;
+ return $res;
 
 }
 
-sub main {
+sub locate_search {
 
- my $self = shift;
- 
- $self->{stash}->{search} = $self->param('search') // undef;
- 
- $self->search2args;
- 
- my $total = undef;
- 
- $self->{stash}->{args} and do {
- 
-  $total = $p->total ( 
-   $self->{stash}->{lang}, split /\//, $self->{stash}->{args} 
-  );
- 
- };
- 
- $self->{stash}->{ergs} = eurl( $self->{stash}->{args} );
- 
- $self->{stash}->{total} = $total;
- 
- $self->render( template => 'page/search' );
-  
+ die 'locate_search not yet implemented';
+
 }
+
+1;

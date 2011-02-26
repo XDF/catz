@@ -63,6 +63,9 @@ sub cache_set {
  my $val = pop @_;
  
  my $key = join SEP, @_;
+
+ # exit immediately if no key or no val to store to cache
+ ( defined $key and defined $val ) or return; 
   
  length $key > 250 and $key = shrink ( $key ); 
       
