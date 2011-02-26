@@ -1,4 +1,4 @@
-<h2>lists</h2><ul>
+<h2><%= $t->{LISTS} %></h2><ul>
 % foreach my $row ( @{ $pris } ) {
 <li><a href="/<%= $lang %>/list/<%= $row->[0] %>/a2z/"><%= $t->{uc($row->[0]).'S'} %></a> <span class="shrink"><%= $row->[1] %></span></li>
 % }

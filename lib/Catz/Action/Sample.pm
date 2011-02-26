@@ -50,7 +50,7 @@ sub count {
  $stash->{thumbs} = db_all( "select flesh.fid,album,file||'_LR.JPG',width_lr,height_lr from photo natural join flesh natural join _fid_x where x in (" 
   . ( join ',', @set ) .  ') order by x' );
  
- $self->render( template => 'elem/sample' );
+ $self->render( template => 'block/thumbs' );
       
 }
 

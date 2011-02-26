@@ -18,6 +18,11 @@ $t->get_ok('/fi/show/100-200/')->status_is(404);
 
 $c += 4;
 
+$t->get_ok('/fi/show/1-45/')->status_is(200)->content_like(qr/img src/);
+$t->get_ok('/en/show/101-145/')->status_is(200)->content_like(qr/img src/);
+
+$c += 6;
+
 $t->get_ok('/fi/show/nick/Mikke/1-45/')->status_is(200)->content_like(qr/img src/);
 $t->get_ok('/en/show/nick/Mikke/101-145/')->status_is(200)->content_like(qr/img src/);
 
@@ -35,10 +40,14 @@ $t->get_ok('/fi/show/83a83d89/')->status_is(404);
 $c += 2;
 
 #$t->get_ok('/fi/nick/Mimosa/12057/')->status_is(200)->content_like(qr/img src/);
-#$t->get_ok('/fi/nick/Mimosa/29095/')->status_is(200)->content_like(qr/img src/);
+#$t->get_ok('/en/nick/Mimosa/29095/')->status_is(200)->content_like(qr/img src/);
 
 #$c += 6;
 
+#$t->get_ok('/fi/sample/nick/Mimosa/5/')->status_is(200)->content_like(qr/img src/);
+#$t->get_ok('/en/sample/15/')->status_is(200)->content_like(qr/img src/);
+
+#$c += 6;
 
 done_testing($c);
       

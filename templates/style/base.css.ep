@@ -69,6 +69,8 @@ body {
  max-width: 1400px;
 }
 
+#sample { display: none; }
+
 .heavy { font-weight: bold; }
 
 .lean { font-style: italic; }
