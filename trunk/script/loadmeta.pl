@@ -140,17 +140,19 @@ foreach my $file (@Catz::Load::metafiles) {
      Catz::Load::run ( 'flesh_line_del', $album );
      Catz::Load::run ( 'exid_del', $album );
              
-     foreach my $data (@lines) {
+     foreach my $data ( @lines ) {
      
       my ( $def, $a, $b, $line );
      
       if( $data =~ m|^(\w)(\d+)\:\s+(.+)$| ) {
-      
+       
        $def = $1; $a = $2; $b = $2; $line = $3;
+       #$data =~ /Lucy Liu/ and say "$a-$b | $data";
        
       } elsif ( $data =~ m|^(\w)(\d+)-(\d+)\:\s+(.+)$| ) {
-      
+            
        $def = $1; $a = $2; $b = $3; $line = $4;
+       #$data =~ /Lucy Liu/ and say "$a-$b | $data";
        
       } else {
       
@@ -166,9 +168,13 @@ foreach my $file (@Catz::Load::metafiles) {
       
       while($i <= $b) {
       
+       #$data =~ /Lucy Liu/ and say "$i | $data";
+      
        my $f = Catz::Load::run('flesh_sel', $album, $i );
+       
+       #$data =~ /Lucy Liu/ and say "flesh = $f";
 
-      ( $f eq '-1' ) and 
+      ( $f == -1 ) and 
         $f = Catz::Load::run( 'flesh_ins', $album, $i );
  
        if ( $def eq 'P' ) {
@@ -201,7 +207,7 @@ foreach my $file (@Catz::Load::metafiles) {
                  
      }
      
-     Catz::Load::put_dna ( 'album', $album, $doldb, $dnewb, $dt );
+     Catz::Load::put_dna ( 'ALBUM', $album, $doldb, $dnewb, $dt );
     
     }
    

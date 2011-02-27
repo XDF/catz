@@ -79,11 +79,11 @@ sub startup {
  # browse photos based on the search pattern or no pattern 
  # current setting 1,5 supports photo sets up to 99,999 photos
 
- $l->route( '/show/(*path)/:range', range => qr/\d{1,5}\-\d{1,5}/ )->to (
+ $l->route( '/view/(*path)/:range', range => qr/\d{1,5}\-\d{1,5}/ )->to (
   "browse#browse"
  );
  
- $l->route( '/show/:range', range => qr/\d{1,5}\-\d{1,5}/ )->to (
+ $l->route( '/view/:range', range => qr/\d{1,5}\-\d{1,5}/ )->to (
   "browse#browse", path => undef
  );
   
@@ -91,12 +91,12 @@ sub startup {
  # view a photo based on the search pattern or no pattern
  # current setting 1,5 supports photo sets up to 99,999 photos
  
- $l->route( '/show/(*path)/:photo', photo => qr/\d{1,6}/ )->to (
+ $l->route( '/view/(*path)/:photo', photo => qr/\d{1,6}/ )->to (
   "view#view"
  );
 
  
- $l->route( '/show/:photo', photo => qr/\d{1,6}/ )->to (
+ $l->route( '/view/:photo', photo => qr/\d{1,6}/ )->to (
   "view#view", path => undef
  );
  
