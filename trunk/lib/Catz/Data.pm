@@ -31,7 +31,7 @@ use Image::ExifTool qw(:Public);
 
 use Switch;
 
-use Catz::Util qw ( float filenum trim ucclcc );
+use Catz::Util qw ( float filenum round trim ucclcc );
 
 my %location = (
  myrskyla => 'myrskylä',
