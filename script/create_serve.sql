@@ -20,9 +20,7 @@
 -- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
--- 
-
------
+--
 
 drop table if exists _fid_x;
 
@@ -35,6 +33,78 @@ create index _fid_x_1 on _fid_x(fid);
 
 insert into _fid_x (fid) 
 select fid from flesh natural join section order by s,n;
+
+-- 
+
+drop table if exists _class_pri_sec_x;
+
+create table _class_pri_sec_x (
+ class text, sort_class text, pri text ,sort_pri text, sec_en text, sort_en text,
+ sec_fi text, sort_fi text, x integer);
+
+create index _class_pri_sec_x_1 on _class_pri_sec_x(pri,sec_en);
+create index _class_pri_sec_x_2 on _class_pri_sec_x(pri,sec_fi);
+create index _class_pri_sec_x_3 on _class_pri_sec_x(x);
+
+insert into _class_pri_sec_x
+select 'data','01',area,'00',part,part,part,part,x
+from part natural join snip_part natural join line_snip
+natural join flesh_line natural join _fid_x;
+
+--
+
+drop table if exists _x_photo;
+
+create table _x_photo (
+ x integer primary key not null,
+ folder text not null,
+ file_hr text not null,
+ width_hr integer not null,
+ height_hr integer not null,
+ bytes_hr integer not null,
+ file_lr text not null,
+ width_lr integer not null,
+ height_lr integer not null,
+ bytes_lr integer not null
+);
+
+insert into _x_photo 
+select x,album as folder,file||'.JPG' as file_hr,
+width_hr,height_hr,bytes_hr,file||'_LR.JPG' as file_lr,
+width_lr,height_lr,bytes_lr from _fid_x natural join 
+flesh natural join photo;
+
+-------------------------
+
+--
+-- OLD STUFF FOLLOWS
+-- SCRATCH FROM DIFFERENT ERAS
+--
+
+drop table if exists _fid_x;
+
+create table _fid_x (
+ x integer primary key not null,
+ fid integer not null
+);
+
+create index _fid_x_1 on _fid_x(fid);
+
+insert into _fid_x (fid) 
+select fid from flesh natural join section order by s,n;
+
+-----
+
+insert into _class_pri_sec_x 
+select 'group','02','album','03',name_en,s,name_fi,s,x
+from section natural join album natural join flesh natural join _fid_x;
+
+insert into _class_pri_sec_x 
+select 'group','02','date','04',
+substr(origined,1,4)||'-'||substr(origined,5,2)||'-'||substr(origined,7,2),origined,
+round(substr(origined,7,2))||'.'||round(substr(origined,5,2))||'.'||substr(origined,1,4),origined,x
+from section natural join album natural join flesh natural join _fid_x
+where origined > 1 and origined < 99999999;
 
 -----
 

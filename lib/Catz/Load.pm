@@ -234,6 +234,12 @@ sub trn_orp {
 
 }
 
+sub commit {
+
+ $dbc->commit;
+
+}
+
 
 sub housekeep {
 

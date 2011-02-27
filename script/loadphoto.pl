@@ -115,6 +115,9 @@ while ( my $folder = $folders->fetchrow_array ) {
    }
    
    Catz::Load::put_dna ( 'FOLDER', $folder, $dold, $dnew, $dt );
+
+   # force commit after each album loaded
+   Catz::Load::commit;
     
   } 
  }
