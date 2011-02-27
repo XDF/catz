@@ -37,18 +37,29 @@ use parent 'Exporter';
 
 our @EXPORT = qw ( cache_get cache_set );
 
-use Cache::Memcached::Fast;
+# moved to CHI 2011-02-27
+use CHI;
+#use Cache::Memcached::Fast;
 use Digest::MD5 qw( md5_base64 );
 
+# issues with Memcached on Win (hangs all the time),
+# now running on file system
+my $cache = CHI->new( 
+ driver => 'File',
+ root_dir => '/catz/cache',
+ depth => 3,
+ max_key_length => 250
+);
+
 # just using a simple static Cache::Memcached::Fast object 
-my $cache = new Cache::Memcached::Fast { 
- servers => [ '127.0.0.1:11211' ], 
- connect_timeout => 0.2, 
- max_failures => 2, 
- failure_timeout => 5,
- compress_threshold => 5_000,
- nowait => 1 
-};
+#my $cache = new Cache::Memcached::Fast { 
+# servers => [ '127.0.0.1:11211' ], 
+# connect_timeout => 0.2, 
+# max_failures => 2, 
+# failure_timeout => 5,
+# compress_threshold => 5_000,
+# nowait => 1 
+#};
 
 # the cache key separator
 use constant SEP => '|';
