@@ -1,7 +1,7 @@
 % use Catz::Util qw ( enurl );
 % foreach my $sugg ( @{ $suggest } ) {
 % my $text = $sugg->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOS}; 
-<a href="/<%= $lang %>/show/<%= $sugg->[0] %>/<%= enurl($sugg->[1]) %>/1-<%== $thumbsperpage %>/" title="<%= $t->{uc($sugg->[0])} %>: <%= $sugg->[2] %> <%= $text %>"><%= $sugg->[1] %></a>
+<a href="/<%= $lang %>/view/<%= $sugg->[0] %>/<%= enurl($sugg->[1]) %>/1-<%== $thumbsperpage %>/" title="<%= $t->{uc($sugg->[0])} %>: <%= $sugg->[2] %> <%= $text %>"><%= $sugg->[1] %></a>
 % }
 %#
 %# The MIT License
