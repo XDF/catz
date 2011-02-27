@@ -587,12 +587,12 @@ sub exid {
 }
  
 sub fix_gap {
- 
- my @photos = sort @_;
- 
+
+ my @photos = @_;
+
  my $prevnum = undef;
  
- foreach my $i (0..(scalar(@photos)-1)) {
+ foreach my $i ( 0 .. ( scalar ( @photos ) - 1 ) ) {
   my $filenum = filenum($photos[$i]);
   if(defined $prevnum) {
    if(int($filenum)>(int($prevnum)+5000)) {
@@ -611,7 +611,6 @@ sub fix_gap {
  }
   
  return @photos; # return the original ref if reached the end 
-
 
 }
 
