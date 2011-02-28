@@ -46,6 +46,7 @@ use Digest::MD5 qw( md5_base64 );
 # now running on file system
 my $cache = CHI->new( 
  driver => 'File',
+ namespace => 'catzz.biz',
  root_dir => '/catz/cache',
  depth => 3,
  max_key_length => 250
@@ -70,6 +71,8 @@ use constant SEP => '|';
 sub shrink { substr ( $_[0], 0 , 228 ) . md5_base64 ( substr ( $_[0], 228 ) ) }
   
 sub cache_set {
+
+ return; # cache disable for this development phase 2011-02-28
 
  my $val = pop @_;
  

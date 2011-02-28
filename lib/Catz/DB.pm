@@ -66,6 +66,8 @@ sub fetch {
   
  given ( $mode ) {
  
+  #warn ( $sql );
+ 
   when ( 'one' ) { $res = $db->selectrow_array( $sql, undef, @params ) } 
 
   when ( 'row' ) { $res = $db->selectrow_arrayref( $sql, undef, @params ) } 

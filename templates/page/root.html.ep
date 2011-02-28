@@ -1,5 +1,5 @@
 % layout 'page';
-<div id="sample" class="full center"><!-- filled by JavaScript --></div>
+<table class="full"><tr><td class="top">
 <table class="full"><tr>
 <td class="wide center"><%== include 'way/find' %></td>
 <td class="narrow left"><%= $t->{SEARCH} %></td>
@@ -12,6 +12,10 @@
 %== include 'way/pris';
 </td><td class="tri top">
 %== include 'way/ideas';
+</td></tr></table>
+<td id="samples" class="samples top">
+<!-- filled by JavaScript -->
+</td>
 </td></tr></table>
 %#
 %# The MIT License

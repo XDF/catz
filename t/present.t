@@ -50,6 +50,10 @@ $t->get_ok('/en/sample/15/')->status_is(200)->content_like(qr/img src/);
 
 $c += 6;
 
+$t->get_ok('/en/sample/')->status_is(404);
+
+$c += 2;
+
 $t->get_ok('/fi/suggest/ol/')->status_is(200);
 $t->get_ok('/en/suggest/s/')->status_is(200);
 $t->get_ok('/en/suggest/mik/')->status_is(200);

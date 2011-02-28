@@ -26,7 +26,7 @@ function renderSample() {
 
  // where to get the correct URL for correct page
  // where that should put on the page
- $('div#sample').load( 'http://localhost:3000/en/sample/6/' );
+ $('#samples').load( 'http://localhost:3000/en/sample/5/' );
 
 } 
 
@@ -37,18 +37,11 @@ $(document).ready(function() {
 
  // for non-js browsing samples are hidden by style sheet
  // now set them visible 
- $('div#sample').css( "display", "inline" );
+ $('#samples').css( "display", "inline" );
   
 });
 
-$(window).resize(function() {
-
+// $(window).resize(function() {
  // window resize activates sample re-rendering
-
-  renderSample();
-
-});
-
-
-
-
+ // renderSample();
+// });

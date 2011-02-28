@@ -36,18 +36,18 @@ select fid from flesh natural join section order by s,n;
 
 -- 
 
-drop table if exists _class_pri_sec_x;
+drop table if exists _pri_sec_x;
 
-create table _class_pri_sec_x (
- class text, sort_class text, pri text ,sort_pri text, sec_en text, sort_en text,
+create table _pri_sec_x (
+ pri text, sort_pri text, sec_en text, sort_en text,
  sec_fi text, sort_fi text, x integer);
 
-create index _class_pri_sec_x_1 on _class_pri_sec_x(pri,sec_en);
-create index _class_pri_sec_x_2 on _class_pri_sec_x(pri,sec_fi);
-create index _class_pri_sec_x_3 on _class_pri_sec_x(x);
+create index _pri_sec_x_1 on _pri_sec_x(pri,sec_en);
+create index _pri_sec_x_2 on _pri_sec_x(pri,sec_fi);
+create index _pri_sec_x_3 on _pri_sec_x(x);
 
-insert into _class_pri_sec_x
-select 'data','01',area,'00',part,part,part,part,x
+insert into _pri_sec_x
+select area,area,part,part,part,part,x
 from part natural join snip_part natural join line_snip
 natural join flesh_line natural join _fid_x;
 

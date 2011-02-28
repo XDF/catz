@@ -31,6 +31,7 @@ use parent 'Catz::Action::Present';
 
 use Catz::DB;
 use Catz::Model::Meta;
+use Catz::Model::Photo;
 use Catz::Model::Vector;
 
 sub browse {
@@ -72,15 +73,12 @@ sub browse {
  $stash->{prev} = $prev;
  $stash->{next} = $next;
  $stash->{last} = $last;
- #$stash->{thumbsize} = $self->session('thumbsize');
 
- my $thumbs = db_all( "select flesh.fid,album,file||'_LR.JPG',width_lr,height_lr from photo natural join flesh natural join _fid_x where x in (" 
-  . ( join ',', @$xs ) .  ') order by x' );
-
-  
- #use Data::Dumper; die Dumper( $thumbs );
-     
+ my $thumbs = photo_thumbs ( $stash->{lang}, $xs ) ;
+        
  $self->{stash}->{thumbs} = $thumbs;
+ $self->{stash}->{formation} = 'wide';
+ $stash->{showmeta} = 1;
      
  $self->render( template => 'page/browse' );
     

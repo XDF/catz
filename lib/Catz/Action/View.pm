@@ -47,9 +47,9 @@ sub view {
   $stash->{photo}, $perpage, $stash->{lang}, @{ $stash->{args_array} } 
  ) };
   
- my $details = db_all ( qq{select pri,sec_$self->{stash}->{lang} from _class_pri_sec_x where x=? order by class,pri,sec_$self->{stash}->{lang}}, $x );
+ my $details = db_all ( qq{select pri,sec_$self->{stash}->{lang} from _pri_sec_x where x=? order by pri,sec_$self->{stash}->{lang}}, $x );
 
- my $texts = db_col ( qq{select sec_$self->{stash}->{lang} from _class_pri_sec_x where x=? and pri='cat'}, $x );
+ my $texts = db_col ( qq{select sec_$self->{stash}->{lang} from _pri_sec_x where x=? and pri='cat'}, $x );
 
  my $image = db_row ( 'select folder,file_hr,width_hr,height_hr from _x_photo where x=?',$x);
   

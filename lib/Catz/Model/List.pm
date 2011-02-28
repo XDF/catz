@@ -45,7 +45,7 @@ sub list_list {
   
   when ( 'a2z' ) {
  
-   $list = db_all( "select null,pri,sec_$lang,count(distinct x),min(x) as x,fid from _class_pri_sec_x natural join _fid_x where pri=? group by sec_$lang order by sec_$lang", $subject );
+   $list = db_all( "select null,pri,sec_$lang,count(distinct x),min(x) as x,fid from _pri_sec_x natural join _fid_x where pri=? group by sec_$lang order by sec_$lang", $subject );
    
    my $last = 'XXXXXXXXX';
    
@@ -67,7 +67,7 @@ sub list_list {
   
   when ( 'top' ) {
   
-   $list = db_all( "select null,pri,sec_$lang,count(distinct x),min(x) as x,fid from _class_pri_sec_x natural join _fid_x where pri=? group by sec_$lang order by count(distinct x) desc", $subject );
+   $list = db_all( "select null,pri,sec_$lang,count(distinct x),min(x) as x,fid from _pri_sec_x natural join _fid_x where pri=? group by sec_$lang order by count(distinct x) desc", $subject );
 
    my $last = 999999999;
    my $ord = 0;
@@ -120,13 +120,13 @@ sub list_links {
 
    when ( 'pris' ) {
 
-    $links =  db_all("select pri,count(distinct sec_$lang) from _class_pri_sec_x where pri<>'out' group by pri order by pri");
+    $links =  db_all("select pri,count(distinct sec_$lang) from _pri_sec_x where pri<>'out' group by pri order by pri");
    
    }
 
    when ( 'ideas' ) {
 
-    $links = db_all("select pri,sec_$lang,count(distinct x) from _class_pri_sec_x group by pri,sec_$lang order by count(distinct x) desc limit 20");
+    $links = db_all("select pri,sec_$lang,count(distinct x) from _pri_sec_x group by pri,sec_$lang order by count(distinct x) desc limit 20");
   
    }
 
