@@ -22,40 +22,30 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Action::Sample;
+package Catz::Model::Photo;
 
-use strict; 
-use warnings;
+use parent 'Exporter';
+our @EXPORT = qw ( photo_thumbs );
 
 use Catz::DB;
-use Catz::Model::Meta;
-use Catz::Model::Photo;
-use Catz::Model::Vector;
+use Catz::Util qw ( expand_ts );
 
-use parent 'Catz::Action::Present';
+sub photo_thumbs {
 
-sub count {
+ my ( $lang, $xs ) = @_; 
+ 
+ my $thumbs = db_all( "select flesh.fid,album,file||'_LR.JPG',width_lr,height_lr,null from photo natural join flesh natural join _fid_x where x in (" 
+  . ( join ',', @$xs ) .  ') order by x' );
 
- my $self = shift;
+ foreach my $row ( @$thumbs ) {
+  # using date as a default metadata for thumbs
+  # extract if from the album name (first eight characters)
+  # and convert it to a language specific format
+  $row->[5] = expand_ts ( substr ( $row->[1], 0, 8 ), $lang );
+ }
 
- $self->args;
- 
- my $stash = $self->{stash};
- 
- my $xs = vector_array_random ( $stash->{lang}, @{ $stash->{args_array} } );
- 
- #warn 'count ' . $stash->{count};
- 
- my @set = @{ $xs } [ 0 .. $stash->{count} - 1 ];
- 
- my $thumbs = photo_thumbs ( $stash->{lang}, \@set ) ;
- 
- $stash->{thumbs} = $thumbs; 
- $stash->{showmeta} = 0; # no date show
- $stash->{formation} = 'narrow';
- 
- $self->render( template => 'block/thumbs' );
-      
+ return $thumbs;
+
 }
-
-1; 
+ 
+1;

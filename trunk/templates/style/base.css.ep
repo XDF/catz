@@ -69,10 +69,6 @@ body {
  max-width: 1400px;
 }
 
-#sample { display: none; }
-
-#suggest { display: none; }
-
 .heavy { font-weight: bold; }
 
 .lean { font-style: italic; }
@@ -82,6 +78,12 @@ body {
 .shrink { font-size: 84%; }
 
 .enlarge { font-size: 111%; }
+
+.inline { display: inline; }
+
+.block { display: block; }
+
+.samples { display: none; width: 150px; }
 
 .aero { padding-left: 0.5em; padding-right: 0.5em; }
 

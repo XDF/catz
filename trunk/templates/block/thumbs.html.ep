@@ -1,6 +1,17 @@
 % use Catz::Util qw ( enurl );
 % foreach my $thumb ( @{ $thumbs } ) {
-<a href="/<%= $lang %>/view/<%== enurl($args_string) %><%== scalar @{ $args_array } > 0 ? '/' : '' %><%== $thumb->[0] %>/"><img src="<%== $photobase %>/<%== $thumb->[1] %>/<%== $thumb->[2] %>" height="<%= $thumbsize %>"></a>
+% my $size;
+% if ( $formation eq 'narrow') {
+%  $size = 'width="140"';
+% } else { 
+%  $size = 'height="' . $thumbsize . '"';
+% }
+<table class="center <%= $formation eq 'narrow' ? 'block full' : 'inline' %>"><tr><td class="center">
+<a href="/<%= $lang %>/view/<%== enurl($args_string) %><%== scalar @{ $args_array } > 0 ? '/' : '' %><%== $thumb->[0] %>/"><img src="<%== $photobase %>/<%== $thumb->[1] %>/<%== $thumb->[2] %>" <%== $size %>></a><td></tr>
+% if ( $showmeta ) {
+<tr><td class="shrink center"><%= $thumb->[5] %></td></tr>
+% }
+</table>
 % }
 %#
 %# The MIT License

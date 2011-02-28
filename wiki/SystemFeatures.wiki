@@ -3,48 +3,24 @@
 = User Experience =
 
   * cool new domain name
-  * simple straighforward layout
+  * simple straighforward layout and graphical design
   * using mostly short texts as hyperlinks instead of icons  
   * focuses on content (cat show photos)
   * first photos provided instantly on front page  
-  * easy to switch between English and Finnish and everything changes when switching
+  * instant switch between English and Finnish and everything changes when switching (including photo comments)
   * some user-configurable features and a simple page to do the configuration
   * Facebook share on photos
-  * photo browsing logic as always: thumbnails - big photo         
+  * classic photo browsing logic: thumbnails - big photo         
 
 = What's included =
 
-  * instant find as you type based on real time partial string matching
+  * instant find as you type based on real time string matching, included on both front page and list pages
   * a detailed search engine with feature-rich syntax for advanced users
-  * a simple news system with RSS feed to announce site changes    
+  * simple lists to list different objects on the system  
+  * a simple news system with RSS feed to announce site changes
+  * automatic photo resize to fit screen (JavaScript)      
 
 = What's excluded =
 
   * forums, user comments, ratings (this is not a community portal but some of these features might be added later)
-
-= Translation to English and processing required =
-
-Jotenkin jo toimiva osuuksia:
-  * Etusivun älykäs pikahaku, joka ehdottaa kissojen nimiä, kasvattajanimiä, lempinimiä, rotuja, EMS-koodeja, näyttelyiden nimiä, päivämääriä ym. reaaliajassa sitä myöten kun kirjoitat, eli kissanäyttelykuvien Google Instant
-  * Kuvien selailu pikkukuvina ja katselu isoina kuvina
-  * Ison kuvan automaattinen säätyminen selainikkunan koon mukaan
-  * Asetusten säätösivu, josta voit valita mm. vaalean ja tumman ulkoasun välillä ja säätää, kuinka suuren määrän pikkukuvia haluat nähdä kerralla
-  * Pikahaun ja yksityiskohtaisemman haun taustalla oleva hakumoottori
-  * Uutiset ja niiden jakelu RSS-muodossa
-  * Ulkoasun yleisilme, joka on erittäin yksinkertainen ja pelkistetty (eli toivottavasti selkeä)
-  * Monikielisyyden hallinta (käytännössä suomi - englanti) niin, että kieltä voi vaihtaa milloin tahansa ja kaikki vaihtuu kieleltä toiselle, mukaanlukien kuvien kommentit
-  * Tietokanta, jossa kaikki sivuston käyttämä ja tarvitsema informaatio on
-
-Vasta aloitettuja osuuksia:
-  * Yksityiskohtaisemman haun hakusivu ja sen toimintalogiikka
-  * Luettelosivut, jotka listaavat kaikki asiat perinteiseen tapaan tekstisivuina
-
-  * Vielä aloittamattomat osuudet:
-  * Kuvien tarkempien tietojen esitys (kissan tiedot, näyttelytulos, kameran tallentama data ym.)
-  * Kissan, kasvattajan, rodun ym. tietojen esitys pikkukuvien yhteydessä
-  * Ulkoasun yksityiskohdat ja viimeistely
-  * Tekstiartikkelien sivut
-  * Tilastosivut    
-
- 
-    
+  * text pages: they will be provided on a different service      

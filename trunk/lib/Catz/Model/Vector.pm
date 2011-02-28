@@ -84,7 +84,7 @@ sub vectorize {
   
  if ( $pri eq 'has' ) {
  
-  $res = db_col( "select distinct(x) from _class_pri_sec_x where pri=?", $sec );
+  $res = db_col( "select distinct(x) from _pri_sec_x where pri=?", $sec );
             
  } else { # no 'has'
  
@@ -92,13 +92,13 @@ sub vectorize {
   
    # pattern matching
 
-   $res = db_col( "select x from _class_pri_sec_x where pri=? and sec_$lang like ?", $pri, $sec );    
+   $res = db_col( "select x from _pri_sec_x where pri=? and sec_$lang like ?", $pri, $sec );    
  
   } else {
 
    # exact
  
-   $res = db_col( "select x from _class_pri_sec_x where pri=? and sec_$lang=?", $pri, $sec );
+   $res = db_col( "select x from _pri_sec_x where pri=? and sec_$lang=?", $pri, $sec );
  
   }  
 
