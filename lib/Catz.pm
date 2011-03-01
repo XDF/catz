@@ -74,7 +74,6 @@ sub startup {
  $l->route('/list/:subject/:mode')->to('list#main');
  
  $l->route( '/search' )->to ( "search#main" ); 
- $l->route( '/search/(*args)' )->to ( "search#main" );
  
  # browse photos based on the search pattern or no pattern 
  # current setting 1,5 supports photo sets up to 99,999 photos
@@ -140,14 +139,16 @@ sub before {
  $stash->{meta_follow} = 1;
 
  #warn "url is now ".$self->req->url;
- 
+  
  # process query params, they are setup change attempts
  foreach my $key ( $self->req->url->query->param ) {
- 
+  
    # prevent indexing if parameters present
    $stash->{meta_index} = 0;
 
    my $value = $self->req->url->query->param ( $key ); 
+
+   $key eq 'what' and $stash->{what} = $value; 
 
    if ( setup_verify ( $key, $value ) ) {
     # verified parameters go to session

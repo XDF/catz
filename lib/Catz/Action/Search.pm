@@ -20,34 +20,41 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-#  
+# 
 
-package Catz::Model::Locate;
+package Catz::Action::Search;
 
 use strict;
 use warnings;
 
-use parent 'Exporter';
-our @EXPORT = qw( locate_suggest locate_search );
+use parent 'Catz::Action::Base';
 
-use Catz::DB;
+use Catz::Model::Vector;
+use Catz::Search;
 
-sub locate_suggest {
+sub main {
 
- my ( $lang, $pattern ) = @_;
-
- $pattern = '%' . $pattern . '%';
-
- my $res = db_all (qq{select pri,sec_$lang,count from ( select pri,sec_$lang,count(distinct x) as count from _pri_sec_x where pri <> 'out' and sec_en like ? group by pri,sec_$lang order by random() limit 50 ) order by sec_$lang},$pattern);
-
- return $res;
+ my $self = shift;
+ 
+ my $stash = $self->{stash};
+ 
+ my $what = $stash->{what};
+ 
+ $stash->{what} = $stash->{what} // '';
+ $stash->{args_array} = undef;
+ $stash->{found} = 0;
+ 
+ if ( $what ) {
+ 
+  $stash->{args_array} = search2args ( $what );
+  
+  $stash->{found} = vector_count ( $stash->{lang}, @{ $stash->{args_array} } );
+ 
+ }
+ 
+ 
+ 
+ $self->render ( template => 'page/search' );
 
 }
-
-sub locate_search {
-
- die 'locate_search not yet implemented';
-
-}
-
 1;

@@ -1,11 +1,13 @@
+% use Catz::Util qw ( enurl );
 % layout 'page';
-<form name="form_search" action="/<%== $lang %>/search" method="get">
-Search: <input type="text" name="search" <% if ( defined $search ) { %> value="<%= $search %>" <% } %>>
+<form name="form_search" action="/<%= $lang %>/search/" method="get">
+Search: <input type="text" name="what" <% if ( defined $what ) { %> value="<%= $what %>" <% } %>>
 <input type="submit" value="Submit">
 </form>
-% if ( defined $search ) {
-<a href="/<%== $lang %>/browse/<%== $ergs %>/1/"><%= $args %></a>
-(<%= $total %>)
+% if ( defined $args_array ) {
+<div>
+<a href="/<%= $lang %>/view/<%== join '/', map { enurl ( $_ ) } @{ $args_array } %>/1-<%= $thumbsperpage %>/">found <%= $found %></a>
+</div>
 % }
 %#
 %# The MIT License
