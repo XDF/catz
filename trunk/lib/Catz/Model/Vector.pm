@@ -88,7 +88,7 @@ sub vectorize {
             
  } else { # no 'has'
  
-  if ( ( index ( $sec, '?' ) > -1 ) or ( index ( $sec, '_' ) > -1 ) ) {
+  if ( ( index ( $sec, '%' ) > -1 ) or ( index ( $sec, '_' ) > -1 ) ) {
   
    # pattern matching
 
@@ -135,12 +135,14 @@ sub vector_bit {
   
   $args[$i+1] =~ /^(\+|\-)(.*)$/;
     
-  my $oper = $1 // '0';
+  my $oper = $1 // '0'; # the default operand is 0 = or
   
   my $rest = $2 // $args[$i+1]; 
-      
-  $rest =~ s/\?/\_/g;
-  $rest =~ s/\*/\%/g;
+  
+  $rest =~ s/\?/\_/g; # user interface ? -> database interface _
+  $rest =~ s/\*/\%/g; # user interface * -> database interface %
+  
+  #warn $rest;
             
   my $bvec = vectorize( $lang, $args[$i], $rest );
               
