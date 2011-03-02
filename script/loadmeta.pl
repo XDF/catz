@@ -66,7 +66,8 @@ foreach my $file (@Catz::Load::metafiles) {
   
   if ( $file eq 'gallerymeta' ) {
 
-   Catz::Load::run ( 'section_trn' );
+   # SECTION removed 2011-03-02
+   # Catz::Load::run ( 'section_trn' );
 
    my $section_en;
    my $section_fi;
@@ -98,7 +99,11 @@ foreach my $file (@Catz::Load::metafiles) {
         
     my $album = shift( @lines ) ;
     
-    Catz::Load::run ( 'section_ins', $section_en, $section_fi, $album );
+    # skip all albums that don't start YYYYDDMM
+    $album =~ /^\d{8}/ or goto SKIP_GALLERY;
+    
+    # SECTION removed 2011-03-02
+    # Catz::Load::run ( 'section_ins', $section_en, $section_fi, $album );
     
     my $doldb = Catz::Load::run( 'dna_sel', 'album', $album );
     my $dnewb = dna ( join "\n", @lines );
@@ -123,15 +128,15 @@ foreach my $file (@Catz::Load::metafiles) {
      my $umbrella_en;
      my $umbrella_fi;
      
-     if ( $album =~ /^(20\d\d\d\d\d\d)(.+)$/ ) { 
+     $album =~ /^(20\d\d\d\d\d\d)(.+)$/; 
      
-      $origined = $1;
-      ( $location_en, $location_fi ) = Catz::Data::location($2);
-      $country = Catz::Data::country($location_en);
-      ( $organizer_en, $organizer_fi ) = Catz::Data::organizer($name_en);
-      defined $organizer_en and ( $umbrella_en, $umbrella_fi ) = Catz::Data::umbrella($organizer_en,$origined);   
+     $origined = $1;
+     ( $location_en, $location_fi ) = Catz::Data::location($2);
+     $country = Catz::Data::country($location_en);
+     ( $organizer_en, $organizer_fi ) = Catz::Data::organizer($name_en);
+      
+     defined $organizer_en and ( $umbrella_en, $umbrella_fi ) = Catz::Data::umbrella($organizer_en,$origined);   
      
-     }
      
      Catz::Load::run( 'album_del', $album );
      
@@ -211,6 +216,8 @@ foreach my $file (@Catz::Load::metafiles) {
     
     }
    
+    SKIP_GALLERY:
+    
    }
 
    say scalar @newlids ." new lines encountered";

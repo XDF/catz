@@ -74,11 +74,8 @@ my %sql = (
  dna_sel => 'select dna from dna where class=? and item=?',
  dna_ins => 'insert into dna (dna,dt,class,item) values (?,?,?,?)',
  dna_upd => 'update dna set dna=?, dt=? where class=? and item=?', 
- 
- section_trn => 'delete from section',
- section_ins => 'insert into section (section_en,section_fi,album) values (?,?,?)',
- 
- album_all_sel => 'select album from album natural join section order by s asc',
+  
+ album_all_sel => 'select album from album order by album asc',
  
  album_del => 'delete from album where album=?',
  album_ins => 'insert into album (album,name_en,name_fi,desc_en,desc_fi,liberty,years,lensmode,created,modified,origined,location_en,location_fi,country,organizer_en,organizer_fi,umbrella_en,umbrella_fi) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
@@ -113,7 +110,6 @@ my %sql = (
   
  lensmode_sel => 'select lensmode from album where album=?',
  
- album_orp => 'delete from album where album not in ( select album from section )',
  flesh_orp => 'delete from flesh where album not in ( select album from album )',
  flesh_line_orp => 'delete from flesh_line where fid not in ( select fid from flesh ) or lid not in ( select lid from line )',
  exid_orp => 'delete from exid where fid not in ( select fid from flesh )', 

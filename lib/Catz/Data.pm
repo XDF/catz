@@ -132,7 +132,7 @@ sub location {
 
  my $loc = $_[0];
    
- $loc =~ s/\_(misc|panel|gala)$//; 
+ $loc =~ s/\_(show|panel|gala)$//; 
 
  defined $location{$loc} and $loc = $location{$loc};
  

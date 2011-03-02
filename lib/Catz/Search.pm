@@ -56,7 +56,7 @@ sub search2args {
    
   if ( $arg =~ /^([-+a-z0-9][a-z0-9]{2,}?)\=(.*)$/ ) {
      
-   length $2 > 0 and do { $key = $1; $val = $2; }; 
+   length $2 > 0 and do { $key = $1; $val = $2 }; 
  
   } else { $key = 'text'; $val = $arg; }
   
@@ -92,16 +92,13 @@ sub args2search {
 
  my $args = shift;
  
- my @arr = @{ $args };
+ my @arr = @{ $args }; # we will mungle the array so make a copy of it
 
- my $str = '';
+ my $str = ''; my $c = 0;
  
- my $c = 0;
+ while ( scalar @arr > 0 ) { # consume the whole array
  
- while ( scalar @arr > 0 ) {
- 
-  my $key = shift @arr;
-  my $val = shift @arr;
+  my $key = shift @arr; my $val = shift @arr;
  
   # values containing spaces are put into "s 
   index ( $val, ' ' ) > -1 and $val = '"' . $val . '"';
@@ -109,15 +106,8 @@ sub args2search {
   # if not the first param then put a space to separate from the previous param
   $c > 0 and $str = $str . ' '; 
   
-  if ( $key eq 'text' ) {
-  
-   $str = $str . $val;    
-  
-  } else {
-
-   $str = $str . $key . '=' . $val; 
-  
-  }
+  if ( $key eq 'text' ) { $str = $str . $val } 
+   else { $str = $str . $key . '=' . $val }
   
   $c++; 
  
