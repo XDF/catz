@@ -30,6 +30,8 @@ use DBI;
 
 use feature qw( say );
 
+use List::MoreUtils qw ( pairwise );
+
 use Catz::Util qw ( trim );
 
 # are we running on windows
@@ -44,7 +46,7 @@ my $dbconn;
 if ( $win ) {
  $metapath = '/www/galleries/0dat';
  $photopath  = '/www/galleries';
- $dbconn = 'dbi:SQLite:dbname=/catz/db/data.db';
+ $dbconn = 'dbi:SQLite:dbname=/catz/db/master.db';
 } else {
  die "not on win, unable do work";
 }
@@ -71,57 +73,52 @@ my %sql = (
 
  run_ins => 'insert into run values (?)', 
  
- dna_sel => 'select dna from dna where class=? and item=?',
+ dna_se1 => 'select dna from dna where class=? and item=?',
  dna_ins => 'insert into dna (dna,dt,class,item) values (?,?,?,?)',
  dna_upd => 'update dna set dna=?, dt=? where class=? and item=?', 
   
  album_all_sel => 'select album from album order by album asc',
  
  album_del => 'delete from album where album=?',
- album_ins => 'insert into album (album,name_en,name_fi,desc_en,desc_fi,liberty,years,lensmode,created,modified,origined,location_en,location_fi,country,organizer_en,organizer_fi,umbrella_en,umbrella_fi) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+ album_ins => 'insert into album (album,name_en,name_fi,lensmode,origined,created,modified,location_en,location_fi,country) values (?,?,?,?,?,?,?,?,?,?)',
  
- flesh_sel => 'select fid from flesh where album=? and n=?',
- flesh_test_sel => 'select count(*) from flesh where fid=?',
- flesh_ins => 'insert into flesh (album,n) values (?,?)',
+ lensmode_se1 => 'select lensmode from album where album=?',
  
- flesh_line_del => 'delete from flesh_line where fid in ( select fid from flesh where album=? )',
- flesh_line_ins => 'insert into flesh_line (fid,lid) values (?,?)',
-
- exid_del => 'delete from exid where fid in ( select fid from flesh where album=? )',
- exid_ins => 'insert into exid (fid,flen,etime_txt,etime_num,fnum,dt,iso,body,lens) values (?,?,?,?,?,?,?,?,?)',
-
- exif_del => 'delete from exif where fid in ( select fid from flesh where album=? )',
- exif_ins => 'insert into exif (fid,flen,etime_txt,etime_num,fnum,dt,iso,body,lens) values (?,?,?,?,?,?,?,?,?)',
- 
- photo_del => 'delete from photo where fid in ( select fid from flesh where album=? )',
- photo_ins => 'insert into photo (fid,file,width_hr,height_hr,bytes_hr,width_lr,height_lr,bytes_lr) values (?,?,?,?,?,?,?,?)',
- 
- line_sel => 'select lid from line where line=?',
- line_ins => 'insert into line (line) values (?)',
- line_clr => 'delete from line where line not in ( select lid from album )',
- 
- snip_sel => 'select sid from snip where snip=?',
- snip_ins => 'insert into snip (snip,out_en,out_fi) values (?,?,?)',
- line_snip_ins => 'insert into line_snip (lid,sid,p) values (?,?,?)',
-
- part_sel => 'select pid from part where area=? and part=?',
- part_ins => 'insert into part (area,part) values (?,?)',
- snip_part_ins => 'insert into snip_part (sid,pid) values (?,?)',
+ organizer_del => 'delete from organizer where album=?',
+ organizer_ins => 'insert into organizer (album,organizer_en,organizer_fi) values (?,?,?)', 
   
+ umbrella_del => 'delete from umbrella where album=?',
+ umbrella_ins => 'insert into umbrella (album,umbrella_en,umbrella_fi) values (?,?,?)', 
+ 
  lensmode_sel => 'select lensmode from album where album=?',
  
- flesh_orp => 'delete from flesh where album not in ( select album from album )',
- flesh_line_orp => 'delete from flesh_line where fid not in ( select fid from flesh ) or lid not in ( select lid from line )',
- exid_orp => 'delete from exid where fid not in ( select fid from flesh )', 
- line_orp => 'delete from line where lid not in ( select lid from flesh )',
- line_snip_orp => 'delete from line_snip where lid not in ( select lid from line )',
- snip_orp => 'delete from snip where sid not in ( select sid from line_snip )',
- snip_part_orp => 'delete from snip_part where sid not in ( select sid from snip )',
- part_orp => 'delete from part where pid not in ( select pid from snip_part )',
+ flesh_del => 'delete from flesh where album=?',
+ flesh_ins => 'insert into flesh (album,n,file) values (?,?,?)',
+ flesh_se1 => 'select max(n) from flesh where album=?',
+  
+ exid_del => 'delete from exid where album=?',
+ exid_ins => 'insert into exid (album,n,flen,etime_txt,etime_num,fnum,dt,iso,body,lens) values (?,?,?,?,?,?,?,?,?,?)',
+ exid_ser => 'select flen,etime_txt,etime_num,fnum,dt,iso,body,lens from exid where album=? and n=?',
+
+ exif_del => 'delete from exif where album=?',
+ exif_ins => 'insert into exif (album,file,flen,etime_txt,etime_num,fnum,dt,iso,body,lens) values (?,?,?,?,?,?,?,?,?,?)',
+ exif_ser => 'select flen,etime_txt,etime_num,fnum,dt,iso,body,lens from exif natural join flesh where album=? and n=?',
+  
+ exia_del => 'delete from exia where album=? and n=?',
+ exia_ins => 'insert into exia (album,n,flen,etime_txt,etime_num,fnum,dt,iso,body,lens) values (?,?,?,?,?,?,?,?,?,?)',
  
- photo_orp => 'delete from photo where fid not in ( select fid from flesh )',
- exif_orp => 'delete from exif where fid not in ( select fid from flesh )',
+ file_del => 'delete from file where album=?',
+ file_ins => 'insert into file (album,file,width_hr,height_hr,bytes_hr,width_lr,height_lr,bytes_lr) values (?,?,?,?,?,?,?,?)',
+
+ out_del => 'delete from out where album=?',
+ out_ins => 'insert into out (album,n,out_en,out_fi) values (?,?,?,?)', 
+
+ snip_del => 'delete from snip where album=?',
+ snip_ins => 'insert into snip (album,n,pri,sec) values (?,?,?,?)',
  
+ x_del => 'delete from x',
+ x_ins => 'insert into x (album,n) select album,n from flesh order by album desc, n asc', 
+  
 );
 
 foreach my $file ( grep { $_ ne 'gallerymeta' } @metafiles ) {
@@ -148,32 +145,28 @@ foreach my $key (keys %sql) {
 
 }
 
-our @areas = qw ( ems1 ems3 ems4 ems5 nick breeder cat );
+our @pris = qw ( ems1 ems3 ems4 ems5 nick breeder cat );
 
 sub run {
 
  my ( $key, @arg ) = @_;
  
- #say "executing $key";
-
  $stm { $key }->execute ( @arg );
- 
- if ( $key eq 'album_all_sel' ) {
- 
-  return $stm{ $key };
   
- } elsif ( $key =~ m|sel$| ) {
+ if ( $key =~ m|se1$| ) {
  
   my $arr = $stm{ $key }->fetchrow_arrayref;
-    
-  defined $arr and return $$arr[0];
-   
-  return -1;
   
- } elsif ( $key =~ m|ins$| ) {
+  defined $arr and return $arr->[0];
+  
+  return -1; 
+    
+ } elsif ( $key =~ m|ser$| ) {
  
-  return $dbc->func('last_insert_rowid');
- 
+  my $arr = $stm{ $key }->fetchrow_arrayref;
+  
+  return $arr
+    
  }
 
 } 
@@ -212,30 +205,39 @@ sub put_dna {
   
 }
 
-sub trn_orp {
+sub upd_exia {
 
- print "deleting orphans"; 
-
- foreach my $key ( sort grep { m|_orp$| } keys %stm ) {
+ my ( $album, $n ) = @_;
  
-  $key =~ m|^(.+)\_|;
+ run ( 'exia_del', $album, $n );
+ 
+ my $exif = run ( 'exif_ser', $album, $n );
+ my $exid = run ( 'exid_ser', $album, $n );
   
-  print " $1"; 
- 
-  run ( $key );
- 
- }
+ my @res;
   
- print "\n";
-
+ if ( defined $exif and defined $exid ) {
+  
+  my @res = pairwise { defined $a ? $a : $b } @$exid, @$exif;
+  run ( 'exia_ins', $album, $n, @res );
+   
+ } else {
+  
+  defined $exid and run ( 'exia_ins', $album, $n, @$exid );
+  defined $exif and run ( 'exia_ins', $album, $n, @$exif );
+   
+ } 
+ 
 }
 
-sub commit {
+sub upd_x {
 
- $dbc->commit;
+ say "updating x"; 
 
+  run ( 'x_del' );
+  run ( 'x_ins' );
+ 
 }
-
 
 sub housekeep {
 

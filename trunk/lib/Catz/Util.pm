@@ -28,8 +28,6 @@ use strict;
 use warnings;
 
 use Digest::MD5 qw(md5_base64);
-#no longer needed 2011-02-23
-#use Encode::Base32::Crockford qw(:all);
 use Image::ExifTool qw(:Public);
 use Image::Size;
 use File::stat;
