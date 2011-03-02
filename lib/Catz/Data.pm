@@ -132,7 +132,7 @@ sub location {
 
  my $loc = $_[0];
    
- $loc =~ s/\_(show|panel|gala)$//; 
+ $loc =~ s/\d$//; 
 
  defined $location{$loc} and $loc = $location{$loc};
  
@@ -493,11 +493,10 @@ sub convert_exif_dt {
 
 
 # retrieves ja processes photo file exifs
-# in: lensmode,filename
 # out: processed exifs as a hash 
 sub exif {
  
- my ( $lensmode,$file ) = @_;
+ my ( $lensmode, $file ) = shift;
  
  my $exifs = ImageInfo($file); 
  
@@ -523,8 +522,6 @@ sub exif {
 
  }
  
- #print $output{'lens'}." -> ";
- 
  $output{'lens'} = lens($lensmode,$output{'flen'},$output{'fnum'});
     
  if(defined($output{'lens'})) {
@@ -536,8 +533,6 @@ sub exif {
   $output{'lens'} = $lensname{$output{'lens'}};
  
  }
- 
- #print $output{'lens'}."\n";
      
  return \%output;
  
@@ -581,7 +576,7 @@ sub exid {
  
  defined $lensname or die "unable to resolve lensname for ".$output{'lens'};
  
- $output{'lens'} = $lensname;  
+ $output{'lens'} = $lensname;
     
  return \%output;
 }

@@ -33,7 +33,7 @@ $^O =~ /win/i and $win = 1;
 # hard-coded value for initial testing
 if ( $win ) { use lib '/catz/lib' } 
  else { die "not on win, out of ideas" }
-
+ 
 use strict;
 use warnings;
 
@@ -42,7 +42,7 @@ use feature qw( say );
 use Switch;
 use DBI;
 
-use Catz::Util qw ( expand_ts filesize findphotos folder_dna sys_ts thumbfile width_height );
+use Catz::Util qw ( expand_ts filesize findphotos finddirs folder_dna sys_ts thumbfile width_height );
 use Catz::Data;
 use Catz::Load;
 
@@ -55,30 +55,39 @@ say "loadphoto dt $dt " . expand_ts( $dt );
 
 my $req = $ARGV[0];
 
-my $folders = Catz::Load::run( 'album_all_sel' ); 
+my @folders = grep { /^\d{8}/ }   
+ map { substr ( $_, length($Catz::Load::photopath) + 1 ) }
+ finddirs ( $Catz::Load::photopath ) ;
  
-while ( my $folder = $folders->fetchrow_array ) {
+my $changes = 0;
+ 
+foreach my $folder ( @folders ) {
 
  if(defined $req and (($req eq 'ALL' ) or ( $req eq $folder ))) {
   
-  my $dold = Catz::Load::run( 'dna_sel', 'FOLDER', $folder );
+  my $dold = Catz::Load::run( 'dna_se1', 'FOLDER', $folder );
+    
   my $fullpath = $Catz::Load::photopath.'/'.$folder;
+  
   my $dnew = folder_dna ( $fullpath );
    
   if ( $dold ne $dnew ) {
   
-   Catz::Load::run( 'photo_del', $folder );
-   Catz::Load::run( 'exif_del', $folder ); 
-  
+   my $lensmode = Catz::Load::run( 'lensmode_sel', $folder );
+   
+   $lensmode eq '-1' and die "lensmode not found for $folder";
+     
+   Catz::Load::run( 'flesh_del', $folder );
+   Catz::Load::run( 'file_del', $folder );
+   Catz::Load::run( 'exif_del', $folder );
+    
    my $n = 1;
  
    my @photos = Catz::Data::fix_gap( findphotos($fullpath) );
-
-   my $lensmode = Catz::Load::run( 'lensmode_sel', $folder );
    
-   $lensmode eq '-1' and die "no lensmode found for $folder";
-
    say "$folder MISMATCH $dold $dnew " . ( scalar @photos ) . ' photos';
+   
+   $changes++;
       
    foreach my $photo (@photos) {
       
@@ -95,39 +104,37 @@ while ( my $folder = $folders->fetchrow_array ) {
     my ( $width_lr,$height_lr ) = width_height( $thumb );
     my $bytes_lr = filesize( $thumb );
     
-    my $f = Catz::Load::run('flesh_sel', $folder, $n );
-    
-    ( $f eq '-1' ) and 
-      $f = Catz::Load::run( 'flesh_ins', $folder, $n );
+    Catz::Load::run('flesh_ins', $folder, $n, $pname );
             
-    Catz::Load::run( 'photo_ins', $f, $pname, $width_hr, $height_hr, $bytes_hr, $width_lr, $height_lr, $bytes_lr );
+    Catz::Load::run( 'file_ins', $folder, $pname, $width_hr, $height_hr, $bytes_hr, $width_lr, $height_lr, $bytes_lr );
     
     my $exif = Catz::Data::exif( $lensmode, $photo );
     
-    $$exif{'flen'}||$$exif{'etime_text'}||$$exif{'etime_numeric'}||$$exif{'fnum'}||$$exif{'ts'}||$$exif{'iso'}||$$exif{'body'}||$$exif{'lens'} and (
+    $$exif{'flen'}||$$exif{'etime_txt'}||$$exif{'etime_num'}||$$exif{'fnum'}||$$exif{'ts'}||$$exif{'iso'}||$$exif{'body'}||$$exif{'lens'} and do {
      
-     Catz::Load::run( 'exif_ins', $f, $$exif{'flen'}, $$exif{'etime_txt'}, $$exif{'etime_num'}, $$exif{'fnum'}, $$exif{'dt'}, $$exif{'iso'}, $$exif{'body'}, $$exif{'lens'})
+     Catz::Load::run( 'exif_ins', $folder, $pname, $$exif{'flen'}, $$exif{'etime_txt'}, $$exif{'etime_num'}, $$exif{'fnum'}, $$exif{'dt'}, $$exif{'iso'}, $$exif{'body'}, $$exif{'lens'});
+     
+     Catz::Load::upd_exia ( $folder, $n );   
     
-    );
+    };
     
     $n++;
     
    }
    
    Catz::Load::put_dna ( 'FOLDER', $folder, $dold, $dnew, $dt );
-
-   # force commit after each album loaded
-   Catz::Load::commit;
     
-  } 
+  } else {
+    say "$folder match $dold $dnew";
+  }
  }
 }
 
-Catz::Load::trn_orp();
+$changes and Catz::Load::upd_x;
 
-Catz::Load::housekeep();
+$changes and Catz::Load::housekeep();
 
 my $etime = time();
 
-say 'done in ' . ( $etime - $btime ) . ' seconds';
+say "$changes changes done in " . ( $etime - $btime ) . ' seconds';
 
