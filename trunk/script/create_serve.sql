@@ -32,7 +32,7 @@ create table _fid_x (
 create index _fid_x_1 on _fid_x(fid);
 
 insert into _fid_x (fid) 
-select fid from flesh natural join section order by s,n;
+select fid from flesh order by album desc,n asc;
 
 -- 
 

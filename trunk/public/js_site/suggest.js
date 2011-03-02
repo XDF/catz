@@ -25,10 +25,18 @@
 function renderSuggest() {
 
  what = $('#find').val();
+ 
+ if ( what == '' ) {
+ 
+  $('div#suggest').html('');
+ 
+ } else {
 
- $('div#suggest').load( 
-  'http://localhost:3000/en/suggest/' + what + '/'
- );
+  $('div#suggest').load( 
+   'http://localhost:3000/en/suggest/' + what + '/'
+  );
+  
+ }
 
 } 
 
@@ -41,6 +49,10 @@ $(document).ready(function() {
  $('#find').keyup(function() {
    renderSuggest();
  });
+ 
+ // intial rendering when page loads, important to bring
+ // last content up when returning to page 
+ renderSuggest();
 
 
 });

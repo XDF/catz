@@ -114,7 +114,7 @@ sub list_links {
    
    when ( 'albums' ) {
    
-    $links = db_all("select album.album,name_$lang,count(distinct fid) from section natural join album natural join flesh group by album.album order by s limit 6");
+    $links = db_all("select album.album,name_$lang,count(distinct fid) from album natural join flesh group by album.album order by album desc limit 6");
    
    }
 
