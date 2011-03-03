@@ -27,11 +27,24 @@ package Catz::Data;
 use strict;
 use warnings;
 
+use feature qw ( switch );
+
 use Image::ExifTool qw(:Public);
 
-use Switch;
 
 use Catz::Util qw ( float filenum round trim ucclcc );
+
+our @softs = qw ( cat breeder ems1 ems3 ems4 ems5 nick ) ;
+our @techs = qw ( dt lens body flen fnum etime iso );
+
+our @pris = ( @softs, @techs );
+
+our %order = ();
+my $op = 0;
+
+foreach my $pri ( ( @pris, 'out' ) ) { $order{ $pri } = ++$op }
+
+#die $order{'ems5'};
 
 my %location = (
  myrskyla => 'myrskylä',
@@ -132,14 +145,11 @@ sub location {
 
  my $loc = $_[0];
    
- $loc =~ s/\d$//; 
-
- defined $location{$loc} and $loc = $location{$loc};
- 
- return ucclcc($loc),ucclcc($loc);
+ $location{$loc} and $loc = $location{$loc};
+  
+ return ucclcc($loc), ucclcc($loc);
      
 }
-
 
 sub plain {
 
@@ -360,90 +370,151 @@ sub expand_phrase {
 }
 
 # the lens resolving function
-# please regard this legacy sub as a bad example of Perl programming 
 # in: lens mode, focal length, aperture 
-# out: lens code 
+# out: lens code
+ 
 sub lens {
+
  my ( $mode, $flen, $fnum ) = @_;
- ( not defined $flen ) and $flen = 0;
- if ( $flen == 0 ) {
-  if($mode eq "0017285085135") {
-   return "lbc";
-  } elsif(($mode eq "JENSE")||($mode eq "DJENSE")) {
-   return "jupiter85";
-  } else {
-   return "peleng8";
+ 
+ defined $flen or $flen = 0;
+ 
+ $mode eq 'NOLENSE' and return undef;
+ 
+ $flen > 5.0 and $flen < 12.9 and ( $mode eq '0017285085135' or 
+  $mode eq '0017285086135' or $mode eq '1017305085135'
+  or $mode eq  '1017305086135' ) and return 'lx3leica';
+
+ $flen > 3.8 and $flen < 4.0 and ( $mode eq '0017285085135' or 
+  $mode eq '0017285086135' or $mode eq '1017305085135' or 
+  $mode eq '1017305086135' ) and return 'dmwlw64';
+ 
+ given ( $flen ) { # primary switch on focal length
+ 
+  when ( 0 ) {
+
+   $mode eq '0017285085135' and return 'lbc';
+   $mode eq 'JENSE' and return 'jupiter85';
+   $mode eq 'DJENSE' and return 'peleng8';
+
   }
- } elsif ($flen==10) {
-  return "sigma10";
- } elsif ($flen==17) {
-  return "tokina17"; 
- } elsif ($flen==28) {
-  if($mode eq "0017285085135") {
-   return "sigma28";
-  } elsif(($mode eq "NEW285085")||(($mode eq "70200L"))) {
-   return "canon28";
-  } elsif(($mode eq "TENSE")||($mode eq "DENSE")||($mode eq "DJENSE")||($mode eq "NEWSET")||($mode eq "DEWSET")) {
-   return "tamron2875";
-  } elsif($mode eq "LENSE") {
-   if($fnum>=3.5) { return "canon1855"; } else { return "canon28"; }
-  } else { return "canon28"; }
- } elsif ($flen==30) {
-  if(($mode eq "1017305085135")||($mode eq "NEW285085")||(($mode eq "70200L"))) {
-   return "sigma30";
-  } elsif(($mode eq "TENSE")||($mode eq "DENSE")||($mode eq "DJENSE")||($mode eq "NEWSET")||($mode eq "DEWSET")) {
-   return "tamron2875";
-  } else { return "canon1855"; }
- }  elsif ($flen==50) {
-  if($mode eq "0017285085135") { return "sigma50"; } 
-   elsif($mode eq "1017305085135") { return "sigma50"; }
-   elsif(($mode eq "NEW285085")||(($mode eq "70200L"))) { return "canon50usm"; } 
-   elsif($mode eq "TENSE") { return "tamron2875"; } 
-   elsif($mode eq "DEWSET") { return "canon50usm"; } 
-   elsif($mode eq "NEWSET") {
-    if($fnum>=2.8) { return "tamron2875"; } else { return "canon50usm"; } } 
-   elsif(($mode eq "DENSE")||($mode eq "DJENSE")) {
-    if($fnum>=2.8) { return "tamron2875"; } else { return "canon50ii"; } } 
-   else { return "canon50ii"; }
- } else {
- 
-   my $lenss;
- 
-   if(($mode eq "0017285085135")||($mode eq "1017305085135")||($mode eq "NEW285085")||(($mode eq "70200L"))) {
-     $lenss = "canon85usm";
-   } elsif(($mode eq "NEWSET")||($mode eq "DEWSET")) {
-    if(($flen>84)&&($flen<86)) { $lenss = "canon85usm"; } else { $lenss = "tamron2875"; }
-   } elsif((($mode eq "TENSE")||($mode eq "DENSE")||($mode eq "DJENSE"))&&(round(float($2),0)>26)&&(round(float($2),0)<77)) {
-    $lenss = "tamron2875";
-   } else {
-    if($flen>55) { $lenss = "sigma70300"; } else { $lenss = "canon1855"; }
-   }
+  
+  when ( 10 ) { return 'sigma10' }
+  
+  when ( 17 ) { return 'tokina17' }
+   
+  when ( 28 ) {
+  
+   $mode eq '0017285085135' and return 'sigma28';
+   
+   $mode eq 'NEW285085' and return 'canon28';
+   $mode eq '70200L' and return 'canon28';
     
-   if(($mode eq "70200L")&&($flen>69)&&($flen<201)&&($fnum>=2.8)) {
-    $lenss = "canon70200l";
-   }
-       
-   if((($mode eq "0017285085135")||($mode eq "1017305085135"))&&(($flen>134)&&($flen<136))) {
-    $lenss = "canon135l";
-   }
-       
-   if(($mode eq "0017285085135")&&($flen>199)&&($flen<201)) {
-    $lenss = "canon200l";
-   }
+   $mode eq 'TENSE' and return 'tamron2875';
+   $mode eq 'DENSE' and return 'tamron2875';
+   $mode eq 'DJENSE' and return 'tamron2875';
+   $mode eq 'NEWSET' and return 'tamron2875';
+   $mode eq 'DEWSET' and return 'tamron2875';
    
-   #print $flen."\n";
-       
-   if((($mode eq "0017285085135")||($mode eq "1017305085135"))&&(($flen>5)&&($flen<12.9))&&(not($flen==10))) {
-    $lenss = "lx3leica";
-   }
-       
-   if(((($mode eq "0017285085135")||($mode eq "1017305085135")))&&(($flen>3.8)&&($flen<4.0))) {
-    $lenss = "dmwlw64";
-   }
+   $mode eq 'LENSE' and do {
+    $fnum>=3.5 and return 'canon1855';
+    return 'canon28';
+   };
    
-   return $lenss;
-   
+   return 'canon28';
+
   }
+  
+  when ( 30 ) {
+  
+   $mode eq '0017285085135' and return 'sigma30';
+   $mode eq '1017305085135' and return 'sigma30';
+   $mode eq 'NEW285085' and return 'sigma30';
+   $mode eq '70200L' and return 'sigma30';
+
+   $mode eq 'TENSE' and return 'tamron2875';
+   $mode eq 'DENSE' and return 'tamron2875';
+   $mode eq 'DJENSE' and return 'tamron2875';
+   $mode eq 'NEWSET' and return 'tamron2875';
+   $mode eq 'DEWSET' and return 'tamron2875';
+
+   return "canon1855";
+  
+  }
+ 
+  when ( 50 ) {
+  
+   $mode eq '0017285085135' and return 'sigma50';
+   $mode eq '1017305085135' and return 'sigma50';
+  
+   $mode eq 'NEW28508' and return 'canon50usm';
+   $mode eq '70200L' and return 'canon50usm';
+   $mode eq 'DEWSET' and return 'canon50usm';
+   
+   $mode eq 'TENSE' and return 'tamron2857';
+ 
+   $mode eq 'NEWSET' and do { 
+   
+    $fnum>=2.8 and return 'tamron2857';
+    return 'canon50usm';
+   
+   };
+   
+   ( $mode eq 'DENSE' or $mode eq 'DJENSE' ) and  do {
+
+    $fnum>=2.8 and return 'tamron2857';
+    return 'canon50ii';
+     
+   };
+    
+   return 'canon50ii'; 
+  
+  }
+  
+  when ( 85 ) {
+         
+   $mode eq '0017285085135' and return 'canon85usm';
+   $mode eq '1017305085135' and return 'canon85usm';
+   $mode eq 'NEW285085' and return 'canon85usm';
+   $mode eq '70200L' and return 'canon85usm';
+   $mode eq 'NEWSET' and return 'canon85usm';
+   $mode eq 'DEWSET' and return 'canon85usm';
+   
+   $mode eq '0017285086135' and return 'sigma85';
+     
+  }
+  
+  when ( 135 ) {
+  
+   ( $mode eq '0017285085135' or  $mode eq '0017285086135' or 
+     $mode eq '1017305085135' or $mode eq  '1017305086135' ) and
+     return 'canon135l';
+     
+   return '70200l'     
+  
+  }
+  
+  when ( 200 ) {
+
+   ( $mode eq '0017285085135' or  $mode eq '0017285086135' or 
+     $mode eq '1017305085135' or $mode eq  '1017305086135' ) and
+     return 'canon200l';
+     
+   return '70200l'     
+  
+  }
+  
+  default  {
+
+   # other focal lengths
+   
+   $flen < 70 and return '70200l';
+   
+   return 'canon1855';
+  
+  }
+  
+ }
   
  return undef;
 }
@@ -457,17 +528,6 @@ sub body {
  (m|Mark III|) and return 'Canon EOS 1D Mark III';
  (m|DMC-LX3|) and return 'Panasonic Lumix DMC-LX3';
  return undef;
-}
-
-sub body_old {
-  $_ = $_[0]; 
- (m|^Nytech|) && do { return 'Nytech ND-4020','/nytech_nd4020_en.htm'; };
- (m| 300D|) && do { return 'Canon EOS 300D','/camera_bodies.htm#canon300d'; };
- (m|EOS 20D|) && do { return 'Canon EOS 20D','/camera_bodies.htm#canon20d'; };
- (m|EOS 40D|) && do { return 'Canon EOS 40D', '/camera_bodies.htm#canon40d'; };
- (m|Mark III|) && do { return 'Canon EOS 1D Mark III','/camera_bodies.htm#canon1d3'; };
- (m|DMC-LX3|) && do { return 'Panasonic Lumix DMC-LX3','/camera_bodies.htm#panasoniclx3'; };
- return undef,undef;
 }
 
 sub convert_flash {
@@ -496,7 +556,7 @@ sub convert_exif_dt {
 # out: processed exifs as a hash 
 sub exif {
  
- my ( $lensmode, $file ) = shift;
+ my $file = shift;
  
  my $exifs = ImageInfo($file); 
  
@@ -509,7 +569,7 @@ sub exif {
   ($key eq 'FocalLength') && do { s/ mm$//; $output{'flen'} = $_; };
   
   ($key eq 'ExposureTime') && do { 
-    s/ s$//; $output{'etime_txt'} = $_; $output{'etime_num'} = float($_); 
+    s/ s$//; $output{'etime'} = $_; 
    };
    
   ($key eq 'FNumber') && do { $output{'fnum'} = $_; };
@@ -521,19 +581,7 @@ sub exif {
   ($key eq 'Model') && do { $output{'body'} = body($_) };
 
  }
- 
- $output{'lens'} = lens($lensmode,$output{'flen'},$output{'fnum'});
-    
- if(defined($output{'lens'})) {
-
-   if(defined($lensflen{$output{'lens'}})) {
-    $output{'flen'} = $lensflen{$output{'lens'}};  
-  }
-
-  $output{'lens'} = $lensname{$output{'lens'}};
- 
- }
-     
+      
  return \%output;
  
 }
@@ -561,7 +609,7 @@ sub exid {
   (m|^exif_f_|) && do { $output{'fnum'} = $value; };
     
   (m|^exif_exposure_t|) && do {
-    $value =~ s/ s$//; $output{'etime_txt'} = $value; $output{'etime_num'} = float($value); 
+    $value =~ s/ s$//; $output{'etime'} = $value; 
    };
     
   (m|^exif_iso|) && do { $value =~ s/^ISO //; $output{'iso'} = $value; };
@@ -572,11 +620,11 @@ sub exid {
   
  }
  
- my $lensname =  $lensname { $output{'lens'} };
+ #my $lname = $lensname { $output{'lens'} };
  
- defined $lensname or die "unable to resolve lensname for ".$output{'lens'};
+ #defined $lname or die 'unable to resolve lensname for '.$output{'lens'};
  
- $output{'lens'} = $lensname;
+ #$output{'lens'} = $lname;
     
  return \%output;
 }
@@ -655,35 +703,35 @@ sub organizer {
 
 sub umbrella {
 
- switch($_[0]) {
+ given ( $_[0] ) {
   
-  case 'Alfa Felis' {
+  when ( 'Alfa Felis' ) {
    int(substr($_[1],0,4))<2008 and return 'FIFe','FIFe'; 
    return 'TICA','TICA';
   }
 
-  case 'SUVAK' {
+  when ( 'SUVAK' ) {
    int(substr($_[1],0,4))<2008 and return 'other','muut'; 
    return 'FIFe','FIFe';
   }
   
-  case 'FINTICAt' { return 'TICA','TICA' }
+  when ( 'FINTICAt' ) { return 'TICA','TICA' }
    
-  case 'CFF' { return 'CFA','CFA' }
+  when ( 'CFF' ) { return 'CFA','CFA' }
   
-  case ['InCat','SUROK','TUROK','PIROK','RuRok','POROK','ISROK','KES-KIS','POH-KIS','ERY-SYD','URK','SUVAK','SRK']
+  when ( ['InCat','SUROK','TUROK','PIROK','RuRok','POROK','ISROK','KES-KIS','POH-KIS','ERY-SYD','URK','SUVAK','SRK'] )
   { return 'FIFe','FIFe' }
  
-  else {
-   return 'other','muut'
-  }
- } 
+  default { return 'other','muut' }
+  
+ }
+  
 }
 
 sub country { defined $_[0] ? 'FI' : undef }
 
-sub line2snips { 
-           #map { s|\&\&|\&|g } 
+sub line2parts { 
+ 
  my @arr = map { trim( $_ ) } split / & /, $_[0];
  
  return \@arr;

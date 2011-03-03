@@ -84,7 +84,7 @@ sub vectorize {
   
  if ( $pri eq 'has' ) {
  
-  $res = db_col( "select distinct(x) from _pri_sec_x where pri=?", $sec );
+  $res = db_col( "select distinct(x) from snip natural join x where pri=?", $sec );
             
  } else { # no 'has'
  
@@ -92,13 +92,13 @@ sub vectorize {
   
    # pattern matching
 
-   $res = db_col( "select x from _pri_sec_x where pri=? and sec_$lang like ?", $pri, $sec );    
+   $res = db_col( "select x from snip natural join x where pri=? and sec_$lang like ?", $pri, $sec );    
  
   } else {
 
    # exact
  
-   $res = db_col( "select x from _pri_sec_x where pri=? and sec_$lang=?", $pri, $sec );
+   $res = db_col( "select x from snip natural join x where pri=? and sec_$lang=?", $pri, $sec );
  
   }  
 
@@ -253,13 +253,13 @@ sub vector_pointer {
 
  if( $res = cache_get( (caller(0))[3], @_ ) ) { return $res } 
 
- my ( $photo, $perpage, @args ) = @_;
+ my ( $album, $n, $perpage, @args ) = @_;
 
  my $svec = vector_array( @args );
   
  my $total = scalar @{ $svec };
    
- my $x = db_one( 'select x from _fid_x where fid=?', $photo );
+ my $x = db_one( 'select x from x where album=? and n=?', $album, $n );
     
  my $idx = bsearch( $svec, $x ); 
 
@@ -272,9 +272,9 @@ sub vector_pointer {
  
  $idx > 0 and do {
 
-  $first = db_one( 'select fid from _fid_x where x=?', $svec->[0] );
+  $first = db_one( "select album||'/'||n from x where x=?", $svec->[0] );
 
-  $prev = db_one( 'select fid from _fid_x where x=?', $svec->[$idx-1] );
+  $prev = db_one( "select album||'/'||n from x where x=?", $svec->[$idx-1] );
   
  };
 
@@ -283,9 +283,9 @@ sub vector_pointer {
   
  $idx < ( $total - 1 ) and do {
 
-  $last = db_one( 'select fid from _fid_x where x=?', $svec->[$total-1] );
+  $last = db_one( "select album||'/'||n from x where x=?", $svec->[$total-1] );
 
-  $next = db_one( 'select fid from _fid_x where x=?', $svec->[$idx+1] );
+  $next = db_one( "select album||'/'||n from x where x=?", $svec->[$idx+1] );
   
  };
 

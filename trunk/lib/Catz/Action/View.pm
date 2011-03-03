@@ -44,7 +44,7 @@ sub view {
  my $perpage =  $self->session('thumbsperpage');
   
  my ( $total, $pos, $x, $page, $first, $prev, $next, $last ) = @{ vector_pointer( 
-  $stash->{photo}, $perpage, $stash->{lang}, @{ $stash->{args_array} } 
+  $stash->{album}, $stash->{n}, $perpage, $stash->{lang}, @{ $stash->{args_array} } 
  ) };
   
  my $details = db_all ( qq{select pri,sec_$self->{stash}->{lang} from _pri_sec_x where x=? order by pri,sec_$self->{stash}->{lang}}, $x );

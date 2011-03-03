@@ -42,7 +42,7 @@ use MIME::Base32 qw ( RFC );
 use base 'Exporter';
 
 our @EXPORT_OK = 
- qw( nobreak round float encode decode ucc lcc ucclcc trim folder_file expand_ts sys_ts sys_ts_lang filesize filenum finddirs copyfile findfiles finddb findphotos width_height thumbfile readfile dna folder_dna tnresize thisyear enurl deurl ); 
+ qw( nobreak cutpath round float encode decode ucc lcc ucclcc trim folder_file expand_ts sys_ts sys_ts_lang filesize filenum finddirs copyfile findfiles finddb findphotos width_height thumbfile readfile dna folder_dna tnresize thisyear enurl deurl ); 
 
 my $formatter_en = new Number::Format(-thousands_sep   => ',', -decimal_point   => '.' );
 my $formatter_fi = new Number::Format(-thousands_sep   => ' ', -decimal_point   => ',' );
@@ -135,23 +135,11 @@ sub folder_dna {
  
 }
 
-sub first_last {
- my ($total,$onpage,$page) = @_;
- my $first = (($page*$onpage)-$onpage)+1;
- my $last = ($page*$onpage);
- $first<0 and $first=0;
- $last>$total and $last=$total;
- return ($first,$last);
-}
+sub cutpath { $_[0] =~ /^.*\/(.+?)$/; defined $1 ? $1 : $_[0]; }
 
-# reads directory contents for files
-# in: directory path
-# out: array of files
 sub findfiles { sort grep { -f } glob($_[0].'/*') }
 
 sub finddirs { sort grep { -d } glob($_[0].'/*') }
-
-sub finddb { return lastval { 1 } findfiles($_[0])  }
 
 sub findphotos { 
 
@@ -159,15 +147,6 @@ sub findphotos {
   grep { m|....\d\d\d\d\.JPG$| } grep { -f  } findfiles ($_[0]);
   
 }
-
-sub find_master_db { $z_config::dbpath.'/master_work.db' }
-
-sub find_stat_db { $z_config::dbpath.'/stat.db' }
-
-# reads directory contents for directories
-# in: directory path
-# out: array of directories
-#sub finddirs { sort grep { -d } glob($_[0].'/*') }
 
 # reads a file into a string
 # in: filename

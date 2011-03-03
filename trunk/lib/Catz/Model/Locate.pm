@@ -38,7 +38,7 @@ sub locate_suggest {
 
  $pattern = '%' . $pattern . '%';
 
- my $res = db_all (qq{select pri,sec_$lang,count from ( select pri,sec_$lang,count(distinct x) as count from _pri_sec_x where pri <> 'out' and sec_en like ? group by pri,sec_$lang order by random() limit 50 ) order by sec_$lang},$pattern);
+ my $res = db_all (qq{select pri,sec_$lang,count from ( select pri,sec_$lang,count(distinct x) as count from snip natural join x where pri not in ('dt', 'out') and sec_en like ? group by pri,sec_$lang order by random() limit 50 ) order by sec_$lang},$pattern);
 
  return $res;
 
