@@ -45,7 +45,7 @@ use Catz::Cache;
 use constant DBDRIVER => 'dbi:SQLite'; 
 
 # a hardcoded value for initial development
-use constant DBFILE => '/catz/db/data.db';
+use constant DBFILE => '/catz/db/master.db';
 
 use constant DBARGS => { PrintError => 1, RaiseError => 1, AutoCommit => 0 };
 

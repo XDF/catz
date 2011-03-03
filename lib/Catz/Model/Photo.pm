@@ -34,7 +34,7 @@ sub photo_thumbs {
 
  my ( $lang, $xs ) = @_; 
  
- my $thumbs = db_all( "select flesh.fid,album,file||'_LR.JPG',width_lr,height_lr,null from photo natural join flesh natural join _fid_x where x in (" 
+ my $thumbs = db_all( "select album,n,file||'_LR.JPG',width_lr,height_lr,null from file natural join x where x in (" 
   . ( join ',', @$xs ) .  ') order by x' );
 
  foreach my $row ( @$thumbs ) {

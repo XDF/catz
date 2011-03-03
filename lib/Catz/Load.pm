@@ -30,7 +30,7 @@ use DBI;
 
 use feature qw( say );
 
-use List::MoreUtils qw ( pairwise );
+#use List::MoreUtils qw ( pairwise );
 
 use Catz::Util qw ( trim );
 
@@ -91,33 +91,20 @@ my %sql = (
  umbrella_ins => 'insert into umbrella (album,umbrella_en,umbrella_fi) values (?,?,?)', 
  
  lensmode_sel => 'select lensmode from album where album=?',
- 
- flesh_del => 'delete from flesh where album=?',
- flesh_ins => 'insert into flesh (album,n,file) values (?,?,?)',
- flesh_se1 => 'select max(n) from flesh where album=?',
-  
- exid_del => 'delete from exid where album=?',
- exid_ins => 'insert into exid (album,n,flen,etime_txt,etime_num,fnum,dt,iso,body,lens) values (?,?,?,?,?,?,?,?,?,?)',
- exid_ser => 'select flen,etime_txt,etime_num,fnum,dt,iso,body,lens from exid where album=? and n=?',
-
+   
  exif_del => 'delete from exif where album=?',
- exif_ins => 'insert into exif (album,file,flen,etime_txt,etime_num,fnum,dt,iso,body,lens) values (?,?,?,?,?,?,?,?,?,?)',
- exif_ser => 'select flen,etime_txt,etime_num,fnum,dt,iso,body,lens from exif natural join flesh where album=? and n=?',
-  
- exia_del => 'delete from exia where album=? and n=?',
- exia_ins => 'insert into exia (album,n,flen,etime_txt,etime_num,fnum,dt,iso,body,lens) values (?,?,?,?,?,?,?,?,?,?)',
- 
+ exif_ins => 'insert into exif (album,n,pri,sec) values (?,?,?,?)',
+ exif_sea => 'select n,pri,sec from exif where album=?',
+   
  file_del => 'delete from file where album=?',
- file_ins => 'insert into file (album,file,width_hr,height_hr,bytes_hr,width_lr,height_lr,bytes_lr) values (?,?,?,?,?,?,?,?)',
-
- out_del => 'delete from out where album=?',
- out_ins => 'insert into out (album,n,out_en,out_fi) values (?,?,?,?)', 
+ file_ins => 'insert into file (album,n,file,width_hr,height_hr,bytes_hr,width_lr,height_lr,bytes_lr) values (?,?,?,?,?,?,?,?,?)',
 
  snip_del => 'delete from snip where album=?',
- snip_ins => 'insert into snip (album,n,pri,sec) values (?,?,?,?)',
+ snip_spec_del => 'delete from snip where album=? and pri=?', 
+ snip_ins => 'insert into snip (album,n,p,pri,pri_sort,sec_en,sec_sort_en,sec_fi,sec_sort_fi) values (?,?,?,?,?,?,?,?,?)',
  
  x_del => 'delete from x',
- x_ins => 'insert into x (album,n) select album,n from flesh order by album desc, n asc', 
+ x_ins => 'insert into x (album,n) select album,n from file order by album desc, n asc', 
   
 );
 
@@ -152,20 +139,18 @@ sub run {
  my ( $key, @arg ) = @_;
  
  $stm { $key }->execute ( @arg );
-  
+   
  if ( $key =~ m|se1$| ) {
  
-  my $arr = $stm{ $key }->fetchrow_arrayref;
-  
-  defined $arr and return $arr->[0];
-  
-  return -1; 
+  return $stm{ $key }->fetchrow_array;
     
  } elsif ( $key =~ m|ser$| ) {
  
-  my $arr = $stm{ $key }->fetchrow_arrayref;
-  
-  return $arr
+  return $stm{ $key }->fetchrow_arrayref;
+      
+ } elsif ( $key =~ m|sea$| ) {
+ 
+  return $stm{ $key }->fetchall_arrayref;
     
  }
 
@@ -187,49 +172,48 @@ sub end {
 
 sub put_dna {
 
- my ( $class, $item, $dold, $dnew, $dt ) = @_;
+ my ( $class, $item, $dnew, $dt ) = @_;
  
- if ( $dold eq '-1' ) {
- 
-  #say "inserting dna $dnew $dt";
- 
+ my $dold = run ( 'dna_se1', $class, $item ) // 'undef';
+  
+ if ( $dold eq 'undef' ) {
+  
   run ( 'dna_ins', $dnew, $dt, $class, $item  );
  
  } else {
  
-  #say "updating dna $dnew $dt";
- 
   run ( 'dna_upd', $dnew, $dt, $class, $item );
  
- } 
-  
+ }
+   
 }
 
-sub upd_exia {
+sub put_exia {
 
- my ( $album, $n ) = @_;
+ my ( $album, $exia, $lensmode ) = @_;
  
- run ( 'exia_del', $album, $n );
+ foreach my $a ( keys %{ $exia } ) { # foreach photo 1, 2, 3 ...
  
- my $exif = run ( 'exif_ser', $album, $n );
- my $exid = run ( 'exid_ser', $album, $n );
-  
- my @res;
-  
- if ( defined $exif and defined $exid ) {
-  
-  my @res = pairwise { defined $a ? $a : $b } @$exid, @$exif;
-  run ( 'exia_ins', $album, $n, @res );
-   
- } else {
-  
-  defined $exid and run ( 'exia_ins', $album, $n, @$exid );
-  defined $exif and run ( 'exia_ins', $album, $n, @$exif );
-   
- } 
+  defined $exia->{$a}->{lens} or do {
+   my $lens = Catz::Data::lens ( 
+    $lensmode, $exia->{$a}->{flen}, $exia->{$a}->{fnum} 
+   );
+   defined $lens and $exia->{$a}->{lens} = $lens;
+  };  
  
+  foreach my $b ( keys %{ $exia->{$a} } ) { #foreach flen, fnum, etime ...
+  
+   say "$album $a $b " . $exia->{$a}->{$b};
+
+   run ( 'snip_ins', $album, $a, 0, $b, $Catz::Data::order{$b}, 
+    $exia->{$a}->{$b}, $exia->{$a}->{$b},
+    $exia->{$a}->{$b}, $exia->{$a}->{$b} 
+   ); 
+  
+  }
+ }
 }
-
+ 
 sub upd_x {
 
  say "updating x"; 

@@ -90,12 +90,13 @@ sub startup {
  # view a photo based on the search pattern or no pattern
  # current setting 1,5 supports photo sets up to 99,999 photos
  
- $l->route( '/view/(*path)/:photo', photo => qr/\d{1,6}/ )->to (
+ $l->route( '/view/(*path)/:album/:n', 
+  album => qr/\d{8}[a-z\d]+/, n => qr/\d{1,3}/ )->to (
   "view#view"
  );
 
- 
- $l->route( '/view/:photo', photo => qr/\d{1,6}/ )->to (
+ $l->route( '/view/:album/:n', 
+  album => qr/\d{8}[a-z\d]+/, n => qr/\d{1,3}/ )->to (
   "view#view", path => undef
  );
  
