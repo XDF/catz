@@ -31,6 +31,7 @@ use parent 'Catz::Action::Present';
 
 use Catz::DB;
 use Catz::Model::Meta;
+use Catz::Model::Photo;
 use Catz::Model::Vector;
 
 sub view {
@@ -47,12 +48,12 @@ sub view {
   $stash->{album}, $stash->{n}, $perpage, $stash->{lang}, @{ $stash->{args_array} } 
  ) };
   
- my $details = db_all ( qq{select pri,sec_$self->{stash}->{lang} from _pri_sec_x where x=? order by pri,sec_$self->{stash}->{lang}}, $x );
+ my $details = photo_details ( $stash->{lang}, $x );
 
- my $texts = db_col ( qq{select sec_$self->{stash}->{lang} from _pri_sec_x where x=? and pri='cat'}, $x );
+ my $texts = photo_texts ( $stash->{lang}, $x );
 
- my $image = db_row ( 'select folder,file_hr,width_hr,height_hr from _x_photo where x=?',$x);
-  
+ my $image = photo_image ( $x );
+ 
  $self->{stash}->{total} = $total;
  $self->{stash}->{pos} = $pos;
  $self->{stash}->{page} = $page;
