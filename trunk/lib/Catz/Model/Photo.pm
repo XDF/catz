@@ -25,7 +25,7 @@
 package Catz::Model::Photo;
 
 use parent 'Exporter';
-our @EXPORT = qw ( photo_thumbs );
+our @EXPORT = qw ( photo_thumbs photo_details photo_image photo_texts );
 
 use Catz::DB;
 use Catz::Util qw ( expand_ts );
@@ -47,5 +47,35 @@ sub photo_thumbs {
  return $thumbs;
 
 }
+
+sub photo_details {
+
+ my ( $lang, $x ) = @_;
+
+ return db_all ( qq{select pri,sec_$lang from snip natural join x where x=? order by pri_sort,sec_$lang}, $x );
+
+}
+
+sub photo_texts {
+
+ my ( $lang, $x ) = @_;
+
+ return db_col ( qq{select sec_$lang from snip natural join x where x=? and pri='out' order by p}, $x );
+
+
+}
+
+sub photo_image {
+
+ my $x = shift;
+ 
+ return db_row ( "select album,file||'.JPG',width_hr,height_hr from file natural join x where x=?",$x);
+
+}
+
+
+
+
+
  
 1;

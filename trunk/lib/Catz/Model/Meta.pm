@@ -54,7 +54,7 @@ sub meta_text {
 
 sub meta_maxx {
  
- defined $maxx or $maxx = db_one ( 'select max(x) from _fid_x' ) + 1;
+ defined $maxx or $maxx = db_one ( 'select max(x) from x' ) + 1;
  
  # notice: adding 1 to make room for indexing from 1 to n
  # to be on a safe size, not only from 0 to n-1

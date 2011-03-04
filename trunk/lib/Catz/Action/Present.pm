@@ -32,8 +32,6 @@ use parent 'Catz::Action::Base';
 use Catz::DB;
 use Catz::Model::Meta;
 use Catz::Model::Vector;
-#use Catz::Util qw ( pik2pid );
-
 
 sub args {
 

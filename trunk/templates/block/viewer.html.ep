@@ -13,7 +13,7 @@
 % my $a = ( ( ( $page - 1 )  * $perpage ) + 1 ); 
 % my $b = $a + $perpage - 1;
 % my $target = "$a-$b";
-<a href="../<%== $target %>/"><%= $t->{THUMBS} %></a>
+<a href="../../<%== $target %>/"><%= $t->{THUMBS} %></a>
 |
 % if ( defined $next ) {
 <a href="../<%== $next %>/"><%= $t->{PHOTO_NEXT} %></a>

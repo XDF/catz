@@ -45,7 +45,7 @@ sub list_list {
   
   when ( 'a2z' ) {
  
-   $list = db_all( "select null,sec_$lang,count(distinct x),min(x) from snip
+   $list = db_all( "select null,pri,sec_$lang,count(distinct x),min(x),album||'/'||n from snip
    natural join x where pri=? group by sec_$lang order by sec_$lang", $subject
    );
       
@@ -69,7 +69,7 @@ sub list_list {
   
   when ( 'top' ) {
   
-   $list = db_all( "select null,sec_$lang,count(distinct x),min(x) from snip
+   $list = db_all( "select null,pri,sec_$lang,count(distinct x),min(x),album,n from snip
    natural join x where pri=? group by sec_$lang order by count(distinct x) desc", $subject
    );
 
@@ -130,7 +130,7 @@ sub list_links {
 
    when ( 'ideas' ) {
 
-    $links = db_all("select pri,sec_$lang,count(distinct x) from snip natural join x group by pri,sec_$lang order by random() limit 20");
+    $links = db_all("select pri,sec_$lang,count(distinct x) from snip natural join x where pri not in ('out','dt') group by pri,sec_$lang order by random() limit 20");
   
    }
 
