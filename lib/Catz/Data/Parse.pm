@@ -1,7 +1,7 @@
 #
-# The MIT License
-# 
+# Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
+# Licensed under The MIT License
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Parser;
+package Catz::Data::Parse;
 
 use strict;
 use warnings;
@@ -196,7 +196,7 @@ sub comm {
     $d->{en} = $en; 
     $d->{fi} = defined $fi ? $fi : $en;
        
-   } elsif ( $begin ) { # quotation in the beginning
+   } elsif ( $begin ) { # quotation at the beginning
    
     my $en; my $fi; my $out; my $cat;
     
@@ -279,12 +279,31 @@ sub line {
 
 sub def {
 
-
- my $def = shift;
+ my $str = shift;
  
+ $str =~ /^(\w)([\d\-]+):\s+(.+)$/ or die "malformed line in data: '$str'";
  
-
-
+ my $def = $1; my $data = $3;
+ 
+ my ( $from, $to ) = split /-/, $2;
+ 
+ defined $to or $to = $from;
+ 
+ given ( $def ) {
+ 
+  when ( 'P' ) { 
+  
+   my $obj = comm ( $data );
+  
+  
+  }
+  
+  when ( 'L' ) { die "exid processing not yet implemented" }
+  
+  default { die "unknow data type: '$str'" } 
+ 
+ }
+ 
 }
 
 print Dumper ( line ( 'EP, IC, TICA TGA, WW2010 {Framillan} Cool Hurricane, DVM, DTM (Aatu) [CRX n 03]' ) );

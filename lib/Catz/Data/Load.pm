@@ -1,7 +1,7 @@
 #
-# The MIT License
-# 
+# Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
+# Licensed under The MIT License
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,8 +20,9 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-# 
-package Catz::Load;
+#
+
+package Catz::Data::Load;
 
 use strict;
 use warnings;
@@ -32,7 +33,9 @@ use feature qw( say );
 
 #use List::MoreUtils qw ( pairwise );
 
+use Catz::Conf;
 use Catz::Util qw ( trim );
+
 
 # are we running on windows
 my $win = 0;
@@ -51,7 +54,9 @@ if ( $win ) {
  die "not on win, unable do work";
 }
 
-our @metafiles = qw ( breedmeta breedermeta countrymeta resultmeta gallerymeta newsmeta textmeta );
+# defined what meta files should be loaded and also the loading order
+our @metafiles = qw ( textmeta newsmeta countrymeta breedmeta breedermeta gallerymeta );
+
 
 our %cols = (
  breedmeta => 4,
