@@ -27,6 +27,8 @@ package Catz::Util;
 use strict;
 use warnings;
 
+use Archive::Zip;
+use Archive::Zip::MemberRead;
 use Digest::MD5 qw(md5_base64);
 use Image::ExifTool qw(:Public);
 use Image::Size;
@@ -42,7 +44,7 @@ use MIME::Base32 qw ( RFC );
 use base 'Exporter';
 
 our @EXPORT_OK = 
- qw( nobreak cutpath round float encode decode ucc lcc ucclcc trim folder_file expand_ts sys_ts sys_ts_lang filesize filenum finddirs copyfile findfiles finddb findphotos width_height thumbfile readfile dna folder_dna tnresize thisyear enurl deurl ); 
+ qw( clean nobreak cutpath round float encode decode ucc lcc ucclcc trim folder_file expand_ts sys_ts sys_ts_lang filesize filenum finddirs copyfile findfiles finddb findphotos width_height thumbfile readfile readzip dna folder_dna tnresize thisyear enurl deurl ); 
 
 my $formatter_en = new Number::Format(-thousands_sep   => ',', -decimal_point   => '.' );
 my $formatter_fi = new Number::Format(-thousands_sep   => ' ', -decimal_point   => ',' );
@@ -105,6 +107,11 @@ sub ucclcc { ucc(substr($_[0],0,1)).lcc(substr($_[0],1,9999)) }
 # in: trimmed string
 sub trim { $_ = $_[0]; s/^\s+//; s/\s+$//; return $_; }
 
+# trims extra spaces
+# in: string to trim
+# in: trimmed string
+sub clean { $_ = $_[0]; s/ +/ /; return $_; }
+
 sub copyfile {
  copy($_[0],$_[1]) or die "unable to copy $_[0] to $_[1]";
 }
@@ -155,6 +162,23 @@ sub readfile { # in: filename, out: data
  local $/=undef;
  open FILE, $_[0] or die "file open error when reading ".$_[0];
  my $data = <FILE>; close FILE; return $data;
+}
+
+sub readzip {
+
+ my ( $zname, $fname ) = @_;
+ 
+ -f $zname or die "zip '$zname' not found or not a file";
+ 
+ my $zip = Archive::Zip->new( $zname );
+
+ my $h  = Archive::Zip::MemberRead->new( $zip, $fname );
+ 
+ my $out = ''; my $line;
+  
+ while ( defined ( $line = $h->getline() ) ) { $out .= $line."\n" };
+
+ return $out;
 }
 
 # returns the file size

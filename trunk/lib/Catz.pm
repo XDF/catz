@@ -1,7 +1,7 @@
 #
-# The MIT License
-# 
+# Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
+# Licensed under The MIT License
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -51,6 +51,8 @@ sub startup {
  
  $r->route( '/style/reset' )->to( 'main#reset' );
  $r->route( '/style/:palette' )->to( 'main#base' );
+ 
+ $r->route( '/load' )->to( 'progress#load', format => 'text' );
  
  # all site content are located under /en or /fi
  my $l = $r->route ('/:lang', lang => qr/en|fi/ );

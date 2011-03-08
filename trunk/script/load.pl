@@ -1,7 +1,7 @@
 #
-# The MIT License
-# 
+# Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
+# Licensed under The MIT License
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -25,28 +25,30 @@
 use strict;
 use warnings;
 
-use feature qw( say );
+use lib '../lib';
 
-# autoflush on to print immediately to STDOUT
-$| = 1; 
+use feature qw ( say );
 
-# mark the windows OS
-my $win = 0;
-$^O =~ /win/i and $win = 1;
+use Catz::Data::Conf;
+use Catz::Util qw ( expand_ts sys_ts );
+#qw ( cutpath expand_ts filesize findphotos finddirs dna folder_dna sys_ts thumbfile width_height readfile );
 
-if ( $win ) { use lib '/catz/lib' } 
- else { die "not on windows, out of lib" }
+# store the beginning timestamp to calculate 
+# total exectution time in secods
+my $btime = time(); 
 
-#use Data::Dumper;
-use DBI;
-use Switch;
+my $dt = sys_ts(); # the run is identified by YYYYMMSSHHMMSS
 
-use Catz::Util qw ( cutpath expand_ts filesize findphotos finddirs dna folder_dna sys_ts thumbfile width_height readfile );
-use Catz::Data;
-use Catz::Load;
+my $lname = conf ( 'path_log' ) . "/$dt.log"; 
 
-my $btime = time();
-my $dt = sys_ts();
+open LOG, ">$lname" or die "unable to open logfile '$lname' for writing";
+
+say LOG 'Catz loader started at '.expand_ts( $dt ).' (dt '.$dt.')';
+
+close LOG;
+
+__END__  
+
 
 Catz::Load::run( 'run_ins', $dt );
 
