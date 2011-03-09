@@ -22,20 +22,23 @@
 # THE SOFTWARE.
 #
 
-package Catz::Data::Load;
+package Catz::Model::Load;
 
 use strict;
 use warnings;
 
-use DBI;
-
 use feature qw( say );
 
-#use List::MoreUtils qw ( pairwise );
+use parent 'Exporter';
 
-use Catz::Conf;
+our @EXPORT = qw ( 
+ load_getmeta load_run 
+);
+
+use DBI;
+
+use Catz::Data::Conf;
 use Catz::Util qw ( trim );
-
 
 # are we running on windows
 my $win = 0;
@@ -45,7 +48,6 @@ our $metapath;
 our $photopath; 
 my $dbconn;
 
-# hard-cded values for initial testing
 if ( $win ) {
  $metapath = '/www/galleries/0dat';
  $photopath  = '/www/galleries';
@@ -255,6 +257,11 @@ sub file2table {
 
  $_[0] =~ m|^(.+)meta$|; 
  'meta'.lc($1);
+
+}
+
+sub load_getmeta {
+
 
 }
 
