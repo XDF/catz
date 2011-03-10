@@ -35,6 +35,9 @@ my $base = '/catz';
 
 my $conf = {
 
+ dbargs_runtime => { AutoCommit => 1, RaiseError => 1, PrintError => 1 },
+ dbargs_load => { AutoCommit => 0, RaiseError => 1, PrintError => 1 },
+
  dbconn => 'dbi:SQLite:dbname=',
  
  file_lock => "lock.txt",
@@ -108,6 +111,7 @@ my $conf = {
   panel => "\"the panel|paneeli\""
  ],
  
+ metafiles => [ qw ( textmeta newsmeta countrymeta breedmeta breedermeta gallerymeta ) ],
 
  part_thumb => '_LR.JPG',
 
