@@ -30,22 +30,63 @@ use lib '../lib';
 use feature qw ( say );
 
 use Catz::Data::Conf;
-use Catz::Util qw ( expand_ts sys_ts );
-#qw ( cutpath expand_ts filesize findphotos finddirs dna folder_dna sys_ts thumbfile width_height readfile );
+use Catz::Data::Load;
+use Catz::Util::File qw ( filecopy  filewrite findlatest );
+use Catz::Util::Log qw ( log_close log_open logit );
+use Catz::Util::Time qw ( dt dtexpand dtlang );
 
-# store the beginning timestamp to calculate 
-# total exectution time in secods
+my $lock = conf ( 'file_lock' );
+
+# the existence of the lock file prevents further
+# processing and exists silently
+-f $lock and exit;
+
+# store the beginning timestamp to be able to 
+# calculate  total exectution time in secods
 my $btime = time(); 
 
-my $dt = sys_ts(); # the run is identified by YYYYMMSSHHMMSS
+my $dt = dt(); # the run is identified by YYYYMMSSHHMMSS
 
-my $lname = conf ( 'path_log' ) . "/$dt.log"; 
+# creating lock file to prevent further cron executions
+# DISABLE FOR TESTING 
+#file_write ( $lock, "Catz loader lock file $dt" );
 
-open LOG, ">$lname" or die "unable to open logfile '$lname' for writing";
+log_open ( conf ( 'path_log' ) . "/$dt.log" );
 
-say LOG 'Catz loader started at '.expand_ts( $dt ).' (dt '.$dt.')';
+logit ( 'catz loader started at ' . dtexpand ( $dt ).' (dt '.$dt.')' );
 
-close LOG;
+eval { # main eval begin
+
+my $olddb = findlatest ( conf ( 'path_master' ) , 'db' );
+
+defined $olddb or die "old database lookup failed";
+
+my $newdb = conf ( 'path_master' ) . "/$dt.db";
+
+logit ( "copying database '$olddb' to '$newdb'" );
+
+filecopy ( $olddb, $newdb );
+
+my $changes = 0; # flag that should be turned on if something has changed
+
+load_begin ( $newdb );
+
+}; # main eval end
+
+if ( $@ ) { # error condition
+
+
+} else { # no errors 
+
+
+
+}
+
+my $etime = time();
+
+logit ( 'catz loader finished at ' .  dtlang() . ' (' . ( $etime - $btime ) . ' seconds)' );
+
+log_close();
 
 __END__  
 

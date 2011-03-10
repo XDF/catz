@@ -35,15 +35,11 @@ use File::stat;
 use base 'Exporter';
 
 our @EXPORT_OK = qw (  
- cp dnafolder fileread filesize filewrite findfiles
- finddirs findlatest findphotos mv pathcut zipread
+ dnafolder filecopy fileread fileremove filemove filesize filewrite findfiles
+ finddirs findlatest findphotos pathcut zipread
 );
  
 use Catz::Util::String qw ( dna ); 
-
-sub cp {
- copy( $_[0], $_[1] ) or die "unable to copy '$_[0]' to '$_[1]'";
-}
 
 #
 # calculates the DNA of a folder
@@ -72,6 +68,14 @@ sub dnafolder {
  
 }
 
+sub filecopy { 
+ copy( $_[0], $_[1] ) or die "unable to copy '$_[0]' to '$_[1]'" 
+}
+
+sub filemove { 
+ move ( $_[0] , $_[1] ) or die "unable to rename '$_[0]' to '$_[1]'" 
+}
+
 #
 # reads a file into a string
 #
@@ -85,7 +89,10 @@ sub fileread {
  open FILE, $_[0] or die "unable to open file '$_[0]' for reading";
  
  my $data = <FILE>; close FILE; return $data;
+ 
 }
+
+sub fileremove { unlink ( $_[0] ) or die "unable to remove '$_[0]'" }
 
 sub filesize { -s $_[0] }
 
@@ -115,7 +122,7 @@ sub finddirs { sort grep { -d } glob ( $_[0] . '/*' ) }
 #
 sub findlatest {
    
- my @dbs = grep { -f } glob ( $_[0] . '/*' . $_[1] );
+ my @dbs = grep { -f } glob ( $_[0] . '/*.' . $_[1] );
   
  @dbs = reverse @dbs; return shift @dbs;
   
@@ -126,10 +133,6 @@ sub findphotos {
  sort { substr( $a , -8, -3 ) <=> substr( $b , -8 ,-3 ) } 
   grep { /.{4}\d{4}\.JPG$/ } grep { -f  } findfiles ( $_[0]) ;
   
-}
-
-sub mv {
- rename( $_[0] , $_[1] ) or die "unable to rename '$_[0]' to '$_[1]'";
 }
 
 #

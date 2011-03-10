@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 #
 
-package Catz::Model::Load;
+package Catz::Data::Load;
 
 use strict;
 use warnings;
@@ -31,14 +31,13 @@ use feature qw( say );
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( 
- load_getmeta load_run 
-);
+our @EXPORT = qw ( load_begin );
 
 use DBI;
 
 use Catz::Data::Conf;
-use Catz::Util qw ( trim );
+use Catz::Util::Log qw ( logit );
+use Catz::Util::String qw ( trim );
 
 # are we running on windows
 my $win = 0;
@@ -57,7 +56,7 @@ if ( $win ) {
 }
 
 # defined what meta files should be loaded and also the loading order
-our @metafiles = qw ( textmeta newsmeta countrymeta breedmeta breedermeta gallerymeta );
+our @metafiles = 
 
 
 our %cols = (
@@ -69,12 +68,7 @@ our %cols = (
  textmeta => 3
 );
 
-our $dbargs = { AutoCommit => 0, RaiseError => 1, PrintError => 1 };
 
-say "connecting $dbconn";
-
-our $dbc = DBI->connect( $dbconn,'','',$dbargs ) 
- or die "unable to connect $dbconn: $DBI::errstr";
 
 my %sql = (
 
@@ -115,31 +109,7 @@ my %sql = (
   
 );
 
-foreach my $file ( grep { $_ ne 'gallerymeta' } @metafiles ) {
-
- my $table = file2table( $file );
-
- $sql{ $table . '_trn' } = 'delete from ' . $table;
- 
- my $es = '?';
- 
- foreach ( 2 .. $cols { $file } ) { $es .= ',?' }
- 
- $sql{ $table . '_ins' } = "insert into $table values ($es)";
-
-}
-
-my %stm = ();
-
-foreach my $key (keys %sql) {
-
- #say "preparing $key";
-
- $stm { $key } = $dbc->prepare ( $sql { $key } );
-
-}
-
-our @pris = qw ( ems1 ems3 ems4 ems5 nick breeder cat );
+my %stm;
 
 sub run {
 
@@ -161,8 +131,25 @@ sub run {
     
  }
 
-} 
+}
 
+# static database connection initialized at 
+# the beginning and closed at the end
+my $dbc;  
+
+sub load_begin {
+
+ my $dbfile = shift;
+ 
+ logit ( "connecting database '$dbfile'" );
+
+ $dbc = DBI->connect( 
+  conf ( 'dbconn' ) . $dbfile , '', '', conf ( 'dbargs_load' ) 
+ )  or die "unable to connect to database $dbfile: $DBI::errstr";
+
+}
+
+ 
 sub end {
 
  my $btime = shift;
@@ -230,7 +217,7 @@ sub upd_x {
  
 }
 
-sub housekeep {
+sub finish {
 
  say "finishing statements";
  foreach my $key (keys %stm) { $stm{ $key }->finish }
@@ -278,3 +265,31 @@ sub to_lines {
 }
 
 1;
+
+__END__
+
+foreach my $file ( grep { $_ ne 'gallerymeta' } @metafiles ) {
+
+ my $table = file2table( $file );
+
+ $sql{ $table . '_trn' } = 'delete from ' . $table;
+ 
+ my $es = '?';
+ 
+ foreach ( 2 .. $cols { $file } ) { $es .= ',?' }
+ 
+ $sql{ $table . '_ins' } = "insert into $table values ($es)";
+
+}
+
+my %stm = ();
+
+foreach my $key (keys %sql) {
+
+ #say "preparing $key";
+
+ $stm { $key } = $dbc->prepare ( $sql { $key } );
+
+}
+
+our @pris = qw ( ems1 ems3 ems4 ems5 nick breeder cat );

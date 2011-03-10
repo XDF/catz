@@ -22,67 +22,32 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Util::Time;
+package Catz::Util::Log;
 
 use strict;
 use warnings;
 
-use Time::localtime;
-
 use parent 'Exporter';
 
-our @EXPORT_OK = qw( dtexpand dt dtlang thisyear ); 
+our @EXPORT_OK = qw ( log_close log_open logit );
 
-#
-# expands timestamp from YYYYMMDD or YYYYMMDDHHMMSS into 
-# a language specific human-readable form
-#
-# in: timestamp, language
-# out: timestamp converted to a human-readable form
-#
-sub dtexpand {
- 
- # HHMMSS are optional 
- ( $_[0] =~ /^(\d{4})(\d\d)(\d\d)((\d\d)(\d\d)(\d\d))?$/ )
-  or die "invalid timestamp input '$_[0]'";
+sub logit {
 
- my $lang = defined $_[1] ? $_[1] : 'en'; # defaults to english
- 
- my $str = ( $lang eq 'fi' ? int($3) . '.' . int($2) . '.' . $1 : "$1-$2-$3" );
+ say LOG $_[0]; 
 
- defined ( $4 ) and $str = "$str $5:$6:$7";
-
- return $str;
- 
 }
 
-#
-# returns the systep time in a timestamp format YYYYMMDDHHMMSS
-#
-sub dt {
- 
- my ( $s, $mi, $h, $d, $mo, $y ) = @{ localtime( time ) };
- 
- $y += 1900; $mo += 1;
- 
- return sprintf( "%04d%02d%02d%02d%02d%02d", $y, $mo, $d, $h, $mi, $s );
-  
+sub log_close {
+
+ close LOG;
+
 }
 
-#
-# returns the systep time in a human-readable form
-#
-sub dtlang { dtexpand ( dt , $_[0] ) };
+sub log_open {
 
-#
-# returns the current year
-#
-sub thisyear {
+ my $logfile = shift;
 
- my ( undef, undef, undef, undef, undef, $y ) = @{ localtime( time ) };
- 
- return $y + 1900;
- 
-}
+ open LOG, ">$logfile" or die "unable to open logfile '$logfile' for writing";
 
-1;
+} 
+
