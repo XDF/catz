@@ -31,19 +31,25 @@ use parent 'Exporter';
 
 our @EXPORT = qw ( conf );
 
+# the base directory of the system, used to define paths
 my $base = '/catz';
 
-my $conf = {
-
+my $conf = { # config is one hash ref
+ 
+ # db arguments for the web system
  dbargs_runtime => { AutoCommit => 1, RaiseError => 1, PrintError => 1 },
+ 
+ # db arguments for the loader
  dbargs_load => { AutoCommit => 0, RaiseError => 1, PrintError => 1 },
 
+ # the database driver name part on the connection string
  dbconn => 'dbi:SQLite:dbname=',
  
  file_lock => "lock.txt",
  file_meta => "meta.zip", 
 
- lensname => [
+ # lenses' techical names and the corresponding visible names 
+ lensname => {
   'lbc' => 'Lensbaby Composer',
   'lbc_dg' => 'Lensbaby Composer & Dougle Glass Optic',
   'lbc_sg' => 'Lensbaby Composer & Single Glass Optic',
@@ -73,9 +79,9 @@ my $conf = {
   'lx3leica' => 'Leica DC Vario-Summicron 5.1-12.8mm f/2.0-2.8',
   'dmwlw64' => 'Leica DC Vario-Summicron 5.1-12.8mm f/2.0-2.8 & DMW-LW46',
   'nytech_nd4020' => 'Nytech ND-4020 Lens'
- ],
+ },
  
- lensflen => [
+ lensflen => {
   'peleng8' => 8,
   'jupiter85' => 85,
   'jupiter135' => 135,
@@ -94,9 +100,10 @@ my $conf = {
   'sigma50' => 85,
   'canon135l' => 135,
   'canon200l' => 200
- ],
+ },
  
- macro => [
+ # text macros used in source data
+ macro => {
   front => "\"(front)|(edessä)\"",
   back => "\"(back)|(takana)\"",
   bottom => "\"(bottom)|(alimpana)\"",
@@ -109,10 +116,12 @@ my $conf = {
   bonus => "\"bonus photo|bonuskuva\"",
   view => "\"view over the show site|yleiskuvaa näyttelypaikalta\"",
   panel => "\"the panel|paneeli\""
- ],
+ },
  
+ # metafiles to be loaded and the loading order
  metafiles => [ qw ( textmeta newsmeta countrymeta breedmeta breedermeta gallerymeta ) ],
-
+ 
+ # the filename ending for thumbnail files
  part_thumb => '_LR.JPG',
 
  path_log => $base . '/' . 'log',

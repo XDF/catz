@@ -31,7 +31,9 @@ use feature qw( say );
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( load_begin );
+our @EXPORT = qw ( load_begin load_end load_exec load_nomatch );
+
+use feature qw ( switch );
 
 use DBI;
 
@@ -39,115 +41,194 @@ use Catz::Data::Conf;
 use Catz::Util::Log qw ( logit );
 use Catz::Util::String qw ( trim );
 
-# are we running on windows
-my $win = 0;
-$^O =~ /win/i and $win = 1;
+my $sql = { 
 
-our $metapath;
-our $photopath; 
-my $dbconn;
+ # this hash ref has all SQL statements used by the loader
+ # _ins = insert statement
+ # _ind = insert statement with automatic primary key generation
+ # _upd = update statement
+ # _del = delete statement
+ # _trn = truncate statement executed automatically at the end of the loading
 
-if ( $win ) {
- $metapath = '/www/galleries/0dat';
- $photopath  = '/www/galleries';
- $dbconn = 'dbi:SQLite:dbname=/catz/db/master.db';
-} else {
- die "not on win, unable do work";
-}
-
-# defined what meta files should be loaded and also the loading order
-our @metafiles = 
-
-
-our %cols = (
- breedmeta => 4,
- breedermeta => 4,
- countrymeta => 3,
- newsmeta => 5,
- resultmeta => 1,
- textmeta => 3
-);
-
-
-
-my %sql = (
-
- run_ins => 'insert into run values (?)', 
+ run_ins => 'insert into run values (?)',
+ run_one => 'select max(dt) from run',
+ run_count_one => 'select count(*) from run', 
  
- dna_se1 => 'select dna from dna where class=? and item=?',
+ dna_one => 'select dna from dna where class=? and item=?',
  dna_ins => 'insert into dna (dna,dt,class,item) values (?,?,?,?)',
  dna_upd => 'update dna set dna=?, dt=? where class=? and item=?', 
+ dna_trn =>  "delete from dna where class='album' and item not in ( select album from album )",
   
- album_all_sel => 'select album from album order by album asc',
- 
+ album_col => 'select album from album order by album',
  album_del => 'delete from album where album=?',
- album_ins => 'insert into album (album,name_en,name_fi,lensmode,origined,created,modified,location_en,location_fi,country) values (?,?,?,?,?,?,?,?,?,?)',
- 
- lensmode_se1 => 'select lensmode from album where album=?',
- 
- organizer_del => 'delete from organizer where album=?',
- organizer_ins => 'insert into organizer (album,organizer_en,organizer_fi) values (?,?,?)', 
+ album_ins => 'insert into album (album,name_en,name_fi,origined,created,modified,location_en,location_fi,country) values (?,?,?,?,?,?,?,?,?)',
   
- umbrella_del => 'delete from umbrella where album=?',
- umbrella_ins => 'insert into umbrella (album,umbrella_en,umbrella_fi) values (?,?,?)', 
- 
- lensmode_sel => 'select lensmode from album where album=?',
-   
- exif_del => 'delete from exif where album=?',
- exif_ins => 'insert into exif (album,n,pri,sec) values (?,?,?,?)',
- exif_sea => 'select n,pri,sec from exif where album=?',
-   
- file_del => 'delete from file where album=?',
- file_ins => 'insert into file (album,n,file,width_hr,height_hr,bytes_hr,width_lr,height_lr,bytes_lr) values (?,?,?,?,?,?,?,?,?)',
-
- snip_del => 'delete from snip where album=?',
- snip_spec_del => 'delete from snip where album=? and pri=?', 
- snip_ins => 'insert into snip (album,n,p,pri,pri_sort,sec_en,sec_sort_en,sec_fi,sec_sort_fi) values (?,?,?,?,?,?,?,?,?)',
- 
- x_del => 'delete from x',
- x_ins => 'insert into x (album,n) select album,n from file order by album desc, n asc', 
+ org_del => 'delete from org where album=?',
+ org_ins => 'insert into org (album,org_en,org_fi) values (?,?,?)',
+ org_trn => 'delete from org where album not in ( select album from album )', 
   
-);
-
-my %stm;
-
-sub run {
-
- my ( $key, @arg ) = @_;
+ umb_del => 'delete from umb where album=?',
+ umb_ins => 'insert into umb (album,umb_en,umb_fi) values (?,?,?)',
+ umb_trn => 'delete from umb where album not in ( select album from album )',
  
- $stm { $key }->execute ( @arg );
+ photo_del => 'delete from photo where album=?',
+ photo_ins => 'insert into photo (album,n,file,width_hr,height_hr,bytes_hr,width_lr,height_lr,bytes_lr) values (?,?,?,?,?,?,?,?,?)', 
    
- if ( $key =~ m|se1$| ) {
+ fexif_del => 'delete from fexif where album=?',
+ fexif_ins => 'insert into fexif (album,n,key,val) values (?,?,?,?)',
+ fexif_all => 'select n,key,val from fexif where album=? order by n,key',
+ fexif_trn => 'delete from fexif where album not in ( select album from photo )',
  
-  return $stm{ $key }->fetchrow_array;
-    
- } elsif ( $key =~ m|ser$| ) {
+ mexif_del => 'delete from mexif where album=?',
+ mexif_ins => 'insert into mexif (album,n,key,val) values (?,?,?,?)',
+ mexif_all => 'select n,key,val from mexif where album=? order by n,key',
+   
+ snip_del => 'delete from snip where album=?', 
+ snip_ins => 'insert into snip (album,n,p,sid) values (?,?,?,?)',
  
-  return $stm{ $key }->fetchrow_arrayref;
-      
- } elsif ( $key =~ m|sea$| ) {
- 
-  return $stm{ $key }->fetchall_arrayref;
-    
- }
+ sec_ind => 'insert into sec (pid,sec_en,sort_en,sec_fi,sort_fi) values (?,?,?,?,?)',
+ sec_trn => 'delete from sec where ( pid not in (select pid from pri) ) or ( sid not in ( select sid from snip ) )',
 
-}
+ pri_one => 'select pid from pri where pri=?', 
+  
+};
+
+my $stm = {}; # variable to hold prepared SQL statements
 
 # static database connection initialized at 
 # the beginning and closed at the end
-my $dbc;  
+my $dbc;
 
 sub load_begin {
 
- my $dbfile = shift;
- 
+ my ( $dt, $dbfile ) = @_;
+  
  logit ( "connecting database '$dbfile'" );
 
  $dbc = DBI->connect( 
   conf ( 'dbconn' ) . $dbfile , '', '', conf ( 'dbargs_load' ) 
  )  or die "unable to connect to database $dbfile: $DBI::errstr";
 
+ logit ( 'preparing ' . scalar ( keys %{ $sql } ). ' SQL statements' );
+ 
+ foreach ( keys %{ $sql } ) { $stm->{$_} = $dbc->prepare ( $sql->{$_} ) }
+ 
+ logit ( "storing run dt '$dt'" );
+  
+ load_exec ( 'run_ins', $dt ); 
+ 
 }
+
+sub load_end {
+
+ my $vacuum = 0; # default is not to vacuum
+ 
+ # for every fifth run do vacuum 
+ ( load_exec ( 'run_count_sel' ) % 5 == 0 ) and $vacuum = 1;
+ 
+ logit ( 'finishing statements' );
+ 
+ foreach ( keys %{ $stm } ) { $stm->{$_}->finish } 
+ 
+ logit ( 'committing database' );
+
+ $dbc->commit;
+ 
+ logit ( 'analyzing database' );
+ 
+ $dbc->do( 'analyze' );
+ 
+ if ( $vacuum ) {
+ 
+  logit ( 'vacuuming database' );
+
+  {
+  
+   local $dbc->{AutoCommit} = 1;
+ 
+   $dbc->do( 'vacuum' );
+ 
+  }
+  
+ }
+
+ logit ( 'disconnecting database' );
+
+ $dbc->disconnect;  
+
+}
+
+sub load_exec {
+
+ # general database statement executor
+ # the statement key points to the statement to get executed
+
+ my ( $key, @args ) = @_;
+ 
+ $stm->{$key}->execute ( @args );
+ 
+ given ( $key ) {
+ 
+  when ( /one$/ ) { return $stm->{$key}->fetchrow_array }
+  
+  when ( /row$/ ) { return $stm->{$key}->fetchrow_array }
+  
+  when ( /col$/ ) { return $stm->{$key}->fetchcol_array }
+  
+  when ( /all$/ ) { return $stm->{$key}->fetchall_array }
+  
+  when ( /ind$/ ) { return $dbc->sqlite_last_insert_rowid() }
+ 
+ }
+ 
+ # default is not to return anything
+
+}
+
+sub load_nomatch {
+#
+ # checks if DNA matches, if it doesn't then store the new DNA
+
+ # returns true if no match = something to do 
+ # returns false if match = nothing to do
+ 
+ my ( $class, $item, $dnanew ) = @_;
+ 
+ my $dt = load_exec ( 'run_one' ); # get the current run's dt
+ 
+ my $dnaold = run ( 'dna_one', $class, $item );
+ 
+ if ( defined $dnaold ) {
+ 
+  if ( $dnaold eq $dnanew ) {
+
+   logit ( "DNA match '$class' '$item': '$dnaold' = '$dnanew'" ); 
+   
+   return 0;  
+  
+  } else {
+  
+   logit ( "DNA mismatch '$class' '$item': '$dnaold' = '$dnanew'" ); 
+
+   run ( 'dna_ins', $dnanew, $dt, $class, $item );
+     
+  }
+  
+ } else {
+ 
+  logit ( "DNA not found for '$class' '$item', storing the new DNA '$dnanew'" ); 
+
+  run ( 'dna_ins', $dnanew, $dt, $class, $item );
+
+  return 1;
+ 
+ }
+  
+}
+
+1;
+
+__END__
 
  
 sub end {
@@ -164,23 +245,7 @@ sub end {
 
 }
 
-sub put_dna {
 
- my ( $class, $item, $dnew, $dt ) = @_;
- 
- my $dold = run ( 'dna_se1', $class, $item ) // 'undef';
-  
- if ( $dold eq 'undef' ) {
-  
-  run ( 'dna_ins', $dnew, $dt, $class, $item  );
- 
- } else {
- 
-  run ( 'dna_upd', $dnew, $dt, $class, $item );
- 
- }
-   
-}
 
 sub put_exia {
 
@@ -217,27 +282,6 @@ sub upd_x {
  
 }
 
-sub finish {
-
- say "finishing statements";
- foreach my $key (keys %stm) { $stm{ $key }->finish }
-
- say "committing";
- $dbc->commit;
- 
- say "analyzing";
- $dbc->do('analyze');
-
- #say "vacuuming";
- #{
- # local $dbc->{AutoCommit} = 1;
- #  $dbc->do('vacuum');
- #}
-
- say "disconnecting";
- $dbc->disconnect;  
-
-}
 
 
 sub file2table {
@@ -268,6 +312,50 @@ sub to_lines {
 
 __END__
 
+sub finish {
+
+ say "finishing statements";
+ foreach my $key (keys %stm) { $stm{ $key }->finish }
+
+ say "committing";
+ $dbc->commit;
+ 
+ say "analyzing";
+ $dbc->do('analyze');
+
+ #say "vacuuming";
+ #{
+ # local $dbc->{AutoCommit} = 1;
+ #  $dbc->do('vacuum');
+ #}
+
+ say "disconnecting";
+ $dbc->disconnect;  
+
+}
+
+
+sub run {
+
+ my ( $key, @arg ) = @_;
+ 
+ $stm { $key }->execute ( @arg );
+   
+ if ( $key =~ m|se1$| ) {
+ 
+  return $stm{ $key }->fetchrow_array;
+    
+ } elsif ( $key =~ m|ser$| ) {
+ 
+  return $stm{ $key }->fetchrow_arrayref;
+      
+ } elsif ( $key =~ m|sea$| ) {
+ 
+  return $stm{ $key }->fetchall_arrayref;
+    
+ }
+
+}
 foreach my $file ( grep { $_ ne 'gallerymeta' } @metafiles ) {
 
  my $table = file2table( $file );

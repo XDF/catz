@@ -29,7 +29,7 @@ use warnings;
 
 use parent 'Exporter';
 
-our @EXPORT_OK = qw ( log_close log_open logit );
+our @EXPORT_OK = qw ( logclose logit logopen );
 
 sub logit {
 
@@ -37,13 +37,13 @@ sub logit {
 
 }
 
-sub log_close {
+sub logclose {
 
  close LOG;
 
 }
 
-sub log_open {
+sub logopen {
 
  my $logfile = shift;
 

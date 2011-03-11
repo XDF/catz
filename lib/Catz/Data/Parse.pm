@@ -29,20 +29,13 @@ use warnings;
 
 use feature qw ( switch );
 
-# mark the windows OS
-my $win = 0;
-$^O =~ /win/i and $win = 1;
-
-if ( $win ) { use lib '/catz/lib' } 
- else { die "not on windows, out of lib" }
-
 use parent 'Exporter';
 
 our @EXPORT = qw ( parse_mgallery );
 
 use Data::Dumper;
 
-use Catz::Util qw ( clean trim );
+use Catz::Util::String qw ( clean trim );
 
 
 ###
@@ -305,6 +298,8 @@ sub def {
  }
  
 }
+
+__END__
 
 print Dumper ( line ( 'EP, IC, TICA TGA, WW2010 {Framillan} Cool Hurricane, DVM, DTM (Aatu) [CRX n 03]' ) );
 #print Dumper ( comm ( 'SC {Ilveslinnan} Amir Akanyildiz, DVM (Miro) [TUV d 62] "first show|ensimmäinen näyttely"' ) );

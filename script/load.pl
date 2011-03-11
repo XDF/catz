@@ -31,8 +31,9 @@ use feature qw ( say );
 
 use Catz::Data::Conf;
 use Catz::Data::Load;
+use Catz::Data::Parse;
 use Catz::Util::File qw ( filecopy  filewrite findlatest );
-use Catz::Util::Log qw ( log_close log_open logit );
+use Catz::Util::Log qw ( logclose logopen logit );
 use Catz::Util::Time qw ( dt dtexpand dtlang );
 
 my $lock = conf ( 'file_lock' );
@@ -51,7 +52,7 @@ my $dt = dt(); # the run is identified by YYYYMMSSHHMMSS
 # DISABLE FOR TESTING 
 #file_write ( $lock, "Catz loader lock file $dt" );
 
-log_open ( conf ( 'path_log' ) . "/$dt.log" );
+logopen ( conf ( 'path_log' ) . "/$dt.log" );
 
 logit ( 'catz loader started at ' . dtexpand ( $dt ).' (dt '.$dt.')' );
 
@@ -69,7 +70,9 @@ filecopy ( $olddb, $newdb );
 
 my $changes = 0; # flag that should be turned on if something has changed
 
-load_begin ( $newdb );
+load_begin ( $dt, $newdb );
+
+load_end;
 
 }; # main eval end
 
@@ -82,11 +85,12 @@ if ( $@ ) { # error condition
 
 }
 
+
 my $etime = time();
 
 logit ( 'catz loader finished at ' .  dtlang() . ' (' . ( $etime - $btime ) . ' seconds)' );
 
-log_close();
+logclose();
 
 __END__  
 
