@@ -32,7 +32,9 @@ use feature qw ( say );
 use Catz::Data::Conf;
 use Catz::Data::Load;
 use Catz::Data::Parse;
-use Catz::Util::File qw ( filecopy  filewrite findlatest );
+use Catz::Util::File qw ( 
+ dnafolder filecopy finddirs filewrite findlatest pathcut 
+);
 use Catz::Util::Log qw ( logclose logopen logit );
 use Catz::Util::Time qw ( dt dtexpand dtlang );
 
@@ -56,7 +58,7 @@ logopen ( conf ( 'path_log' ) . "/$dt.log" );
 
 logit ( 'catz loader started at ' . dtexpand ( $dt ).' (dt '.$dt.')' );
 
-eval { # main eval begin
+#eval { # main eval begin
 
 my $olddb = findlatest ( conf ( 'path_master' ) , 'db' );
 
@@ -72,18 +74,49 @@ my $changes = 0; # flag that should be turned on if something has changed
 
 load_begin ( $dt, $newdb );
 
-load_end;
+# phase 1: load folders
 
-}; # main eval end
+my @folders =  
+ grep { /\d{8}[a-z0-9]+$/ } grep { /2006/ } finddirs ( conf ( 'path_photo' ) );
 
-if ( $@ ) { # error condition
+logit ( 'verifying ' . scalar ( @folders ) . ' folders' );
 
+foreach my $folder ( @folders ) {
 
-} else { # no errors 
+ my $dna = dnafolder ( $folder );
+ 
+ my $album = pathcut ( $folder );
+ 
+ if ( load_nomatch ( 'folder', $album, $dna ) ) { # loading required
+ 
+  $changes++;
 
-
+  load_folder ( $folder );  
+ 
+ }
 
 }
+
+# phase 2: load files
+
+ 
+
+load_end;
+
+#}; # main eval end
+
+#if ( $@ ) { # error condition true
+#
+# logit $@;
+ 
+# die $@;
+ 
+
+#} else { # no errors 
+
+
+
+#}
 
 
 my $etime = time();

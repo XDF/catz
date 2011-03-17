@@ -31,7 +31,6 @@ use feature qw ( switch );
 
 use Image::ExifTool qw(:Public);
 
-
 use Catz::Util qw ( float filenum round trim ucclcc );
 
 our @softs = qw ( cat breeder ems1 ems3 ems4 ems5 nick ) ;

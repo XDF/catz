@@ -22,37 +22,46 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Util::Log;
+package Catz::Util::Data;
 
 use strict;
 use warnings;
 
-use feature qw ( say );
+use base 'Exporter';
 
-use parent 'Exporter';
+our @EXPORT_OK = qw( exif fixgap );
 
-our @EXPORT_OK = qw ( logclose logit logopen );
+use Catz::Util::File qw ( filenum );
 
-sub logit {
 
- say LOG $_[0];
+
+sub fixgap {
  
- # at development phase also print it out
- say $_[0]; 
+ # should locate the gap (9999 to 0000 ) in photo file numbers 
+ # and reorder the photos to the correct logical order
 
-}
+ my @photos = @_;
 
-sub logclose {
-
- close LOG;
-
-}
-
-sub logopen {
-
- my $logfile = shift;
-
- open LOG, ">$logfile" or die "unable to open logfile '$logfile' for writing";
+ my $prevnum = undef;
+ 
+ foreach my $i ( 0 .. ( scalar ( @photos ) - 1 ) ) {
+  my $filenum = filenum($photos[$i]);
+  if(defined $prevnum) {
+   if(int($filenum)>(int($prevnum)+5000)) {
+    # gap detected
+    my @arr = ();
+    foreach my $j ($i..(scalar(@photos)-1)) {
+     push @arr, $photos[$j];
+    }
+    foreach my $j (0..$i-1) { 
+     push @arr, $photos[$j];
+    }
+    return @arr; # return the modified array
+   }
+  }
+  $prevnum = $filenum;
+ }
+  
+ return @photos; # return the original array if reached the end 
 
 } 
-

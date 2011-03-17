@@ -31,13 +31,18 @@ use feature qw( say );
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( load_begin load_end load_exec load_nomatch );
+our @EXPORT = qw ( 
+ load_begin load_end load_exec load_folder load_nomatch 
+);
 
 use feature qw ( switch );
 
 use DBI;
 
 use Catz::Data::Conf;
+use Catz::Util::Data qw ( fixgap );
+use Catz::Util::File qw ( filehead filesize filethumb findphotos pathcut );
+use Catz::Util::Image qw ( exif widthheight );
 use Catz::Util::Log qw ( logit );
 use Catz::Util::String qw ( trim );
 
@@ -124,7 +129,7 @@ sub load_end {
  my $vacuum = 0; # default is not to vacuum
  
  # for every fifth run do vacuum 
- ( load_exec ( 'run_count_sel' ) % 5 == 0 ) and $vacuum = 1;
+ ( load_exec ( 'run_count_one' ) % 5 == 0 ) and $vacuum = 1;
  
  logit ( 'finishing statements' );
  
@@ -164,7 +169,7 @@ sub load_exec {
  # the statement key points to the statement to get executed
 
  my ( $key, @args ) = @_;
- 
+  
  $stm->{$key}->execute ( @args );
  
  given ( $key ) {
@@ -186,7 +191,8 @@ sub load_exec {
 }
 
 sub load_nomatch {
-#
+
+ #
  # checks if DNA matches, if it doesn't then store the new DNA
 
  # returns true if no match = something to do 
@@ -196,7 +202,7 @@ sub load_nomatch {
  
  my $dt = load_exec ( 'run_one' ); # get the current run's dt
  
- my $dnaold = run ( 'dna_one', $class, $item );
+ my $dnaold = load_exec ( 'dna_one', $class, $item );
  
  if ( defined $dnaold ) {
  
@@ -210,7 +216,7 @@ sub load_nomatch {
   
    logit ( "DNA mismatch '$class' '$item': '$dnaold' = '$dnanew'" ); 
 
-   run ( 'dna_ins', $dnanew, $dt, $class, $item );
+   load_exec ( 'dna_ins', $dnanew, $dt, $class, $item );
      
   }
   
@@ -218,12 +224,60 @@ sub load_nomatch {
  
   logit ( "DNA not found for '$class' '$item', storing the new DNA '$dnanew'" ); 
 
-  run ( 'dna_ins', $dnanew, $dt, $class, $item );
+  load_exec ( 'dna_ins', $dnanew, $dt, $class, $item );
 
   return 1;
  
  }
   
+}
+
+sub load_folder {
+
+ my $folder = shift;
+ 
+ my $album = pathcut ( $folder );
+ 
+ load_exec ( 'photo_del', $album );
+ load_exec ( 'fexif_del', $album );
+    
+ my @photos = fixgap ( findphotos ( $folder ) );
+
+ logit ('loading '. scalar @photos . " photos from '$folder'" );
+ 
+ my $n = 1; # photos are numbered staring from 1
+ 
+ foreach my $photo (@photos) {
+      
+  my $head = filehead ( $photo );
+             
+  my $thumb = filethumb ( $photo );
+
+  -f $thumb or die "missing thumbnail file '$thumb'";  
+   
+  my ( $width_hr, $height_hr ) = widthheight( $photo );
+  
+  my $bytes_hr = filesize ( $photo );
+  
+  my ( $width_lr, $height_lr ) = widthheight( $thumb );
+  
+  my $bytes_lr = filesize ( $thumb );
+  
+  load_exec ( 
+   'photo_ins', $album, $n, $head, $width_hr, $height_hr,
+   $bytes_hr, $width_lr, $height_lr, $bytes_lr 
+  );
+  
+  my $exif = exif ( $photo );
+  
+  do {
+   load_exec ( 'fexif_ins', $album, $n, $_, $exif -> { $_ }  ) 
+  } foreach keys %{ $exif };
+      
+  $n++;
+    
+ }
+
 }
 
 1;
