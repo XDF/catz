@@ -27,13 +27,75 @@ package Catz::Util::Image;
 use strict;
 use warnings;
 
+use feature qw ( switch );
+
 use Image::Size;
+use Image::ExifTool qw( :Public );
 
 use Catz::Data::Conf;
 
 use base 'Exporter';
 
-our @EXPORT_OK = qw( width_height thumbfile );
+our @EXPORT_OK = qw( exif thumbfile widthheight );
+
+sub exif {
+ 
+ my $file = shift;
+ 
+ my $i = ImageInfo ( $file ); 
+ 
+ my $o = {};
+  
+ foreach my $key ( keys %{ $i } ) {
+ 
+  given ( $key ) {
+  
+   when ( 'FocalLength' ) { $o->{flen} = $i->{ $key } }
+   
+   when ( 'ExposureTime' ) { $o->{etime} = $i->{ $key } } 
+  
+   when ( 'FNumber' ) { $o->{fnum} = $i->{ $key } }
+
+   when ( 'CreateDate' ) { 
+  
+   $i->{ $key } =~ /(\d\d\d\d).(\d\d).(\d\d) (\d\d).(\d\d).(\d\d)/;
+     
+   $o->{dt} = "$1$2$3$4$5$6";
+  
+   }
+  
+   when ( 'ISO' ) { $o->{iso} = $i->{ $key } }
+  
+   when ( 'Model' ) {
+   
+    my $body;
+   
+    { 
+    
+     no strict 'refs'; 
+     
+     $body = conf ( 'bodyname' ) -> ( $i->{ $key } );
+     
+    }
+    
+    $body or die "unable to resolve body name with '$i->{ $key }'"; 
+  
+    $o->{body} = $body;
+      
+   }
+   
+  } 
+   
+ }
+ 
+ return $o;
+     
+}  
+  
+#  
+# convert image file name to thumbnail file name
+#
+sub thumbfile { substr ( $_[0], 0, -4 ) . conf ( 'part_thumb' )  }
 
 #
 # get image width and height
@@ -42,11 +104,6 @@ our @EXPORT_OK = qw( width_height thumbfile );
 # in: filename
 # out: width, height
 #
-sub width_height { imgsize ( $_[0] ) }
-
-#  
-# convert image file name to thumbnail file name
-#
-sub thumbfile { substr ( $_[0], 0, -4 ) . conf ( 'part_thumb' )  }
+sub widthheight { imgsize ( $_[0] ) }
 
 1;

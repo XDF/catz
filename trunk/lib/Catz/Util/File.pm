@@ -35,8 +35,8 @@ use File::stat;
 use base 'Exporter';
 
 our @EXPORT_OK = qw (  
- dnafolder filecopy fileread fileremove filemove filesize filewrite findfiles
- finddirs findlatest findphotos pathcut zipread
+ dnafolder filecopy filehead fileread fileremove filemove filenum filesize 
+ filethumb filewrite findfiles finddirs findlatest findphotos pathcut zipread
 );
  
 use Catz::Util::String qw ( dna ); 
@@ -59,11 +59,11 @@ sub dnafolder {
  
  my @files = sort glob ( $folder . '/*' );
  
- my $str = scalar(@files);
+ my $str = scalar( @files );
  
  $str = $str . # using File::stat 
-  join '|', map { $_. stat( $_ )->size. stat ($_ )->mtime } @files;
-
+  join '|', map { $_. stat( $_ )->size . stat ( $_ )->mtime } @files;
+  
  return dna( $str ); # dna sub is at Catz::Util::String
  
 }
@@ -72,8 +72,28 @@ sub filecopy {
  copy( $_[0], $_[1] ) or die "unable to copy '$_[0]' to '$_[1]'" 
 }
 
+sub filehead {
+
+ $_[0] =~ /^.*\/(.+?)\....$/;
+ 
+ $1 and return $1;
+ 
+ die "unable to find filehead in filename '$_[0]'"; 
+
+}
+
 sub filemove { 
  move ( $_[0] , $_[1] ) or die "unable to rename '$_[0]' to '$_[1]'" 
+}
+
+sub filenum {
+
+ $_[0] =~ /(\d\d\d\d)\....$/;
+ 
+ $1 and return $1;
+ 
+ die "unable to find filenum in filename '$_[0]'"; 
+ 
 }
 
 #
@@ -95,6 +115,16 @@ sub fileread {
 sub fileremove { unlink ( $_[0] ) or die "unable to remove '$_[0]'" }
 
 sub filesize { -s $_[0] }
+
+sub filethumb {
+
+ $_[0] =~ /^(.+)\.(...)$/;
+ 
+ ( $1 and $2 ) or die "unable to make filethumb from filename '$_[0]'"; 
+ 
+ return "$1_LR.$2";
+ 
+}
 
 #
 # write a file 

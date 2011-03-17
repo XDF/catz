@@ -35,6 +35,27 @@ our @EXPORT = qw ( conf );
 my $base = '/catz';
 
 my $conf = { # config is one hash ref
+
+ # body name resoving sub
+ bodyname => sub {
+ 
+  $_ = $_[0];
+ 
+  m|ND\-4020| and return 'Nytech ND-4020';
+ 
+  m| 300D| and return 'Canon EOS 300D';
+ 
+  m|EOS 20D| and return 'Canon EOS 20D';
+ 
+  m|EOS 40D| and return 'Canon EOS 40D';
+  
+  m|Mark III| and return 'Canon EOS 1D Mark III';
+  
+  m|DMC-LX3| and return 'Panasonic Lumix DMC-LX3';
+  
+  return undef; 
+ 
+ },
  
  # db arguments for the web system
  dbargs_runtime => { AutoCommit => 1, RaiseError => 1, PrintError => 1 },
@@ -119,7 +140,7 @@ my $conf = { # config is one hash ref
  },
  
  # metafiles to be loaded and the loading order
- metafiles => [ qw ( textmeta newsmeta countrymeta breedmeta breedermeta gallerymeta ) ],
+ metafiles => [ qw ( textmeta exifmeta newsmeta countrymeta breedmeta breedermeta gallerymeta ) ],
  
  # the filename ending for thumbnail files
  part_thumb => '_LR.JPG',
