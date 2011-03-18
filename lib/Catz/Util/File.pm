@@ -35,7 +35,7 @@ use File::stat;
 use base 'Exporter';
 
 our @EXPORT_OK = qw (  
- dnafolder filecopy filehead fileread fileremove filemove filenum filesize 
+ dnafolder file2table filecopy filehead fileread fileremove filemove filenum filesize 
  filethumb filewrite findfiles finddirs findlatest findphotos pathcut zipread
 );
  

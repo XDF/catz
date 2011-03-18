@@ -42,14 +42,11 @@ use CHI;
 #use Cache::Memcached::Fast;
 use Digest::MD5 qw( md5_base64 );
 
-# issues with Memcached on Win (hangs all the time),
-# now running on file system
-my $cache = CHI->new( 
- driver => 'File',
- namespace => 'catzz.biz',
- root_dir => '/catz/cache',
- depth => 3,
- max_key_length => 250
+use Catz::Data::Conf;
+
+# had issues with Memcached on Win (hangs all the time),
+# now running on file system via CHI
+my $cache = CHI->new( conf ('cache' ) );
 );
 
 # just using a simple static Cache::Memcached::Fast object 

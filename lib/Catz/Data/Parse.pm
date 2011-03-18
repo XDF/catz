@@ -31,12 +31,12 @@ use feature qw ( switch );
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( parse_mgallery );
+our @EXPORT = qw ( parse_pile );
 
 use Data::Dumper;
 
+use Catz::Util::Data qw ( loc nat org tolines umb );
 use Catz::Util::String qw ( clean trim );
-
 
 ###
 
@@ -297,6 +297,46 @@ sub def {
  
  }
  
+}
+
+sub parse_pile {
+
+ my @lines = tolines ( $_[0] );
+ 
+ my $d = {};
+ 
+ # proceed line by line (shift from @lines)
+ 
+ # if the first line is a section then skip it
+ substr ( $lines[0], 0, 1 ) eq '!' and shift @lines;
+ 
+ my $album = shift @lines;
+ 
+ $album =~ /^(20\d{6})([a-z]+)(\d{0,1})$/;
+      
+ $d->{origined} = $1; # albumn name starts with YYYYDDMM
+ ( $d->{location_en}, $d->{location_fi} ) = loc ( $2 ); # location part follows
+ # $3 might be 1,2,3 ... to specify multiple albums but is not stored 
+ 
+ shift @lines; # the second line in the pile is deprecated
+ 
+ ( $d->{created}, $d->{modified} ) = split /\//, shift @lines; 
+
+ $d->{name_en} = shift @lines;
+ 
+ $d->{name_fi} = shift @lines;
+ 
+ ( $d->{org_en}, $d->{org_fi} ) = org ( $d->{name_en} );
+ 
+ defined $d->{org_en} and 
+  ( $d->{umb_en}, $d->{umb_fi} ) = umb ( $d->{org_en} );
+  
+ $d->{country} = nat ( $d->{location_en} );
+ 
+ 
+ 
+ die Dumper $d;
+
 }
 
 __END__
