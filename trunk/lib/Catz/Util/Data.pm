@@ -29,11 +29,13 @@ use warnings;
 
 use base 'Exporter';
 
-our @EXPORT_OK = qw( exif fixgap );
+our @EXPORT_OK = qw( exif fixgap loc nat org tolines topiles umb );
 
+use Catz::Data::Conf;
 use Catz::Util::File qw ( filenum );
+use Catz::Util::String qw ( trim ucclcc );
 
-
+sub nat { no strict 'refs'; conf ( 'country' ) -> ( @_ ) }
 
 sub fixgap {
  
@@ -44,24 +46,54 @@ sub fixgap {
 
  my $prevnum = undef;
  
- foreach my $i ( 0 .. ( scalar ( @photos ) - 1 ) ) {
-  my $filenum = filenum($photos[$i]);
+ foreach my $i ( 0 .. $#photos ) {
+ 
+  my $filenum = filenum ( $photos[ $i ] );
+  
   if(defined $prevnum) {
-   if(int($filenum)>(int($prevnum)+5000)) {
-    # gap detected
-    my @arr = ();
-    foreach my $j ($i..(scalar(@photos)-1)) {
-     push @arr, $photos[$j];
-    }
-    foreach my $j (0..$i-1) { 
-     push @arr, $photos[$j];
-    }
+  
+   if( int ( $filenum ) > ( int ( $prevnum ) + 5000 ) ) { # gap detected
+    
+    my @arr = (); # new modified array
+    
+    # the first part ...
+    foreach my $j ($i .. $#photos ) { push @arr, $photos[$j] }
+   
+    # ... and the second part
+    foreach my $j ( 0 .. $i - 1 ) { push @arr, $photos[$j] }
+    
     return @arr; # return the modified array
+    
    }
+   
   }
+  
   $prevnum = $filenum;
+  
  }
   
  return @photos; # return the original array if reached the end 
 
-} 
+}
+
+sub loc {
+
+ my $loc = $_[0];
+ 
+ my $conf = conf ( 'location' );
+ 
+ $conf->{$loc} and $loc = $conf->{$loc};
+     
+ return ucclcc($loc), ucclcc($loc);
+     
+}
+
+sub org { no strict 'refs'; conf ( 'organizer' ) -> ( @_ ) }
+
+sub umb { no strict 'refs'; conf ( 'umbrella' ) -> ( @_ ) }
+
+sub tolines { map { trim( $_ ) } split /\n/, trim ( $_[0] ) }
+
+sub topiles { map { trim( $_ ) } split /\#/, trim ( $_[0] ) }
+
+1; 

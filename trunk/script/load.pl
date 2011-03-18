@@ -32,10 +32,12 @@ use feature qw ( say );
 use Catz::Data::Conf;
 use Catz::Data::Load;
 use Catz::Data::Parse;
+use Catz::Util::Data qw ( topiles );
 use Catz::Util::File qw ( 
- dnafolder filecopy finddirs filewrite findlatest pathcut 
+ dnafolder filecopy fileread finddirs filewrite findlatest pathcut 
 );
 use Catz::Util::Log qw ( logclose logopen logit );
+use Catz::Util::String qw ( dna );
 use Catz::Util::Time qw ( dt dtexpand dtlang );
 
 my $lock = conf ( 'file_lock' );
@@ -77,7 +79,7 @@ load_begin ( $dt, $newdb );
 # phase 1: load folders
 
 my @folders =  
- grep { /\d{8}[a-z0-9]+$/ } grep { /2006/ } finddirs ( conf ( 'path_photo' ) );
+ grep { /\d{8}[a-z0-9]+$/ } grep { /2004/ } finddirs ( conf ( 'path_photo' ) );
 
 logit ( 'verifying ' . scalar ( @folders ) . ' folders' );
 
@@ -99,7 +101,62 @@ foreach my $folder ( @folders ) {
 
 # phase 2: load files
 
+logit ( 'verifying ' . scalar (  @{ conf ( 'metafiles' ) } ) . ' files' );
+
+foreach my $head ( @{ conf ( 'metafiles' ) } ) {
+
+ my $file =  $head . '.' . conf ( 'ext_meta' );
  
+ my $full = conf ( 'path_meta' ) . '/' . $file;
+  
+ my $data = fileread ( $full );
+ 
+ my $dna = dna ( $data );
+ 
+ if ( load_nomatch ( 'file', $head, $dna ) ) { # loading required
+ 
+  $changes++; 
+ 
+  if ( $head eq 'gallerymeta' ) { # complex loading
+  
+   foreach my $pile ( topiles ( $data ) ) {  
+   
+    if ( $pile =~ /^(\!.+?\n)?(20\d{6}[a-z]+\d{0,1})\n/g ) {    
+    
+     my $album = $2;
+     
+     my $dnaa = dna ( $pile ); 
+    
+     if ( load_nomatch ( 'album', $album, $dnaa ) ) { # loading required
+    
+       load_complex ( $album, $pile );
+    
+     } 
+
+    };
+    
+   }
+      
+  } else { # simple loading
+  
+   my $table;
+   
+   { 
+   
+    no strict 'refs';
+    
+    $table = conf ( 'file2table' ) -> ( $file );   
+   }
+  
+   load_simple ( $table, $data );
+  
+  }
+  
+ }
+ 
+}
+
+# phase 3: secondary tables data generation
 
 load_end;
 

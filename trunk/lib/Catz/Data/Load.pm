@@ -27,12 +27,13 @@ package Catz::Data::Load;
 use strict;
 use warnings;
 
-use feature qw( say );
+use feature qw( say switch );
 
 use parent 'Exporter';
 
 our @EXPORT = qw ( 
  load_begin load_end load_exec load_folder load_nomatch 
+ load_simple load_complex
 );
 
 use feature qw ( switch );
@@ -40,7 +41,8 @@ use feature qw ( switch );
 use DBI;
 
 use Catz::Data::Conf;
-use Catz::Util::Data qw ( fixgap );
+use Catz::Data::Parse;
+use Catz::Util::Data qw ( fixgap tolines topiles );
 use Catz::Util::File qw ( filehead filesize filethumb findphotos pathcut );
 use Catz::Util::Image qw ( exif widthheight );
 use Catz::Util::Log qw ( logit );
@@ -114,10 +116,10 @@ sub load_begin {
   conf ( 'dbconn' ) . $dbfile , '', '', conf ( 'dbargs_load' ) 
  )  or die "unable to connect to database $dbfile: $DBI::errstr";
 
- logit ( 'preparing ' . scalar ( keys %{ $sql } ). ' SQL statements' );
+ logit ( 'preparing ' . scalar ( keys %{ $sql } ). ' predefined SQL statements' );
  
  foreach ( keys %{ $sql } ) { $stm->{$_} = $dbc->prepare ( $sql->{$_} ) }
- 
+  
  logit ( "storing run dt '$dt'" );
   
  load_exec ( 'run_ins', $dt ); 
@@ -130,7 +132,7 @@ sub load_end {
  
  # for every fifth run do vacuum 
  ( load_exec ( 'run_count_one' ) % 5 == 0 ) and $vacuum = 1;
- 
+   
  logit ( 'finishing statements' );
  
  foreach ( keys %{ $stm } ) { $stm->{$_}->finish } 
@@ -208,13 +210,13 @@ sub load_nomatch {
  
   if ( $dnaold eq $dnanew ) {
 
-   logit ( "DNA match '$class' '$item': '$dnaold' = '$dnanew'" ); 
+   logit ( "DNA match '$class' '$item' '$dnanew'" ); 
    
    return 0;  
   
   } else {
   
-   logit ( "DNA mismatch '$class' '$item': '$dnaold' = '$dnanew'" ); 
+   logit ( "DNA mismatch '$class' '$item' '$dnaold' '$dnanew'" ); 
 
    load_exec ( 'dna_ins', $dnanew, $dt, $class, $item );
      
@@ -277,6 +279,62 @@ sub load_folder {
   $n++;
     
  }
+
+}
+
+sub load_simple {
+
+ my ( $table, $data ) = @_;
+ 
+ $dbc->do ( "delete from $table" );
+ 
+ my $stm = $dbc->prepare ( "select * from $table" );
+ 
+ my @cols = @{ $stm->{'NAME'} };
+ 
+ $stm->finish;
+ 
+ my $stm = $dbc->prepare ( 
+  "insert into $table values (" . ( join ',', map { '?' } @cols ) . ')' 
+ );
+ 
+ my $r = 0; # loaded rows counter
+ 
+ foreach my $pile ( topiles ( $data ) ) {
+ 
+  $r++;
+  
+  my @lines = tolines ( $pile );
+    
+  my @mod;
+  
+  {
+
+   no strict 'refs';
+  
+   # run necessary metadata modifications 
+   @lines = conf ( 'metamod' ) -> ( $table, @lines );  
+  
+  }
+
+  $stm->execute ( @lines );
+        
+ }
+ 
+ $stm->finish;
+ 
+ logit ( "$r rows loaded to table '$table'" );
+ 
+}
+
+sub load_complex {
+
+ my ( $album, $data ) = @_;
+ 
+ my $d = parse_pile ( $data );
+ 
+ 
+
 
 }
 

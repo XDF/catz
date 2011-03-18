@@ -27,6 +27,8 @@ package Catz::Data::Conf;
 use strict;
 use warnings;
 
+use feature qw ( switch );
+
 use parent 'Exporter';
 
 our @EXPORT = qw ( conf );
@@ -57,6 +59,16 @@ my $conf = { # config is one hash ref
  
  },
  
+ cache => {
+  driver => 'File',
+  namespace => 'catzz.biz',
+  root_dir => "$base/cache",
+  depth => 3,
+  max_key_length => 250
+ },
+ 
+ country => sub { 'FI' },
+ 
  # db arguments for the web system
  dbargs_runtime => { AutoCommit => 1, RaiseError => 1, PrintError => 1 },
  
@@ -65,6 +77,20 @@ my $conf = { # config is one hash ref
 
  # the database driver name part on the connection string
  dbconn => 'dbi:SQLite:dbname=',
+ 
+ # the file extension of the meta files to be loaded
+ ext_meta => 'txt',
+
+ # converts metadata filename to database table name 
+ file2table => sub {
+
+  $_[0] =~ /^(.+)meta/;
+  
+  $1 or die "unable to convert filename '$_[0]' to tablename";
+  
+  return "m$1";
+
+ },
  
  file_lock => "lock.txt",
  file_meta => "meta.zip", 
@@ -123,6 +149,19 @@ my $conf = { # config is one hash ref
   'canon200l' => 200
  },
  
+ location => {
+  myrskyla => 'myrskylä',
+  hyvinkaa => 'hyvinkää',
+  jamsa => 'jämsä',
+  palkane => 'pälkäne',
+  hameenlinna => 'hämeenlinna',
+  jyvaskyla => 'jyväskylä',
+  seinajoki => 'seinäjoki',
+  jarvenpaa => 'järvenpää',
+  siilinjarvi => 'siilinjärvi',
+  riihimaki => 'riihimäki'
+ },
+ 
  # text macros used in source data
  macro => {
   front => "\"(front)|(edessä)\"",
@@ -142,15 +181,122 @@ my $conf = { # config is one hash ref
  # metafiles to be loaded and the loading order
  metafiles => [ qw ( textmeta exifmeta newsmeta countrymeta breedmeta breedermeta gallerymeta ) ],
  
+ # meta file columns modifications
+ metamod => sub {
+ 
+  my $table = shift;
+   
+  my @arr = map { $_ eq '?' ? undef : $_ } @_; # convert ? to null
+
+  given ( $table  ) {
+  
+   # skip the photo URL which comes last  
+   when ( 'mbreed' ) { pop @arr };
+   
+   # skip the photo URL that comes as third value
+   when ( 'mbreeder' ) { @arr = ( $arr[0], $arr[1], $arr[3] ) };
+    
+  } 
+  
+  return @arr;
+ 
+ },
+ 
+ organizer => sub {
+ 
+  $_ = shift;
+   
+  (m|cornish rex|i) && do 
+   { return 'Norwegian Forest Cat Association','Norjalainen Metsäkissa -yhdistys'; };
+  
+  (m|norwegian forest cat|i) && do 
+   { return 'Cornish Rex Association','Cornish Rex -yhdistys'; };
+  
+  (m|american curl|i) && do 
+   { return 'American Curl Association','American Curl -yhdistys'; };
+  
+  (m|manxrengas|i) && do 
+   { return 'Manx Association','Manxrengas'; };
+  
+  (m|maine coon|i) && do 
+   { return 'Maine Coon Association','Maine Coon -yhdistys'; };
+  
+  (m|korat cat|i) && do 
+   { return 'Korat Association','Korat-yhdistys'; };
+  
+  (m|InCat|) && do { return 'InCat','InCat'; };
+          
+  (m|SUROK|) && do { return 'SUROK','SUROK'; };
+ 
+  (m|TUROK|) && do { return 'TUROK','TUROK'; };
+
+  (m|PIROK|) && do { return 'PIROK','PIROK'; };
+ 
+  (m|RuRok|) && do { return 'RuRok','RuRok'; };
+ 
+  (m|POROK|) && do { return 'POROK','POROK'; };
+ 
+  (m|ISROK|) && do { return 'ISROK','ISROK'; };
+ 
+  (m|KES-KIS|) && do { return 'KES-KIS','KES-KIS'; };
+ 
+  (m|POH-KIS|) && do { return 'POH-KIS','POH-KIS'; };
+ 
+  (m|ERY-SYD|) && do { return 'ERY-SYD','ERY-SYD'; };
+ 
+  (m|URK|) && do { return 'URK','URK'; };
+ 
+  (m|SUVAK|) && do { return 'SUVAK','SUVAK'; };
+ 
+  (m|SRK|) && do { return 'SRK','Kissaliitto'; };
+ 
+  (m|CFF|) && do { return 'CFF','CFF'; };
+ 
+  (m|FINTICAt|) && do { return 'FINTICAt','FINTICAt'; };
+ 
+  (m|Alfa Felis|i) && do { return 'Alfa Felis','Alfa Felis'; };
+ 
+  return undef,undef;
+  
+ },
+ 
  # the filename ending for thumbnail files
  part_thumb => '_LR.JPG',
 
  path_log => $base . '/' . 'log',
  path_master => $base . '/data/master',
- path_meta => $base . '/data/meta', 
- path_photo => '/www/galleries' 
+ #path_meta => $base . '/data/meta',
+ path_meta => '/www/galleries/0dat', 
+ path_photo => '/www/galleries', 
  
  #results => map { $_ => 1 } qw ( BIS BIV BOB BOX CAC CACE CACIB CACS CAGCIB CAGPIB CAP CAPE CAPIB CAPS CH EC EP EX EX1 EX2 EX3 EX4 EX5 EX6 EX7 EX8 EX9 GIC GIP IC IP KM NOM PR SC SP 1 2 3 4 5 6 7 8 9 1. 2. 3. 4. 5. 6. 7. 8. 9. )
+ 
+ umbrella => sub {
+ 
+  given ( $_[0] ) {
+  
+   when ( 'Alfa Felis' ) {
+    int(substr($_[1],0,4))<2008 and return 'FIFe','FIFe'; 
+    return 'TICA','TICA';
+   }
+
+   when ( 'SUVAK' ) {
+    int(substr($_[1],0,4))<2008 and return 'other','muut'; 
+    return 'FIFe','FIFe';
+   }
+  
+   when ( 'FINTICAt' ) { return 'TICA','TICA' }
+   
+   when ( 'CFF' ) { return 'CFA','CFA' }
+  
+   when ( ['InCat','SUROK','TUROK','PIROK','RuRok','POROK','ISROK','KES-KIS','POH-KIS','ERY-SYD','URK','SUVAK','SRK'] )
+   { return 'FIFe','FIFe' }
+ 
+   default { return 'other','muu' }
+ 
+  }
+  
+ },
  
 };
 
