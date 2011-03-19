@@ -599,7 +599,7 @@ sub exid {
  
  foreach my $exid (@exids) {
  
-  my ($key,$value) = split /=/, $exid;
+  my ( $key, $value ) = split /=/, $exid;
   
   $_ = $key;
     

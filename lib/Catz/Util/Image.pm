@@ -32,7 +32,8 @@ use feature qw ( switch );
 use Image::Size;
 use Image::ExifTool qw( :Public );
 
-use Catz::Data::Conf;
+#use Catz::Data::Conf;
+use Catz::Util::Data qw ( body );
 
 use base 'Exporter';
 
@@ -68,19 +69,10 @@ sub exif {
   
    when ( 'Model' ) {
    
-    my $body;
+    body ( $i->{ $key } )
+     or die "unable to resolve body name with '$i->{ $key }'";
    
-    { 
-    
-     no strict 'refs'; 
-     
-     $body = conf ( 'bodyname' ) -> ( $i->{ $key } );
-     
-    }
-    
-    $body or die "unable to resolve body name with '$i->{ $key }'"; 
-  
-    $o->{body} = $body;
+    $o->{body} = body ( $i->{ $key } );
       
    }
    

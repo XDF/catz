@@ -121,7 +121,9 @@ foreach my $head ( @{ conf ( 'metafiles' ) } ) {
   
    foreach my $pile ( topiles ( $data ) ) {  
    
-    if ( $pile =~ /^(\!.+?\n)?(20\d{6}[a-z]+\d{0,1})\n/g ) {    
+    if ( $pile =~ /^(\!.+?\n)?(20\d{6}[a-z]+\d{0,1})\n/g ) {
+    
+     # cat show gallery    
     
      my $album = $2;
      
@@ -133,7 +135,7 @@ foreach my $head ( @{ conf ( 'metafiles' ) } ) {
     
      } 
 
-    };
+    }
     
    }
       
