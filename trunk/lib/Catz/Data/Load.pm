@@ -294,7 +294,7 @@ sub load_simple {
  
  $stm->finish;
  
- my $stm = $dbc->prepare ( 
+ $stm = $dbc->prepare ( 
   "insert into $table values (" . ( join ',', map { '?' } @cols ) . ')' 
  );
  
@@ -304,19 +304,19 @@ sub load_simple {
  
   $r++;
   
-  my @lines = tolines ( $pile );
+  # immediately convert ? to null 
+  my @lines = map { $_ eq '?' ? undef : $_ } tolines ( $pile );
+  
+  given ( $table  ) {
+  
+   # skip the photo URL which comes last  
+   when ( 'mbreed' ) { pop @lines };
+   
+   # skip the photo URL that comes as third value
+   when ( 'mbreeder' ) { @lines = ( $lines[0], $lines[1], $lines[3] ) };
     
-  my @mod;
+  } 
   
-  {
-
-   no strict 'refs';
-  
-   # run necessary metadata modifications 
-   @lines = conf ( 'metamod' ) -> ( $table, @lines );  
-  
-  }
-
   $stm->execute ( @lines );
         
  }

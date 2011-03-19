@@ -27,15 +27,227 @@ package Catz::Util::Data;
 use strict;
 use warnings;
 
+use feature qw ( switch );
+
 use base 'Exporter';
 
-our @EXPORT_OK = qw( exif fixgap loc nat org tolines topiles umb );
+our @EXPORT_OK = qw( 
+body exid expand fixgap loc nat org tolines topiles umb 
+);
+
+use Memoize;
 
 use Catz::Data::Conf;
 use Catz::Util::File qw ( filenum );
 use Catz::Util::String qw ( trim ucclcc );
+use Catz::Util::Time qw ( dtexpand );
 
-sub nat { no strict 'refs'; conf ( 'country' ) -> ( @_ ) }
+sub expand_common {
+
+ my $text = shift;
+
+ $text =~ s/FIFE/FIFe/g;
+ 
+ return $text; 
+
+}
+
+memoize ( 'expand_text' );
+
+sub expand_text {
+
+ my ( $text, $lang ) = @_;
+ 
+ if( $lang eq 'fi' ) { 
+ 
+  $text =~ s/\"(.+?)\|(.+?)\"/$2/g; # dual lang, use second version
+  
+ } else {
+ 
+  $text =~ s/\"(.+?)\|(.+?)\"/$1/g; # dual lang, use first version
+ 
+ }
+ 
+ $text =~ s/\"(.+?)\"/$1/g; # single lang
+ 
+ return $text;
+ 
+}
+
+memoize ( 'expand_link' );
+
+sub expand_link {
+
+ my $key = shift;  
+ 
+ $key =~ s/\<(.+?)\|(.+?)\>/\<a href\=\"$1\"\>$2\<\/a\>/g; 
+ 
+ return $key;
+   
+}
+
+memoize ( 'expand_macro' );
+
+sub expand_macro {
+
+ my ( $type, $key ) = @_;
+ 
+ my $macro = conf ( 'macro' );
+ 
+ given ( $type ) {
+ 
+  when ( 'A' ) { # age
+   
+   my $en = $key; 
+   my $fi = $key; 
+ 
+   $fi = tr/./,/;
+  
+   $en =~ s/y/ years /;
+   $en =~ s/m/ months /;
+   $en =~ s/w/ weeks /; 
+   $en =~ s/d/ days /;
+  
+   $fi =~ s/y/ vuotta /; 
+   $fi =~ s/m/ kuukautta /;
+   $fi =~ s/w/ viikkoa /; 
+   $fi =~ s/d/ päivää /;
+ 
+   return qq("at the age of $en|ikä: $fi");
+ 
+  }
+ 
+  when ( 'B' ) { # born
+ 
+   $key =~ /^\d{8}$/ or die "illegal date in born macro '$key'";
+ 
+   my $en = dtexpand ( $key, 'en' );
+   my $fi = dtexpand ( $key, 'fi' );
+ 
+   return qq("born $en|syntynyt $fi");
+ 
+  }
+ 
+  when ( 'F' ) { return qq("female|naaras") } 
+ 
+  when ( 'M' ) { return qq("male|uros") }
+
+  when ( 'W' ) {
+ 
+   my $en = $key; $en =~ tr/,/./;
+   my $fi = $key; $fi =~ tr/./,/;
+  
+   qq("weight $en kg|paino $en kg");
+ 
+  } 
+ 
+  when ( [ qw ( P X ) ] ) { # position, general 
+
+  $macro->{ $key } or die "unknow macro key '$key'";
+  
+  return $macro->{ $key }; 
+ 
+ }
+ 
+ default { die "unknow macro type $type" } 
+ 
+ }
+ 
+} 
+
+memoize ( 'expand' );
+
+sub expand { 
+
+ my $text = shift;
+ 
+ # common rewrites
+
+ $text = expand_common ( $text );
+  
+ # expand macros
+ 
+ while ( $text =~ /(\%([A-Z])(\S*))/ ) {
+ 
+  my $from = $1; my $type = $2; my $key = $3;
+ 
+  my $to = expand_macro ( $type, $key );
+  
+  $text =~ s/$from/$to/g;
+ 
+ }
+ 
+ #$text = expand_text ( $text );
+ 
+ $text = expand_link ( $text );
+
+ return $text;
+ 
+}
+
+sub lens {
+
+
+
+}
+
+sub body {
+ 
+ $_ = $_[0];
+ 
+ m|ND\-4020| and return 'Nytech ND-4020';
+ 
+ m| 300D| and return 'Canon EOS 300D';
+ 
+ m|EOS 20D| and return 'Canon EOS 20D';
+ 
+ m|EOS 40D| and return 'Canon EOS 40D';
+  
+ m|Mark III| and return 'Canon EOS 1D Mark III';
+  
+ m|DMC-LX3| and return 'Panasonic Lumix DMC-LX3';
+  
+ return undef; 
+ 
+}
+
+sub nat { 'FI' } # at the moment all galleries are from Finland
+
+sub exid {
+ 
+ my @parts = split /,/, $_[0];
+  
+ my $o = {};
+ 
+ # lens must be the first part
+ $o->{lens} = shift @parts;
+ 
+ # other parts may vary
+ foreach my $part ( @parts ) {
+ 
+  my ( $key , $val ) = split /=/, $part;
+  
+  given ( $key ) {
+  
+   when ( /^exif_focal_/ ) { $o->{flen} = $val }
+   
+   when ( /^exif_f_/ ) { $o->{fnm} = $val }
+   
+   when ( /^exif_exposure_t/ ) { $o->{etime} = $val }
+   
+   when ( /^exif_iso/ ) { $o->{iso} = $val }
+   
+   when ( /^exif_camera_mo/ ) { $o->{body} = $val }
+  
+   default { die "unable to process $key at '$_[0]'" }
+  
+  }
+  
+ }
+     
+ return $o;
+     
+}
 
 sub fixgap {
  
@@ -88,9 +300,100 @@ sub loc {
      
 }
 
-sub org { no strict 'refs'; conf ( 'organizer' ) -> ( @_ ) }
+sub org { 
+ 
+ given ( shift ) {
+    
+  when ( /cornish rex/i ) {
+   return 'Norwegian Forest Cat Association','Norjalainen Metsäkissa -yhdistys' 
+  }
+  
+  when ( /norwegian forest cat/i ) 
+   { return 'Cornish Rex Association','Cornish Rex -yhdistys' }
+  
+  when ( /american curl/i )  
+   { return 'American Curl Association','American Curl -yhdistys' }
+  
+  when ( /manxrengas/i )   
+   { return 'Manx Association','Manxrengas' }
+  
+  when ( /maine coon/i )  
+   { return 'Maine Coon Association','Maine Coon -yhdistys' }
+  
+  when ( /korat cat/i ) 
+   { return 'Korat Association','Korat-yhdistys' }
+  
+  when ( /InCat/ ) { return 'InCat','InCat' }
+          
+  when ( /SUROK/ ) { return 'SUROK','SUROK' }
+ 
+  when ( /TUROK/ ) { return 'TUROK','TUROK' }
 
-sub umb { no strict 'refs'; conf ( 'umbrella' ) -> ( @_ ) }
+  when ( /PIROK/ ) { return 'PIROK','PIROK' }
+ 
+  when ( /RuRok/ ) { return 'RuRok','RuRok' }
+ 
+  when ( /POROK/ ) { return 'POROK','POROK' }
+ 
+  when ( /ISROK/ ) { return 'ISROK','ISROK' }
+ 
+  when ( /KES-KIS/ ) { return 'KES-KIS','KES-KIS' }
+ 
+  when ( /POH-KIS/ ) { return 'POH-KIS','POH-KIS' }
+ 
+  when ( /ERY-SYD/ ) { return 'ERY-SYD','ERY-SYD' }
+ 
+  when ( /URK/ ) { return 'URK','URK' }
+ 
+  when ( /SUVAK/ ) { return 'SUVAK','SUVAK' }
+ 
+  when ( /SRK/) { return 'SRK','Kissaliitto' }
+ 
+  when ( /CFF/ ) { return 'CFF','CFF' }
+ 
+  when ( /FINTICAt/ ) { return 'FINTICAt','FINTICAt' }
+ 
+  when ( /Alfa Felis/i ) { return 'Alfa Felis','Alfa Felis' }
+ 
+  default { return undef,undef }
+  
+ }
+  
+}
+
+sub umb { 
+ 
+ given ( shift ) {
+  
+  when ( 'Alfa Felis' ) {
+  
+   int ( substr ( $_[1], 0, 4 ) ) < 2008 and return 'FIFe','FIFe';
+     
+   return 'TICA','TICA';
+    
+  }
+
+  when ( 'SUVAK' ) {
+   
+   int ( substr ( $_[1], 0, 4) ) < 2008 and return 'other','muu';
+     
+   return 'FIFe','FIFe';
+    
+  }
+  
+  when ( 'FINTICAt' ) { return 'TICA','TICA' }
+   
+  when ( 'CFF' ) { return 'CFA','CFA' }
+  
+  when ( [ 'InCat','SUROK','TUROK','PIROK','RuRok','POROK','ISROK','KES-KIS',
+   'POH-KIS','ERY-SYD','URK','SUVAK','SRK'] )
+   { return 'FIFe','FIFe' }
+ 
+  default { return 'other','muu' }
+ 
+ }
+   
+}
 
 sub tolines { map { trim( $_ ) } split /\n/, trim ( $_[0] ) }
 

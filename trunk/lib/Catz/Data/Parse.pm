@@ -35,8 +35,11 @@ our @EXPORT = qw ( parse_pile );
 
 use Data::Dumper;
 
-use Catz::Util::Data qw ( loc nat org tolines umb );
+use Catz::Util::Data qw ( exid expand loc nat org tolines umb );
 use Catz::Util::String qw ( clean trim );
+
+my $s_data = {}; # static caching of processed data lines
+my $s_exif = {}; # static caching of processed exif lines
 
 ###
 
@@ -151,13 +154,16 @@ sub comm {
  my $str = shift;
  
  my $d = {}; # all findings gets packed to this hashref
+ 
+ # expand to full text format
+ $str = expand ( $str );
    
  # comment may be a full quotation
  # or may have quotation at the beginning
  # or may have quotation at the end
  # or may have quotation at both ends
  # or may have zero quotations
-    
+   
  my $quots = $str =~ tr/\"//;
  
  given ( $quots ) {
@@ -264,8 +270,8 @@ sub line {
   
  my @comms = split / \& /, $line;
  
- foreach my $str ( @comms ) {  push @{ $d }, comm ( $str ) }  
-
+ foreach my $str ( @comms ) {  push @{ $d }, comm ( $str ) } 
+ 
  return $d; # return the resulting data packed to an array as a ref
 
 }
@@ -299,6 +305,56 @@ sub def {
  
 }
 
+sub set {
+
+ # arrayrefs to collect all set's data and exif 
+ my $datas = [];
+ my $exifs = [];
+ 
+ foreach my $line ( @{ $_[0] } ) {
+ 
+  $line =~ /^(\w)([\d-]+):\s+(.+)$/ or die "malformed line: '$line'";
+   
+  my $def = $1;
+   
+  my ( $from, $to ) = split /-/, $2; 
+   
+  defined $to or $to = $from;
+   
+  my $data = $3; 
+   
+  given ( $def ) {
+  
+   when ( 'P' ) {  
+   
+    foreach my $i ( $from .. $to ) {
+    
+     $datas->[ $i ] = line ( $data );
+    
+    }
+   
+   }
+   
+   when ( 'L' ) {  
+
+    foreach my $i ( $from .. $to ) {
+    
+     $exifs->[ $i]  = exid ( $data );
+    
+    }
+      
+   }
+   
+   default { die "unknow line type in '$line'" }
+  
+  }    
+   
+ }
+
+ return ( $datas, $exifs );
+
+}
+
 sub parse_pile {
 
  my @lines = tolines ( $_[0] );
@@ -329,13 +385,21 @@ sub parse_pile {
  ( $d->{org_en}, $d->{org_fi} ) = org ( $d->{name_en} );
  
  defined $d->{org_en} and 
-  ( $d->{umb_en}, $d->{umb_fi} ) = umb ( $d->{org_en} );
+  ( $d->{umb_en}, $d->{umb_fi} ) = umb ( $d->{org_en}, $album );
   
  $d->{country} = nat ( $d->{location_en} );
  
+ # skip descrption lines, they are deprecated
+ shift @lines; shift @lines;
  
+ # @lines should now containg only data and exif lines
+ # if there are no data yet for a new album there are no lines left
  
- die Dumper $d;
+ # pass the lines forward to 'set' to get two arrayrefs,
+ # one with data lines and another wiht exif lines
+ ( $d->{data}, $d->{exif} ) = set ( \@lines );
+  
+ $album =~ /^201001/ and die Dumper $d;
 
 }
 
