@@ -332,9 +332,6 @@ sub load_complex {
  my ( $album, $data ) = @_;
  
  my $d = parse_pile ( $data );
- 
- 
-
 
 }
 
