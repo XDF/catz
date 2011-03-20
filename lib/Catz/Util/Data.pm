@@ -32,17 +32,18 @@ use feature qw ( switch );
 use base 'Exporter';
 
 our @EXPORT_OK = qw( 
-body exid expand fixgap loc nat org tolines topiles umb 
+ body exid explink expmacro exptext fixgap loc nat org 
+ plaincat textchoose textremove tolines topiles umb 
 );
-
-use Memoize;
 
 use Catz::Data::Conf;
 use Catz::Util::File qw ( filenum );
-use Catz::Util::String qw ( trim ucclcc );
+use Catz::Util::String qw ( clean trim ucclcc );
 use Catz::Util::Time qw ( dtexpand );
 
 sub expand_common {
+
+ ### NOT USED RIGHT NOW!
 
  my $text = shift;
 
@@ -52,9 +53,7 @@ sub expand_common {
 
 }
 
-memoize ( 'expand_text' );
-
-sub expand_text {
+sub exptext {
 
  my ( $text, $lang ) = @_;
  
@@ -70,25 +69,23 @@ sub expand_text {
  
  $text =~ s/\"(.+?)\"/$1/g; # single lang
  
+ $text =~ s/\{(.+)\}/$1/g; # remove breeder markers
+  
  return $text;
  
 }
 
-memoize ( 'expand_link' );
+sub explink {
 
-sub expand_link {
-
- my $key = shift;  
+ my $text = shift;  
  
- $key =~ s/\<(.+?)\|(.+?)\>/\<a href\=\"$1\"\>$2\<\/a\>/g; 
+ $text =~ s/\<(.+?)\|(.+?)\>/\<a href\=\"$1\"\>$2\<\/a\>/g; 
  
- return $key;
+ return $text;
    
 }
 
-memoize ( 'expand_macro' );
-
-sub expand_macro {
+sub macro {
 
  my ( $type, $key ) = @_;
  
@@ -101,18 +98,22 @@ sub expand_macro {
    my $en = $key; 
    my $fi = $key; 
  
-   $fi = tr/./,/;
+   $fi =~ tr/\,/\,/;
+   $en =~ tr/\./\,/;
   
    $en =~ s/y/ years /;
    $en =~ s/m/ months /;
    $en =~ s/w/ weeks /; 
    $en =~ s/d/ days /;
-  
+   $en = trim ( $en );
+   
+      
    $fi =~ s/y/ vuotta /; 
    $fi =~ s/m/ kuukautta /;
    $fi =~ s/w/ viikkoa /; 
    $fi =~ s/d/ päivää /;
- 
+   $fi = trim ( $fi );
+  
    return qq("at the age of $en|ikä: $fi");
  
   }
@@ -137,52 +138,52 @@ sub expand_macro {
    my $en = $key; $en =~ tr/,/./;
    my $fi = $key; $fi =~ tr/./,/;
   
-   qq("weight $en kg|paino $en kg");
+   return qq("weight $en kg|paino $en kg");
  
   } 
  
   when ( [ qw ( P X ) ] ) { # position, general 
 
-  $macro->{ $key } or die "unknow macro key '$key'";
+   $macro->{ $key } or die "unknow macro key '$key'";
   
-  return $macro->{ $key }; 
+   return $macro->{ $key }; 
  
- }
+  }
  
- default { die "unknow macro type $type" } 
+  default { die "unknow macro type $type" } 
  
  }
  
 } 
 
-memoize ( 'expand' );
-
-sub expand { 
+sub expmacro {
 
  my $text = shift;
- 
- # common rewrites
-
- $text = expand_common ( $text );
   
- # expand macros
- 
  while ( $text =~ /(\%([A-Z])(\S*))/ ) {
  
   my $from = $1; my $type = $2; my $key = $3;
  
-  my $to = expand_macro ( $type, $key );
+  my $to = macro ( $type, $key );
   
   $text =~ s/$from/$to/g;
- 
+   
  }
- 
- #$text = expand_text ( $text );
- 
- $text = expand_link ( $text );
 
  return $text;
  
+}
+
+sub plaincat {
+
+ # removes all freetext parts -> just cat data is left
+
+ my $text = shift;
+
+ $text =~ s/\".+?\"//g;
+
+ return trim ( clean ( $text ) );
+
 }
 
 sub lens {
@@ -238,6 +239,8 @@ sub exid {
    when ( /^exif_iso/ ) { $o->{iso} = $val }
    
    when ( /^exif_camera_mo/ ) { $o->{body} = $val }
+   
+   when ( /^exif_flash_/ ) {  } # skip this, this is deprecated
   
    default { die "unable to process $key at '$_[0]'" }
   
@@ -361,9 +364,10 @@ sub org {
   
 }
 
+
 sub umb { 
  
- given ( shift ) {
+ given ( $_[0] ) {
   
   when ( 'Alfa Felis' ) {
   
