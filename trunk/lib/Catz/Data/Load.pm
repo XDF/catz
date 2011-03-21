@@ -477,10 +477,16 @@ my @mview = (
  
  qq{ create index _x_ix1 on _x ( album, n ) },
  
+ # delete old breed secondaries
+ qq{ delete from sec where pid in ( select pid from pri where pri='breed' ) },
+ 
  # first inserting all breeds as secondaries
  qq{ insert into sec ( pid, sec_en, sort_en, sec_fi, sort_fi ) select 
  pid, breed_en, breed_en, breed_fi, breed_fi from mbreed, pri where
  pri='breed' },
+ 
+ # delete all old breed information (and also other orphans if any)
+ qq{ delete from snip where sid not in ( select sid from sec ) },
   
  # then creating a snip for each ems3 counterpart, this is kinda tricky :-D
  # what effectively happens that every ems3 data loaded based on the data

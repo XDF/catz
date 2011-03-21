@@ -38,6 +38,7 @@ our @EXPORT_OK = qw(
 
 use Catz::Data::Conf;
 use Catz::Util::File qw ( filenum );
+#use Catz::Util::Log qw ( logit ); #debugging use
 use Catz::Util::String qw ( clean trim ucclcc );
 use Catz::Util::Time qw ( dtexpand );
 
@@ -57,6 +58,8 @@ sub exptext {
 
  my ( $text, $lang ) = @_;
  
+# my $old = $text;
+ 
  if( $lang eq 'fi' ) { 
  
   $text =~ s/\"(.+?)\|(.+?)\"/$2/g; # dual lang, use second version
@@ -68,8 +71,10 @@ sub exptext {
  }
  
  $text =~ s/\"(.+?)\"/$1/g; # single lang
- 
- $text =~ s/\{(.+)\}/$1/g; # remove breeder markers
+
+# ( $text ne $old ) and logit ( "$old -> $text" );
+  
+ $text =~ s/\{(.+)\}/$1/g; # also remove breeder markers
   
  return $text;
  
@@ -77,9 +82,13 @@ sub exptext {
 
 sub explink {
 
- my $text = shift;  
+ my $text = shift;
  
- $text =~ s/\<(.+?)\|(.+?)\>/\<a href\=\"$1\"\>$2\<\/a\>/g; 
+ #my $old = $text; 
+  
+ $text =~ s/\<(.+?)\|(.+?)\>/\<a href\=\"$1\"\>$2\<\/a\>/g;
+ 
+ #( $text ne $old ) and logit ( "$old -> $text" ); 
  
  return $text;
    
@@ -160,9 +169,11 @@ sub expmacro {
 
  my $text = shift;
   
- while ( $text =~ /(\%([A-Z])(\S*))/ ) {
+ while ( $text =~ /(^| )(\%([A-Z])(\S*))/ ) {
+  # it is imporatant to check that macro starts with the beginning of
+  # data or with a space since % encoding may appear in hyperlinks
  
-  my $from = $1; my $type = $2; my $key = $3;
+  my $from = $2; my $type = $3; my $key = $4;
  
   my $to = macro ( $type, $key );
   

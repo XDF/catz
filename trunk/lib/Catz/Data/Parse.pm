@@ -66,11 +66,13 @@ sub cat {
   
   $d->{ems3} = $1;
   
-  defined $3 and $d->{ems4} = $3;
+  $3 and $d->{ems4} = $3;
  
-  defined $d->{ems4} and $d->{ems1} = [ split / /, $d->{ems4} ];
+  defined $d->{ems4} and $d->{ems1} = [ split / +/, $d->{ems4} ];
    
   $d->{ems5} = $ems; # the original EMS is ems5
+  
+  length ( trim ( $ems ) ) == 0 and die;
      
  } else {
  
@@ -100,9 +102,12 @@ sub cat {
  my @titles = ();
  
  # collect pre-titles and remove them
+ 
  if ( $data =~ /^(([A-Z0-9 ]|,| )+) (.*)$/ ) {
-  
-  $data = $3;
+ 
+  # fixed fixes
+ 
+  $data = $3;           
   
   push @titles, map { trim $_ } split /,/, $1;
   
@@ -110,6 +115,9 @@ sub cat {
 
  # collect post-titles and remove them
  if ( $data =~ /^(.+),(([A-Z0-9 ]|,| )+)/ ) {
+
+  # fixed fixes
+  $2 eq 'USA' and do { $2 = ''; $data = $data . ", $2" };
   
   $data = $1;
   
@@ -134,7 +142,11 @@ sub comment {
  
  my $d = []; # all findings get packed to this arrayref
 
+ # expand all macros
  $text = expmacro ( $text );
+ 
+ # expand all links
+ $text = explink ( $text );
  
  # the first element is the text in english
  $d->[0] = exptext ( $text, 'en' );
@@ -146,9 +158,11 @@ sub comment {
   
  $text =  plaincat ( $text );
  
- length ( $text ) > 0 and do { # if something is left ... 
+ length ( $text ) > 0 and index ( $text, '[' ) > -1 and 
+  index ( $text, ']' ) > -1  and do {
+   
+  # if something is left and ems code is present 
  
-  # the third element is the cat data
   $d->[2] = cat ( $text );
   
  }; 
