@@ -33,11 +33,12 @@ use parent 'Exporter';
 
 our @EXPORT = qw ( 
  load_begin load_end load_exec load_folder load_nomatch 
- load_simple load_complex
+ load_simple load_complex load_mview
 );
 
 use feature qw ( switch );
 
+use Data::Dumper;
 use DBI;
 
 use Catz::Data::Conf;
@@ -61,6 +62,7 @@ my $sql = {
  run_one => 'select max(dt) from run',
  run_count_one => 'select count(*) from run', 
  
+ dna_del => 'delete from dna where class=? and item=?',
  dna_one => 'select dna from dna where class=? and item=?',
  dna_ins => 'insert into dna (dna,dt,class,item) values (?,?,?,?)',
  dna_upd => 'update dna set dna=?, dt=? where class=? and item=?', 
@@ -78,8 +80,14 @@ my $sql = {
  umb_ins => 'insert into umb (album,umb_en,umb_fi) values (?,?,?)',
  umb_trn => 'delete from umb where album not in ( select album from album )',
  
+ photo_one => 'select count(*) from photo where album=? and n=?',
  photo_del => 'delete from photo where album=?',
  photo_ins => 'insert into photo (album,n,file,width_hr,height_hr,bytes_hr,width_lr,height_lr,bytes_lr) values (?,?,?,?,?,?,?,?,?)', 
+
+ dexif_del => 'delete from dexif where album=?',
+ dexif_ins => 'insert into dexif (album,n,key,val) values (?,?,?,?)',
+ dexif_all => 'select n,key,val from dexif where album=? order by n,key',
+ dexif_trn => 'delete from dexif where album not in ( select album from album )',
    
  fexif_del => 'delete from fexif where album=?',
  fexif_ins => 'insert into fexif (album,n,key,val) values (?,?,?,?)',
@@ -92,13 +100,21 @@ my $sql = {
    
  snip_del => 'delete from snip where album=?', 
  snip_ins => 'insert into snip (album,n,p,sid) values (?,?,?,?)',
+ snip_trn => 'delete from snip where album not in ( select album from album )', 
  
+ sec_one => 'select sid from sec where pid=? and sec_en=?', 
+ # strongly assuming that pid, sec_en uniquely identifies an row
  sec_ind => 'insert into sec (pid,sec_en,sort_en,sec_fi,sort_fi) values (?,?,?,?,?)',
  sec_trn => 'delete from sec where ( pid not in (select pid from pri) ) or ( sid not in ( select sid from snip ) )',
 
  pri_one => 'select pid from pri where pri=?', 
   
 };
+
+# defined the correct table truncation order
+# only tables defined here will be trunacated
+# (if there is _trn SQL but the table is not here the SQL is not used)
+my @trnorder = qw ( dna dexif fexif snip sec umb org ); 
 
 my $stm = {}; # variable to hold prepared SQL statements
 
@@ -116,7 +132,7 @@ sub load_begin {
   conf ( 'dbconn' ) . $dbfile , '', '', conf ( 'dbargs_load' ) 
  )  or die "unable to connect to database $dbfile: $DBI::errstr";
 
- logit ( 'preparing ' . scalar ( keys %{ $sql } ). ' predefined SQL statements' );
+ logit ( 'preparing ' . scalar ( keys %{ $sql } ). ' SQL statements' );
  
  foreach ( keys %{ $sql } ) { $stm->{$_} = $dbc->prepare ( $sql->{$_} ) }
   
@@ -135,7 +151,17 @@ sub load_end {
    
  logit ( 'finishing statements' );
  
- foreach ( keys %{ $stm } ) { $stm->{$_}->finish } 
+ foreach ( keys %{ $stm } ) { $stm->{$_}->finish }
+ 
+ logit ( 
+  'truncating orphan values from ' . scalar ( @trnorder ) . ' tables' 
+ );
+ 
+ foreach my $trn ( @trnorder ) {
+ 
+  $dbc->do ( $sql->{ $trn . '_trn' } );
+ 
+ }  
  
  logit ( 'committing database' );
 
@@ -171,6 +197,8 @@ sub load_exec {
  # the statement key points to the statement to get executed
 
  my ( $key, @args ) = @_;
+ 
+ defined $stm->{$key} or die "statement '$key' is unknown";
   
  $stm->{$key}->execute ( @args );
  
@@ -216,8 +244,9 @@ sub load_nomatch {
   
   } else {
   
-   logit ( "DNA mismatch '$class' '$item' '$dnaold' '$dnanew'" ); 
-
+   logit ( "DNA mismatch '$class' '$item' '$dnaold' '$dnanew'" );
+   
+   load_exec ( 'dna_del', $class, $item );
    load_exec ( 'dna_ins', $dnanew, $dt, $class, $item );
      
   }
@@ -289,8 +318,8 @@ sub load_simple {
  $dbc->do ( "delete from $table" );
  
  my $stm = $dbc->prepare ( "select * from $table" );
- 
- my @cols = @{ $stm->{'NAME'} };
+  
+ my @cols = @{ $stm->{NAME} };
  
  $stm->finish;
  
@@ -327,166 +356,147 @@ sub load_simple {
  
 }
 
+sub get_sid {
+
+ my ( $pri, $sec_en, $sort_en, $sec_fi, $sort_fi ) = @_;
+  
+ my $pid = load_exec ( 'pri_one', $pri );
+ 
+ defined $pid or die "unknown pri '$pri'";
+ 
+ my $sid = load_exec ( 'sec_one', $pid, $sec_en );
+ 
+ defined $sid or $sid = load_exec ( 
+  'sec_ind', $pid, $sec_en, $sort_en, $sec_fi, $sort_fi  
+ );
+
+ return $sid; 
+  
+}
+
 sub load_complex {
 
  my ( $album, $data ) = @_;
  
- my $d = parse_pile ( $data );
-
-}
-
-1;
-
-__END__
-
+ my $d = parse_pile ( $data ); 
+ # $d should then contain completely parsed and processed album data
+ # ready to be iterated over and inserted into the database  
  
-sub end {
+ load_exec ( 'album_del', $album );
+ load_exec ( 
+  'album_ins', $album, $d->{name_en}, $d->{name_fi}, $d->{origined},
+  $d->{created}, $d->{modified}, $d->{location_en}, $d->{location_fi}, 
+  $d->{country}
+ );
 
- my $btime = shift;
+ load_exec ( 'org_del', $album ); 
+ load_exec ( 'org_ins', $album, $d->{org_en}, $d->{org_fi} );
 
- my $etime = time();
- my $ttime = $etime-$btime;
-
- my $endts = expand_ts(sys_ts());
-
- say "execution took $ttime seconds";
- say "finished at $endts";
-
-}
-
-
-
-sub put_exia {
-
- my ( $album, $exia, $lensmode ) = @_;
+ load_exec ( 'umb_del', $album );
+ load_exec ( 'umb_ins', $album, $d->{umb_en}, $d->{umb_fi} );
  
- foreach my $a ( keys %{ $exia } ) { # foreach photo 1, 2, 3 ...
+ # loading data elements
  
-  defined $exia->{$a}->{lens} or do {
-   my $lens = Catz::Data::lens ( 
-    $lensmode, $exia->{$a}->{flen}, $exia->{$a}->{fnum} 
-   );
-   defined $lens and $exia->{$a}->{lens} = $lens;
-  };  
+ load_exec ( 'snip_del', $album );
  
-  foreach my $b ( keys %{ $exia->{$a} } ) { #foreach flen, fnum, etime ...
+ foreach my $n ( 1 .. ( scalar @{ $d->{data} } - 1 ) ) {
+  # $n is the photo number
   
-   say "$album $a $b " . $exia->{$a}->{$b};
-
-   run ( 'snip_ins', $album, $a, 0, $b, $Catz::Data::order{$b}, 
-    $exia->{$a}->{$b}, $exia->{$a}->{$b},
-    $exia->{$a}->{$b}, $exia->{$a}->{$b} 
-   ); 
+  #print $n; print "\n";
   
-  }
- }
-}
- 
-sub upd_x {
-
- say "updating x"; 
-
-  run ( 'x_del' );
-  run ( 'x_ins' );
- 
-}
-
-
-
-sub file2table {
-
- $_[0] =~ m|^(.+)meta$|; 
- 'meta'.lc($1);
-
-}
-
-sub load_getmeta {
-
-
-}
-
-
-sub to_lines {
-
-  my $album = $_[0];
-  $album = trim($album);
-  my @lines = split /\n/, $album;
-  @lines = map { trim($_) } @lines;
-  length($lines[0])<1 and return ();
-  return @lines;
-          
-}
-
-1;
-
-__END__
-
-sub finish {
-
- say "finishing statements";
- foreach my $key (keys %stm) { $stm{ $key }->finish }
-
- say "committing";
- $dbc->commit;
- 
- say "analyzing";
- $dbc->do('analyze');
-
- #say "vacuuming";
- #{
- # local $dbc->{AutoCommit} = 1;
- #  $dbc->do('vacuum');
- #}
-
- say "disconnecting";
- $dbc->disconnect;  
-
-}
-
-
-sub run {
-
- my ( $key, @arg ) = @_;
- 
- $stm { $key }->execute ( @arg );
+  defined $d->{data}->[ $n ] and do {
+  
+   my $isphoto = load_exec ( 'photo_one', $album, $n );
    
- if ( $key =~ m|se1$| ) {
- 
-  return $stm{ $key }->fetchrow_array;
+   # skip on debugging !!!!!!!!!!!!!!
+   # $isphoto or die "photo doesn't exists '$album' '$n'";
+
+   foreach my $i ( 0 .. ( scalar @{ $d->{data}->[ $n ] } - 1 ) ) {
+  
+    my $p = $i + 1; # $p is the position number within the photo
     
- } elsif ( $key =~ m|ser$| ) {
- 
-  return $stm{ $key }->fetchrow_arrayref;
+    my $sid = get_sid ( 'out', 
+     $d->{data}->[ $n ]->[ $i ]->[ 0 ],
+     $d->{data}->[ $n ]->[ $i ]->[ 0 ],
+     $d->{data}->[ $n ]->[ $i ]->[ 1 ],
+     $d->{data}->[ $n ]->[ $i ]->[ 1 ]
+    );
+    
+    load_exec ( 'snip_ins', $album, $n, $p, $sid );
+    
+    my $hash;
+   
+    defined ( $hash = $d->{data}->[ $n ]->[ $i ]->[ 2 ] ) and do {
+   
+     foreach my $key ( keys  %{ $hash } ) {
       
- } elsif ( $key =~ m|sea$| ) {
+      if ( ref ( $hash->{ $key } ) ) { # is an array, must load elements
+     
+       foreach my $elem ( @{ $hash->{ $key } } ) {
+      
+        my $sid = get_sid ( $key, $elem, $elem, $elem, $elem );
+      
+        load_exec ( 'snip_ins', $album, $n, $p, $sid );
+      
+       }
+      
+      } else { # only a scalar
+     
+       my $sid = get_sid ( $key, 
+        $hash->{ $key } , $hash->{ $key } , $hash->{ $key }, $hash->{ $key }
+       );
+
+       load_exec ( 'snip_ins', $album, $n, $p, $sid );
+      
+      }
+      
+     }
+   
+   }; 
+  }
  
-  return $stm{ $key }->fetchall_arrayref;
-    
+  };
+  
+  
  }
-
-}
-foreach my $file ( grep { $_ ne 'gallerymeta' } @metafiles ) {
-
- my $table = file2table( $file );
-
- $sql{ $table . '_trn' } = 'delete from ' . $table;
+ # loading exif elements
  
- my $es = '?';
+ load_exec ( 'dexif_del', $album ); 
  
- foreach ( 2 .. $cols { $file } ) { $es .= ',?' }
- 
- $sql{ $table . '_ins' } = "insert into $table values ($es)";
-
 }
 
-my %stm = ();
+my @mview = (
 
-foreach my $key (keys %sql) {
+ qq{ drop table if exists _x },
+ 
+ qq{ create table _x ( x integer primary key not null, album text not null, 
+ n integer not null) },
+  
+ qq{ insert into _x ( album, n ) select album,n from photo order by
+ album desc,n asc },
+ 
+ qq{ create index _x_ix1 on _x ( album, n ) },
+ 
+ # first inserting all breeds as secondaries
+ qq{ insert into sec ( pid, sec_en, sort_en, sec_fi, sort_fi ) select 
+ pid, breed_en, breed_en, breed_fi, breed_fi from mbreed, pri where
+ pri='breed' },
+  
+ # then creating a snip for each ems3 counterpart, this is kinda tricky :-D
+ # what effectively happens that every ems3 data loaded based on the data
+ # gets duplicated so that there is a correct breed snip for it
+ qq{ insert into snip (album,n,p,sid) select a.album,a.n,a.p,d.sid from snip 
+ a inner join sec b on (a.sid=b.sid) inner join mbreed c on (b.sec_en=c.ems3)
+ inner join sec d on (c.breed_en=d.sec_en) inner join pri e on (d.pid=e.pid)
+ inner join pri f on (b.pid=f.pid) where e.pri='breed' and f.pri='ems3' },  
+  
+ );
 
- #say "preparing $key";
+sub load_mview {
 
- $stm { $key } = $dbc->prepare ( $sql { $key } );
+
+ do { $dbc->do( $_ ) } foreach @mview;
 
 }
 
-our @pris = qw ( ems1 ems3 ems4 ems5 nick breeder cat );
+1;
