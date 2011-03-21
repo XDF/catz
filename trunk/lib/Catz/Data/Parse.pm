@@ -44,55 +44,6 @@ use Catz::Util::String qw ( clean trim );
 my $s_data = {}; # static caching of processed data lines
 my $s_exif = {}; # static caching of processed exif lines
 
-###
-
-sub ems {
-
- my ( $d, $ems ) = @_;
- 
- # parses EMS code into ems1, ems3, ems4 and ems5 fragments
- # receives a hashref as an arguments and adds all to that
-  
- $ems =~ /^([A-Z]{3,3})(\s+)?(.+)?$/ or die "malformed EMS code '$ems'";
-  
- $d->{ems3} = $1;
-  
- defined $3 and $d->{ems4} = $3;
- 
- defined $d->{ems4} and $d->{ems1} = [ split / /, $d->{ems4} ];
-   
- $d->{ems5} = $ems; # the original EMS is ems5
-   
-}
-
-sub titles {
-
- my ( $d, $str ) = @_;
-  
- if ( $str =~ /^(([A-Z0-9]|,| )+) (.*)$/ ) {
- 
-  #die $1;
- 
-  my $rest = $3; 
-  
-  my @pretitles = map { trim $_ } split /,/, $1;
-  
-  $d->{pretitle} = \@pretitles;
-  
- # die Dumper $d;
- #die $rest;
-          
-  if ( $rest =~ /,(([A-Z0-9]|,| )+)/ ) {
-      
-   my @posttitles = map { trim $_ } split /,/, $1;
-     
-   $d->{posttitle} = \@posttitles;
-  
-  }  
- 
- }
-   
-}
 
 sub cat {
 
@@ -100,32 +51,80 @@ sub cat {
 
  my $data = shift;
  
- print "$data\n"; 
+ #print "$data\n"; 
 
  my $d = {}; # collect the fragments to a hashref
  
- # collect ems
- if ( $data =~ /\[(.+?)\]/ ) { ems ( $d, $1 ) } else {
-  die "no ems code in cat data '$data'" 
+ # collect ems and remove it from data
+ if ( $data =~ /^(.*)\[(.+?)\](.*)$/ ) {
+  
+  $data = $1 . $3;
+  
+  my $ems = $2;
+  
+  $ems =~ /^([A-Z]{3,3})(\s+)?(.+)?$/ or die "malformed EMS code '$ems'";
+  
+  $d->{ems3} = $1;
+  
+  defined $3 and $d->{ems4} = $3;
+ 
+  defined $d->{ems4} and $d->{ems1} = [ split / /, $d->{ems4} ];
+   
+  $d->{ems5} = $ems; # the original EMS is ems5
+     
+ } else {
+ 
+  die "no ems code in cat data '$data'"
+   
  }
   
- # collect nick(s)
+ # collect nick(s) and remove them from data
  if ( $data =~ /^(.*)\((.+?)\)(.*)$/ ) {
-  
+ 
+  $data = $1 . $3;
+
   my @nicks = map { trim $_ } split /,/, $2;
    
   $d->{nick} = \@nicks; 
     
  }
+ 
+ # remove country codes before and after breeder
+ $data =~ s/[A-Z]+\*(\{)/$1/;
+ $data =~ s/\*(\})[A-Z]+/$1/;
   
- # collect breeder and remove {}
+ # collect breeder and remove {} 
  ( $data =~ /^(.*)\{(.+?)\}(.*)$/ ) and do 
   { $d->{breeder} = $2; $data = $1 . $2 . $3 };
-    
- # extract titles using a sub 
- titles ( $d, $data );  
+  
+ my @titles = ();
  
- return ( trim ( $data ), $d ); # return the string output and fragments as hashref
+ # collect pre-titles and remove them
+ if ( $data =~ /^(([A-Z0-9 ]|,| )+) (.*)$/ ) {
+  
+  $data = $3;
+  
+  push @titles, map { trim $_ } split /,/, $1;
+  
+ }
+
+ # collect post-titles and remove them
+ if ( $data =~ /^(.+),(([A-Z0-9 ]|,| )+)/ ) {
+  
+  $data = $1;
+  
+  push @titles, map { trim $_ } split /,/, $2;
+  
+ }
+ 
+ scalar ( @titles ) > 0 and $d->{title} = \@titles;    
+ 
+ # store the cat itself, if any
+ 
+ $data = trim ( $data );
+ length ( $data ) > 0 and $d->{cat} = $data;  
+ 
+ return $d; # return the string output and fragments as hashref
 
 }
 
@@ -135,20 +134,22 @@ sub comment {
  
  my $d = []; # all findings get packed to this arrayref
 
- my $text = expmacro ( $text );
+ $text = expmacro ( $text );
  
  # the first element is the text in english
  $d->[0] = exptext ( $text, 'en' );
  
  # the second element is the text in finnish
- $d->[1] = exptext ( $text, 'en' );
+ $d->[1] = exptext ( $text, 'fi' );
  
+ #$d->[0] =~ /\(/ or do { $d->[0] ne $d->[1] and die "$d->[0] $d->[1]" };
+  
  $text =  plaincat ( $text );
  
  length ( $text ) > 0 and do { # if something is left ... 
  
   # the third element is the cat data
-  $d->[2] = cat ( plaincat ( $text ) );
+  $d->[2] = cat ( $text );
   
  }; 
      
@@ -159,35 +160,6 @@ sub comment {
 # split the line for separate comments by &
 # and call 'comment' with every comment
 sub line { [ map { comment ( $_ ) } split / \& /, shift ] }
-
-sub def {
-
- my $str = shift;
- 
- $str =~ /^(\w)([\d\-]+):\s+(.+)$/ or die "malformed line in data: '$str'";
- 
- my $def = $1; my $data = $3;
- 
- my ( $from, $to ) = split /-/, $2;
- 
- defined $to or $to = $from;
- 
- given ( $def ) {
- 
-  when ( 'P' ) { 
-  
-   my $obj = comm ( $data );
-  
-  
-  }
-  
-  when ( 'L' ) { die "exid processing not yet implemented" }
-  
-  default { die "unknow data type: '$str'" } 
- 
- }
- 
-}
 
 sub set {
 
@@ -252,7 +224,8 @@ sub parse_pile {
  
  my $album = shift @lines;
  
- $album =~ /^(20\d{6})([a-z]+)(\d{0,1})$/;
+ $album =~ /^(20\d{6})([a-z]+)(\d{0,1})$/ or
+  die "invalid album name '$album'";
       
  $d->{origined} = $1; # albumn name starts with YYYYDDMM
  ( $d->{location_en}, $d->{location_fi} ) = loc ( $2 ); # location part follows
@@ -266,6 +239,8 @@ sub parse_pile {
  
  $d->{name_fi} = shift @lines;
  
+ # currently the model and the scripts support only one organization per album
+ # the database is build proactively so that it could store multiples
  ( $d->{org_en}, $d->{org_fi} ) = org ( $d->{name_en} );
  
  defined $d->{org_en} and 
@@ -283,7 +258,7 @@ sub parse_pile {
  # one with data lines and another wiht exif lines
  ( $d->{data}, $d->{exif} ) = set ( \@lines );
  
- $album =~ /^201001/ and do { logit ( Dumper $d ); die; }
+ return $d;
  
 }
 
