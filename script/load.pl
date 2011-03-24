@@ -79,7 +79,7 @@ load_begin ( $dt, $newdb );
 # phase 1: load folders
 
 my @folders =  
- grep { /\d{8}[a-z0-9]+$/ } grep { /2004/ } finddirs ( conf ( 'path_photo' ) );
+ grep { /\d{8}[a-z0-9]+$/ } grep { /2011/ } finddirs ( conf ( 'path_photo' ) );
 
 logit ( 'verifying ' . scalar ( @folders ) . ' folders' );
 

@@ -299,12 +299,18 @@ sub load_folder {
    $bytes_hr, $width_lr, $height_lr, $bytes_lr 
   );
   
-  my $exif = exif ( $photo );
+  int ( substr ( $album, 0, 4 ) > 2010 ) and do {
   
-  do {
-   load_exec ( 'fexif_ins', $album, $n, $_, $exif -> { $_ }  ) 
-  } foreach keys %{ $exif };
+   # extract file exif from 2011 and beyond   
+   
+   my $exif = exif ( $album, $photo );
+  
+   do {
+    load_exec ( 'fexif_ins', $album, $n, $_, $exif -> { $_ }  ) 
+   } foreach keys %{ $exif };
       
+  };
+  
   $n++;
     
  }
@@ -494,7 +500,10 @@ my @mview = (
  qq{ insert into snip (album,n,p,sid) select a.album,a.n,a.p,d.sid from snip 
  a inner join sec b on (a.sid=b.sid) inner join mbreed c on (b.sec_en=c.ems3)
  inner join sec d on (c.breed_en=d.sec_en) inner join pri e on (d.pid=e.pid)
- inner join pri f on (b.pid=f.pid) where e.pri='breed' and f.pri='ems3' },  
+ inner join pri f on (b.pid=f.pid) where e.pri='breed' and f.pri='ems3' },
+ 
+ # merging exif data, for the moment no dexif is processed
+ qq{ }  
   
  );
 
