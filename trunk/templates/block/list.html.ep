@@ -1,4 +1,4 @@
- % use Catz::Util qw ( enurl );
+ % use Catz::Util::String qw ( enurl );
 <table class="full">
 % foreach my $rec ( @$list ) {
 <tr>
@@ -17,11 +17,10 @@
 </tr>
 % }
 </table>
-null,pri,sec_$lang,count(distinct x),min(x),album||'/'||n
 %#
-%# The MIT License
-%# 
+%# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
+%# Licensed under The MIT License
 %# 
 %# Permission is hereby granted, free of charge, to any person obtaining a copy
 %# of this software and associated documentation files (the "Software"), to deal

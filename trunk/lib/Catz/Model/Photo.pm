@@ -1,6 +1,8 @@
 #
-# The MIT License
-# 
+# Catz - the world's most advanced cat show photo engine
+# Copyright (c) 2010-2011 Heikki Siltala
+# Licensed under The MIT License
+#
 # Copyright (c) 2010-2011 Heikki Siltala
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,21 +29,21 @@ package Catz::Model::Photo;
 use parent 'Exporter';
 our @EXPORT = qw ( photo_thumbs photo_details photo_image photo_texts );
 
-use Catz::DB;
-use Catz::Util qw ( expand_ts );
+use Catz::Data::DB;
+use Catz::Util::Time qw ( dtexpand );
 
 sub photo_thumbs {
 
  my ( $lang, $xs ) = @_; 
  
- my $thumbs = db_all( "select album,n,file||'_LR.JPG',width_lr,height_lr,null from file natural join x where x in (" 
+ my $thumbs = db_all( "select _x.album,_x.n,file||'_LR.JPG',width_lr,height_lr,null from photo natural join _x where x in (" 
   . ( join ',', @$xs ) .  ') order by x' );
 
  foreach my $row ( @$thumbs ) {
   # using date as a default metadata for thumbs
   # extract if from the album name (first eight characters)
   # and convert it to a language specific format
-  $row->[5] = expand_ts ( substr ( $row->[1], 0, 8 ), $lang );
+  $row->[5] = dtexpand ( substr ( $row->[0], 0, 8 ), $lang );
  }
 
  return $thumbs;
@@ -52,7 +54,7 @@ sub photo_details {
 
  my ( $lang, $x ) = @_;
 
- return db_all ( qq{select pri,sec_$lang from snip natural join x where x=? order by pri_sort,sec_$lang}, $x );
+ return db_all ( qq{select pri,sec_$lang from pri natural join sec natural join snip natural join _x where x=? order by pri.sort,sec_$lang}, $x );
 
 }
 
@@ -60,7 +62,7 @@ sub photo_texts {
 
  my ( $lang, $x ) = @_;
 
- return db_col ( qq{select sec_$lang from snip natural join x where x=? and pri='out' order by p}, $x );
+ return db_col ( qq{select sec_$lang from pri natural join sec natural join snip natural join _x where x=? and pri='out' order by p}, $x );
 
 
 }
@@ -69,13 +71,8 @@ sub photo_image {
 
  my $x = shift;
  
- return db_row ( "select album,file||'.JPG',width_hr,height_hr from file natural join x where x=?",$x);
+ return db_row ( qq{select album,file||'.JPG',width_hr,height_hr from photo natural join _x where x=?},$x);
 
 }
 
-
-
-
-
- 
 1;

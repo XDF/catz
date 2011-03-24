@@ -30,8 +30,8 @@ our @EXPORT = qw ( meta_text meta_maxx meta_news );
 # a generic module to provide access various meta data stuff
 # stored in the database
 
-use Catz::DB;
-use Catz::Util qw ( expand_ts );
+use Catz::Data::DB;
+use Catz::Util::Time qw ( dtexpand );
 
 my %text = ();
 
@@ -45,7 +45,7 @@ sub meta_text {
   $text{$lang} = {};
   do { 
    $text{$lang}->{$_->[0]} = $_->[1] 
-  } foreach @{ db_all( "select tag,text_$lang from metatext" ) };
+  } foreach @{ db_all( "select tag,text_$lang from mtext" ) };
  };
  
  return $text{$lang};  
@@ -54,7 +54,7 @@ sub meta_text {
 
 sub meta_maxx {
  
- defined $maxx or $maxx = db_one ( 'select max(x) from x' ) + 1;
+ defined $maxx or $maxx = db_one ( 'select max(x) from _x' ) + 1;
  
  # notice: adding 1 to make room for indexing from 1 to n
  # to be on a safe size, not only from 0 to n-1
@@ -67,11 +67,11 @@ sub meta_news {
 
  my $lang = shift;
   
- my $res = db_all ( "select dt,null,title_$lang,text_$lang from metanews order by dt desc" );
+ my $res = db_all ( "select dt,null,title_$lang,text_$lang from mnews order by dt desc" );
    
  foreach my $row ( @$res ) {
  
-  $row->[1] = expand_ts ( $row->[0], $lang );
+  $row->[1] = dtexpand ( $row->[0], $lang );
    
  }
  

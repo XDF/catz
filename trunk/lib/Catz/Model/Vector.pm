@@ -1,5 +1,7 @@
 #
-# The MIT License
+# Catz - the world's most advanced cat show photo engine
+# Copyright (c) 2010-2011 Heikki Siltala
+# Licensed under The MIT License
 # 
 # Copyright (c) 2010-2011 Heikki Siltala
 # 
@@ -36,8 +38,8 @@ use Bit::Vector;
 use List::Util qw ( shuffle );
 use POSIX qw( floor ceil );
 
-use Catz::Cache;
-use Catz::DB;
+use Catz::Data::Cache;
+use Catz::Data::DB;
 use Catz::Model::Meta;
 
 my $empty =  Bit::Vector->new( meta_maxx ); 
@@ -84,7 +86,7 @@ sub vectorize {
   
  if ( $pri eq 'has' ) {
  
-  $res = db_col( "select distinct(x) from snip natural join x where pri=?", $sec );
+  $res = db_col( "select distinct(x) from pri natural join sec natural join snip natural join _x where pri=?", $sec );
             
  } else { # no 'has'
  
@@ -92,13 +94,13 @@ sub vectorize {
   
    # pattern matching
 
-   $res = db_col( "select x from snip natural join x where pri=? and sec_$lang like ?", $pri, $sec );    
+   $res = db_col( "select x from pri natural join sec natural join snip natural join _x where pri=? and sec_$lang like ?", $pri, $sec );    
  
   } else {
 
    # exact
  
-   $res = db_col( "select x from snip natural join x where pri=? and sec_$lang=?", $pri, $sec );
+   $res = db_col( "select x from pri natural join sec natural join snip natural join _x where pri=? and sec_$lang=?", $pri, $sec );
  
   }  
 
@@ -259,7 +261,7 @@ sub vector_pointer {
   
  my $total = scalar @{ $svec };
    
- my $x = db_one( 'select x from x where album=? and n=?', $album, $n );
+ my $x = db_one( 'select x from _x where album=? and n=?', $album, $n );
     
  my $idx = bsearch( $svec, $x ); 
 
@@ -272,9 +274,9 @@ sub vector_pointer {
  
  $idx > 0 and do {
 
-  $first = db_one( "select album||'/'||n from x where x=?", $svec->[0] );
+  $first = db_one( "select album||'/'||n from _x where x=?", $svec->[0] );
 
-  $prev = db_one( "select album||'/'||n from x where x=?", $svec->[$idx-1] );
+  $prev = db_one( "select album||'/'||n from _x where x=?", $svec->[$idx-1] );
   
  };
 
@@ -283,9 +285,9 @@ sub vector_pointer {
   
  $idx < ( $total - 1 ) and do {
 
-  $last = db_one( "select album||'/'||n from x where x=?", $svec->[$total-1] );
+  $last = db_one( "select album||'/'||n from _x where x=?", $svec->[$total-1] );
 
-  $next = db_one( "select album||'/'||n from x where x=?", $svec->[$idx+1] );
+  $next = db_one( "select album||'/'||n from _x where x=?", $svec->[$idx+1] );
   
  };
 

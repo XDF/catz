@@ -1,5 +1,7 @@
 #
-# The MIT License
+# Catz - the world's most advanced cat show photo engine
+# Copyright (c) 2010-2011 Heikki Siltala
+# Licensed under The MIT License
 # 
 # Copyright (c) 2010-2011 Heikki Siltala
 # 
@@ -29,14 +31,13 @@ use warnings;
 
 use parent 'Catz::Action::Base';
 
+use I18N::AcceptLanguage;
 use XML::RSS;
 
 use Catz::Model::List;
 use Catz::Model::Meta;
-use Catz::Setup;
-use Catz::Util qw ( sys_ts );
-
-use I18N::AcceptLanguage;
+use Catz::Data::Setup;
+use Catz::Util::Time qw ( dt );
 
 my $languages = [ ( 'en', 'fi' ) ];
  
@@ -152,7 +153,7 @@ sub feed {
  $rss->channel(
   title => $stash->{t}->{SITE},
   link => 'http://' . $stash->{t}->{SITE} . '/',
-  lastBuildDate => sys_ts,
+  lastBuildDate => dt,
   managingEditor => $stash->{t}->{AUTHOR}
  );
   

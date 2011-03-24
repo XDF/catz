@@ -1,0 +1,1 @@
+perl catz daemon --reload
