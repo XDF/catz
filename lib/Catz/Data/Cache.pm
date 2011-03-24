@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 #  
 
-package Catz::Cache;
+package Catz::Data::Cache;
 
 #
 # a simple set/get module over Cache::Memcached::Fast
@@ -46,8 +46,7 @@ use Catz::Data::Conf;
 
 # had issues with Memcached on Win (hangs all the time),
 # now running on file system via CHI
-my $cache = CHI->new( conf ('cache' ) );
-);
+my $cache = CHI->new( %{ conf ('cache' ) } );
 
 # just using a simple static Cache::Memcached::Fast object 
 #my $cache = new Cache::Memcached::Fast { 

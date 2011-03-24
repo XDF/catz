@@ -29,7 +29,7 @@ use warnings;
 
 use parent 'Catz::Action::Base';
 
-use Catz::DB;
+use Catz::Data::DB;
 use Catz::Model::Meta;
 use Catz::Model::Vector;
 

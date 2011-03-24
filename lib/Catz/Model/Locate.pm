@@ -1,5 +1,7 @@
 #
-# The MIT License
+# Catz - the world's most advanced cat show photo engine
+# Copyright (c) 2010-2011 Heikki Siltala
+# Licensed under The MIT License
 # 
 # Copyright (c) 2010-2011 Heikki Siltala
 # 
@@ -30,7 +32,7 @@ use warnings;
 use parent 'Exporter';
 our @EXPORT = qw( locate_suggest locate_search );
 
-use Catz::DB;
+use Catz::Data::DB;
 
 sub locate_suggest {
 
@@ -38,7 +40,7 @@ sub locate_suggest {
 
  $pattern = '%' . $pattern . '%';
 
- my $res = db_all (qq{select pri,sec_$lang,count from ( select pri,sec_$lang,count(distinct x) as count from snip natural join x where pri not in ('dt', 'out') and sec_en like ? group by pri,sec_$lang order by random() limit 50 ) order by sec_$lang},$pattern);
+ my $res = db_all (qq{select pri,sec_$lang,count from ( select pri,sec_$lang,count(distinct x) as count from pri natural join sec natural join snip natural join _x where pri not in ('dt', 'out') and sec_en like ? group by pri,sec_$lang order by random() limit 50 ) order by sec_$lang},$pattern);
 
  return $res;
 

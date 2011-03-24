@@ -21,7 +21,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 # 
-package Catz::Setup;
+package Catz::Data::Setup;
 
 use parent 'Exporter';
 our @EXPORT = qw ( setup_defaultize setup_verify setup_signature setup_colors setup_values setup_reset setup_next setup_prev setup_circ );

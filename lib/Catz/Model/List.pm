@@ -1,6 +1,8 @@
 #
-# The MIT License
-# 
+# Catz - the world's most advanced cat show photo engine
+# Copyright (c) 2010-2011 Heikki Siltala
+# Licensed under The MIT License
+#
 # Copyright (c) 2010-2011 Heikki Siltala
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,8 +34,8 @@ use feature qw( switch );
 use parent 'Exporter';
 our @EXPORT = qw ( list_list list_links );
 
-use Catz::DB;
-use Catz::Util qw( expand_ts );
+use Catz::Data::DB;
+use Catz::Util::Time qw( dtexpand );
 
 sub list_list {
 
@@ -45,8 +47,9 @@ sub list_list {
   
   when ( 'a2z' ) {
  
-   $list = db_all( "select null,pri,sec_$lang,count(distinct x),min(x),album||'/'||n from snip
-   natural join x where pri=? group by sec_$lang order by sec_$lang", $subject
+   $list = db_all( qq{select null,pri,sec_$lang,count(distinct x),min(x),
+   _x.album||'/'||_x.n from pri natural join snip natural join sec
+   natural join _x where pri=? group by sec_$lang order by sec_$lang}, $subject
    );
       
    my $last = 'XXXXXXXXX';
@@ -110,27 +113,27 @@ sub list_links {
   
    when ( 'news' ) {
    
-    $links = db_all("select dt,dt,title_$lang from metanews order by dt desc limit 10");
+    $links = db_all("select dt,dt,title_$lang from mnews order by dt desc limit 10");
      
-    do { $_->[1] = expand_ts ( substr ( $_->[0], 0, 8 ), $lang ) } foreach @$links;
+    do { $_->[1] = dtexpand ( substr ( $_->[0], 0, 8 ), $lang ) } foreach @$links;
 
    }
    
    when ( 'albums' ) {
    
-    $links = db_all("select album.album,name_$lang,count(distinct x) from album natural join x group by album.album order by album desc limit 6");
+    $links = db_all("select album.album,name_$lang,count(distinct x) from album natural join _x group by album.album order by album desc limit 6");
    
    }
 
    when ( 'pris' ) {
 
-    $links =  db_all("select pri,count(distinct sec_$lang) from snip where pri not in ('out','dt') group by pri order by pri_sort");
+    $links =  db_all("select pri,count(distinct sec_$lang) from snip natural join sec natural join pri where pri not in ('out','dt') group by pri order by pri.sort");
    
    }
 
    when ( 'ideas' ) {
 
-    $links = db_all("select pri,sec_$lang,count(distinct x) from snip natural join x where pri not in ('out','dt') group by pri,sec_$lang order by random() limit 20");
+    $links = db_all("select pri,sec_$lang,count(distinct x) from snip natural join sec natural join pri natural join _x where pri not in ('out','dt') group by pri,sec_$lang order by random() limit 20");
   
    }
 

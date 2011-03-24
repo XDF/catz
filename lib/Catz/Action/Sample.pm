@@ -27,7 +27,7 @@ package Catz::Action::Sample;
 use strict; 
 use warnings;
 
-use Catz::DB;
+use Catz::Data::DB;
 use Catz::Model::Meta;
 use Catz::Model::Photo;
 use Catz::Model::Vector;

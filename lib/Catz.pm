@@ -29,9 +29,9 @@ use warnings;
 
 use parent 'Mojolicious';
 
-use Catz::DB;
+use Catz::Data::DB;
 use Catz::Model::Meta;
-use Catz::Setup;
+use Catz::Data::Setup;
 
 sub startup {
 

@@ -30,7 +30,7 @@ use warnings;
 use parent 'Catz::Action::Base';
 
 use Catz::Model::Vector;
-use Catz::Search;
+use Catz::Data::Search;
 
 sub main {
 

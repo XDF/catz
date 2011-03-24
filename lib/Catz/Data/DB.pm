@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 # 
 
-package Catz::DB;
+package Catz::Data::DB;
 
 #
 # the database access module - all database access should use this module
@@ -40,14 +40,16 @@ our @EXPORT = qw ( db_one db_row db_col db_all );
 
 use Apache::DBI;
 
-use Catz::Cache;
+use Catz::Data::Cache;
+use Catz::Data::Conf;
+use Catz::Util::File qw ( findlatest );
 
 use constant DBDRIVER => 'dbi:SQLite'; 
 
 # a hardcoded value for initial development
-use constant DBFILE => '/catz/db/master.db';
+use constant DBFILE => findlatest ( conf ( 'path_master' ), 'db' );
 
-use constant DBARGS => { PrintError => 1, RaiseError => 1, AutoCommit => 0 };
+use constant DBARGS => conf( 'dbargs_runtime' ); 
 
 # a static database connection
 my $db = DBI->connect( DBDRIVER.':dbname='.DBFILE, undef, undef, DBARGS ) 
@@ -66,7 +68,7 @@ sub fetch {
   
  given ( $mode ) {
  
-  warn ( $sql );
+  #warn ( $sql );
  
   when ( 'one' ) { $res = $db->selectrow_array( $sql, undef, @params ) } 
 
