@@ -32,7 +32,7 @@ use feature qw ( switch );
 use base 'Exporter';
 
 our @EXPORT_OK = qw( 
- body exid explink expmacro exptext fixgap loc nat org 
+ body exid explink expmacro exptext fixgap lens loc nat org 
  plaincat textchoose textremove tolines topiles umb 
 );
 
@@ -199,7 +199,45 @@ sub plaincat {
 
 sub lens {
 
-
+ my ( $album, $flen, $fnum ) = @_;
+   
+ my $date = substr ( $album, 0, 8 ); # use only date
+ $flen =~ s/ mm$//g; # remove ' mm'
+ $fnum =~ s/f\///; # remove 'f/'
+ 
+ my $lens;
+ 
+ given ( $flen ) { # substr -3 removes ' mm'
+ 
+  when ( 17 )  { $lens = 'tokina17' }
+  when ( 28 )  { $lens = 'sigma28' }
+  when ( 50 )  { $lens = 'sigma50' }
+  when ( 85 )  { $lens = 'sigma85' }
+  when ( 135 ) { $lens = 'canon135l' }   
+  when ( 200 ) { $lens = 'canon200l' }
+  
+  default {
+  
+   if ( $flen < 17 ) {
+    if ( $flen < 5 ) {
+     $lens = 'dmwlw64';
+    } else {
+     $lens = 'lx3leica';
+    } 
+   } else { 
+    die "unable to resolve lens '$date' '$flen' '$fnum'";
+   } 
+  }
+  
+ }
+ 
+ my $true = conf ( 'lensname' )->{$lens} // undef;
+ 
+ $true or die "unable to find true lens name for '$lens'";
+ 
+ #print "$true\n";
+ 
+ return $true; 
 
 }
 

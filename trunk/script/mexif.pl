@@ -46,6 +46,8 @@ find ( \&wanted, '/www/galleries' );
 
 my $i = 0;
 
+my %seen = ();
+
 sub wanted {
 
  my $bare = $_; my $full = $File::Find::name; my $dir = $File::Find::dir; 
@@ -53,7 +55,11 @@ sub wanted {
  -f $full and $full =~ /\/(\d{8}[a-z0-9]+)\/(\d{4}).html$/ and do {
  
    my $album = $1;
- 
+   
+   $seen{$album} or say "$album";
+   
+   $seen{$album} = 1;
+    
    my $n = minnum ( $2 );
   
    my $data = fileread( $full );
@@ -64,43 +70,43 @@ sub wanted {
 
     if ( $data =~ /timestamp\/aikaleima\: (....)-(..)-(..) (..)\:(..)\:(..)\,/ ) {
         
-     $out = $out . join "\n", ( $album, $n, 'DT', "$1$2$3$4$5$6", "#\n" );
+     $out = $out . join "\n", ( $album, $n, 'dt', "$1$2$3$4$5$6", "#\n" );
      
     }
     
     if ( $data =~ /f\-number\/aukko\: (.+?)\,/ ) {
         
-     $out = $out . join "\n", ( $album, $n, 'FNUM', $1, "#\n" );
+     $out = $out . join "\n", ( $album, $n, 'fnum', "f/$1", "#\n" );
      
     }
     
     if ( $data =~ /exposure time\/valotusaika\: (.+?)\,/ ) {
         
-     $out = $out . join "\n", ( $album, $n, 'ETIME', $1, "#\n" );
+     $out = $out . join "\n", ( $album, $n, 'etime', $1, "#\n" );
      
     }  
 
     if ( $data =~ /sensitivity\/herkkyys: (.+?)\,/ ) {
         
-     $out = $out . join "\n", ( $album, $n, 'ISO', $1, "#\n" );
+     $out = $out . join "\n", ( $album, $n, 'iso', $1, "#\n" );
      
     }
         
     if ( $data =~ /focal length\/polttov.li\: (.+?)\,/ ) {
-        
-     $out = $out . join "\n", ( $album, $n, 'FLEN', $1, "#\n" );
+            
+     $out = $out . join "\n", ( $album, $n, 'flen', $1, "#\n" );
      
     }
     
     if ( $data =~ /lens\/objektiivi\: (<.+?>)?(.+?)\</ ) {
         
-     $out = $out . join "\n", ( $album, $n, 'LENS', $2, "#\n" );
+     $out = $out . join "\n", ( $album, $n, 'lens', $2, "#\n" );
      
     }        
 
     if ( $data =~ /body\/runko\: (<.+?>)?(.+?)\</ ) {
         
-     $out = $out . join "\n", ( $album, $n, 'BODY', $2, "#\n" );
+     $out = $out . join "\n", ( $album, $n, 'body', $2, "#\n" );
      
     }        
    

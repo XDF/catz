@@ -32,8 +32,8 @@ use feature qw ( switch );
 use Image::Size;
 use Image::ExifTool qw( :Public );
 
-#use Catz::Data::Conf;
-use Catz::Util::Data qw ( body );
+use Catz::Util::Data qw ( body lens );
+use Catz::Util::Number qw ( round );
 
 use base 'Exporter';
 
@@ -41,21 +41,27 @@ our @EXPORT_OK = qw( exif thumbfile widthheight );
 
 sub exif {
  
- my $file = shift;
+ my ( $album, $file ) = @_;
  
  my $i = ImageInfo ( $file ); 
  
  my $o = {};
-  
+   
  foreach my $key ( keys %{ $i } ) {
  
   given ( $key ) {
   
-   when ( 'FocalLength' ) { $o->{flen} = $i->{ $key } }
+   when ( 'FocalLength' ) { 
    
-   when ( 'ExposureTime' ) { $o->{etime} = $i->{ $key } } 
+    $i->{ $key } =~ s/ mm$//;  
+    
+    $o->{ flen } = round ( $i->{ $key }, 0 ) . ' mm'; 
+   
+   }
+   
+   when ( 'ExposureTime' ) { $o->{etime} = $i->{ $key } . ' s' } 
   
-   when ( 'FNumber' ) { $o->{fnum} = $i->{ $key } }
+   when ( 'FNumber' ) { $o->{fnum} = 'f/' . $i->{ $key } }
 
    when ( 'CreateDate' ) { 
   
@@ -65,7 +71,7 @@ sub exif {
   
    }
   
-   when ( 'ISO' ) { $o->{iso} = $i->{ $key } }
+   when ( 'ISO' ) { $o->{iso} = 'ISO ' . $i->{ $key } }
   
    when ( 'Model' ) {
    
@@ -79,6 +85,10 @@ sub exif {
   } 
    
  }
+ 
+ $o->{lens} = lens ( $album, $o->{flen}, $o->{fnum} );
+ 
+  
  
  return $o;
      
