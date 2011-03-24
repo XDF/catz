@@ -2,25 +2,29 @@
 
 = User Experience =
 
+  * focuses on content (cat show photos)
   * cool new domain name
   * simple straighforward layout and graphical design
-  * using mostly short texts as hyperlinks instead of icons  
-  * focuses on content (cat show photos)
+  * navigation via short texts (hyperlinks= instead of icons  
   * first photos provided instantly on front page  
-  * instant switch between English and Finnish and everything changes when switching (including photo comments)
-  * some user-configurable features and a simple page to do the configuration
+  * instant switching between English and Finnish and everything changes (including photo comments)
+  * some user-configurable features and instant access to them without a separate configuration page
   * Facebook share on photos
   * classic photo browsing logic: thumbnails - big photo         
 
 = What's included =
 
-  * instant find as you type based on real time string matching, included on both front page and list pages
+  * instant find as you type based on real time string matching (included on both front page and on list pages)
   * a detailed search engine with feature-rich syntax for advanced users
-  * simple lists to list different objects on the system  
+  * simple lists to list different types of subjects (cats, breeders, colors and pattern, lenses, shutter speeds etc.)  
   * a simple news system with RSS feed to announce site changes
   * automatic photo resize to fit screen (JavaScript)      
 
 = What's excluded =
 
-  * forums, user comments, ratings (this is not a community portal but some of these features might be added later)
-  * text pages: they will be provided on a different service      
+  * forums
+  * user comments
+  * user ratings on photos
+  * text pages
+  * other photos than cat show photos  
+  * all the nonsense        

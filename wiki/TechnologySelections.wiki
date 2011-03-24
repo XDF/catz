@@ -4,20 +4,20 @@
 
 Here are some technologies that I'm using in my project. I've also listed some technologies that I've evaluated or tested for this project but then decided not to use them. These are (marked this way).
 
-  * Language: Perl 5 (PHP, Python, Ruby)
+  * Language: Perl (PHP, Python, Ruby)
   * Framework: Mojolicious (Mason, Dancer, Catalyst) 
   * Database: SQLite (PostgreSQL, Redis, BerkeleyDB)
-  * Caching: CHI with file backend
+  * Caching: CHI with file backend (Memcached, Redis)
 
 = Implementation =
 
-   * Use Model-View-Controller paradigm   
-   * Use Mojolicious standard features when possible
+   * Model-View-Controller paradigm   
+   * Prefer using Mojolicious/Mojo standard features to custon code
    * Prefer using CPAN modules to custom code          
    * URLs shouldn't use GET parameters
    * URL to a photo should also be a permanent URL
-   * all text strings are to be separated from logic and layout
+   * all text strings are to be separated from the logic and the layout
    * user-configurable features stored in cookie (by default Mojolicious session implementation) 
-   * database access via DBI and a CHI caching layer above it
-   * database result sets as arrayrefs and positional access (hashrefs needs hash construction on DBI and according to my test impose a significant overhead)
-   * implement automatic system tests procedures for all actions (Test::Mojo)                   
+   * database access via DBI and a result set caching layer above it
+   * database rows accessed positionally (access by name needs hash construction on DBI and according to my test impose a significant overhead with large datasets)
+   * implement automatic system tests for all actions (Test::Mojo)                   
