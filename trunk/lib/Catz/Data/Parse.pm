@@ -41,10 +41,6 @@ use Catz::Util::Data qw (
 use Catz::Util::Log qw ( logit );
 use Catz::Util::String qw ( clean trim );
 
-my $s_data = {}; # static caching of processed data lines
-my $s_exif = {}; # static caching of processed exif lines
-
-
 sub cat {
 
  # parses single cat information into fragments
@@ -209,7 +205,7 @@ sub set {
 
     foreach my $i ( $from .. $to ) {
     
-     $exifs->[ $i]  = exid ( $data );
+     $exifs->[ $i ]  = exid ( $data );
     
     }
       
@@ -242,7 +238,7 @@ sub parse_pile {
   die "invalid album name '$album'";
       
  $d->{origined} = $1; # albumn name starts with YYYYDDMM
- ( $d->{location_en}, $d->{location_fi} ) = loc ( $2 ); # location part follows
+ ( $d->{loc_en}, $d->{loc_fi} ) = loc ( $2 ); # location part follows
  # $3 might be 1,2,3 ... to specify multiple albums but is not stored 
  
  shift @lines; # the second line in the pile is deprecated
@@ -260,7 +256,7 @@ sub parse_pile {
  defined $d->{org_en} and 
   ( $d->{umb_en}, $d->{umb_fi} ) = umb ( $d->{org_en}, $album );
   
- $d->{country} = nat ( $d->{location_en} );
+ $d->{country} = nat ( $d->{loc_en} );
  
  # skip descrption lines, they are deprecated
  shift @lines; shift @lines;

@@ -60,7 +60,7 @@ logopen ( conf ( 'path_log' ) . "/$dt.log" );
 
 logit ( 'catz loader started at ' . dtexpand ( $dt ).' (dt '.$dt.')' );
 
-#eval { # main eval begin
+my $loaded = {}; # to store names of loaded folders and albums 
 
 my $olddb = findlatest ( conf ( 'path_master' ) , 'db' );
 
@@ -79,7 +79,7 @@ load_begin ( $dt, $newdb );
 # phase 1: load folders
 
 my @folders =  
- grep { /\d{8}[a-z0-9]+$/ } grep { /2011/ } finddirs ( conf ( 'path_photo' ) );
+ grep { /\d{8}[a-z0-9]+$/ } finddirs ( conf ( 'path_photo' ) );
 
 logit ( 'verifying ' . scalar ( @folders ) . ' folders' );
 
@@ -93,7 +93,9 @@ foreach my $folder ( @folders ) {
  
   $changes++;
 
-  load_folder ( $folder );  
+  load_folder ( $folder );
+  
+  $loaded->{ $album } = 1;  
  
  }
 
@@ -130,9 +132,10 @@ foreach my $head ( @{ conf ( 'metafiles' ) } ) {
      my $dnaa = dna ( $pile ); 
     
      if ( load_nomatch ( 'album', $album, $dnaa ) ) { # loading required
-     
-       #( $album =~ /^2011/ or $album =~ /^2010/ ) and # debugging with latest 
-        load_complex ( $album, $pile );
+      
+      load_complex ( $album, $pile );
+        
+      $loaded->{ $album } = 1;  
     
      } 
 
@@ -159,29 +162,19 @@ foreach my $head ( @{ conf ( 'metafiles' ) } ) {
  
 }
 
-# phase 3: secondary tables data generation
+# phase 3: postprocessing = inserting to sec more elements
+
+logit ( "postprocessing secondaries" ); 
+
+load_pprocess ( $loaded );
+
+# phase 4: recreating secondary tables
 
 logit ( "recreating secondary tables" ); 
 
-load_mview;
+load_secondary;
 
 load_end; # finish
-
-#}; # main eval end
-
-#if ( $@ ) { # error condition true
-#
-# logit $@;
- 
-# die $@;
- 
-
-#} else { # no errors 
-
-
-
-#}
-
 
 my $etime = time();
 
