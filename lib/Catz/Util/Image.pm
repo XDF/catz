@@ -74,7 +74,7 @@ sub exif {
    when ( 'ISO' ) { $o->{iso} = 'ISO ' . $i->{ $key } }
   
    when ( 'Model' ) {
-   
+    
     body ( $i->{ $key } )
      or die "unable to resolve body name with '$i->{ $key }'";
    
@@ -86,9 +86,10 @@ sub exif {
    
  }
  
- $o->{lens} = lens ( $album, $o->{flen}, $o->{fnum} );
- 
-  
+ # resolve lens only for albums 2011 and beyond
+ int ( substr ( $album, 0, 4 ) ) > 2010 and do { 
+  $o->{lens} = lens ( $album, $o->{flen}, $o->{fnum} );
+ };
  
  return $o;
      

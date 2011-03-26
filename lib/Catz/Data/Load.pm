@@ -33,7 +33,7 @@ use parent 'Exporter';
 
 our @EXPORT = qw ( 
  load_begin load_end load_exec load_folder load_nomatch 
- load_simple load_complex load_mview
+ load_simple load_complex load_pprocess load_secondary 
 );
 
 use feature qw ( switch );
@@ -43,7 +43,8 @@ use DBI;
 
 use Catz::Data::Conf;
 use Catz::Data::Parse;
-use Catz::Util::Data qw ( fixgap tolines topiles );
+use Catz::Util::Data qw ( fixgap lens tolines topiles );
+use Catz::Util::Time qw ( dtexpand );
 use Catz::Util::File qw ( filehead filesize filethumb findphotos pathcut );
 use Catz::Util::Image qw ( exif widthheight );
 use Catz::Util::Log qw ( logit );
@@ -70,19 +71,23 @@ my $sql = {
   
  album_col => 'select album from album order by album',
  album_del => 'delete from album where album=?',
- album_ins => 'insert into album (album,name_en,name_fi,origined,created,modified,location_en,location_fi,country) values (?,?,?,?,?,?,?,?,?)',
+ loc_row => 'select loc_en,loc_fi from album where album=?',
+ album_ins => 'insert into album (album,name_en,name_fi,origined,created,modified,loc_en,loc_fi,country) values (?,?,?,?,?,?,?,?,?)',
   
  org_del => 'delete from org where album=?',
  org_ins => 'insert into org (album,org_en,org_fi) values (?,?,?)',
+ org_row => 'select org_en,org_fi from org where album=?',
  org_trn => 'delete from org where album not in ( select album from album )', 
   
  umb_del => 'delete from umb where album=?',
  umb_ins => 'insert into umb (album,umb_en,umb_fi) values (?,?,?)',
+ umb_row => 'select umb_en,umb_fi from umb where album=?',
  umb_trn => 'delete from umb where album not in ( select album from album )',
  
  photo_one => 'select count(*) from photo where album=? and n=?',
  photo_del => 'delete from photo where album=?',
- photo_ins => 'insert into photo (album,n,file,width_hr,height_hr,bytes_hr,width_lr,height_lr,bytes_lr) values (?,?,?,?,?,?,?,?,?)', 
+ photo_ins => 'insert into photo (album,n,file,width_hr,height_hr,bytes_hr,width_lr,height_lr,bytes_lr) values (?,?,?,?,?,?,?,?,?)',
+ max_n_one => 'select max(n) from photo where album=?', 
 
  dexif_del => 'delete from dexif where album=?',
  dexif_ins => 'insert into dexif (album,n,key,val) values (?,?,?,?)',
@@ -107,7 +112,12 @@ my $sql = {
  sec_ind => 'insert into sec (pid,sec_en,sort_en,sec_fi,sort_fi) values (?,?,?,?,?)',
  sec_trn => 'delete from sec where ( pid not in (select pid from pri) ) or ( sid not in ( select sid from snip ) )',
 
- pri_one => 'select pid from pri where pri=?', 
+ pri_one => 'select pid from pri where pri=?',
+ 
+ exif_keys_col => 'select key from dexif where album=? and n=? union select key from fexif where album=? and n=? union select key from fexif where album=? and n=?',  
+ dexif_val_one => 'select val from dexif where album=? and n=? and key=?',
+ fexif_val_one => 'select val from fexif where album=? and n=? and key=?',
+ mexif_val_one => 'select val from mexif where album=? and n=? and key=?'
   
 };
 
@@ -208,7 +218,15 @@ sub load_exec {
   
   when ( /row$/ ) { return $stm->{$key}->fetchrow_array }
   
-  when ( /col$/ ) { return $stm->{$key}->fetchcol_array }
+  when ( /col$/ ) { # there is no fetchcol_array or fetchcol_arrayref 
+  
+   my $arr = $stm->{$key}->fetchall_arrayref;
+   
+   my @out = map { $_->[0] } @{ $arr };
+   
+   return @out; 
+  
+  }
   
   when ( /all$/ ) { return $stm->{$key}->fetchall_array }
   
@@ -253,7 +271,7 @@ sub load_nomatch {
   
  } else {
  
-  logit ( "DNA not found for '$class' '$item', storing the new DNA '$dnanew'" ); 
+  logit ( "DNA not found for '$class' '$item', the new DNA is '$dnanew'" ); 
 
   load_exec ( 'dna_ins', $dnanew, $dt, $class, $item );
 
@@ -299,18 +317,12 @@ sub load_folder {
    $bytes_hr, $width_lr, $height_lr, $bytes_lr 
   );
   
-  int ( substr ( $album, 0, 4 ) > 2010 ) and do {
+  my $exif = exif ( $album, $photo );
   
-   # extract file exif from 2011 and beyond   
-   
-   my $exif = exif ( $album, $photo );
-  
-   do {
-    load_exec ( 'fexif_ins', $album, $n, $_, $exif -> { $_ }  ) 
-   } foreach keys %{ $exif };
-      
-  };
-  
+  do {
+   load_exec ( 'fexif_ins', $album, $n, $_, $exif -> { $_ }  ) 
+  } foreach keys %{ $exif };
+        
   $n++;
     
  }
@@ -384,14 +396,15 @@ sub load_complex {
 
  my ( $album, $data ) = @_;
  
- my $d = parse_pile ( $data ); 
+ my $d = parse_pile ( $data );
+  
  # $d should then contain completely parsed and processed album data
  # ready to be iterated over and inserted into the database  
  
  load_exec ( 'album_del', $album );
  load_exec ( 
   'album_ins', $album, $d->{name_en}, $d->{name_fi}, $d->{origined},
-  $d->{created}, $d->{modified}, $d->{location_en}, $d->{location_fi}, 
+  $d->{created}, $d->{modified}, $d->{loc_en}, $d->{loc_fi}, 
   $d->{country}
  );
 
@@ -405,11 +418,32 @@ sub load_complex {
  
  load_exec ( 'snip_del', $album );
  
+ # inserting general elements common to all photos in an album
+ # n = 0, undefined photo
+ # p = 0, undefinied position in photo
+ 
+ load_exec ( 'snip_ins', $album, 0, 0,  
+  get_sid ( 'date', 
+   dtexpand ( $d->{origined}, 'en' ), $d->{origined}, 
+   dtexpand ( $d->{origined}, 'fi' ), $d->{origined} 
+  )
+ );
+ 
+ foreach my $key ( qw ( loc org umb ) ) {
+ 
+  load_exec ( 'snip_ins', $album, 0, 0,  
+   get_sid ( $key, 
+    $d->{$key . '_en'}, $d->{$key . '_en'}, 
+    $d->{$key . '_fi'}, $d->{$key . '_fi'} 
+   )
+  );
+ 
+ }
+ 
  foreach my $n ( 1 .. ( scalar @{ $d->{data} } - 1 ) ) {
+ 
   # $n is the photo number
-  
-  #print $n; print "\n";
-  
+        
   defined $d->{data}->[ $n ] and do {
   
    my $isphoto = load_exec ( 'photo_one', $album, $n );
@@ -471,7 +505,45 @@ sub load_complex {
  
 }
 
-my @mview = (
+sub load_pprocess {
+
+ # postprocessing currently means processing of exifs
+
+ my $loaded = shift;
+ 
+ foreach my $album ( sort keys %{ $loaded } ) {
+ 
+  my $max = load_exec ( 'max_n_one', $album );
+  
+  defined $max or die "unable to detect photo count for album '$album'";
+ 
+  foreach my $n ( 1 .. $max ) {
+  
+   my @keys = load_exec ( 'exif_keys_col', $album, $n, $album, $n, $album, $n );
+   
+   foreach my $key ( @keys ) {
+   
+    my $val = load_exec ( 'dexif_val_one', $album, $n, $key );
+    
+    $val or $val = load_exec ( 'fexif_val_one', $album, $n, $key );
+    
+    $val or $val = load_exec ( 'dexif_val_one', $album, $n, $key ); 
+  
+    $val or die "exif prosessing error '$album' '$n' '$key'";
+    
+    load_exec ( 'snip_ins', $album, $n, 0, # p = position = 0, unspecified  
+     get_sid ( $key, $val, $val, $val, $val )
+    );
+        
+   }
+   
+  }
+
+ }
+
+}
+
+my @secondary = (
 
  qq{ drop table if exists _x },
  
@@ -501,16 +573,12 @@ my @mview = (
  a inner join sec b on (a.sid=b.sid) inner join mbreed c on (b.sec_en=c.ems3)
  inner join sec d on (c.breed_en=d.sec_en) inner join pri e on (d.pid=e.pid)
  inner join pri f on (b.pid=f.pid) where e.pri='breed' and f.pri='ems3' },
- 
- # merging exif data, for the moment no dexif is processed
- qq{ }  
-  
+   
  );
 
-sub load_mview {
+sub load_secondary {
 
-
- do { $dbc->do( $_ ) } foreach @mview;
+ do { $dbc->do( $_ ) } foreach @secondary;
 
 }
 
