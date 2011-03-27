@@ -98,14 +98,16 @@ sub wanted {
      
     }
     
-    if ( $data =~ /lens\/objektiivi\: (<.+?>)?(.+?)\</ ) {
-        
-     $out = $out . join "\n", ( $album, $n, 'lens', $2, "#\n" );
+    if ( $data =~ /lens\/objektiivi\: (<.+?>)?(.*?)\</ ) {
+    
+     defined $2 and length ( $2 ) > 0 and
+      $out = $out . join "\n", ( $album, $n, 'lens', $2, "#\n" );
      
     }        
 
-    if ( $data =~ /body\/runko\: (<.+?>)?(.+?)\</ ) {
-        
+    if ( $data =~ /body\/runko\: (<.+?>)?(.*?)\</ ) {
+
+    defined $2 and length ( $2 ) > 0 and        
      $out = $out . join "\n", ( $album, $n, 'body', $2, "#\n" );
      
     }        

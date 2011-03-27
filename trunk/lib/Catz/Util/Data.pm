@@ -32,15 +32,77 @@ use feature qw ( switch );
 use base 'Exporter';
 
 our @EXPORT_OK = qw( 
- body exid explink expmacro exptext fixgap lens loc nat org 
+ body exifsort exid explink expmacro exptext fixgap lens loc nat org 
  plaincat textchoose textremove tolines topiles umb 
 );
 
 use Catz::Data::Conf;
 use Catz::Util::File qw ( filenum );
 #use Catz::Util::Log qw ( logit ); #debugging use
+use Catz::Util::Number qw ( round );
 use Catz::Util::String qw ( clean trim ucclcc );
 use Catz::Util::Time qw ( dtexpand );
+
+sub exifsort {
+
+ my ( $key, $val ) = @_;
+
+ given ( $key ) {
+ 
+  when ( 'fnum' ) {  
+  
+   $val =~ /^f\/(\d+).(\d+)?$/;
+   
+   ( defined $1 and defined $2 ) or die "malformed exif '$key' '$val'";
+    
+   return sprintf ( "%04d" , $1.$2 );  
+  
+  }
+  
+  when ( 'etime' ) {  
+  
+   $val =~ /^(.+) s$/;
+   
+   defined $1 or die "malformed exif '$key' '$val'";
+   
+   my $res =  eval ( $1 );
+   
+   # works up to 999 seconds of exposure time due to
+   # 1) padding length
+   # 2)  behavior with sprintf (negative sign appears)
+   $res > 200 and die "etime exif processing doesn't support value '$res'"; 
+   
+   return sprintf ( "%010d", ( $res * 10_000_000 ) );
+     
+  }
+  
+  when ( 'iso' ) {  
+  
+   $val =~ /^ISO (\d+)$/;
+   
+   defined $1 or die "malformed exif '$key' '$val'";
+   
+   return sprintf ( "%06d" , $1 );
+     
+  }
+  
+  when ( 'flen' ) {  
+
+   $val =~ /^(\d+) mm$/;
+   
+   defined $1 or die "malformed exif '$key' '$val'";
+  
+   return sprintf ( "%04d", $1 );  
+  
+  }
+  
+  when ( [ qw ( lens body dt ) ] ) { return $val }
+  
+  default { die "unable to make sorter for exif key '$key'" }
+ 
+ }
+ 
+}
 
 sub expand_common {
 
@@ -270,7 +332,12 @@ sub exid {
  my $o = {};
  
  # lens must be the first part
- $o->{lens} = shift @parts;
+ my $lens = shift @parts;
+ 
+ defined conf ( 'lensname' )->{ $lens } or 
+  die "unknow lens '$lens'";
+  
+ $o->{lens} = conf ( 'lensname' )->{ $lens };
  
  # other parts may vary
  foreach my $part ( @parts ) {
@@ -279,13 +346,52 @@ sub exid {
   
   given ( $key ) {
   
-   when ( /^exif_focal_/ ) { $o->{flen} = $val }
+   when ( /^exif_focal_/ ) { 
    
-   when ( /^exif_f_/ ) { $o->{fnm} = $val }
+    $val =~ /^(\d+)/;
+    
+    defined $1 or die "illegal focal length '$val'";
+    
+    $val = round ( $1, 0 );
+    
+    $o->{flen} = "$val mm"; 
    
-   when ( /^exif_exposure_t/ ) { $o->{etime} = $val }
+   }
    
-   when ( /^exif_iso/ ) { $o->{iso} = $val }
+   when ( /^exif_f_/ ) {
+   
+    # if needed adds '.0' to the end
+    # accepts f number both with and without 'f/'
+    
+    $val =~ /\.\d$/ or $val = "$val.0";
+   
+    if ( substr ( $val, 0, 2 ) eq 'f/' ) {
+    
+     $o->{fnum} = $val;
+    
+    } else {
+    
+     $o->{fnum} = "f/$val";
+    
+    }
+    
+   }
+   
+   when ( /^exif_exposure_t/ ) { 
+   
+    $val =~ / s$/ or $val = "$val s";
+   
+    $o->{etime} = $val; 
+   
+   }
+   
+   when ( /^exif_iso/ ) {
+   
+    substr ( $val, 0, 4 ) eq 'ISO ' or $val = "ISO $val"; 
+   
+    $o->{iso} = $val;
+    
+   }
    
    when ( /^exif_camera_mo/ ) { $o->{body} = $val }
    
@@ -296,7 +402,7 @@ sub exid {
   }
   
  }
-     
+      
  return $o;
      
 }
