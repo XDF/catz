@@ -1,8 +1,8 @@
 #
-# The MIT License
-# 
+# Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
-# 
+# Licensed under The MIT License
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -39,14 +39,26 @@ sub view {
  my $self = shift;
   
  my $stash = $self->{stash};
+
+ $stash->{path} and do { 
+ 
+  my @args = split /\//, $stash->{path};
   
- $self->args;
+  ( scalar ( @args ) % 2 ) == 0 or do { $self->render_not_found; return; }; 
   
+  $stash->{args} = \@args;
+  
+ };
+          
  my $perpage =  $self->session('thumbsperpage');
   
- my ( $total, $pos, $x, $page, $first, $prev, $next, $last ) = @{ vector_pointer( 
-  $stash->{album}, $stash->{n}, $perpage, $stash->{lang}, @{ $stash->{args_array} } 
- ) };
+ my ( $total, $pos, $x, $page, $first, $prev, $next, $last ) = 
+  @{ 
+     vector_pointer( 
+      $stash->{album}, $stash->{n}, $perpage, 
+     $stash->{lang}, @{ $stash->{args} } 
+     ) 
+   }; 
   
  my $details = photo_details ( $stash->{lang}, $x );
 

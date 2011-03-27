@@ -80,17 +80,16 @@ sub startup {
  # browse photos based on the search pattern or no pattern 
  # current setting 1,5 supports photo sets up to 99,999 photos
 
- $l->route( '/view/(*path)/:range', range => qr/\d{1,5}\-\d{1,5}/ )->to (
+ $l->route( '/browse/(*path)/:range', range => qr/\d{1,5}\-\d{1,5}/ )->to (
   "browse#browse"
  );
  
- $l->route( '/view/:range', range => qr/\d{1,5}\-\d{1,5}/ )->to (
+ $l->route( '/browse/:range', range => qr/\d{1,5}\-\d{1,5}/ )->to (
   "browse#browse", path => undef
  );
   
   
  # view a photo based on the search pattern or no pattern
- # current setting 1,5 supports photo sets up to 99,999 photos
  
  $l->route( '/view/(*path)/:album/:n', 
   album => qr/\d{8}[a-z\d]+/, n => qr/\d{1,3}/ )->to (

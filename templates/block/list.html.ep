@@ -8,11 +8,13 @@
 <td>&nbsp;</td>
 %} 
 %  my $to = "1-$thumbsperpage";
+%  my $mode = 'browse';
 %  $rec->[3] == 1 and do {
-%   $to = $rec->[5]; 
+%   $to = $rec->[5];
+%    $mode = 'view'; 
 %  };
 % my $text = $rec->[3] == 1 ? $t->{PHOTO} : $t->{PHOTOS};    
-<td class="half"><a href="/<%= $lang %>/view/<%= $rec->[1] %>/<%== enurl( $rec->[2] ) %>/<%= $to %>/"><%= $rec->[2] %></a></td>
+<td class="half"><a href="/<%= $lang %>/<%= $mode %>/<%= $rec->[1] %>/<%== enurl( $rec->[2] ) %>/<%= $to %>/"><%= $rec->[2] %></a></td>
 <td class="shrink"><%= $rec->[3] %> <%= $text %></td>
 </tr>
 % }

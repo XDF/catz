@@ -1,7 +1,7 @@
 #
-# The MIT License
-# 
+# Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
+# Licensed under The MIT License
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -43,12 +43,20 @@ sub browse {
  my ( $lower, $upper ) = split /\-/, $stash->{range};
  
  # verify the range
- ( ( $lower > 0 ) and ( $upper < meta_maxx + 1 ) and ( ( $lower + 9 ) <= $upper ) and
-  ( ( $upper - $lower ) <= 49 ) and ( ( $lower - 1 ) % 5 == 0 ) and ( $upper % 5 == 0 ) )
-  or $self->render(status => 404);
+ ( ( $lower > 0 ) and ( $upper < meta_maxx + 1 ) and ( ( $upper - $lower ) > 8 ) and
+  ( ( $upper - $lower ) < 50 ) and ( ( $lower - 1 ) % 5 == 0 ) and ( $upper % 5 == 0 ) )
+  or $self->render_not_found;
 
- $self->args; 
-    
+ $stash->{path} and do { 
+ 
+  my @args = split /\//, $stash->{path};
+  
+  ( scalar ( @args ) % 2 ) == 0 or do { $self->render_not_found; return; }; 
+  
+  $stash->{args} = \@args;
+  
+ };  
+         
  # set this amount of photos to both stash and session
  # so session gets changed automatically by url 
  my $perpage = $upper - $lower + 1;
@@ -57,11 +65,11 @@ sub browse {
  
  my ( $total, $page, $pages, $from, $to, $first, $prev, $next, $last, $xs ) = 
   @{ vector_pager( 
-   $lower, $upper, $perpage, $stash->{lang}, @{ $stash->{args_array} }  
+   $lower, $upper, $perpage, $stash->{lang}, @{ $stash->{args} }  
   ) };
        
- $total == 0 and $self->render(status => 404); # no photos found by search 
- scalar @{ $xs } == 0 and $self->render(status => 404); # no photos in this page
+ $total == 0 and $self->render_not_found; # no photos found by search 
+ scalar @{ $xs } == 0 and $self->render_not_found; # no photos in this page
   
  $stash->{total} = $total;
  $stash->{page} = $page;

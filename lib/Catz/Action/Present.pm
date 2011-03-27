@@ -51,7 +51,7 @@ sub args {
  $stash->{args_count} = scalar @args;
  
  # arguments must come in as pairs
- scalar @args % 2 == 0 or $self->render(status => 404);
+ scalar @args % 2 == 0 or $self->render_not_found;
 
 }
 

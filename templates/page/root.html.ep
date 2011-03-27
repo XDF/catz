@@ -1,21 +1,20 @@
 % layout 'page';
-<table class="full"><tr><td class="top">
+<table class="full"><tr><td class="top half">
 <table class="full"><tr>
 <td class="wide center"><%== include 'way/find' %></td>
 <td class="narrow left"><%= $t->{SEARCH} %></td>
 </tr></table>
 <div id="suggest" class="full center"><!-- filled by JavaScript --></div>
-<table class="full"><tr><td class="tri top">
-%== include 'way/news';
+<table class="full"><tr><td class="half top">
 %== include 'way/albums';
-</td><td class="trix top">
+%== include 'way/news';
+</td><td class="half top">
 %== include 'way/pris';
-</td><td class="tri top">
-%== include 'way/ideas';
 </td></tr></table>
-<td id="samples" class="samples top">
+%== include 'way/ideas';
+<td id="samples" class="top half"><div class="center">
 <!-- filled by JavaScript -->
-</td>
+</div></td>
 </td></tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine

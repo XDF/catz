@@ -103,7 +103,7 @@ sub base {
 
  my $colors = setup_colors;
 
- defined $colors->{$palette} or $self->render(status => 404);
+ defined $colors->{$palette} or $self->render_not_found;
   
  $self->render ( 
   template => 'style/base', 
@@ -128,7 +128,7 @@ sub setup {
  
  defined $stash->{key} and 
  defined $stash->{value} and do {
-  setup_verify ( $stash->{key}, $stash->{value} ) or $self->render ( status => 404 );
+  setup_verify ( $stash->{key}, $stash->{value} ) or $self->render_not_found;
   $self->session( $stash->{key} => $stash->{value} );
   $stash->{$stash->{key}} = $stash->{value};
   $stash->{robots} = 'noindex,nofollow';

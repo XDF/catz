@@ -1,11 +1,11 @@
 % if ( defined $first ) {
-<a href="../<%= $first %>/"><%= $t->{PHOTO_FIRST} %></a>
+<a href="../../<%= $first %>/"><%= $t->{PHOTO_FIRST} %></a>
 % } else { 
 <%= $t->{PHOTO_FIRST} %>
 % }
 |
 % if ( defined $prev ) {
-<a href="../<%== $prev %>/"><%= $t->{PHOTO_PREV} %></a>
+<a href="../../<%== $prev %>/"><%= $t->{PHOTO_PREV} %></a>
 % } else {
 <%= $t->{PHOTO_PREV} %>
 % }
@@ -13,16 +13,16 @@
 % my $a = ( ( ( $page - 1 )  * $perpage ) + 1 ); 
 % my $b = $a + $perpage - 1;
 % my $target = "$a-$b";
-<a href="../../<%== $target %>/"><%= $t->{THUMBS} %></a>
+<a href="/<%= $lang %>/browse/<%== $path? $path.'/' : '' %><%== $target %>/"><%= $t->{THUMBS} %></a>
 |
 % if ( defined $next ) {
-<a href="../<%== $next %>/"><%= $t->{PHOTO_NEXT} %></a>
+<a href="../../<%== $next %>/"><%= $t->{PHOTO_NEXT} %></a>
 % } else { 
 <%= $t->{PHOTO_NEXT} %>
 % }
 |
 % if ( defined $last ) {
-<a href="../<%== $last %>/"><%= $t->{PHOTO_LAST} %></a>
+<a href="../../<%== $last %>/"><%= $t->{PHOTO_LAST} %></a>
 % } else {
 <%= $t->{PHOTO_LAST} %>
 % }

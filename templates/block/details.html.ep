@@ -1,9 +1,10 @@
+% use Catz::Util::String qw ( enval );
 % my $i = 0;
 % foreach my $detail ( @$details ) {
 % if ( ( $i++ % 2 ) == 0 ) {
-<a class="even" href="zx">
+<a class="even" href="/<%= $lang %>/view/<%= enval ( $detail->[0] ) %>/<%= enval ( $detail->[1] ) %>/<%= $album %>/<%= $n %>/">
 % } else {
-<a class="odd" href="zx">  
+<a class="odd" href="/<%= $lang %>/view/<%= enval ( $detail->[0] ) %>/<%= enval ( $detail->[1] ) %>/<%= $album %>/<%= $n %>/">  
 % }
 <%= $detail->[1] %></a> 
 % }

@@ -30,7 +30,7 @@ use warnings;
 use base 'Exporter';
 
 our @EXPORT_OK = qw ( 
- clean decode deurl dna encode enurl lcc nobreak trim ucc ucclcc 
+ clean decode deurl dna encode enurl enval lcc nobreak trim ucc ucclcc 
 ); 
 
 use Digest::MD5 qw ( md5_base64 );
@@ -93,6 +93,7 @@ sub encode { join '', map { chrsolve( ord ( $_ ) ) } split //, $_[0] }
 # encodes an url unassembling it to parts and then reassembling
 #
 sub enurl { join '/', ( map { uri_escape( $_ ) } split /\//, $_[0] ) }
+sub enval { uri_escape ( $_[0] ) }
 
 #
 # converts a string to lower case, manages also some umlaut chars

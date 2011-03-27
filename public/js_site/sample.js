@@ -26,7 +26,7 @@ function renderSample() {
 
  // where to get the correct URL for correct page
  // where that should put on the page
- $('#samples').load( 'http://localhost:3000/en/sample/5/' );
+ $('#samples').load( 'http://localhost:3000/fi/sample/25/' );
 
 } 
 
