@@ -43,7 +43,7 @@ use DBI;
 
 use Catz::Data::Conf;
 use Catz::Data::Parse;
-use Catz::Util::Data qw ( fixgap lens tolines topiles );
+use Catz::Util::Data qw ( exifsort fixgap lens tolines topiles );
 use Catz::Util::Time qw ( dtexpand );
 use Catz::Util::File qw ( filehead filesize filethumb findphotos pathcut );
 use Catz::Util::Image qw ( exif widthheight );
@@ -72,7 +72,7 @@ my $sql = {
  album_col => 'select album from album order by album',
  album_del => 'delete from album where album=?',
  loc_row => 'select loc_en,loc_fi from album where album=?',
- album_ins => 'insert into album (album,name_en,name_fi,origined,created,modified,loc_en,loc_fi,country) values (?,?,?,?,?,?,?,?,?)',
+ album_ins => 'insert into album (album,name_en,name_fi,origined,created,modified,loc_en,loc_fi,nat) values (?,?,?,?,?,?,?,?,?)',
   
  org_del => 'delete from org where album=?',
  org_ins => 'insert into org (album,org_en,org_fi) values (?,?,?)',
@@ -114,7 +114,7 @@ my $sql = {
 
  pri_one => 'select pid from pri where pri=?',
  
- exif_keys_col => 'select key from dexif where album=? and n=? union select key from fexif where album=? and n=? union select key from fexif where album=? and n=?',  
+ exif_keys_col => 'select key from dexif where album=? and n=? union select key from fexif where album=? and n=? union select key from mexif where album=? and n=?',  
  dexif_val_one => 'select val from dexif where album=? and n=? and key=?',
  fexif_val_one => 'select val from fexif where album=? and n=? and key=?',
  mexif_val_one => 'select val from mexif where album=? and n=? and key=?'
@@ -209,6 +209,8 @@ sub load_exec {
  my ( $key, @args ) = @_;
  
  defined $stm->{$key} or die "statement '$key' is unknown";
+ 
+ #logit ( "$key " . join ( '-', @args ) );
   
  $stm->{$key}->execute ( @args );
  
@@ -266,6 +268,8 @@ sub load_nomatch {
    
    load_exec ( 'dna_del', $class, $item );
    load_exec ( 'dna_ins', $dnanew, $dt, $class, $item );
+   
+   return 1;
      
   }
   
@@ -405,7 +409,7 @@ sub load_complex {
  load_exec ( 
   'album_ins', $album, $d->{name_en}, $d->{name_fi}, $d->{origined},
   $d->{created}, $d->{modified}, $d->{loc_en}, $d->{loc_fi}, 
-  $d->{country}
+  $d->{nat}
  );
 
  load_exec ( 'org_del', $album ); 
@@ -499,9 +503,21 @@ sub load_complex {
   
   
  }
- # loading exif elements
+ # loading data exif elements
  
- load_exec ( 'dexif_del', $album ); 
+ load_exec ( 'dexif_del', $album );
+  
+ foreach my $n ( 1 .. ( scalar @{ $d->{exif} } - 1 ) ) {
+ 
+  defined $d->{exif}->[ $n ] and do {
+     
+   do {
+    load_exec ( 'dexif_ins', $album, $n, $_, $d->{exif}->[ $n ]->{ $_ }  ) 
+   } foreach keys %{ $d->{exif}->[ $n ] }; 
+           
+  }
+ 
+ }
  
 }
 
@@ -516,23 +532,29 @@ sub load_pprocess {
   my $max = load_exec ( 'max_n_one', $album );
   
   defined $max or die "unable to detect photo count for album '$album'";
- 
+   
   foreach my $n ( 1 .. $max ) {
   
    my @keys = load_exec ( 'exif_keys_col', $album, $n, $album, $n, $album, $n );
    
-   foreach my $key ( @keys ) {
+   #$album eq '20050917kuopio' and $n == 266 and logit ( join '-', @keys );
+   
+   foreach my $key ( @keys ) { 
    
     my $val = load_exec ( 'dexif_val_one', $album, $n, $key );
+ 
+    $val or $val = load_exec ( 'mexif_val_one', $album, $n, $key ); 
     
     $val or $val = load_exec ( 'fexif_val_one', $album, $n, $key );
     
-    $val or $val = load_exec ( 'dexif_val_one', $album, $n, $key ); 
-  
+    #$album eq '20050917kuopio' and $n == 266 and logit ( "$key=$val" );
+    
     $val or die "exif prosessing error '$album' '$n' '$key'";
     
+    my $sort = exifsort ( $key, $val );
+    
     load_exec ( 'snip_ins', $album, $n, 0, # p = position = 0, unspecified  
-     get_sid ( $key, $val, $val, $val, $val )
+     get_sid ( $key, $val, $sort, $val, $sort )
     );
         
    }

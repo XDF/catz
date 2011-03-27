@@ -55,13 +55,21 @@ sub exif {
    
     $i->{ $key } =~ s/ mm$//;  
     
-    $o->{ flen } = round ( $i->{ $key }, 0 ) . ' mm'; 
+    # filter out unknown focal lengths reported by the body as 0 or 0.0
+    $i->{ $key } ne '0' and $i->{ $key } ne '0.0' and
+     $o->{ flen } = round ( $i->{ $key }, 0 ) . ' mm'; 
    
    }
    
    when ( 'ExposureTime' ) { $o->{etime} = $i->{ $key } . ' s' } 
   
-   when ( 'FNumber' ) { $o->{fnum} = 'f/' . $i->{ $key } }
+   when ( 'FNumber' ) {
+   
+    # filter out unknown aperture values reported by the body as 0 or 0.0
+    $i->{ $key } ne '0' and  $i->{ $key } ne '0.0' and 
+     $o->{fnum} = 'f/' . $i->{ $key } 
+   
+   }
 
    when ( 'CreateDate' ) { 
   

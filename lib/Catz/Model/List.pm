@@ -127,7 +127,7 @@ sub list_links {
 
    when ( 'pris' ) {
 
-    $links =  db_all("select pri,count(distinct sec_$lang) from snip natural join sec natural join pri where pri not in ('out','dt') group by pri order by pri.sort");
+    $links =  db_all("select pri,count(distinct sec_$lang) from snip natural join sec natural join pri where pri not in ('out','dt') group by pri order by sort_pri");
    
    }
 

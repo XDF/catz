@@ -256,7 +256,7 @@ sub parse_pile {
  defined $d->{org_en} and 
   ( $d->{umb_en}, $d->{umb_fi} ) = umb ( $d->{org_en}, $album );
   
- $d->{country} = nat ( $d->{loc_en} );
+ $d->{nat} = nat ( $d->{loc_en} );
  
  # skip descrption lines, they are deprecated
  shift @lines; shift @lines;
