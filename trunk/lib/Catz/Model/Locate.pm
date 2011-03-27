@@ -3,8 +3,6 @@
 # Copyright (c) 2010-2011 Heikki Siltala
 # Licensed under The MIT License
 # 
-# Copyright (c) 2010-2011 Heikki Siltala
-# 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -40,7 +38,7 @@ sub locate_suggest {
 
  $pattern = '%' . $pattern . '%';
 
- my $res = db_all (qq{select pri,sec_$lang,count from ( select pri,sec_$lang,count(distinct x) as count from pri natural join sec natural join snip natural join _x where pri not in ('dt', 'out') and sec_en like ? group by pri,sec_$lang order by random() limit 50 ) order by sec_$lang},$pattern);
+ my $res = db_all (qq{select pri,sec_$lang,count from ( select pri,sec_$lang,sort_$lang,count(distinct x) as count from pri natural join sec natural join snip natural join _x where pri not in ('dt', 'out') and sec_en like ? group by pri,sec_$lang,sort_$lang order by random() limit 50 ) order by sort_$lang},$pattern);
 
  return $res;
 

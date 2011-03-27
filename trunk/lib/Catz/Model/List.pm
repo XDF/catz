@@ -49,7 +49,7 @@ sub list_list {
  
    $list = db_all( qq{select null,pri,sec_$lang,count(distinct x),min(x),
    _x.album||'/'||_x.n from pri natural join snip natural join sec
-   natural join _x where pri=? group by sec_$lang order by sec_$lang}, $subject
+   natural join _x where pri=? group by sec_$lang order by sort_$lang}, $subject
    );
       
    my $last = 'XXXXXXXXX';

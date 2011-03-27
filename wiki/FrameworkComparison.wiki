@@ -31,4 +31,5 @@
   * Reload is very fast but is not as bullet-proof as Catalyst restart
   * Development is driven by one main developer - this is both a pro and a con
   * Simplicity has been taken to extremes: almost everything is accessed thru $self, Catalyst separation between $self and $c might be clearer
-  * Some issues rise due to the fact that when you are running router or before/after hook, you are not running a controller and so $self doesn't provide all the services available for controllers   
+  * Some issues rise due to the fact that when you are running router or before/after hook, you are not running a controller and so $self doesn't provide all the services available for controllers
+  * API changes break things ($self->render(status => 404) became useless and had to be globally replaced with $self->render_not_found)     

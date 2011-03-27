@@ -52,7 +52,7 @@ sub count {
  
  $stash->{thumbs} = $thumbs; 
  $stash->{showmeta} = 0; # no date show
- $stash->{formation} = 'narrow';
+ $stash->{formation} = 'wide';
  
  $self->render( template => 'block/thumbs' );
       

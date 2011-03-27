@@ -54,7 +54,7 @@ sub photo_details {
 
  my ( $lang, $x ) = @_;
 
- return db_all ( qq{select pri,sec_$lang from pri natural join sec natural join snip natural join _x where x=? order by pri.sort,sec_$lang}, $x );
+ return db_all ( qq{select pri,sec_$lang from pri natural join sec natural join snip natural join _x where x=? order by sort_pri,sort_$lang}, $x );
 
 }
 
