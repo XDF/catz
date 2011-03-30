@@ -4,9 +4,9 @@
 Search: <input type="text" name="what" <% if ( defined $what ) { %> value="<%= $what %>" <% } %>>
 <input type="submit" value="Submit">
 </form>
-% if ( defined $args_array ) {
+% if ( defined $args ) {
 <div>
-<a href="/<%= $lang %>/view/<%== join '/', map { enurl ( $_ ) } @{ $args_array } %>/1-<%= $thumbsperpage %>/">found <%= $found %></a>
+<a href="/<%= $lang %>/browse/<%== join '/', map { enurl ( $_ ) } @{ $args } %>/1-<%= $thumbsperpage %>/">found <%= $found %></a>
 </div>
 % }
 %#

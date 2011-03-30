@@ -1,7 +1,7 @@
 #
-# The MIT License
-# 
+# Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
+# Licensed under The MIT License
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -41,14 +41,14 @@ sub main {
  my $what = $stash->{what};
  
  $stash->{what} = $stash->{what} // '';
- $stash->{args_array} = undef;
+ $stash->{args} = undef;
  $stash->{found} = 0;
  
  if ( $what ) {
  
-  $stash->{args_array} = search2args ( $what );
+  $stash->{args} = search2args ( $what );
   
-  $stash->{found} = vector_count ( $stash->{lang}, @{ $stash->{args_array} } );
+  $stash->{found} = vector_count ( $stash->{lang}, @{ $stash->{args} } );
  
  }
  

@@ -100,12 +100,10 @@ sub cat {
  # collect pre-titles and remove them
  
  if ( $data =~ /^(([A-Z0-9 ]|,| )+) (.*)$/ ) {
- 
-  # fixed fixes
- 
+  
   $data = $3;           
   
-  push @titles, map { trim $_ } split /,/, $1;
+  push @titles, map { trim $_; s/^(CFA|FIFE|TICA)\s+(.+)/$1/; } split /,/, $1;
   
  }
 
