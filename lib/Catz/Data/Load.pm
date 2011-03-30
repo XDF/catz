@@ -577,6 +577,33 @@ my @secondary = (
  
  qq{ create index _x_ix1 on _x ( album, n ) },
  
+ qq{ drop table if exists _pri_sec_count },
+ 
+ qq{ create table _pri_sec_count ( pri text not null, sort_pri integer not null, 
+  sec_en text not null, sort_en text not null, sec_fi text not null, sort_fi text not null, 
+  count integer not null, min_x integer not null, album text not null,
+  n integer not null ) },
+  
+ qq { insert into _pri_sec_count ( pri,sort_pri,sec_en,sort_en,sec_fi,sort_fi,count,
+  min_x,album,n ) select pri,sort_pri,sec_en,sort_en,sec_fi,sort_fi,
+  count(distinct x),min(x),_x.album,_x.n from 
+  pri natural join sec natural join snip, _x where sort_pri<10000
+  and snip.album=_x.album and (snip.n=_x.n or snip.n=0)
+  group by pri,sec_en,sec_fi order by count(distinct x) desc,
+  sort_pri asc,sort_en asc,sort_fi asc },
+  # sorting is vital: rows are stored in the order they are later fetched
+  # by 'order by rowid' to speed up the performance
+ 
+ qq{ drop table if exists _pri_count },
+ 
+ qq{ create table _pri_count ( pri text,sort_pri integer,count integer,
+  coverage integer ) },
+ 
+ qq{ insert into _pri_count ( pri,sort_pri,count,coverage ) select pri,
+  sort_pri,count(distinct sec_en),count(distinct x) from pri natural join 
+  sec natural join snip natural join _x where sort_pri<10000 group by pri 
+  order by sort_pri }, 
+  
  # delete old breed secondaries
  qq{ delete from sec where pid in ( select pid from pri where pri='breed' ) },
  
@@ -595,7 +622,10 @@ my @secondary = (
  a inner join sec b on (a.sid=b.sid) inner join mbreed c on (b.sec_en=c.ems3)
  inner join sec d on (c.breed_en=d.sec_en) inner join pri e on (d.pid=e.pid)
  inner join pri f on (b.pid=f.pid) where e.pri='breed' and f.pri='ems3' },
-   
+
+ # delete old home country secondaries
+ #qq{ delete from sec where pid in ( select pid from pri where pri='country' ) },
+    
  );
 
 sub load_secondary {
