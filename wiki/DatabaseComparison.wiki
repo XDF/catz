@@ -11,27 +11,29 @@ commercial database products.
 
 = The comparison table =
 
-||  || SQLite || PostgreSQL ||
-|| Type || Software library accessing a binary database file within the client process || A traditional relational database server with server processes and network access ||
-|| Principle || Clever ultra-lightweight desing ||  The most advanced open source relational database available ||
-|| Quality || Mature, ready for production use || Mature, ready for production use ||
-|| Administration work required || Practially none || Requires some DBA work ||
-|| Feature set size || Limited feature set suited for most common uses || Complete feature set comparable to major commercial databases ||
-|| Speed || Due to its minimal design runs extremely fast. Requires no tuning. Inserts might run 45 times faster than with PostgreSQL. Complex multi-table queries is the only area where PostgreSQL is always faster. || In simple operations typically significantly slower than SQLite. This doesn't mean that PostgreSQL is slow. Typically requires some tuning to get the optimal performance. ||
-|| Database size || Since one database is one file there are some obivous limitations || Practically unlimited ||
-|| Typical uses || Very large application coverage from simple embedded linked-in mobile solutions to reasonable-sized online web services || Traditional database server application areas ||
-|| Concurrent access || Scales well on concurrent read only access. Due to database level locking doesn't scale on concurrent write access. || Scales well on concurrent reads and writes. ||  
-|| Pre-built database functios || Basic set || Complete set ||
-|| Write your own database functions || No || Yes, with multiple languages ||
-|| Triggers || Yes, limited || Yes, advanced ||
-|| Query optimizer || Simple || Advanced ||
+||  || *SQLite* || *PostgreSQL* ||
+|| *Type* || Software library accessing a binary database file within the client process || A traditional relational database server with server processes and network access ||
+|| *Principle* || Clever ultra-lightweight desing ||  The most advanced open source relational database available ||
+|| *Quality* || Mature, ready for production use || Mature, ready for production use ||
+|| *Administration work required* || Practially none || Requires some DBA work ||
+|| *Feature set size* || Limited feature set suited for most common uses || Complete feature set comparable to major commercial databases ||
+|| *Speed* || Due to its minimal design runs extremely fast. Requires no tuning. Inserts might run 45 times faster than with PostgreSQL. Complex multi-table queries is the only area where PostgreSQL is always faster. || In simple operations typically significantly slower than SQLite. This doesn't mean that PostgreSQL is slow. Typically requires some tuning to get the optimal performance. ||
+|| *Database size* || Since one database is one file there are some obivous limitations || Practically unlimited ||
+|| *Typical uses* || Very large application coverage from simple embedded linked-in mobile solutions to reasonable-sized online web services || Traditional database server application areas ||
+|| *Concurrent access* || Scales well on concurrent read only access. Due to database level locking doesn't scale on concurrent write access. || Scales well on concurrent reads and writes. ||  
+|| *Pre-built database functions* || Basic set || Complete set ||
+|| *Write your own database functions* || No || Yes, with multiple languages ||
+|| *Triggers* || Yes, limited || Yes, advanced ||
+|| *Query optimizer* || Simple || Advanced ||
 
-= Random notes =
+= Random notes on SQLite =
 
+  * The recent develoment of SQLite overcomes some of the obstacles it has had with scaling on concurrent write access.
   * The SQLite queries run typically 40 percent faster on Debian Linux (5 and 6) than on Windows 7.
   * Database versioning is trivial to implement with SQLite: each database is a file. Then make each database version to be a file. Creating a new version is the copying the current file to a new name.       
-  * The recent develoment of SQLite overcomes some of the obstacles it has had with scaling on concurrent write access.
-
+  * The internal design of SQLite is very interesting and clever. The Definitive Guide to SQLite (1st and 2nd editions) tells more about that.
+  * SQLite is a mature product and database files typically never corrupt. There is however an exception: I get a database corruption easily when I run a Perl script that makes heavy writes and then hit CTRL+C on a critical moment so that Perl interpreter crashes.  
+     
 = Background =
 
 I have 10+ years experience on Oracle Database Enterprise Edition as 
@@ -40,7 +42,8 @@ Data Warehousing. I also have some prior knowledge and experience on MySQL.
 Then I needed to choose an open source relational database for this project.
 Because of the latest development on the market MySQL was not an option.
 I then chose PostgreSQL and started the development with it. During
-the development I decided to switch to SQLite. The reasons for doing this can be read above.
+the development I decided to switch to SQLite. The reasons for doing this can be read above. SQLite just suits
+perfectly to the requirements of this project.
 
              
  
