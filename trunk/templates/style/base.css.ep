@@ -54,12 +54,15 @@
  
 %>
 
+html { height: 100%; }
+
 body {
- color: #<%== $color->{text} %>;
- background-color: #<%== $color->{canvas} %>;
+ color: <%== $color->{text} %>;
+ background-color: <%== $color->{canvas} %>;
  font-family: <%== $font_default %>; 
  font-size: <%== $size_normal %><%== $post %>;
  text-align: center;
+ height: 100%;
 }
 
 .page {
@@ -68,6 +71,8 @@ body {
  min-width: 800px;
  max-width: 1400px;
 }
+
+.fill { height: 100% }
 
 .heavy { font-weight: bold; }
 
@@ -195,6 +200,18 @@ li {
  list-style: square outside; 
  line-height: 1.4em; 
 }
+
+.10p  { width: 10%; }
+.20p  { width: 20%; }
+.30p  { width: 30%; }
+.40p  { width: 40%; }
+.50p  { width: 50%; }
+.60p  { width: 60%; }
+.70p  { width: 70%; }
+.80p  { width: 80%; }
+.90p  { width: 90%; }
+.100p { width: 100%; }
+
 
 hr {
  color: <%== $color_front %>;

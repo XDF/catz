@@ -29,8 +29,10 @@ use warnings;
 
 use parent 'Catz::Action::Base';
 
+use Catz::Model::Photo;
 use Catz::Model::Vector;
 use Catz::Data::Search;
+use Catz::Util::String qw ( enurl );
 
 sub main {
 
@@ -49,6 +51,19 @@ sub main {
   $stash->{args} = search2args ( $what );
   
   $stash->{found} = vector_count ( $stash->{lang}, @{ $stash->{args} } );
+  
+  my $xs = vector_array_random ( $stash->{lang}, @{ $stash->{args} } );
+  
+  # limit random samples to 30 by slicing the arrayref
+  ( scalar ( @{ $xs } ) > 30 ) and $xs = [ @$xs[0..29] ];
+      
+  $stash->{thumbs} = photo_thumbs ( $stash->{lang}, $xs );
+  $stash->{formation} = 'asdfasdf';
+  $stash->{path} = join '/', map { enurl $_ } @{ $stash->{args} }; 
+ 
+ } else {
+ 
+  $stash->{thumbs} = undef;
  
  }
  

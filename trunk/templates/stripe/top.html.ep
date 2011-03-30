@@ -1,14 +1,13 @@
+%#
+%# The topmost stripe
+%#
 % use Catz::Data::Setup;
 % use Catz::Util::String qw ( enurl );
 <table class="full"><tr>
-<td class="left">
-%== include 'std/navi';
-</td>
-<td class="right">
-<a href="<%== $otherlang %>"><%= $t->{OTHERLANG} %></a> .
- <a href="<%= $url %>?palette=<%= setup_circ('palette',$palette) %>"><%= $t->{SETUP_palette_circ} %></a>
-</td>
-</tr></table>
+<td class="tri"><%= $t->{SITE} %></td>
+<td class="trix"><a href="<%== $otherlang %>"><%= $t->{OTHERLANG} %></a></td>
+<td class="tri"><a href="<%= $url %>?palette=<%= setup_circ('palette',$palette) %>"><%= $t->{SETUP_palette_circ} %></a></td>
+<tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

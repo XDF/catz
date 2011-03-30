@@ -15,11 +15,11 @@ commercial database products.
 || *Type* || Software library accessing a binary database file within the client process || A traditional relational database server with server processes and network access ||
 || *Principle* || Clever ultra-lightweight desing ||  The most advanced open source relational database server available ||
 || *Quality* || Mature, ready for production use || Mature, ready for production use ||
-|| *Reputation* || Often strongly underestimated without no true reason. Is not just for embedded mobile solutions. Can scale both on size and on concurrent read access. || Is often overshadowed by MySQL with no obvious reason. PostgreSQL is a mature product offering more features than MySQL. ||
+|| *Reputation* || Often strongly underestimated without no true reason. SQLite is not just for embedded mobile solutions. Can scale both on size and on concurrent read access. || Is often overshadowed by MySQL with no obvious reason. PostgreSQL is a mature product offering more features than MySQL. ||
 || *Administration work required* || Practially none. There are a couple of parameters to play with if you are fan of database tuning. || Requires tuning and DBA work ||
 || *Feature set size* || Limited feature set suited for most common uses || Complete feature set comparable to major commercial databases ||
 || *Speed* || Due to its minimal design runs extremely fast. Requires no initial tuning. Inserts might run 45 times faster than with PostgreSQL. Complex multi-table queries is the only area where PostgreSQL is always faster. || In simple operations typically significantly slower than SQLite. This doesn't mean PostgreSQL is slow. PostgreSQL is fast. Typically requires some tuning to get the optimal performance. ||
-|| *Database size* || Since one database is one file there are some obivous limitations || Practically unlimited ||
+|| *Database size* || Since one database is one file there are some obvious limitations || Practically unlimited ||
 || *Typical uses* || Very large application coverage from simple embedded linked-in mobile solutions to reasonable-sized online web services or to large statistical information sets || Traditional database server application areas ||
 || *Concurrent access* || Scales well on concurrent read only access. Due to database level locking doesn't scale on concurrent write access. || Scales well on concurrent reads and writes. ||  
 || *Pre-built database functions* || Basic set || Complete set ||

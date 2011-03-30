@@ -103,7 +103,15 @@ sub cat {
   
   $data = $3;           
   
-  push @titles, map { trim $_; s/^(CFA|FIFE|TICA)\s+(.+)/$1/; } split /,/, $1;
+  push @titles, map {
+   
+   trim $_;
+    
+   s/^(CFA|FIFE|TICA)\s+//; # remove umbrellas from titles
+   
+   s/\d\d\d\d//; # remove years from WW, SW etc. 
+  
+  } split /,/, $1;
   
  }
 

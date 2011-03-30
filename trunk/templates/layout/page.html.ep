@@ -1,3 +1,6 @@
+%#
+%# The layout for all HTML pages of the service
+%#
 % use Catz::Util::Time qw( dtlang );
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="<%= $lang %>">
@@ -16,11 +19,9 @@
 <meta meta="credits" content="<%= $t->{CREDITS} %>">
 <meta meta="robots" content="<%== $meta_index ? 'index' : 'noindex' %>,<%== $meta_follow ? 'follow' : 'nofollow' %>">
 </head>
-<body lang="<%= $lang %>"><div class="page">
-%== include 'std/top';
+<body lang="<%= $lang %>">
 <%= content %>
-%== include 'std/bottom';
-</div></html></body>
+</html></body>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

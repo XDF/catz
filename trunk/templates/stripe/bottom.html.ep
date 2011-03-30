@@ -1,28 +1,6 @@
-%#
-%# The Advanced Search page
-%#
-% use Catz::Util::String qw ( enurl );
-% layout 'page';
-<table class="full fill"><tr>
-<td class="half top">
-%== include 'stripe/top';
-<form name="form_search" action="/<%= $lang %>/search/" method="get">
-Search: <input type="text" name="what" <% if ( defined $what ) { %> value="<%= $what %>" <% } %>>
-<input type="submit" value="Submit">
-</form>
-% if ( defined $args ) {
-<div>
-<a href="/<%= $lang %>/browse/<%== join '/', map { enurl ( $_ ) } @{ $args } %>/1-<%= $thumbsperpage %>/">found <%= $found %></a>
+ <div class="full bar center shrink">
+text here
 </div>
-%== include 'stripe/explain';
-% }
-<td>
-<td class="half top odd">
-% $thumbs and do { 
-%== include 'block/thumbs';
-% };
-</td>
-</tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
