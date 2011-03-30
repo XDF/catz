@@ -6,7 +6,7 @@
 % } else { 
 %  $size = 'height="' . $thumbsize . '"';
 % }
-<a class="spacious" href="/<%= $lang %>/view/<%== $path // '' %><%== $path ? '/' : '' %><%== $thumb->[0] %>/<%== $thumb->[1] %>/"><img src="<%== $photobase %>/<%== $thumb->[0] %>/<%== $thumb->[2] %>" <%== $size %>></a><td></tr>
+<a class="spacious" href="/<%= $lang %>/view/<%== $path // '' %><%== $path ? '/' : '' %><%== $thumb->[0] %>/<%== $thumb->[1] %>/"><img src="<%== $photobase %>/<%== $thumb->[0] %>/<%== $thumb->[2] %>" <%== $size %>></a>
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine

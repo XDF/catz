@@ -202,8 +202,6 @@ sub vector_array_random {
   
 }
 
-
-
 sub vector_pager {
 
  my $res;

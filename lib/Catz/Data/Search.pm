@@ -69,7 +69,7 @@ sub search2args {
    ( $fkey eq '+' or $fkey eq '-' ) and $fval ne '+' and $fval ne '-' and do {
   
     # if key begins with + or - and the value don't then move the char
-    # to the beginning of the key
+    # to the beginning of the val
   
     $key = substr ( $key, 1 );
     $val = $fkey . $val;
