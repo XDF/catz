@@ -2,31 +2,60 @@
 %# Explaining of the search arguments
 %#
 % use feature qw ( switch );
-<table class="full">
+<table class="full even">
 % my $i = 0;
 % while ( $i < scalar ( @{ $args } ) ) {
 % my $key = $args->[ $i++ ];
 % my $val = $args->[ $i++ ];
+% my $visible = $val;  
+% my $tag = 'SEARCH';
+% my $begins = ( substr ( $val, -1, 1 ) eq '*' ) ? 1 : 0;
+% my $ends = ( substr ( $val, 0, 1 ) eq '*' ) ? 1 : 0;
+% if ( $begins and $ends ) {
+%  $tag = $tag . '_CONTAIN';
+%  $visible = substr ( $val, -1, 1 );
+% } elsif ( $begins ) {
+%  $tag = $tag . '_BEGIN';
+%  $visible = substr ( $val, 0, -1 );
+% } elsif ( $ends ) {
+%  $tag = $tag . '_END';
+%  $visible = substr ( $val, 1 );
+% } else {
+%  $tag = $tag . '_IS';
+% }
+% if ( 
+%  ( index ( $val, '?' ) > -1 ) or 
+%  ( index ( substr ( $val, 1, -1 ), '*' ) > -1 ) 
+% ) {
+%   $tag = $tag . '_PATTERN';
+% } else {
+%   $tag = $tag . '_EXACT';
+% }
 <tr>
- <td class="20p center">
+ <td class="20p right enlarge">
 % my $first = substr ( $val, 0, 1 );
 % given ( $first ) {
 %  when ( '+' ) {
-AND
+<%= $t->{SEARCH_AND} %>
 %  }
 %  when ( '-' ) {
-NOT
+<%= $t->{SEARCH_NOT} %>
 %  }
 %  default {
-OR
+<%= $t->{SEARCH_OR} %>
 %  }
 % } 
  </td>
- <td class="60p left">
-  <%= $t->{uc($key)} %>
+ <td class="60p center">
+ <div class="shrink">
+  <%= $t->{uc($key)} %> <%= $t->{$tag} %>
+ </div>
+ <div>
+  <%= $visible %>
+ </div>
  </td>
- <td class="20p center">
-  <%= $val %>
+ <td class="20p left">
+  remove etc. 
  </td>
 </tr>
 % }

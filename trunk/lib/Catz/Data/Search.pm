@@ -59,7 +59,7 @@ sub search2args {
      
    length $2 > 0 and do { $key = $1; $val = $2 }; 
  
-  } else { $key = 'text'; $val = $arg; }
+  } else { $key = 'out'; $val = $arg; }
   
   defined $key and defined $val and do {
  
