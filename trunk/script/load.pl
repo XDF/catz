@@ -76,6 +76,8 @@ my $changes = 0; # flag that should be turned on if something has changed
 
 load_begin ( $dt, $newdb );
 
+lc($ARGV[0]) eq 'meta' and goto SKIP_FOLDERS;
+
 # phase 1: load folders
 
 my @folders =  
@@ -100,6 +102,8 @@ foreach my $folder ( @folders ) {
  }
 
 }
+
+SKIP_FOLDERS:
 
 # phase 2: load files
 
@@ -164,6 +168,8 @@ foreach my $head ( @{ conf ( 'metafiles' ) } ) {
 
 # phase 3: postprocessing = inserting to sec more elements
 
+$changes == 0 and goto SKIP_POST;
+
 logit ( "postprocessing secondaries" ); 
 
 load_pprocess ( $loaded );
@@ -173,6 +179,8 @@ load_pprocess ( $loaded );
 logit ( "recreating secondary tables" ); 
 
 load_secondary;
+
+SKIP_POST:
 
 load_end; # finish
 

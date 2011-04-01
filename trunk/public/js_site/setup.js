@@ -22,37 +22,19 @@
 // THE SOFTWARE.
 //
 
-function renderSuggest() {
+function setupChange( key, val ) {
+ 
+ $.ajax ({
+  url: '/set/?' + key + '=' + val, 
+  async: false, cache: false,
+  success: function(){ location.reload(); }  
+ });
 
- what = $('#find').val();
- 
- if ( what == '' ) {
- 
-  $('div#suggest').html('');
- 
- } else {
+}
 
-  $('div#suggest').load( 
-   'http://localhost:3000/en/suggest/' + what + '/'
-  );
-  
- }
+function setupChangeThumbsperpage ( from, n ) {
+
+ window.location = '../' + from + '-' + ( parseInt ( from ) + parseInt ( n ) - 1 );
+
 
 } 
-
-$(document).ready(function() {
-
- // for non-js browsing samples are hidden by style sheet
- // now set them visible 
- $('div#suggest').css( "display", "inline" );
-
- $('#find').keyup(function() {
-   renderSuggest();
- });
- 
- // intial rendering when page loads, important to bring
- // last content up when returning to page 
- renderSuggest();
-
-
-});

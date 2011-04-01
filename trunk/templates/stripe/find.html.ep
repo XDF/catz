@@ -1,44 +1,9 @@
-% my $sep = '.';
-% if ( $page > 1 ) {
-<a href="../<%== $first %>/"><%= $t->{PAGE_FIRST} %></a>
-<%== $sep %>
-<a href="../<%== $prev %>/"><%= $t->{PAGE_PREV} %></a>
-% } else { 
-<%= $t->{PHOTO_FIRST} %>
-<%== $sep %>
-<%= $t->{PHOTO_PREV} %>
-% }
-<%== $sep %>
-<form>
-<span class="air"><%= $t->{PAGE} %> <SELECT NAME="page" onchange="location.href='../' + this.options[this.selectedIndex].value + '/' ">
-% my $pg = 1;
-% my @pagelist = ( 1 .. $pages );
-% foreach my $p ( @pagelist ) {
-% my $a = ( ( ( $p - 1 )  * $perpage ) + 1 ); 
-% my $b = $a + $perpage - 1;
-% my $target = "$a-$b"; 
-% if ( $page == $p ) {
-<OPTION SELECTED value="<%== $target %>"><%= $p %></OPTION>
-% } else { 
-<OPTION value="<%== $target %>"><%= $p %></OPTION>
-% }
-% }
-</SELECT></span>
-</form> / <%= $pages %>
-<%== $sep %>
-% if ( $page < $pages ) {
-<a href="../<%== $next %>/"><%= $t->{PAGE_NEXT} %></a>
-<%== $sep %>
-<a href="../<%== $last %>/"><%= $t->{PAGE_LAST} %></a>
-% } else { 
-<%= $t->{PHOTO_FIRST} %>
-<%== $sep %>
-<%= $t->{PHOTO_PREV} %>
-% }
-<%== $sep %>
-%== include 'elem/thumbsize';
-<%== $sep %>
-%== include 'elem/thumbsperpage';
+<form class="block center" action="/" method="get">
+<label for="find"><%= $t->{FIND} %></label>
+<input type="text" id="find">
+<a href="/<%= $lang %>/search/"</a><%= $t->{SEARCH} %></a>
+</form>
+<div id="suggest" class="p100 center"></div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
@@ -61,4 +26,4 @@
 %# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 %# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 %# THE SOFTWARE.
-%#
+%# 

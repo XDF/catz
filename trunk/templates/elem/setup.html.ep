@@ -1,21 +1,28 @@
-% layout 'page';
-<table class="full"><tr><td class="top half">
-<table class="full"><tr>
-<td class="wide center"><%== include 'way/find' %></td>
-<td class="narrow left"><%= $t->{SEARCH} %></td>
-</tr></table>
-<div id="suggest" class="full center"><!-- filled by JavaScript --></div>
-<table class="full"><tr><td class="half top">
-%== include 'way/albums';
-%== include 'way/news';
-</td><td class="half top">
-%== include 'way/pris';
-</td></tr></table>
-%== include 'way/ideas';
-<td id="samples" class="top half"><div class="center">
-<!-- filled by JavaScript -->
-</div></td>
-</td></tr></table>
+%#
+%# The setup value changing element
+%#
+%# assumes that key gets passed as a stash value -> $key is then set
+%#
+% use Catz::Data::Setup;
+% use Catz::Util::String qw ( ucclcc );
+% my $func = 'setupChange'; # the default JavaScript function to be called
+% my $arg1 = qq{'$key'};
+% $key eq 'thumbsperpage' and do {
+%  # the special case of thumbsperpage -> call different func 
+%  # with differenct first argumenta   
+%  $func .= ucclcc( $key ); 
+%  $arg1 = stash ( 'from' ); # the first photo number in the set from stash
+% }; 
+<select id="setup_<%= $key %>" onchange="<%= $func %>(<%== $arg1 %>,$('#setup_<%= $key %>').val())">
+}
+% my $values = setup_values ( $key );
+% my $now = stash ( $key );
+%# die "$key = $now";
+% foreach my $val ( @{ $values } ) {
+% my $selected = '';
+% $val eq $now and $selected = ' selected ';
+<option<%= $selected %>value="<%== $val %>"><%= $t->{'SETUP_'.$key.'_'.$val} %></option>
+% } 
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

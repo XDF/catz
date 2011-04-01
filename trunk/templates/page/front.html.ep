@@ -1,9 +1,16 @@
-<h2><%= $t->{IDEAS} %></h2>
-<ul>
-% foreach my $row ( @$ideas ) {
-<li><a href="/<%= $lang %>/view/<%= $row->[0] %>/<%= $row->[1] %>/1-<%= $thumbsperpage %>/"><%= $row->[1] %></a></li>
-% }
-</ul>
+% layout 'page';
+<table class="p100"><tr><td class="top p50">
+%== include 'stripe/top';
+%== include 'stripe/find';
+%== include 'stripe/albums';
+%== include 'stripe/news';
+%== include 'stripe/lists';
+%== include 'stripe/intro';
+%== include 'stripe/bottom';
+</td><td class="top p50">
+%== include 'stripe/slogan';
+<div id="samples"></div>
+</td></tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

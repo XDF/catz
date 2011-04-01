@@ -52,12 +52,12 @@ sub startup {
  $r->route( '/style/reset' )->to( 'main#reset' );
  $r->route( '/style/:palette' )->to( 'main#base' );
  
- $r->route( '/load' )->to( 'progress#load', format => 'text' );
+ $r->route( '/set/' )->to( 'main#set' );
  
  # all site content are located under /en or /fi
  my $l = $r->route ('/:lang', lang => qr/en|fi/ );
  
- $l->route( '/' )->to( 'main#root' );
+ $l->route( '/' )->to( 'main#front' );
   
  $l->route( '/news' )->to ( "main#news" );
  
@@ -139,31 +139,6 @@ sub before {
  # default to "index,follow", actions may modify it as needed 
  $stash->{meta_index} = 1;
  $stash->{meta_follow} = 1;
-
- #warn "url is now ".$self->req->url;
-  
- # process query params, they are setup change attempts
- foreach my $key ( $self->req->url->query->param ) {
-  
-   # prevent indexing if parameters present
-   $stash->{meta_index} = 0;
-
-   my $value = $self->req->url->query->param ( $key ); 
-
-   $key eq 'what' and $stash->{what} = $value; 
-
-   if ( setup_verify ( $key, $value ) ) {
-    # verified parameters go to session
-    $self->session($key => $value);
-   }
-   
-   # all parameters are removed from the request
-   $self->req->url->query->remove( $key );
- 
- }
- 
-# warn $self->req->url; 
-
 
  # temporary hard-coded setting for initial development
  # for testing all photos are fetched from the current prod website

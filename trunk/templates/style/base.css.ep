@@ -25,11 +25,11 @@
  # 
 
  use Math::Round qw ( round );
- 
- my $color_back  = 'EEEEEE';
+
+ my $color_back  = 'EEEEEE'; 
  my $color_front  = '000000';
- my $color_box1  = '444444';
- my $color_box2 = '999999';
+ my $color_box1  = 'EEEEEE';
+ my $color_box2 = 'EEEEEE';
  my $color_alt1 = 'FFFFFF';
  my $color_alt2 = '772211';
  
@@ -54,7 +54,7 @@
  
 %>
 
-html { height: 100%; }
+html { height: 100%; <%== $color->{canvas} %>; }
 
 body {
  color: <%== $color->{text} %>;
@@ -65,11 +65,11 @@ body {
  height: 100%;
 }
 
-.page {
+#page {
  margin: 1em auto;
  text-align: left;
- min-width: 800px;
- max-width: 1400px;
+ min-width: 760px;
+ max-width: 1600px;
 }
 
 .fill { height: 100% }
@@ -174,13 +174,13 @@ h2,h3,h4,h5,h6 {
 
 
 a:link, a:visited, a:active { 
- color: #<%== $color->{text} %>;
- text-decoration: underline;
+ color: <%== $color->{color1strong} %>;
+ text-decoration: none;
 }
 
 a:hover {
- color: #<%== $color->{text} %>;
- background-color: <%== $pre %><%== $color_front %>;
+ color: <%== $color->{color1weak} %>;
+ background-color: <%== $color_front %>;
  text-decoration: none;   
 }
 
@@ -201,17 +201,21 @@ li {
  line-height: 1.4em; 
 }
 
-.10p  { width: 10%; }
-.20p  { width: 20%; }
-.30p  { width: 30%; }
-.40p  { width: 40%; }
-.50p  { width: 50%; }
-.60p  { width: 60%; }
-.70p  { width: 70%; }
-.80p  { width: 80%; }
-.90p  { width: 90%; }
-.100p { width: 100%; }
-
+.p10  { width: 10%; }
+.p20  { width: 20%; }
+.p25  { width: 25%; }
+.p30  { width: 30%; }
+.p33  { width: 33%; }
+.p34  { width: 34%; }
+.p40  { width: 40%; }
+.p50  { width: 50%; }
+.p60  { width: 60%; }
+.p66  { width: 66%; }
+.p70  { width: 70%; }
+.p75  { width: 75%; }
+.p80  { width: 80%; }
+.p90  { width: 90%; }
+.p100 { width: 100%; }
 
 hr {
  color: <%== $color_front %>;

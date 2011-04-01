@@ -3,19 +3,18 @@
 = Summary =
 
 If you need a very fast relational database for a limited amount of data (up to some gigabytes) 
-and don't have concurrent write access requirement then SQLite is your choice. It is a cleverly designed
+and don't need concurrent write access then SQLite is your choice. It is a cleverly designed
 ultra-lightweight ACID compliant relational database that requires no administration. If you have plenty of data,
-need for advanced features like functions and access control or there will be concurrent write access then 
-PostgreSQL is made for you. It is highly advanced relational database with a feature set comparable to major
+need for advanced features like functions and access control or there is concurrent write access then PostgreSQL is made for you. It is an advanced relational database with a feature set comparable to major
 commercial database products. 
 
 = The comparison table =
 
 ||  || *SQLite* || *PostgreSQL* ||
-|| *Type* || Software library accessing a binary database file within the client process || A traditional relational database server with server processes and network access ||
+|| *Type* || Software library accessing a binary database file within the client process || A traditional relational database server with server processes and network connectivity ||
 || *Principle* || Clever ultra-lightweight desing ||  The most advanced open source relational database server available ||
 || *Quality* || Mature, ready for production use || Mature, ready for production use ||
-|| *Reputation* || Often strongly underestimated without no true reason. SQLite is not just for embedded mobile solutions. Can scale both on size and on concurrent read access. || Is often overshadowed by MySQL with no obvious reason. PostgreSQL is a mature product offering more features than MySQL. ||
+|| *Reputation* || Often strongly underestimated without no true reason. SQLite is not just for embedded mobile solutions. Can scale both on size and on concurrent read access. || Is often overshadowed by MySQL with no obvious reason. PostgreSQL is a very mature product offering more features than MySQL. ||
 || *Administration work required* || Practially none. There are a couple of parameters to play with if you are fan of database tuning. || Requires tuning and DBA work ||
 || *Feature set size* || Limited feature set suited for most common uses || Complete feature set comparable to major commercial databases ||
 || *Speed* || Due to its minimal design runs extremely fast. Requires no initial tuning. Inserts might run 45 times faster than with PostgreSQL. Complex multi-table queries is the only area where PostgreSQL is always faster. || In simple operations typically significantly slower than SQLite. This doesn't mean PostgreSQL is slow. PostgreSQL is fast. Typically requires some tuning to get the optimal performance. ||
@@ -35,18 +34,14 @@ commercial database products.
   * SQLite queries run typically 40 percent faster on Debian Linux (5 and 6) than on Windows 7.
   * Database versioning is trivial to implement with SQLite: each database is a file. Then make each database version to be a file. Creating a new version is the copying the current file to a new name.       
   * The internal design of SQLite is very interesting and clever. The Definitive Guide to SQLite (1st and 2nd editions) tells more about that.
-  * SQLite is a mature product and database files typically never corrupt. There is however an exception: I get a database corruption easily when I run a Perl script that makes heavy writes and then hit CTRL+C on a critical moment so that Perl interpreter crashes.  
+  * SQLite is a mature product and database files typically never corrupt. There is however an exception: I get a database corruption easily when I run a Perl script that makes heavy writes and then hit CTRL+C on a critical moment so that Perl interpreter crashes.
      
 = Background =
 
 I have 10+ years experience on Oracle Database Enterprise Edition as 
 a database designer, a database developer and a DBA. My expertise is 
-Data Warehousing. I also have some prior knowledge and experience on MySQL.
-Then I needed to choose an open source relational database for this project.
-Because of the latest development on the market MySQL was not an option.
-I then chose PostgreSQL and started the development with it. During
-the development I decided to switch to SQLite. The reasons for doing this can be read above. SQLite just suits
-perfectly to this project.
+Data Warehousing. I also have some prior knowledge and practical experience on MySQL. Then I needed to choose an open source relational database for this project. Because of the latest development on the market MySQL was not an option for me. I initially chose PostgreSQL and started the development with it. During
+the development I decided to switch to SQLite. SQLite just suits perfectly to this project. It has all the features this project needs and switching to it made life much easier.
 
              
  
