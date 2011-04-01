@@ -10,6 +10,7 @@
 <link href="/style/<%== $palette %>/" rel="stylesheet" type="text/css" >
 <script type="text/javascript" src="/js_lib/jquery.js"></script>
 <script type="text/javascript" src="/js_lib/jquery.urlencode.js"></script>
+<script type="text/javascript" src="/js_site/setup.js"></script>
 <script type="text/javascript" src="/js_site/suggest.js"></script>
 <script type="text/javascript" src="/js_site/sample.js"></script>
 <meta http-equiv="content-language" content="<%= $lang %>">
@@ -19,9 +20,9 @@
 <meta meta="credits" content="<%= $t->{CREDITS} %>">
 <meta meta="robots" content="<%== $meta_index ? 'index' : 'noindex' %>,<%== $meta_follow ? 'follow' : 'nofollow' %>">
 </head>
-<body lang="<%= $lang %>">
+<body lang="<%= $lang %>"><div id="page">
 <%= content %>
-</html></body>
+</div></html></body>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

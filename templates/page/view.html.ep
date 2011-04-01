@@ -1,6 +1,6 @@
 % layout 'page';
 <div>
-%= include 'block/viewer'
+%= include 'stripe/viewer'
 </div><div>
 %= include 'block/texts'
 </div><div>

@@ -1,12 +1,17 @@
 %#
 %# The topmost stripe
+%# 
+%# consists of site link (or logo on front page),
+%# language change link and palette setup
 %#
 % use Catz::Data::Setup;
 % use Catz::Util::String qw ( enurl );
-<table class="full"><tr>
-<td class="tri"><%= $t->{SITE} %></td>
-<td class="trix"><a href="<%== $otherlang %>"><%= $t->{OTHERLANG} %></a></td>
-<td class="tri"><a href="<%= $url %>?palette=<%= setup_circ('palette',$palette) %>"><%= $t->{SETUP_palette_circ} %></a></td>
+% my $site = qq{<span class="enlarge">$t->{SITE}</a>};
+% $action ne 'front' and $site = qq{<a href="/$lang/">$site</a>}; 
+<table class="p100 top center"><tr>
+<td class="p33"><%== $site %></td>
+<td class="p34"><a href="<%== $otherlang %>"><%= $t->{OTHERLANG} %></a></td>
+<td class="p33"><%== include 'elem/setup', key => 'palette' %></td>
 <tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine

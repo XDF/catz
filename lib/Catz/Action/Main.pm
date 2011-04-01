@@ -59,19 +59,19 @@ sub detect {
   
 }
 
-sub root {
+sub front {
 
  my $self = shift;
  
  my $stash = $self->{stash};
   
- foreach my $key ( qw ( news albums pris ideas ) ) {
+ foreach my $key ( qw ( news albums pris ) ) {
  
   $stash->{$key} = list_links ( $stash->{lang}, $key );
  
  }
     
- $self->render( template => 'page/root' );
+ $self->render( template => 'page/front' );
 
 }
 
@@ -113,30 +113,25 @@ sub base {
 
 }
 
-sub setup {
+sub set {
 
  my $self = shift;
-  
- my $stash = $self->{stash};
  
- $stash->{robots} = 'index,nofollow';
-  
- defined $stash->{reset} and do {
-  $stash->{robots} = 'noindex,nofollow';
-  setup_reset ( $self ); 
- }; 
+ my @params = $self->param;
  
- defined $stash->{key} and 
- defined $stash->{value} and do {
-  setup_verify ( $stash->{key}, $stash->{value} ) or $self->render_not_found;
-  $self->session( $stash->{key} => $stash->{value} );
-  $stash->{$stash->{key}} = $stash->{value};
-  $stash->{robots} = 'noindex,nofollow';
- }; 
+ foreach my $key ( @params ) { 
  
- $stash->{values} = setup_values;
+  # allows of changing one or more settings in one request
+ 
+  my $val = $self->param( $key ); 
+ 
+  setup_set ( $self, $key, $val );
+   
+ }
 
- $self->render ( template => 'page/setup' );
+ # returned data is not used
+ # so return an empty string  
+ $self->render( text => '' ); 
 
 }
 

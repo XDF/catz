@@ -35,10 +35,6 @@
 <%== $sep %>
 <%= $t->{PHOTO_PREV} %>
 % }
-<%== $sep %>
-%== include 'elem/thumbsize';
-<%== $sep %>
-%== include 'elem/thumbsperpage';
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

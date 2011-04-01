@@ -1,7 +1,7 @@
-<form action="/" method="get">
-<label for="find"><%= $t->{FIND} %></label>
-<input type="text" id="find">
-</form>
+<table class="p100 center top"><tr>
+<td class="p50"><%== include 'elem/setup', key => 'thumbsperpage' %></td>
+<td class="p50"><%== include 'elem/setup', key => 'thumbsize' %></td>
+</tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
@@ -24,4 +24,4 @@
 %# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 %# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 %# THE SOFTWARE.
-%# 
+%#
