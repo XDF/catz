@@ -1,6 +1,12 @@
- <div class="full bar center shrink">
-text here
-</div>
+% use Catz::Util::String qw ( enval );
+<div class="shrink">
+% foreach my $detail ( @$details ) {
+<%= $t->{uc($detail->[0])} %>: 
+<a href="/<%= $lang %>/browse/<%= enval ( $detail->[0] ) %>/<%= enval ( $detail->[1] ) %>/1-<%= $thumbsperpage %>/">
+<%= $detail->[1] %>
+</a><br>  
+% }
+ </div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

@@ -21,33 +21,41 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 # 
-package Catz::Action::List;
 
-use strict;
+package Catz::Ctrl::Sample;
+
+use strict; 
 use warnings;
 
-use feature qw( switch );
+use Catz::Data::DB;
+use Catz::Model::Meta;
+use Catz::Model::Photo;
+use Catz::Model::Vector;
 
-use parent 'Catz::Action::Base';
+use parent 'Catz::Ctrl::Present';
 
-use Catz::Model::List;
-
-# This action will render a template
-
-sub main {
+sub count {
 
  my $self = shift;
+
+ $self->args;
  
  my $stash = $self->{stash};
  
- $stash->{list} = list_list(
-  $stash->{lang},
-  $stash->{subject},
-  $stash->{mode}
- );
+ my $xs = vector_array_random ( $stash->{lang}, @{ $stash->{args_array} } );
  
- # Render template "example/welcome.html.ep" with message
- $self->render(template => 'page/list');
+ #warn 'count ' . $stash->{count};
+ 
+ my @set = @{ $xs } [ 0 .. $stash->{count} - 1 ];
+ 
+ my $thumbs = photo_thumbs ( $stash->{lang}, \@set ) ;
+ 
+ $stash->{thumbs} = $thumbs; 
+ $stash->{showmeta} = 0; # no date show
+ $stash->{formation} = 'wide';
+ 
+ $self->render( template => 'block/thumbs' );
+      
 }
 
-1;
+1; 

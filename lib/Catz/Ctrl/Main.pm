@@ -24,12 +24,12 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Action::Main;
+package Catz::Ctrl::Main;
 
 use strict;
 use warnings;
 
-use parent 'Catz::Action::Base';
+use parent 'Catz::Ctrl::Base';
 
 use I18N::AcceptLanguage;
 use XML::RSS;

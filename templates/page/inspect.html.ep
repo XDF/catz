@@ -1,9 +1,11 @@
-% use feature qw( switch );
-% if ($url =~ /^\/(en|fi)\/$/ ) {
-<%= $t->{SLOGAN} %>
-% } else {
-<a href="/<%= $lang %>/"><%= $t->{SITE} %></a>
-% }
+% layout 'page';
+<table class="full"><tr><td class="p34 top">
+%= include 'stripe/viewer'
+%= include 'block/texts'
+%= include 'stripe/details'
+</td><td class="p66 top odd">
+<img width="700" src="<%== $photobase %>/<%== $image->[0] %>/<%== $image->[1] %>">
+</td></tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

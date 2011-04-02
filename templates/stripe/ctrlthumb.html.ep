@@ -1,6 +1,6 @@
 <table class="p100 center top"><tr>
-<td class="p50"><%== include 'elem/setup', key => 'thumbsperpage' %></td>
-<td class="p50"><%== include 'elem/setup', key => 'thumbsize' %></td>
+<td class="p50 right"><%== include 'elem/setup', key => 'thumbsperpage' %></td>
+<td class="p50 left"><%== include 'elem/setup', key => 'thumbsize' %></td>
 </tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine

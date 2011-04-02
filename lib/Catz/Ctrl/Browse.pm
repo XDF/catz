@@ -22,12 +22,12 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Action::Browse;
+package Catz::Ctrl::Browse;
 
 use strict;
 use warnings;
 
-use parent 'Catz::Action::Present';
+use parent 'Catz::Ctrl::Present';
 
 use Catz::Data::DB;
 use Catz::Model::Meta;

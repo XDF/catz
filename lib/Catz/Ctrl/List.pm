@@ -1,7 +1,7 @@
 #
-# Catz - the world's most advanced cat show photo engine
+# The MIT License
+# 
 # Copyright (c) 2010-2011 Heikki Siltala
-# Licensed under The MIT License
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -21,55 +21,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 # 
-
-package Catz::Action::Search;
+package Catz::Ctrl::List;
 
 use strict;
 use warnings;
 
-use parent 'Catz::Action::Base';
+use feature qw( switch );
 
-use Catz::Model::Photo;
-use Catz::Model::Vector;
-use Catz::Data::Search;
-use Catz::Util::String qw ( enurl );
+use parent 'Catz::Ctrl::Base';
 
-sub main {
+use Catz::Model::List;
+
+# This action will render a template
+
+sub list {
 
  my $self = shift;
  
  my $stash = $self->{stash};
  
- my $what = $stash->{what};
+ $stash->{list} = list_list(
+  $stash->{lang},
+  $stash->{subject},
+  $stash->{mode}
+ );
  
- $stash->{what} = $stash->{what} // '';
- $stash->{args} = undef;
- $stash->{found} = 0;
- 
- if ( $what ) {
- 
-  $stash->{args} = search2args ( $what );
-  
-  $stash->{found} = vector_count ( $stash->{lang}, @{ $stash->{args} } );
-  
-  my $xs = vector_array_random ( $stash->{lang}, @{ $stash->{args} } );
-  
-  # limit random samples to 30 by slicing the arrayref
-  ( scalar ( @{ $xs } ) > 30 ) and $xs = [ @$xs[0..29] ];
-      
-  $stash->{thumbs} = photo_thumbs ( $stash->{lang}, $xs );
-  $stash->{formation} = 'asdfasdf';
-  $stash->{path} = join '/', map { enurl $_ } @{ $stash->{args} }; 
- 
- } else {
- 
-  $stash->{thumbs} = undef;
- 
- }
- 
- 
- 
- $self->render ( template => 'page/search' );
-
+ # Render template "example/welcome.html.ep" with message
+ $self->render(template => 'page/list');
 }
+
 1;

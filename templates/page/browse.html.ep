@@ -1,9 +1,9 @@
 % layout 'page';
-<table class="full"><tr><td class="half top">
+<table class="full"><tr><td class="p40 top">
 %== include 'stripe/top';
-</td><td class="half top odd">
 %== include 'stripe/browser';
 %== include 'stripe/ctrlthumb';
+</td><td class="p60 top odd">
 %== include 'block/thumbs';
 </td></tr></table>
 %#

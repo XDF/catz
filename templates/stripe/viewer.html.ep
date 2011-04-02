@@ -1,3 +1,4 @@
+<div>
 % if ( defined $first ) {
 <a href="../../<%= $first %>/"><%= $t->{PHOTO_FIRST} %></a>
 % } else { 
@@ -26,6 +27,7 @@
 % } else {
 <%= $t->{PHOTO_LAST} %>
 % }
+</div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
