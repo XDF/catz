@@ -101,13 +101,13 @@ sub base {
 
  my $palette = $self->stash->{palette};
 
- my $colors = setup_colors;
+ my $color = setup_colors;
 
- defined $colors->{$palette} or $self->render_not_found;
+ defined $color->{$palette} or do { $self->render_not_found; return };
   
  $self->render ( 
   template => 'style/base', 
-  color => $colors->{$palette},
+  color => $color,
   format => 'css' 
  );
 
@@ -117,22 +117,32 @@ sub set {
 
  my $self = shift;
  
- my @params = $self->param;
- 
- foreach my $key ( @params ) { 
- 
-  # allows of changing one or more settings in one request
- 
-  my $val = $self->param( $key ); 
- 
-  setup_set ( $self, $key, $val );
+ my @names = grep { $_ ne 'action' and $_ ne 'controller' and $_ ne '_' } $self->param;
    
+ scalar ( @names ) > 0 or do { $self->render( text => 'FAILED' ); return };
+ 
+ my $key = shift @names // undef;  # only the first parameter is used
+   
+ defined $key or do { $self->render( text => 'FAILED' ); return };
+ 
+ my $val = $self->param( $key ) // undef;
+
+ defined $val or do {  $self->render( text => 'FAILED' ); return };
+   
+ if ( setup_set ( 
+  $self, 
+  $key, 
+  $self->param( $key ) 
+ ) ) {
+
+  $self->render( text => 'OK' );
+  
+ } else {
+ 
+  $self->render( text => 'FAILED' );
+ 
  }
-
- # returned data is not used
- # so return an empty string  
- $self->render( text => '' ); 
-
+ 
 }
 
 sub feed {

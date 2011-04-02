@@ -1,5 +1,4 @@
 <%
-
  #
  # Catz - the world's most advanced cat show photo engine
  # Copyright (c) 2010-2011 Heikki Siltala
@@ -36,14 +35,12 @@
  my $font_default = 'Verdana, Arial, sans-serif';
  my $font_title = 'Arial Black, Verdana, Arial, sans-serif';
  
- my $size_normal = 95;
- my $size_tiny = round ( $size_normal * 0.79 ); 
- my $size_small = round ( $size_normal * 0.93 ); 
- my $size_big = round ( $size_normal * 1.21 ); 
- my $size_huge = round ( $size_normal * 1.75 );
- 
- my $pre = '#';
- my $post = '%';
+ my $size_normal = 105;
+ my $size_tiny = round ( $size_normal * 0.79 ) . '%'; 
+ my $size_small = round ( $size_normal * 0.93 ) . '%'; 
+ my $size_big = round ( $size_normal * 1.21 ) . '%'; 
+ my $size_huge = round ( $size_normal * 1.75 ) . '%';
+ $size_normal .= '%';
  
  my $roundness = '3px';
  
@@ -53,14 +50,21 @@
  border-radius: $roundness;);  
  
 %>
+% foreach my $set ( qw ( fore back ) ) {
+%  foreach my $key ( keys %{ $color->{$palette}->{$set} } ) {
+.<%== $set %>_<%== $key %> { <%== $set eq 'back' ? 'background-' : '' %>color: <%== $color->{$palette}->{$set}->{$key} %>; }
+%  }
+% } 
+% my $fore_base = $color->{$palette}->{front}->{base};
+% my $back_base = $color->{$palette}->{back}->{base};
 
-html { height: 100%; <%== $color->{canvas} %>; }
+html { height: 100%; background-color: <%== $back_base %>; }
 
 body {
- color: <%== $color->{text} %>;
- background-color: <%== $color->{canvas} %>;
+ color: <%== $fore_base %>;
+ background-color: <%== $back_base %>;
  font-family: <%== $font_default %>; 
- font-size: <%== $size_normal %><%== $post %>;
+ font-size: <%== $size_normal %>;
  text-align: center;
  height: 100%;
 }
@@ -96,53 +100,9 @@ body {
 
 .roomy { padding-left: 4em; padding-right: 4em; }
 
-.unit { margin-top: 0.6em; margin-bottom: 0.6em; }
+.unit { padding-top: 0.4em; padding-bottom: 0.4em; }
 
-.match { border-bottom: 1px dotted #FFFFFF;  }
-
-.box { 
- border: 1px <%== $pre %><%== $color_front %> solid;
-}
-
-.banner { 
- background-color: <%== $pre %><%== $color_alt1 %>;
- padding: 0.4em; 
-}
-
-.odd { 
- background-color: <%== $pre %><%== $color_box1 %>;
- padding: 0.1em;
- margin: 0.1em;
- <%== $rounding %> 
-}
-
-.even { 
- background-color: <%== $pre %><%== $color_box2 %>;
- padding: 0.1em;
- margin: 0.1em;
- <%== $rounding %> 
-}
-
-.bar { 
- background-color: <%== $pre %><%== $color_box2 %>; 
- padding: 0;
- <%== $rounding %>  
-}
-
-.alt {
- color:  <%== $pre %><%== $color_alt2 %>; 
-}
-
-.big { width: 75%; }
-.small { width: 25%; }
-.full { width: 100%; }
-.fifth { width: 20%; }
-.half { width: 50%; padding: 0.2em; }
-.wide { width: 66%; padding: 1em; }
-.narrow { width: 34%; padding: 1em; }
-.tri { width: 33%; padding: 0.25em; }
-.trix { width: 34%; padding: 1em; }
-
+.match { border-bottom: 2px dotted <%== $color->{$palette}->{fore}->{red} %>;  }
 
 .left { text-align: left; padding-left: 0.5em; }
 .center { text-align: center; }
@@ -150,46 +110,36 @@ body {
 
 .top { vertical-align: top; }
 
-.sep { 
- width: 85%;
- height: 1px; 
- border: 0px; 
- color: <%== $pre %><%== $color_front %>; 
- background-color: <%== $pre %><%== $color_front %>;
- text-align: left;
-}
              
 h1 {
- font-size: <%== $size_huge %><%== $post %>;
- color: #<%== $color->{alt1} %>;
+ font-size: <%== $size_huge %>;
+ display: inline;
  font-family: <%== $font_title %>;
  letter-spacing: 2px;
 }
 
 h2,h3,h4,h5,h6 {
- font-size: <%== $size_big %><%== $post %>;
+ font-size: <%== $size_big %>;
  display: inline;
- color: #<%== $color->{alt1} %>;
  font-family: <%== $font_title %>;
  letter-spacing: 2px;
 }
 
 
 a:link, a:visited, a:active { 
- color: <%== $color->{color1strong} %>;
+ color: <%== $color->{$palette}->{fore}->{blue} %>;
  text-decoration: none;
 }
 
 a:hover {
- color: <%== $color->{color1weak} %>;
- background-color: <%== $color_front %>;
+ color: <%== $color->{$palette}->{fore}->{blue} %>;
+ background-color: <%== $fore_base %>;
  text-decoration: none;   
 }
 
 .thumb {
  border: 1px;
  border-style: solid;
- border-color: <%== $pre %><%== $color_box1 %>;
  margin-left: 1px;
  margin-right: 1px;
 }
@@ -220,10 +170,8 @@ li {
 .p100 { width: 100%; }
 
 hr {
- color: <%== $color_front %>;
  background: transparent;
  margin: 0;
  padding: 0;
  border: 0;
- border-bottom: 1px <%== $pre %><%== $color_box2 %> solid;
 }
