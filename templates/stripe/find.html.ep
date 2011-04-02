@@ -1,9 +1,9 @@
-<form class="block center" action="/" method="get">
-<label for="find"><%= $t->{FIND} %></label>
+<form class="unit back_dark block full" action="/" method="get">
+<h2><%= $t->{FIND} %></h2>
 <input type="text" id="find">
 <a href="/<%= $lang %>/search/"</a><%= $t->{SEARCH} %></a>
 </form>
-<div id="suggest" class="p100 center"></div>
+<div id="found" class="p100 center"></div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

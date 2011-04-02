@@ -1,5 +1,5 @@
 % layout 'page';
-<table class="p100"><tr><td class="top p50">
+<table class="p100"><tr><td class="top p40">
 %== include 'stripe/top';
 %== include 'stripe/find';
 %== include 'stripe/albums';
@@ -7,7 +7,7 @@
 %== include 'stripe/lists';
 %== include 'stripe/intro';
 %== include 'stripe/bottom';
-</td><td class="top p50">
+</td><td class="top p60 back_dark">
 %== include 'stripe/slogan';
 <div id="samples"></div>
 </td></tr></table>

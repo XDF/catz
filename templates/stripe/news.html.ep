@@ -1,10 +1,12 @@
-<h2><%= $t->{NEWS_LATEST} %></h2>
-<ul>
+<div class="back_dark"><h2><%= $t->{NEWS_LATEST} %></h2> <a href="/<%= $lang %>/news/"><%= $t->{NEWS_ALL} %></a></div>
+% my $i = 0;
 % foreach my $row ( @$news ) {
-<li><%= $row->[1] %> <a href="/<%= $lang %>/news/#<%= $row->[0] %>"><%= $row->[2] %></a></li>
+<table class="p100 <%= ( $i % 2 == 0 ) ? 'back_medium' : 'back_light' %>"><tr>
+<td class="p20 right"><%= $row->[1] %></td>
+<td class="p80 left"><a href="/<%= $lang %>/news/#<%= $row->[0] %>"><%= $row->[2] %></a></td>
+% $i++;
+</tr></table>
 % }
-<li><a href="/<%= $lang %>/news/"><%= $t->{NEWS_ALL} %></a></li>
-</ul>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

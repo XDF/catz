@@ -26,7 +26,7 @@ var prevVal = '';
 
 var prevReq;
 
-function doSuggest() {
+function doFind() {
 
  what = $('#find').val();
  
@@ -38,20 +38,20 @@ function doSuggest() {
  
    if ( prevReq ) { prevReq.abort(); }
  
-   $('div#suggest').html('');
+   $('div#found').html('');
    
   } else {
 
    if ( prevReq ) { prevReq.abort(); }
 
    prevReq = $.ajax ({
-    url: 'http://localhost:3000/en/suggest/' + what + '/',
+    url: 'http://localhost:3000/en/find/' + what + '/',
     success: function( data ){
      
       prevReq = null;
       prevVal = data;  
     
-      $('div#suggest').html( data );
+      $('div#found').html( data );
      
     }  
    });
@@ -64,17 +64,13 @@ function doSuggest() {
 
 $(document).ready(function() {
 
- // for non-js browsing samples are hidden by style sheet
- // now set them visible 
- $('div#suggest').css( "display", "inline" );
-
  $('#find').keyup(function() {
-   doSuggest();
+   doFind();
  });
  
  // intial rendering when page loads, important to bring
- // last content up when returning to page 
- doSuggest();
+ // last content back up when returning to a page 
+ doFind();
 
 
 });

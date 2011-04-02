@@ -36,51 +36,88 @@ my $signature = 'o_!+9akjJJ209-*&&';
 sub setup_signature { $signature }
 
 #
-# Color palettes are developed based on "4-class Pink-Yellow-Green 
-# diverging" color scheme of Colorbrewer 2.0
+# Live color palettes developed by Heikki Siltala  based on 
+# the Public Domain palette developed by  The Tango Desktop Project 
+# http://tango.freedesktop.org/Tango_Desktop_Project
 #
-# http://colorbrewer2.org/index.php?type=diverging&scheme=PiYG&n=4
-#
-# Colorbrewer copyright Cynthia Brewer, Mark Harrower and 
-# The Pennsylvania State University
-# 
-# 0xD01C8B; 0xF1B6DA; 0xB8E186; 0x4DAC26;   
+# "The Tango Desktop Project exists to create a consistent
+# user experience for Open Source software."
 #
 
- my $color_back  = 'EEEEEE'; 
- my $color_front  = '000000';
- my $color_box1  = 'EEEEEE';
- my $color_box2 = 'EEEEEE';
- my $color_alt1 = 'FFFFFF';
- my $color_alt2 = '772211';
+sub cf { '#' . uc $_[0] }
+
+my $cbase = {
+ yellow => [ map { cf ( $_ ) } qw ( fce94f	edd400 c4a000 ) ],
+ orange => [ map { cf ( $_ ) } qw ( fcaf3e	f57900 ce5c00 ) ],
+ brown => [ map { cf ( $_ ) } qw ( e9b96e c17d11 8f5902 ) ],
+ green => [ map { cf ( $_ ) } qw ( 8ae234 73d216 4e9a06 ) ],
+ blue => [ map { cf ( $_ ) } qw ( 729fcf	3465a4 204a87 ) ],
+ violet => [ map { cf ( $_ ) } qw ( ad7fa8	75507b 5c3566 ) ],
+ red => [ map { cf ( $_ ) } qw ( ef2929 cc0000 a40000 ) ],
+ gray => [ map { cf ( $_ ) } qw ( 
+  ffffff eeeeec d3d7cf babdb6 888a85 555753 2e3436 000000 
+ ) ]
+};
 
 my $colors = {
 
  dark => {
-  canvas => '#000000',
-  text => '#FFFFFF',
-  back1 => '#252525',
-  back2 => '#353535',
-  back3 => '#454545',
-  color1strong => '#4DAC26',
-  color1weak => '#B8E186',
-  color2strong => '#D01C8B',
-  color2weak => '#BF1B6DA',
-  
+  fore => {
+   yellow => $cbase->{yellow}->[0],
+   orange => $cbase->{orange}->[0],
+   brown => $cbase->{brown}->[0],
+   green => $cbase->{green}->[0],
+   blue => $cbase->{blue}->[0],
+   violet => $cbase->{violet}->[0],
+   red => $cbase->{red}->[0],
+   light => $cbase->{gray}->[1],
+   medium => $cbase->{gray}->[2],
+   dark => $cbase->{gray}->[3],
+   base => $cbase->{gray}->[0],
+  },
+  back => {
+   yellow => $cbase->{yellow}->[2],
+   orange => $cbase->{orange}->[2],
+   brown => $cbase->{brown}->[2],
+   green => $cbase->{green}->[2],
+   blue => $cbase->{blue}->[2],
+   violet => $cbase->{violet}->[2],
+   red => $cbase->{red}->[2],
+   light => $cbase->{gray}->[4],
+   medium => $cbase->{gray}->[5],
+   dark => $cbase->{gray}->[6],
+   base => $cbase->{gray}->[7], 
+  }   
  },
 
  bright => {
-  canvas => '#FDFDFD',
-  text => '#000000',
-  back1 => '#858585',
-  back2 => '#959595',
-  back3 => '#A5A5A5',
-  color1strong => '#4DAC26',
-  color1weak => '#B8E186',
-  color2strong => '#D01C8B',
-  color2weak => '#BF1B6DA',  
+  fore => {
+   yellow => $cbase->{yellow}->[2],
+   orange => $cbase->{orange}->[2],
+   brown => $cbase->{brown}->[2],
+   green => $cbase->{green}->[2],
+   blue => $cbase->{blue}->[2],
+   violet => $cbase->{violet}->[2],
+   red => $cbase->{red}->[2],
+   light => $cbase->{gray}->[4],
+   medium => $cbase->{gray}->[5],
+   dark => $cbase->{gray}->[6],
+   base => $cbase->{gray}->[7],
+  },
+  back => {
+   yellow => $cbase->{yellow}->[0],
+   orange => $cbase->{orange}->[0],
+   brown => $cbase->{brown}->[0],
+   green => $cbase->{green}->[0],
+   blue => $cbase->{blue}->[0],
+   violet => $cbase->{violet}->[0],
+   red => $cbase->{red}->[0],
+   light => $cbase->{gray}->[2],
+   medium => $cbase->{gray}->[3],
+   dark => $cbase->{gray}->[4],
+   base => $cbase->{gray}->[1], 
+  }   
  },
-
 };
 
 sub setup_colors { $colors } 
@@ -135,7 +172,7 @@ sub setup_set {
  my ( $app, $key, $val ) = @_;
  
  # changes one setup value
- 
+  
  setup_verify ( $key, $val ) and do {
   
   # if verify ok then change session data ...
@@ -144,7 +181,12 @@ sub setup_set {
   # ... and stash data  
   $app->stash->{$key} = $val;
   
+  # report that the modification was done
+  return 1; 
+  
  };
+ 
+ return 0; # report that no modification occured 
 
 }
 
