@@ -1,4 +1,5 @@
 #summary My brief opinionated comparison on Catalyst, Dancer and Mojolicious
+#labels Catalyst,Dancer,Mojolicious,Perl
 
 = Catalyst =
   * Very flexible: Moose can be used to extend controllers, sessions can be handled every way you like, choose almost any templating system and there already a CPAN module to do that

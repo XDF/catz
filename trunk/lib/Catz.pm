@@ -43,8 +43,8 @@ sub startup {
  
  $self->renderer->layout_prefix( 'layout' );
  
- # All controllers are Actions 
- $r->namespace( 'Catz::Action' );
+ # All controllers are in Catz::Ctrl 
+ $r->namespace( 'Catz::Ctrl' );
 
  # if the site root is requested then detect the correct language
  $r->route('/')->to( "main#detect" );
@@ -73,9 +73,9 @@ sub startup {
   "sample#count", path => undef
  );
  
- $l->route('/list/:subject/:mode')->to('list#main');
+ $l->route('/list/:subject/:mode')->to('list#list');
  
- $l->route( '/search' )->to ( "search#main" ); 
+ $l->route( '/search' )->to ( "search#search" ); 
  
  # browse photos based on the search pattern or no pattern 
  # current setting 1,5 supports photo sets up to 99,999 photos
@@ -87,19 +87,18 @@ sub startup {
  $l->route( '/browse/:range', range => qr/\d{1,5}\-\d{1,5}/ )->to (
   "browse#browse", path => undef
  );
-  
-  
- # view a photo based on the search pattern or no pattern
  
- $l->route( '/view/(*path)/:album/:n', 
-  album => qr/\d{8}[a-z\d]+/, n => qr/\d{1,3}/ )->to (
-  "view#view"
- );
+ my $v = $l->route ( '/:action', action => qr/inspect|show/ ); 
+  
+ # inspect/show a photo based on the search pattern or no pattern
+ 
+ $v->route( '/(*path)/:album/:n', 
+  album => qr/\d{8}[a-z\d]+/, n => qr/\d{1,3}/ )->to( controller => 'view' );
 
- $l->route( '/view/:album/:n', 
-  album => qr/\d{8}[a-z\d]+/, n => qr/\d{1,3}/ )->to (
-  "view#view", path => undef
- );
+ $v->route( '/:album/:n', 
+  album => qr/\d{8}[a-z\d]+/, n => qr/\d{1,3}/ )->to( 
+   controller => 'view', path => undef 
+  );
  
  # add hooks to subs that are executed before and after the dispatch
  $self->hook ( before_dispatch => \&before );  

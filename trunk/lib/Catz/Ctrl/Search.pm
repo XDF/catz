@@ -1,7 +1,7 @@
 #
-# The MIT License
-# 
+# Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
+# Licensed under The MIT License
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,53 +20,56 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-#  
+# 
 
-package Catz::Action::Base;
+package Catz::Ctrl::Search;
 
 use strict;
 use warnings;
 
-use parent 'Mojolicious::Controller';
+use parent 'Catz::Ctrl::Base';
 
-sub redirect_perm {
+use Catz::Model::Photo;
+use Catz::Model::Vector;
+use Catz::Data::Search;
+use Catz::Util::String qw ( enurl );
 
- # this is a modified copy from Mojolicious core
-
- my $self = shift;
- my $res = $self->res;
- 
- $res->code(301);
-
- my $headers = $res->headers;
- $headers->location($self->url_for(@_)->to_abs);
- $headers->content_length(0);
-
- $self->rendered;
-
- return $self;
- 
-}
- 
-sub redirect_temp {
-
- # this is a modified copy from Mojolicious core  
+sub search {
 
  my $self = shift;
- my $res = $self->res;
  
- $res->code(302);
-
- my $headers = $res->headers;
- $headers->location($self->url_for(@_)->to_abs);
- $headers->content_length(0);
-
- $self->rendered;
-
- return $self;
+ my $stash = $self->{stash};
  
+ my $what = $stash->{what};
+ 
+ $stash->{what} = $stash->{what} // '';
+ $stash->{args} = undef;
+ $stash->{found} = 0;
+ 
+ if ( $what ) {
+ 
+  $stash->{args} = search2args ( $what );
+  
+  $stash->{found} = vector_count ( $stash->{lang}, @{ $stash->{args} } );
+  
+  my $xs = vector_array_random ( $stash->{lang}, @{ $stash->{args} } );
+  
+  # limit random samples to 30 by slicing the arrayref
+  ( scalar ( @{ $xs } ) > 30 ) and $xs = [ @$xs[0..29] ];
+      
+  $stash->{thumbs} = photo_thumbs ( $stash->{lang}, $xs );
+  $stash->{formation} = 'asdfasdf';
+  $stash->{path} = join '/', map { enurl $_ } @{ $stash->{args} }; 
+ 
+ } else {
+ 
+  $stash->{thumbs} = undef;
+ 
+ }
+ 
+ 
+ 
+ $self->render ( template => 'page/search' );
+
 }
-
-
 1;
-

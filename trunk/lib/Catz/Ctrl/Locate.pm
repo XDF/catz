@@ -20,42 +20,84 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-# 
+#  
 
-package Catz::Action::Sample;
+package Catz::Ctrl::Locate;
 
-use strict; 
+use strict;
 use warnings;
 
-use Catz::Data::DB;
-use Catz::Model::Meta;
-use Catz::Model::Photo;
-use Catz::Model::Vector;
+use parent 'Catz::Ctrl::Base';
 
-use parent 'Catz::Action::Present';
+#use Catz::Util;
 
-sub count {
+use Catz::Model::Locate;
+
+sub suggest {
 
  my $self = shift;
 
- $self->args;
- 
  my $stash = $self->{stash};
- 
- my $xs = vector_array_random ( $stash->{lang}, @{ $stash->{args_array} } );
- 
- #warn 'count ' . $stash->{count};
- 
- my @set = @{ $xs } [ 0 .. $stash->{count} - 1 ];
- 
- my $thumbs = photo_thumbs ( $stash->{lang}, \@set ) ;
- 
- $stash->{thumbs} = $thumbs; 
- $stash->{showmeta} = 0; # no date show
- $stash->{formation} = 'wide';
- 
- $self->render( template => 'block/thumbs' );
-      
+
+ $stash->{suggest} = locate_suggest ( $stash->{lang}, $stash->{what} );
+
+ $self->render( template => 'block/suggest' );
+
 }
 
-1; 
+sub ancient_search2args {
+
+ # the search string parser
+
+ my $self = shift;
+
+ my $search = $self->stash->{search};
+ 
+ defined $search or return;
+
+ $search = trim( $search ); 
+ $search =~ s/ +/ /g;
+ 
+ my @ag = split / /, $search;
+ 
+ my @args = ();
+ 
+ foreach my $arg ( @ag ) {
+ 
+  my ( $key, $value ) = split /=/, $arg;
+  
+  push @args, ( $key, $value );
+ 
+ } 
+ 
+ $self->{stash}->{args} = join '/', @args;
+
+}
+
+sub ancient_main {
+
+ my $self = shift;
+ 
+ $self->{stash}->{search} = $self->param('search') // undef;
+ 
+ $self->search2args;
+ 
+ my $total = undef;
+ 
+ $self->{stash}->{args} and do {
+ 
+  #$total = $p->total ( 
+  # $self->{stash}->{lang}, split /\//, $self->{stash}->{args} 
+  #);
+ 
+ };
+ 
+ $self->{stash}->{ergs} = eurl( $self->{stash}->{args} );
+ 
+ $self->{stash}->{total} = $total;
+ 
+ $self->render( template => 'page/search' );
+  
+}
+
+1;

@@ -1,4 +1,5 @@
 #summary A word or two about technology selections
+#lables Perl,Mojolicious,SQLite,CHI 
 
 = Technologies =
 

@@ -22,20 +22,42 @@
 // THE SOFTWARE.
 //
 
-function renderSuggest() {
+var prevVal = '';
+
+var prevReq;
+
+function doSuggest() {
 
  what = $('#find').val();
  
- if ( what == '' ) {
+ if ( what != prevVal ) {
  
-  $('div#suggest').html('');
- 
- } else {
-
-  $('div#suggest').load( 
-   'http://localhost:3000/en/suggest/' + what + '/'
-  );
+  prevVal = what;
   
+  if ( what == '' ) {
+ 
+   if ( prevReq ) { prevReq.abort(); }
+ 
+   $('div#suggest').html('');
+   
+  } else {
+
+   if ( prevReq ) { prevReq.abort(); }
+
+   prevReq = $.ajax ({
+    url: 'http://localhost:3000/en/suggest/' + what + '/',
+    success: function( data ){
+     
+      prevReq = null;
+      prevVal = data;  
+    
+      $('div#suggest').html( data );
+     
+    }  
+   });
+  
+  }
+    
  }
 
 } 
@@ -47,12 +69,12 @@ $(document).ready(function() {
  $('div#suggest').css( "display", "inline" );
 
  $('#find').keyup(function() {
-   renderSuggest();
+   doSuggest();
  });
  
  // intial rendering when page loads, important to bring
  // last content up when returning to page 
- renderSuggest();
+ doSuggest();
 
 
 });

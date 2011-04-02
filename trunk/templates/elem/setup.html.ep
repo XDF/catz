@@ -19,7 +19,7 @@
 % my $now = stash ( $key );
 %# die "$key = $now";
 % foreach my $val ( @{ $values } ) {
-% my $selected = '';
+% my $selected = ' ';
 % $val eq $now and $selected = ' selected ';
 <option<%= $selected %>value="<%== $val %>"><%= $t->{'SETUP_'.$key.'_'.$val} %></option>
 % } 

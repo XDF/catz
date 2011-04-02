@@ -31,27 +31,37 @@ $c += 6;
 
 # typical viewing scenarios
 
-$t->get_ok('/fi/view/nick/Mikke/adsf3rasdfa/')->status_is(404);
-$t->get_ok('/en/view/nick/Mikke/23293929/')->status_is(404);
-
-$c += 4;
-
-$t->get_ok('/fi/view/83a83d89/')->status_is(404);
-$t->get_ok('/fi/view/93k-1000/')->status_is(404);
-
-$c += 4;
-
-$t->get_ok('/fi/view/nick/Mimosa/20090802helsinki/168/')->status_is(200)->content_like(qr/img src/);
-$t->get_ok('/en/view/breeder/Cesmes/20090802helsinki/168/')->status_is(200)->content_like(qr/img src/);
-
-$c += 6;
-
-$t->get_ok('/en/view/breeder/20090802helsinki/168/')->status_is(404);
-$t->get_ok('/en/view/Cesmes/20090802helsinki/168/')->status_is(404);
-$t->get_ok('/en/view/breeder/1-20/')->status_is(404);
-$t->get_ok('/en/view/Cesmes/1-20/')->status_is(404);
+$t->get_ok('/fi/inspect/nick/Mikke/adsf3rasdfa/')->status_is(404);
+$t->get_ok('/en/inspect/nick/Mikke/23293929/')->status_is(404);
+$t->get_ok('/fi/show/nick/Mikke/adsf3rasdfa/')->status_is(404);
+$t->get_ok('/en/show/nick/Mikke/23293929/')->status_is(404);
 
 $c += 8;
+
+$t->get_ok('/fi/inspect/83a83d89/')->status_is(404);
+$t->get_ok('/fi/inspect/93k-1000/')->status_is(404);
+$t->get_ok('/fi/show/83a83d89/')->status_is(404);
+$t->get_ok('/fi/show/93k-1000/')->status_is(404);
+
+$c += 8;
+
+$t->get_ok('/fi/inspect/nick/Mimosa/20090802helsinki/168/')->status_is(200)->content_like(qr/img src/);
+$t->get_ok('/en/inspect/breeder/Cesmes/20090802helsinki/168/')->status_is(200)->content_like(qr/img src/);
+$t->get_ok('/fi/show/nick/Mimosa/20090802helsinki/168/')->status_is(200)->content_like(qr/img src/);
+$t->get_ok('/en/show/breeder/Cesmes/20090802helsinki/168/')->status_is(200)->content_like(qr/img src/);
+
+$c += 12;
+
+$t->get_ok('/en/inspect/breeder/20090802helsinki/168/')->status_is(404);
+$t->get_ok('/en/inspect/Cesmes/20090802helsinki/168/')->status_is(404);
+$t->get_ok('/en/inspect/breeder/1-20/')->status_is(404);
+$t->get_ok('/en/inspect/Cesmes/1-20/')->status_is(404);
+$t->get_ok('/en/show/breeder/20090802helsinki/168/')->status_is(404);
+$t->get_ok('/en/show/Cesmes/20090802helsinki/168/')->status_is(404);
+$t->get_ok('/en/show/breeder/1-20/')->status_is(404);
+$t->get_ok('/en/show/Cesmes/1-20/')->status_is(404);
+
+$c += 16;
 
 $t->get_ok('/fi/sample/nick/Mimosa/5/')->status_is(200)->content_like(qr/img src/);
 $t->get_ok('/en/sample/15/')->status_is(200)->content_like(qr/img src/);

@@ -5,7 +5,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="<%= $lang %>">
 <head><!-- <%= dtlang ( $lang ) %> -->
-%#<title><%= $title %></title>
+<title><%== include 'elem/title' %></title>
 <link href="/style/reset/" rel="stylesheet" type="text/css" >
 <link href="/style/<%== $palette %>/" rel="stylesheet" type="text/css" >
 <script type="text/javascript" src="/js_lib/jquery.js"></script>

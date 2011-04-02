@@ -1,8 +1,8 @@
 #
-# Catz - the world's most advanced cat show photo engine
+# The MIT License
+# 
 # Copyright (c) 2010-2011 Heikki Siltala
-# Licensed under The MIT License
-#  
+# 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -20,40 +20,53 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-# 
+#  
 
-package Catz::Action::Present;
+package Catz::Ctrl::Base;
 
 use strict;
 use warnings;
 
-use parent 'Catz::Action::Base';
+use parent 'Mojolicious::Controller';
 
-use Catz::Data::DB;
-use Catz::Model::Meta;
-use Catz::Model::Vector;
+sub redirect_perm {
 
-sub args {
+ # this is a modified copy from Mojolicious core
 
  my $self = shift;
+ my $res = $self->res;
  
- my $stash = $self->{stash};
-   
- my @args = ();
-  
- # split arguments into an array, filter out empty arguments
- # if path is not defined then browsing all photos and skip processing
- $stash->{path} and ( @args = grep { defined $_ } split /\//, $stash->{path} );
- 
- # store the new argument array back to stash
- $stash->{args_string} = join '/', @args;
- $stash->{args_array} = \@args;
- $stash->{args_count} = scalar @args;
- 
- # arguments must come in as pairs
- scalar @args % 2 == 0 or $self->render_not_found;
+ $res->code(301);
 
+ my $headers = $res->headers;
+ $headers->location($self->url_for(@_)->to_abs);
+ $headers->content_length(0);
+
+ $self->rendered;
+
+ return $self;
+ 
 }
+ 
+sub redirect_temp {
+
+ # this is a modified copy from Mojolicious core  
+
+ my $self = shift;
+ my $res = $self->res;
+ 
+ $res->code(302);
+
+ my $headers = $res->headers;
+ $headers->location($self->url_for(@_)->to_abs);
+ $headers->content_length(0);
+
+ $self->rendered;
+
+ return $self;
+ 
+}
+
 
 1;
 

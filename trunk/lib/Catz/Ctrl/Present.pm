@@ -1,8 +1,8 @@
 #
-# The MIT License
-# 
+# Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
-# 
+# Licensed under The MIT License
+#  
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -20,84 +20,40 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-#  
+# 
 
-package Catz::Action::Locate;
+package Catz::Ctrl::Present;
 
 use strict;
 use warnings;
 
-use parent 'Catz::Action::Base';
+use parent 'Catz::Ctrl::Base';
 
-#use Catz::Util;
+use Catz::Data::DB;
+use Catz::Model::Meta;
+use Catz::Model::Vector;
 
-use Catz::Model::Locate;
-
-sub suggest {
+sub args {
 
  my $self = shift;
-
+ 
  my $stash = $self->{stash};
-
- $stash->{suggest} = locate_suggest ( $stash->{lang}, $stash->{what} );
-
- $self->render( template => 'block/suggest' );
-
-}
-
-sub ancient_search2args {
-
- # the search string parser
-
- my $self = shift;
-
- my $search = $self->stash->{search};
- 
- defined $search or return;
-
- $search = trim( $search ); 
- $search =~ s/ +/ /g;
- 
- my @ag = split / /, $search;
- 
+   
  my @args = ();
- 
- foreach my $arg ( @ag ) {
- 
-  my ( $key, $value ) = split /=/, $arg;
   
-  push @args, ( $key, $value );
+ # split arguments into an array, filter out empty arguments
+ # if path is not defined then browsing all photos and skip processing
+ $stash->{path} and ( @args = grep { defined $_ } split /\//, $stash->{path} );
  
- } 
+ # store the new argument array back to stash
+ $stash->{args_string} = join '/', @args;
+ $stash->{args_array} = \@args;
+ $stash->{args_count} = scalar @args;
  
- $self->{stash}->{args} = join '/', @args;
+ # arguments must come in as pairs
+ scalar @args % 2 == 0 or $self->render_not_found;
 
-}
-
-sub ancient_main {
-
- my $self = shift;
- 
- $self->{stash}->{search} = $self->param('search') // undef;
- 
- $self->search2args;
- 
- my $total = undef;
- 
- $self->{stash}->{args} and do {
- 
-  #$total = $p->total ( 
-  # $self->{stash}->{lang}, split /\//, $self->{stash}->{args} 
-  #);
- 
- };
- 
- $self->{stash}->{ergs} = eurl( $self->{stash}->{args} );
- 
- $self->{stash}->{total} = $total;
- 
- $self->render( template => 'page/search' );
-  
 }
 
 1;
+

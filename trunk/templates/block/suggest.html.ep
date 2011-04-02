@@ -1,11 +1,16 @@
 % use Catz::Util::String qw ( enurl );
 % foreach my $sugg ( @{ $suggest } ) {
 % my $text = $sugg->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOS};
+% my $out = $sugg->[1];
+% $out =~ s/($what)/<span class="match">$1<\/span>/ig; # this is a temporary solution -> special chars come to string -> bad
 <div class="left"> 
-<a class="enlarge" href="/<%= $lang %>/view/<%= $sugg->[0] %>/<%= enurl($sugg->[1]) %>/1-<%== $thumbsperpage %>/"><%= $sugg->[1] %></a>
+<a href="/<%= $lang %>/browse/<%= $sugg->[0] %>/<%= enurl($sugg->[1]) %>/1-<%= $thumbsperpage %>/"><%== $out %></a>
 <%= $t->{uc($sugg->[0])} %>: <%= $sugg->[2] %> <%= $text %>
 </div>
 % }
+% ( scalar ( @$suggest ) == 0 ) and do { 
+<div class="enlarge">!!!NOTHING FOUND!!!</div>
+% };
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

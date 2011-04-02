@@ -22,19 +22,19 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Action::View;
+package Catz::Ctrl::View;
 
 use strict;
 use warnings;
 
-use parent 'Catz::Action::Present';
+use parent 'Catz::Ctrl::Present';
 
 use Catz::Data::DB;
 use Catz::Model::Meta;
 use Catz::Model::Photo;
 use Catz::Model::Vector;
 
-sub view {
+sub inspect {
 
  my $self = shift;
   
@@ -79,7 +79,56 @@ sub view {
  $self->{stash}->{details} = $details;
  $self->{stash}->{image} = $image;
      
- $self->render( template => 'page/view' );
+ $self->render( template => 'page/inspect' );
+
+}
+
+sub show {
+
+ my $self = shift;
+  
+ my $stash = $self->{stash};
+
+ $stash->{path} and do { 
+ 
+  my @args = split /\//, $stash->{path};
+  
+  ( scalar ( @args ) % 2 ) == 0 or do { $self->render_not_found; return; }; 
+  
+  $stash->{args} = \@args;
+  
+ };
+          
+ my $perpage =  $self->session('thumbsperpage');
+  
+ my ( $total, $pos, $x, $page, $first, $prev, $next, $last ) = 
+  @{ 
+     vector_pointer( 
+      $stash->{album}, $stash->{n}, $perpage, 
+     $stash->{lang}, @{ $stash->{args} } 
+     ) 
+   }; 
+  
+ my $details = photo_details ( $stash->{lang}, $x );
+
+ my $texts = photo_texts ( $stash->{lang}, $x );
+
+ my $image = photo_image ( $x );
+ 
+ $self->{stash}->{total} = $total;
+ $self->{stash}->{pos} = $pos;
+ $self->{stash}->{page} = $page;
+ $self->{stash}->{perpage} = $perpage;
+ $self->{stash}->{first} = $first;
+ $self->{stash}->{prev} = $prev;
+ $self->{stash}->{next} = $next;
+ $self->{stash}->{last} = $last;
+ 
+ $self->{stash}->{texts} = $texts;
+ $self->{stash}->{details} = $details;
+ $self->{stash}->{image} = $image;
+     
+ $self->render( template => 'page/show' );
 
 }
 
