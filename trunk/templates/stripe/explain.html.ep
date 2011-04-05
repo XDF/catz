@@ -2,7 +2,7 @@
 %# Explaining of the search arguments
 %#
 % use feature qw ( switch );
-<table class="full even">
+<table class="p100">
 % my $i = 0;
 % while ( $i < scalar ( @{ $args } ) ) {
 % my $key = $args->[ $i++ ];

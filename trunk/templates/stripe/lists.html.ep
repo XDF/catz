@@ -1,5 +1,5 @@
 % use Catz::Util::Number qw ( fmt );
-<div class="back_dark"><h2><%= $t->{LISTS} %></h2></div>
+<div class="p100 back_dark"><h2><%= $t->{LISTS} %></h2></div>
 % my $i = 0;
 % foreach my $row ( @{ $pris } ) {
 <table class="p100 <%= ( $i % 2 == 0 ) ? 'back_medium' : 'back_light' %>"><tr>

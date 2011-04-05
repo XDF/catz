@@ -26,10 +26,14 @@ package Catz::Ctrl::Base;
 
 use strict;
 use warnings;
-
+ 
 use parent 'Mojolicious::Controller';
 
-sub redirect_perm {
+# we just add a few methods to Mojolicious::Controller
+
+my $db = {}; # hash to store static database connections
+
+sub redirect_perm { # permanent redirect 301
 
  # this is a modified copy from Mojolicious core
 
@@ -47,8 +51,8 @@ sub redirect_perm {
  return $self;
  
 }
- 
-sub redirect_temp {
+
+sub redirect_temp { # temporary redirect 302
 
  # this is a modified copy from Mojolicious core  
 
@@ -64,6 +68,21 @@ sub redirect_temp {
  $self->rendered;
 
  return $self;
+ 
+}
+
+
+sub fetch { 
+
+ # fetch data from any Model
+ 
+ my $self = shift;
+ 
+ my $stash = $self->{stash};
+ 
+ # dt, lang
+ 
+ # .... to be continued ...
  
 }
 

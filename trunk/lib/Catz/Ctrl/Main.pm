@@ -39,6 +39,10 @@ use Catz::Model::Meta;
 use Catz::Data::Setup;
 use Catz::Util::Time qw ( dt );
 
+use Catz::Data::Conf;
+
+use Data::Dumper;
+
 my $languages = [ ( 'en', 'fi' ) ];
  
 my $acceptor = I18N::AcceptLanguage->new( 
@@ -61,10 +65,8 @@ sub detect {
 
 sub front {
 
- my $self = shift;
- 
- my $stash = $self->{stash};
-  
+ my $self = shift; my $stash = $self->{stash};
+   
  foreach my $key ( qw ( news albums pris ) ) {
  
   $stash->{$key} = list_links ( $stash->{lang}, $key );
@@ -77,9 +79,7 @@ sub front {
 
 sub news {
 
- my $self = shift;
- 
- my $stash = $self->{stash};
+ my $self = shift; my $stash = $self->{stash};
  
  $stash->{news} = meta_news ( $stash->{lang} );
      
@@ -97,9 +97,9 @@ sub reset {
 
 sub base {
 
- my $self = shift;
+ my $self = shift; my $stash = $self->{stash};
 
- my $palette = $self->stash->{palette};
+ my $palette = $stash->{palette};
 
  my $color = setup_colors;
 
@@ -115,25 +115,47 @@ sub base {
 
 sub set {
 
- my $self = shift;
+ my $self = shift; my $stash = $self->{stash};
  
- my @names = grep { $_ ne 'action' and $_ ne 'controller' and $_ ne '_' } $self->param;
-   
- scalar ( @names ) > 0 or do { $self->render( text => 'FAILED' ); return };
+ $stash->{key} eq 'dt' and do { # special case for 'dt'
  
- my $key = shift @names // undef;  # only the first parameter is used
+  $stash->{val} eq '0' and do {
+  
+   delete $self->session->{dt}; 
    
- defined $key or do { $self->render( text => 'FAILED' ); return };
+   $self->render( text => 'OK' );
+   
+   return;                      
+  
+  };
  
- my $val = $self->param( $key ) // undef;
-
- defined $val or do {  $self->render( text => 'FAILED' ); return };
+  ( $stash->{val} =~ /^\d{14}$/ ) or do {
+ 
+   $self->render( text => 'FAILED' );
+    
+   return;
+  
+  };
+ 
+  if ( conf( 'path_master ') . '/' . $stash->{val} . 'db' ) {
    
- if ( setup_set ( 
-  $self, 
-  $key, 
-  $self->param( $key ) 
- ) ) {
+   # the db file exists
+   
+    $self->session( dt => $stash->{val} );
+   
+    $self->render( text => 'OK' );
+   
+  } else {
+  
+   $self->render( text => 'FAILED' );
+  
+  }  
+ 
+  return;
+  
+ };
+   
+ if ( setup_set ( $self, $stash->{key}, $stash->{val} ) ) { 
 
   $self->render( text => 'OK' );
   
@@ -147,9 +169,7 @@ sub set {
 
 sub feed {
 
- my $self = shift;
- 
- my $stash = $self->{stash};
+ my $self = shift; my $stash = $self->{stash};
  
  my $news = meta_news ( $stash->{lang} );
    

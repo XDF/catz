@@ -36,7 +36,7 @@ use base 'Exporter';
 
 our @EXPORT_OK = qw (  
  dnafolder file2table filecopy filehead fileread fileremove filemove filenum filesize 
- filethumb filewrite findfiles finddirs findlatest findphotos pathcut zipread
+ filethumb filewrite findfiles finddirs findlatest findkey findphotos pathcut zipread
 );
  
 use Catz::Util::String qw ( dna ); 

@@ -3,8 +3,8 @@
 %#
 % use Catz::Util::String qw ( enurl );
 % layout 'page';
-<table class="full fill"><tr>
-<td class="half top">
+<table class="p100 fill"><tr>
+<td class="p50 top">
 %== include 'stripe/top';
 <form name="form_search" action="/<%= $lang %>/search/" method="get">
 Search: <input type="text" name="what" <% if ( defined $what ) { %> value="<%= $what %>" <% } %>>
@@ -17,7 +17,7 @@ Search: <input type="text" name="what" <% if ( defined $what ) { %> value="<%= $
 %== include 'stripe/explain';
 % }
 <td>
-<td class="half top odd">
+<td class="p50 top odd">
 % $thumbs and do { 
 %== include 'block/thumbs';
 % };

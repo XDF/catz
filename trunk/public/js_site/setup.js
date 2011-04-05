@@ -25,7 +25,7 @@
 function setupChange( key, val ) {
  
  $.ajax ({
-  url: '/set/?' + key + '=' + val, 
+  url: '/set/' + key + '/' + val + '/', 
   async: false, cache: false,
   success: function(){ location.reload(); }  
  });
@@ -35,6 +35,5 @@ function setupChange( key, val ) {
 function setupChangeThumbsperpage ( from, n ) {
 
  window.location = '../' + from + '-' + ( parseInt ( from ) + parseInt ( n ) - 1 );
-
 
 } 

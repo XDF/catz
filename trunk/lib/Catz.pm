@@ -29,9 +29,17 @@ use warnings;
 
 use parent 'Mojolicious';
 
-use Catz::Data::DB;
-use Catz::Model::Meta;
+#use Catz::Data::DB;
+use Catz::Data::Text;
 use Catz::Data::Setup;
+use Catz::Data::Conf;
+
+#use Catz::Util::Time qw ( sysdate );
+use Catz::Util::File qw ( findlatest );
+
+# last epoch time we checked for the database key file
+my $lastcheck = 0;
+my $lastdt = undef;  
 
 sub startup {
 
@@ -52,7 +60,7 @@ sub startup {
  $r->route( '/style/reset' )->to( 'main#reset' );
  $r->route( '/style/:palette' )->to( 'main#base' );
  
- $r->route( '/set/' )->to( 'main#set' );
+ $r->route( '/set/:key/:val' )->to( 'main#set' );
  
  # all site content are located under /en or /fi
  my $l = $r->route ('/:lang', lang => qr/en|fi/ );
@@ -182,11 +190,49 @@ sub before {
  $stash->{url} = $self->req->url;
  
  # fetch texts for the current language and make them available to all
- # templates as $t 
- $stash->{t} = meta_text( $stash->{lang} );
-                                                                                
+ # controller and templates as $t 
+ $stash->{t} = text ( $stash->{ $stash->{lang} } // 'en' );
+                                                                                 
  setup_defaultize ( $self );
-   
+ 
+ #
+ # set 'the correct dt' to stash
+ #
+ 
+ $self->session->{dt} and do { 
+ 
+  $stash->{dt} = $self->session->{dt};
+  
+  goto SKIP;
+  
+ }; 
+ 
+ my $now = time();
+
+ if ( $now - $lastcheck > 5 ) { # if the check has expired
+ 
+  # find the latest key file
+
+  my $file = findlatest ( conf ( 'path_master' ), 'key' );
+  
+  defined $file or die "unable to find the latest key file";
+  
+  my $new = substr ( $file, 0, 14 ); # get the datetime part
+  
+  $lastdt = $new; # store it to static variable
+  
+  $stash->{dt} = $new; # store it to stash
+
+  $lastcheck = $now; # update the check time
+  
+ } else { # check has not expired
+ 
+  $stash->{dt} = $lastdt; # so we just copy the latest dt to stash
+ 
+ }
+ 
+ SKIP:
+    
 }
 
 sub after {

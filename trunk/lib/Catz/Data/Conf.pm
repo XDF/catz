@@ -158,7 +158,7 @@ my $conf = { # config is one hash ref
  },
  
  # metafiles to be loaded and the loading order
- metafiles => [ qw ( textmeta exifmeta newsmeta countrymeta breedmeta breedermeta gallerymeta ) ],
+ metafiles => [ qw ( exifmeta newsmeta countrymeta breedmeta breedermeta gallerymeta ) ],
   #metafiles => [ qw ( textmeta newsmeta countrymeta breedmeta breedermeta gallerymeta ) ],
   
   
