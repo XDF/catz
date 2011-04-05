@@ -1,8 +1,8 @@
 #
-# The MIT License
-# 
+# Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
-# 
+# Licensed under The MIT License
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -24,75 +24,65 @@
 
 package Catz::Data::DB;
 
-#
-# the database access module - all database access should use this module
-# provides result set caching using Catz::Cache
-#
-
+# extending DBI is generally not recommended
+# so we need a separate class to act as a database
+   
 use strict;
 use warnings;
 
-use feature qw( switch );
+use DBI;
 
-use parent 'Exporter';
-
-our @EXPORT = qw ( db_one db_row db_col db_all );
-
-use Apache::DBI;
-
-use Catz::Data::Cache;
 use Catz::Data::Conf;
-use Catz::Util::File qw ( findlatest );
 
-use constant DBDRIVER => 'dbi:SQLite'; 
+sub new {
 
-# a hardcoded value for initial development
-use constant DBFILE => findlatest ( conf ( 'path_master' ), 'db' );
+ my ( $class, $dt ) = @_;
+   
+ my $db = DBI->connect (
+  conf ( 'dbconn' ) . conf ( 'path_master' ) . "/$dt.db",
+  undef, undef, conf( 'dbargs_runtime' )
+ ) || die ( $DBI::errstr );   
 
-use constant DBARGS => conf( 'dbargs_runtime' ); 
-
-# a static database connection
-my $db = DBI->connect( DBDRIVER.':dbname='.DBFILE, undef, undef, DBARGS ) 
- || die ( $DBI::errstr );
-  
-Apache::DBI->setPingTimeOut($db, 5);
-  
-sub fetch {
-
- my $res;
-    
- # attempt to get the result from the cache    
- if( $res = cache_get( @_ ) ) { return $res } 
-    
- my ( $mode, $sql, @params ) = @_;
-  
- given ( $mode ) {
+ my $self = { db => $db };
  
-  #warn ( $sql );
- 
-  when ( 'one' ) { $res = $db->selectrow_array( $sql, undef, @params ) } 
+ bless($self, $class);
 
-  when ( 'row' ) { $res = $db->selectrow_arrayref( $sql, undef, @params ) } 
-
-  when ( 'col' ) { $res = $db->selectcol_arrayref( $sql, undef, @params ) } 
-
-  when ( 'all' ) { $res = $db->selectall_arrayref( $sql, undef, @params ) } 
-
-  default { die "unknow database access mode '$mode'" } 
- 
- }
- 
- # if a result was fetched from the db then put it to cache
- cache_set( @_, $res );
- 
- return $res;
+ return $self;
  
 }
+
+sub one {
+
+ my ( $self, $sql, @args ) = @_;
+
+ my $arr = $self->{db}->selectrow_arrayref( $sql, undef, @args );
  
-# the exported subs are simple pass-thrus to internal fetch  
-sub db_one { fetch ( 'one', @_ ) }
-sub db_row { fetch ( 'row', @_ ) }
-sub db_col { fetch ( 'col', @_ ) }
-sub db_all { fetch ( 'all', @_ ) }
+ return $arr->[0];
+ 
+}
+
+sub row {
+
+ my ( $self, $sql, @args ) = @_;
+
+ return $self->{db}->selectrow_arrayref( $sql, undef, @args );
+
+}
+
+sub col {
+
+ my ( $self, $sql, @args ) = @_;
+
+ return $self->{db}->selectcol_arrayref( $sql, undef, @args );
+
+}
+
+sub all {
+
+ my ( $self, $sql, @args ) = @_;
+ 
+ return $self->{db}->selectall_arrayref( $sql, undef, @args );
+
+}
 
 1; 

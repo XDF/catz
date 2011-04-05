@@ -26,13 +26,7 @@ package Catz::Ctrl::List;
 use strict;
 use warnings;
 
-use feature qw( switch );
-
 use parent 'Catz::Ctrl::Base';
-
-use Catz::Model::List;
-
-# This action will render a template
 
 sub list {
 
@@ -40,8 +34,7 @@ sub list {
  
  my $stash = $self->{stash};
  
- $stash->{list} = list_list(
-  $stash->{lang},
+ $stash->{list} = $self->fetch( 'list_general',
   $stash->{subject},
   $stash->{mode}
  );

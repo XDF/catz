@@ -29,9 +29,9 @@ use warnings;
  
 use parent 'Mojolicious::Controller';
 
-# we just add a few methods to Mojolicious::Controller
+use Catz::Model::Access;
 
-my $db = {}; # hash to store static database connections
+# we just add a few methods to Mojolicious::Controller
 
 sub redirect_perm { # permanent redirect 301
 
@@ -74,16 +74,16 @@ sub redirect_temp { # temporary redirect 302
 
 sub fetch { 
 
- # fetch data from any Model
+ # fetch data from any Model to any Controller 
+ # expects sub name and and argument list
  
- my $self = shift;
+ my ( $self, @args ) = @_;
  
  my $stash = $self->{stash};
- 
- # dt, lang
- 
- # .... to be continued ...
- 
+
+ # minimal passthru to Access module
+ return access ( $stash->{dt}, $stash->{lang}, @args ); 
+  
 }
 
 

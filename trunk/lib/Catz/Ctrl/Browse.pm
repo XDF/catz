@@ -29,11 +29,6 @@ use warnings;
 
 use parent 'Catz::Ctrl::Present';
 
-use Catz::Data::DB;
-use Catz::Model::Meta;
-use Catz::Model::Photo;
-use Catz::Model::Vector;
-
 sub browse {
 
  my $self = shift;
@@ -42,8 +37,10 @@ sub browse {
    
  my ( $lower, $upper ) = split /\-/, $stash->{range};
  
+ my $maxx = $self->fetch ( 'maxx' );
+ 
  # verify the range
- ( ( $lower > 0 ) and ( $upper < meta_maxx + 1 ) and ( ( $upper - $lower ) > 8 ) and
+ ( ( $lower > 0 ) and ( $upper < $maxx + 1 ) and ( ( $upper - $lower ) > 8 ) and
   ( ( $upper - $lower ) < 50 ) and ( ( $lower - 1 ) % 5 == 0 ) and ( $upper % 5 == 0 ) )
   or $self->render_not_found;
 
@@ -64,8 +61,8 @@ sub browse {
  $self->session( thumbsperpage => $perpage );
  
  my ( $total, $page, $pages, $from, $to, $first, $prev, $next, $last, $xs ) = 
-  @{ vector_pager( 
-   $lower, $upper, $perpage, $stash->{lang}, @{ $stash->{args} }  
+  @{ $self->fetch('vector_pager', 
+   $lower, $upper, $perpage, @{ $stash->{args} }  
   ) };
        
  $total == 0 and $self->render_not_found; # no photos found by search 
@@ -82,7 +79,7 @@ sub browse {
  $stash->{next} = $next;
  $stash->{last} = $last;
 
- my $thumbs = photo_thumbs ( $stash->{lang}, $xs ) ;
+ my $thumbs = $self->fetch('photo_thumbs', $xs ) ;
         
  $self->{stash}->{thumbs} = $thumbs;
  $self->{stash}->{formation} = 'wide';

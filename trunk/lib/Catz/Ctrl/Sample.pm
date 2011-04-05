@@ -27,32 +27,21 @@ package Catz::Ctrl::Sample;
 use strict; 
 use warnings;
 
-use Catz::Data::DB;
-use Catz::Model::Meta;
-use Catz::Model::Photo;
-use Catz::Model::Vector;
-
 use parent 'Catz::Ctrl::Present';
 
 sub count {
 
- my $self = shift;
-
+ my $self = shift; my $stash = $self->{stash};
+ 
  $self->args;
- 
- my $stash = $self->{stash};
- 
- my $xs = vector_array_random ( $stash->{lang}, @{ $stash->{args_array} } );
- 
- #warn 'count ' . $stash->{count};
- 
+  
+ my $xs = $self->fetch ( 'vector_array_rand',  @{ $stash->{args_array} } );
+  
  my @set = @{ $xs } [ 0 .. $stash->{count} - 1 ];
  
- my $thumbs = photo_thumbs ( $stash->{lang}, \@set ) ;
+ my $thumbs = $self->fetch ( 'photo_thumbs', \@set ) ;
  
  $stash->{thumbs} = $thumbs; 
- $stash->{showmeta} = 0; # no date show
- $stash->{formation} = 'wide';
  
  $self->render( template => 'block/thumbs' );
       

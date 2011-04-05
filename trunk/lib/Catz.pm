@@ -32,10 +32,11 @@ use parent 'Mojolicious';
 #use Catz::Data::DB;
 use Catz::Data::Text;
 use Catz::Data::Setup;
+use Catz::Data::Cache;
 use Catz::Data::Conf;
 
 #use Catz::Util::Time qw ( sysdate );
-use Catz::Util::File qw ( findlatest );
+use Catz::Util::File qw ( fileread findlatest pathcut );
 
 # last epoch time we checked for the database key file
 my $lastcheck = 0;
@@ -44,8 +45,9 @@ my $lastdt = undef;
 sub startup {
 
  my $self = shift;
-  
- $self->secret( setup_signature );
+ 
+ # initialize the key for cookie signing 
+ $self->secret( fileread ( conf ( 'cookie_key' ) ) );
     
  my $r = $self->routes;
  
@@ -71,7 +73,7 @@ sub startup {
  
  $l->route( '/feed' )->to ( "main#feed" );
 
- $l->route( '/find/:what' )->to ( "locate#suggest" );
+ $l->route( '/find/:what' )->to ( "locate#find" );
 
   $l->route( '/sample/(*path)/:count', count => qr/\d{1,4}/ )->to (
   "sample#count"
@@ -116,9 +118,7 @@ sub startup {
 
 sub before {
 
- my $self = shift;
-
- my $stash = $self->{stash};
+ my $self = shift; my $stash = $self->{stash};
  
  # force all URLs to end with slash 
  $self->req->url->path->trailing_slash or do {
@@ -146,10 +146,8 @@ sub before {
  # default to "index,follow", actions may modify it as needed 
  $stash->{meta_index} = 1;
  $stash->{meta_follow} = 1;
-
- # temporary hard-coded setting for initial development
- # for testing all photos are fetched from the current prod website
- $stash->{photobase} = 'http://www.heikkisiltala.com/galleries';
+ 
+ $stash->{photobase} = conf ('base_photo');
  
  # the language detection
  # - detect correct langauge based on the beginning of URL
@@ -193,7 +191,7 @@ sub before {
  # controller and templates as $t 
  $stash->{t} = text ( $stash->{ $stash->{lang} } // 'en' );
                                                                                  
- setup_defaultize ( $self );
+ setup_init ( $self );
  
  #
  # set 'the correct dt' to stash
@@ -217,7 +215,7 @@ sub before {
   
   defined $file or die "unable to find the latest key file";
   
-  my $new = substr ( $file, 0, 14 ); # get the datetime part
+  my $new = substr ( pathcut ( $file ), 0, 14 ); # get the datetime part
   
   $lastdt = $new; # store it to static variable
   
@@ -232,14 +230,47 @@ sub before {
  }
  
  SKIP:
-    
+ 
+ # attempt to fetch from cache
+ 
+ if ( conf('cache_page' ) ) {
+  
+  if ( my $res = cache_get ( $stash->{dt}, $stash->{url}, 
+   map { $stash->{$_} } @{ setup_keys() } ) ) {
+ 
+   $self->res->code(200);
+   $self->res->headers->content_type( $res->[0] );
+   $self->res->headers->content_length( $res->[1] );
+   $self->res->body( $res->[2] );
+   $self->rendered;
+
+   $stash->{cached} = 1;
+   warn ( "cached" ); 
+  }
+ }
+     
 }
 
 sub after {
 
- my $self = shift;
+ my $self = shift; my $stash = $self->{stash};
  
- # currently NOP, perhaps something here in the future
+ $self->{stash}->{cached} and return;
+ 
+ if ( conf('cache_page' ) ) {
+  if ( $self->req->method eq 'GET' and $self->res->code == 200 ) {
+   
+   my @set = ( 
+    $self->res->headers->content_type,
+    $self->res->headers->content_length,
+    $self->res->body 
+   ); 
+ 
+   cache_set ( $stash->{dt}, $stash->{url}, 
+   ( map { $stash->{$_} } @{ setup_keys() } ), \@set );
+  
+  }
+ }
  
 }
 

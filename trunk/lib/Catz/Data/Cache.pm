@@ -37,47 +37,29 @@ use parent 'Exporter';
 
 our @EXPORT = qw ( cache_get cache_set );
 
-# moved to CHI 2011-02-27
 use CHI;
-#use Cache::Memcached::Fast;
-use Digest::MD5 qw( md5_base64 );
 
 use Catz::Data::Conf;
 
-# had issues with Memcached on Win (hangs all the time),
-# now running on file system via CHI
+# all data in Catz can live in the same CHI namespace since
+# * models use sub name as a key
+# * pages use url name as a key
+# and since sub never starts with '/' and urls always
+# start with '/' there will be no key crashes
+
+# using a static reference to the real cache object
 my $cache = CHI->new( %{ conf ('cache' ) } );
 
-# just using a simple static Cache::Memcached::Fast object 
-#my $cache = new Cache::Memcached::Fast { 
-# servers => [ '127.0.0.1:11211' ], 
-# connect_timeout => 0.2, 
-# max_failures => 2, 
-# failure_timeout => 5,
-# compress_threshold => 5_000,
-# nowait => 1 
-#};
-
 # the cache key separator
-use constant SEP => '|';
-
-# force the cache key to be 250 characters or less
-# all characters after 228 are hashed to md5 hash in base64 encoding
-# so the key is 228 + 22 = 250 characters
-sub shrink { substr ( $_[0], 0 , 228 ) . md5_base64 ( substr ( $_[0], 228 ) ) }
+use constant SEP => '#';
   
 sub cache_set {
 
- return; # cache disable for this development phase 2011-02-28
+ #return; # DEBUGGING / DEV - skip caching
 
- my $val = pop @_;
+ my $val = pop @_; # val is the last argument
  
  my $key = join SEP, @_;
-
- # exit immediately if no key or no val to store to cache
- ( defined $key and defined $val ) or return; 
-  
- length $key > 250 and $key = shrink ( $key ); 
       
  $cache->set( $key, $val );
 
@@ -86,9 +68,7 @@ sub cache_set {
 sub cache_get {
  
  my $key = join SEP, @_;
-  
- length $key > 250 and $key = shrink ( $key ); 
-  
+    
  return $cache->get( $key );
    
 }

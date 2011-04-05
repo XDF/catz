@@ -34,8 +34,6 @@ use parent 'Catz::Ctrl::Base';
 use I18N::AcceptLanguage;
 use XML::RSS;
 
-use Catz::Model::List;
-use Catz::Model::Meta;
 use Catz::Data::Setup;
 use Catz::Util::Time qw ( dt );
 
@@ -69,7 +67,7 @@ sub front {
    
  foreach my $key ( qw ( news albums pris ) ) {
  
-  $stash->{$key} = list_links ( $stash->{lang}, $key );
+  $stash->{$key} = $self->fetch ( 'list_links', $key );
  
  }
     
@@ -81,7 +79,7 @@ sub news {
 
  my $self = shift; my $stash = $self->{stash};
  
- $stash->{news} = meta_news ( $stash->{lang} );
+ $stash->{news} = $self->fetch ( 'news' );
      
  $self->render( template => 'page/news' );
 
@@ -171,7 +169,7 @@ sub feed {
 
  my $self = shift; my $stash = $self->{stash};
  
- my $news = meta_news ( $stash->{lang} );
+ my $news = $self->fetch ( 'news' );
    
  my $rss = XML::RSS->new( version => '2.0' );
 

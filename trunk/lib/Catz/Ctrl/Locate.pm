@@ -1,8 +1,8 @@
 #
-# The MIT License
-# 
+# Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
-# 
+# Licensed under The MIT License
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -29,75 +29,16 @@ use warnings;
 
 use parent 'Catz::Ctrl::Base';
 
-#use Catz::Util;
 
-use Catz::Model::Locate;
+sub find {
 
-sub suggest {
+ my $self = shift; my $stash = $self->{stash};
 
- my $self = shift;
+ $stash->{find} = $self->fetch ( 'find', $stash->{what} );
 
- my $stash = $self->{stash};
-
- $stash->{suggest} = locate_suggest ( $stash->{lang}, $stash->{what} );
-
- $self->render( template => 'block/suggest' );
+ $self->render( template => 'block/find' );
 
 }
 
-sub ancient_search2args {
-
- # the search string parser
-
- my $self = shift;
-
- my $search = $self->stash->{search};
- 
- defined $search or return;
-
- $search = trim( $search ); 
- $search =~ s/ +/ /g;
- 
- my @ag = split / /, $search;
- 
- my @args = ();
- 
- foreach my $arg ( @ag ) {
- 
-  my ( $key, $value ) = split /=/, $arg;
-  
-  push @args, ( $key, $value );
- 
- } 
- 
- $self->{stash}->{args} = join '/', @args;
-
-}
-
-sub ancient_main {
-
- my $self = shift;
- 
- $self->{stash}->{search} = $self->param('search') // undef;
- 
- $self->search2args;
- 
- my $total = undef;
- 
- $self->{stash}->{args} and do {
- 
-  #$total = $p->total ( 
-  # $self->{stash}->{lang}, split /\//, $self->{stash}->{args} 
-  #);
- 
- };
- 
- $self->{stash}->{ergs} = eurl( $self->{stash}->{args} );
- 
- $self->{stash}->{total} = $total;
- 
- $self->render( template => 'page/search' );
-  
-}
 
 1;

@@ -24,16 +24,39 @@
 package Catz::Data::Setup;
 
 use parent 'Exporter';
-our @EXPORT = qw ( setup_defaultize setup_verify setup_set setup_signature setup_colors setup_values );
 
-use List::MoreUtils qw ( any );
+our @EXPORT = qw ( 
+ setup_init setup_verify setup_set setup_signature 
+ setup_colors setup_values setup_keys setup_pagekey );
 
-#use Data::Dumper;
+use Catz::Data::Conf;        
 
-# just some dummy hard-coded value for initial testing
-my $signature = 'o_!+9akjJJ209-*&&';
+# local copies based on conf - mostly for fun :-D
+# actually they might provide a tiny performance boost
 
-sub setup_signature { $signature }
+my $ok = {}; # for key vefification
+
+my $defaults = {}; # to get default values
+
+my $values = {}; # to get value lists
+
+my $keys = []; # to get keys 
+
+foreach my $key ( keys %{ conf('setup_defaults' ) } ) {
+
+ push @{ $keys }, $key;
+
+ $defaults->{$key} = conf('setup_defaults')->{$key};
+ 
+ $values->{$key} = conf( 'setup_values' )->{$key};
+
+ foreach my $val ( @{ $values->{$key} } ) {
+ 
+  $ok->{$key}->{$val} = 1;
+  
+ }
+
+}
 
 #
 # Live color palettes developed by Heikki Siltala  based on 
@@ -122,19 +145,6 @@ my $colors = {
 
 sub setup_colors { $colors } 
 
-my $defaults = { 
- palette => 'bright',
- photosize => 'full',
- thumbsperpage => 20,
- thumbsize => 140,
-};
-              
-my $values = { 
- palette => [ qw ( dark bright ) ],
- photosize => [ qw ( full fit_width fit_height fit_all ) ],
- thumbsperpage => [ qw( 10 15 20 25 30 35 40 45 50 ) ],
- thumbsize => [ qw ( 100 120 140 160 180 200 ) ],
-};
 
 sub setup_values {
 
@@ -146,14 +156,22 @@ sub setup_values {
  
 }
 
-sub setup_defaultize {
+sub setup_keys {
+
+ # return a values list as arrayref for one setup key 
+
+ return $keys;
+ 
+}
+
+sub setup_init {
 
  # if the value is not set in session or the value is invalid
  # then put the default value to the session 
  
  my $app = shift;
  
- foreach my $key ( keys %{ $defaults } ) {
+ foreach my $key ( @$keys ) {
 
   my $val = $app->session( $key );
 
@@ -194,14 +212,8 @@ sub setup_verify {
 
  # verifies a single setup key-value pair
 
- my ( $key, $value ) = @_;
+ $ok->{$_[0]}->{$_[1]};
  
- exists $values->{$key} or return 0;
- 
- any { $_ eq $value } @{ $values->{$key} } or return 0;
- 
- return 1;
-
 }
 
 1;

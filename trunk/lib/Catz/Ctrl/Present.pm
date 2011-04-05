@@ -30,8 +30,6 @@ use warnings;
 use parent 'Catz::Ctrl::Base';
 
 use Catz::Data::DB;
-use Catz::Model::Meta;
-use Catz::Model::Vector;
 
 sub args {
 

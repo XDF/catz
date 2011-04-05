@@ -22,10 +22,10 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Model::Meta;
+package Catz::Model::Misc;
 
 use parent 'Exporter';
-our @EXPORT = qw ( meta_text meta_maxx meta_news );
+our @EXPORT = qw ( maxx news find search );
 
 # a generic module to provide access various meta data stuff
 # stored in the database
@@ -33,41 +33,19 @@ our @EXPORT = qw ( meta_text meta_maxx meta_news );
 use Catz::Data::DB;
 use Catz::Util::Time qw ( dtexpand );
 
-my %text = ();
+sub maxx {
 
-my $maxx;
-
-sub meta_text { 
-
- my $lang = shift;
-
- exists $text{$lang} or do {
-  $text{$lang} = {};
-  do { 
-   $text{$lang}->{$_->[0]} = $_->[1] 
-  } foreach @{ db_all( "select tag,text_$lang from mtext" ) };
- };
+ my ( $db, $lang ) = @_;
  
- return $text{$lang};  
- 
-}
-
-sub meta_maxx {
- 
- defined $maxx or $maxx = db_one ( 'select max(x) from _x' ) + 1;
- 
- # notice: adding 1 to make room for indexing from 1 to n
- # to be on a safe size, not only from 0 to n-1
- 
- return $maxx; 
- 
-}
-
-sub meta_news {
-
- my $lang = shift;
+ return $db->one ( 'select max(x) from _x' );
   
- my $res = db_all ( "select dt,null,title_$lang,text_$lang from mnews order by dt desc" );
+}
+
+sub news {
+
+  my ( $db, $lang, $pattern ) = @_;
+  
+ my $res = $db->all ( "select dt,null,title_$lang,text_$lang from mnews order by dt desc" );
    
  foreach my $row ( @$res ) {
  
@@ -77,6 +55,24 @@ sub meta_news {
  
  return $res;
  
+}
+
+sub find {
+
+ my ( $db, $lang, $pattern ) = @_;
+
+ $pattern = '%' . $pattern . '%';
+
+ return $db->all (qq{select pri,sec_$lang,count from ( select pri,sec_$lang,sort_$lang,count from _pri_sec_count where sec_$lang like ? order by rowid limit 30 ) order by sort_$lang},$pattern);
+
+}
+
+sub search {
+
+ my ( $db, $lang, $search ) = @_;
+
+ die 'locate_search not yet implemented';
+
 }
 
 1;

@@ -29,11 +29,6 @@ use warnings;
 
 use parent 'Catz::Ctrl::Present';
 
-use Catz::Data::DB;
-use Catz::Model::Meta;
-use Catz::Model::Photo;
-use Catz::Model::Vector;
-
 sub inspect {
 
  my $self = shift;
@@ -50,21 +45,20 @@ sub inspect {
   
  };
           
- my $perpage =  $self->session('thumbsperpage');
+ my $perpage =  $stash->{'thumbsperpage'};
   
  my ( $total, $pos, $x, $page, $first, $prev, $next, $last ) = 
   @{ 
-     vector_pointer( 
-      $stash->{album}, $stash->{n}, $perpage, 
-     $stash->{lang}, @{ $stash->{args} } 
+     $self->fetch('vector_pointer', 
+      $stash->{album}, $stash->{n}, $perpage, @{ $stash->{args} } 
      ) 
    }; 
   
- my $details = photo_details ( $stash->{lang}, $x );
+ my $details = $self->fetch( 'photo_details', $x );
 
- my $texts = photo_texts ( $stash->{lang}, $x );
+ my $texts =  $self->fetch( 'photo_texts', $x );
 
- my $image = photo_image ( $x );
+ my $image =  $self->fetch( 'photo_image', $x );
  
  $self->{stash}->{total} = $total;
  $self->{stash}->{pos} = $pos;
@@ -103,17 +97,16 @@ sub show {
   
  my ( $total, $pos, $x, $page, $first, $prev, $next, $last ) = 
   @{ 
-     vector_pointer( 
-      $stash->{album}, $stash->{n}, $perpage, 
-     $stash->{lang}, @{ $stash->{args} } 
+     $self->fetch( 'vector_pointer', 
+      $stash->{album}, $stash->{n}, $perpage, @{ $stash->{args} } 
      ) 
    }; 
   
- my $details = photo_details ( $stash->{lang}, $x );
+ my $details = $self->fetch ( 'photo_details', $x );
 
- my $texts = photo_texts ( $stash->{lang}, $x );
+ my $texts = $self->fetch ( 'photo_texts', $x );
 
- my $image = photo_image ( $x );
+ my $image = $self->fetch ( 'photo_image', $x );
  
  $self->{stash}->{total} = $total;
  $self->{stash}->{pos} = $pos;
