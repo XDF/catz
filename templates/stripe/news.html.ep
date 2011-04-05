@@ -1,4 +1,4 @@
-<div class="back_dark"><h2><%= $t->{NEWS_LATEST} %></h2> <a href="/<%= $lang %>/news/"><%= $t->{NEWS_ALL} %></a></div>
+<div class="p100 back_dark"><h2><%= $t->{NEWS_LATEST} %></h2> <a href="/<%= $lang %>/news/"><%= $t->{NEWS_ALL} %></a></div>
 % my $i = 0;
 % foreach my $row ( @$news ) {
 <table class="p100 <%= ( $i % 2 == 0 ) ? 'back_medium' : 'back_light' %>"><tr>

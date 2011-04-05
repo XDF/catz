@@ -1,5 +1,5 @@
  % use Catz::Util::String qw ( enurl );
-<table class="full">
+<table class="p100">
 % foreach my $rec ( @$list ) {
 <tr>
 % if ( defined $rec->[0] ) {
@@ -14,7 +14,7 @@
 %    $mode = 'view'; 
 %  };
 % my $text = $rec->[3] == 1 ? $t->{PHOTO} : $t->{PHOTOS};    
-<td class="half"><a href="/<%= $lang %>/<%= $mode %>/<%= $rec->[1] %>/<%== enurl( $rec->[2] ) %>/<%= $to %>/"><%= $rec->[2] %></a></td>
+<td class="p50"><a href="/<%= $lang %>/<%= $mode %>/<%= $rec->[1] %>/<%== enurl( $rec->[2] ) %>/<%= $to %>/"><%= $rec->[2] %></a></td>
 <td class="shrink"><%= $rec->[3] %> <%= $text %></td>
 </tr>
 % }

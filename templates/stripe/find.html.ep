@@ -1,4 +1,4 @@
-<form class="unit back_dark block full" action="/" method="get">
+<form class="unit back_dark block p100" action="/" method="get">
 <h2><%= $t->{FIND} %></h2>
 <input type="text" id="find">
 <a href="/<%= $lang %>/search/"</a><%= $t->{SEARCH} %></a>

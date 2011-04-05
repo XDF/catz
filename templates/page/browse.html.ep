@@ -1,5 +1,5 @@
 % layout 'page';
-<table class="full"><tr><td class="p40 top">
+<table class="p100 "><tr><td class="p40 top">
 %== include 'stripe/top';
 %== include 'stripe/browser';
 %== include 'stripe/ctrlthumb';
