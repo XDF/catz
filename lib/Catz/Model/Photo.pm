@@ -34,9 +34,9 @@ use Catz::Util::Time qw ( dtexpand );
 
 sub photo_thumbs {
 
- my ( $lang, $xs ) = @_; 
+ my ( $db,$lang, $xs ) = @_; 
  
- my $thumbs = db_all( "select _x.album,_x.n,file||'_LR.JPG',width_lr,height_lr,null from photo natural join _x where x in (" 
+ my $thumbs = $db->all( "select _x.album,_x.n,file||'_LR.JPG',width_lr,height_lr,null from photo natural join _x where x in (" 
   . ( join ',', @$xs ) .  ') order by x' );
 
  foreach my $row ( @$thumbs ) {
@@ -52,26 +52,26 @@ sub photo_thumbs {
 
 sub photo_details {
 
- my ( $lang, $x ) = @_;
+ my ( $db, $lang, $x ) = @_;
 
- return db_all ( qq{select pri,sec_$lang from pri natural join sec natural join snip natural join _x where x=? order by sort_pri,sort_$lang}, $x );
+ return $db->all ( qq{select pri,sec_$lang from pri natural join sec natural join snip natural join _x where x=? order by sort_pri,sort_$lang}, $x );
 
 }
 
 sub photo_texts {
 
- my ( $lang, $x ) = @_;
+ my ( $db, $lang, $x ) = @_;
 
- return db_col ( qq{select sec_$lang from pri natural join sec natural join snip natural join _x where x=? and pri='out' order by p}, $x );
+ return $db->col ( qq{select sec_$lang from pri natural join sec natural join snip natural join _x where x=? and pri='out' order by p}, $x );
 
 
 }
 
 sub photo_image {
 
- my $x = shift;
+ my ( $db, $lang, $x ) = @_;
  
- return db_row ( qq{select album,file||'.JPG',width_hr,height_hr from photo natural join _x where x=?},$x);
+ return $db->row ( qq{select album,file||'.JPG',width_hr,height_hr from photo natural join _x where x=?},$x);
 
 }
 

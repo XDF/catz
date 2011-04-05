@@ -38,15 +38,24 @@ my $base = '/catz';
 
 my $conf = { # config is one hash ref
 
- # body name resoving sub
+ base_photo => 'http://www.heikkisiltala.com/galleries/',
  
  cache => {
   driver => 'File',
   namespace => 'catzz.biz',
-  root_dir => "$base/cache",
+  root_dir => "$base/data/cache",
   depth => 3,
   max_key_length => 250
  },
+ 
+ # enables/disables page level caching
+ cache_page => 0,
+ 
+ # enables/disables model level caching
+ cache_model => 0,
+ 
+ # file where to find the key for the signed cookie
+ cookie_key => $base . '/data/internal/cookie.key',
   
  # db arguments for the web system
  dbargs_runtime => { AutoCommit => 1, RaiseError => 1, PrintError => 1 },
@@ -56,7 +65,7 @@ my $conf = { # config is one hash ref
 
  # the database driver name part on the connection string
  dbconn => 'dbi:SQLite:dbname=',
- 
+  
  # the file extension of the meta files to be loaded
  ext_meta => 'txt',
 
@@ -73,7 +82,7 @@ my $conf = { # config is one hash ref
  
  file_lock => "lock.txt",
  file_meta => "meta.zip", 
-
+ 
  # lenses' techical names and the corresponding visible names 
  lensname => {
   'lbc' => 'Lensbaby Composer',
@@ -160,19 +169,33 @@ my $conf = { # config is one hash ref
  # metafiles to be loaded and the loading order
  metafiles => [ qw ( exifmeta newsmeta countrymeta breedmeta breedermeta gallerymeta ) ],
   #metafiles => [ qw ( textmeta newsmeta countrymeta breedmeta breedermeta gallerymeta ) ],
-  
-  
+ 
  # the filename ending for thumbnail files
  part_thumb => '_LR.JPG',
 
  path_log => $base . '/' . 'log',
  path_master => $base . '/data/master',
  #path_meta => $base . '/data/meta',
- path_meta => '/www/galleries/0dat', 
+ path_meta => '/www/galleries/0dat',
+ path_model => $base . '/lib/Catz/Model', 
  path_photo => '/www/galleries', 
  
  #results => map { $_ => 1 } qw ( BIS BIV BOB BOX CAC CACE CACIB CACS CAGCIB CAGPIB CAP CAPE CAPIB CAPS CH EC EP EX EX1 EX2 EX3 EX4 EX5 EX6 EX7 EX8 EX9 GIC GIP IC IP KM NOM PR SC SP 1 2 3 4 5 6 7 8 9 1. 2. 3. 4. 5. 6. 7. 8. 9. )
-  
-};
 
+ setup_defaults => { 
+  palette => 'bright',
+  photosize => 'full',
+  thumbsperpage => 20,
+  thumbsize => 140
+ },
+
+ setup_values => { 
+  palette => [ qw ( dark bright ) ],
+  photosize => [ qw ( full fit_width fit_height fit_all ) ],
+  thumbsperpage => [ qw( 10 15 20 25 30 35 40 45 50 ) ],
+  thumbsize => [ qw ( 100 120 140 160 180 200 ) ]
+ }
+ 
+};
+ 
 sub conf { $conf->{$_[0]} } # an unified API sub to read any config

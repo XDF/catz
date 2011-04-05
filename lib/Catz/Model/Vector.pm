@@ -32,7 +32,10 @@ use warnings;
 use feature qw( switch );
 
 use parent 'Exporter';
-our @EXPORT = qw( vector_bit vector_array vector_pager vector_pointer vector_count vector_array_random );
+our @EXPORT = qw( 
+ vector_bit vector_array vector_array_rand 
+ vector_pager vector_pointer vector_count
+);
 
 use Bit::Vector;
 use List::Util qw ( shuffle );
@@ -40,20 +43,17 @@ use POSIX qw( floor ceil );
 
 use Catz::Data::Cache;
 use Catz::Data::DB;
-use Catz::Model::Meta;
-
-my $empty =  Bit::Vector->new( meta_maxx ); 
-
-my $full = Bit::Vector->new( meta_maxx );
-$full->Fill;
 
 sub bsearch {
 
-  # modified from
+  # binary search aka half-interval search
+  # http://en.wikipedia.org/wiki/Binary_search_algorithm
+ 
+  # this Perl code is modified from
   # http://staff.washington.edu/jon/dsa-perl/dsa-perl.html
   # http://staff.washington.edu/jon/dsa-perl/bsearch-copy
     
-  my ( $a, $x ) = @_; # search for x in array a
+  my ( $a, $x ) = @_; # search for x in arrayref a
     
   my ( $l, $u ) = ( 0, scalar(@$a)-1 ); # search interval
  
@@ -71,22 +71,24 @@ sub bsearch {
  
   }
   
-  return -1; # not found
+   # not found indicated as -1
+   # this can never happen if a match is found since matches
+   # are array indexes thus 0 or positive
+  return -1;
+  
  
  }
 
 
 sub vectorize {
-
- my $res;
-
- if( $res = cache_get( (caller(0))[3], @_ ) ) { return $res } 
  
- my ( $lang, $pri, $sec ) = @_;
+ my ( $db, $lang, $pri, $sec ) = @_;
+ 
+ my $res;
   
  if ( $pri eq 'has' ) {
  
-  $res = db_col( "select distinct(x) from pri natural join sec natural join snip natural join _x where pri=?", $sec );
+  $res = $db->col( "select distinct(x) from pri natural join sec natural join snip natural join _x where pri=?", $sec );
             
  } else { # no 'has'
  
@@ -94,24 +96,24 @@ sub vectorize {
   
    # pattern matching
 
-   $res = db_col( "select x from pri natural join sec natural join snip natural join _x where pri=? and sec_$lang like ?", $pri, $sec );    
+   $res = $db->col( "select x from pri natural join sec natural join snip natural join _x where pri=? and sec_$lang like ?", $pri, $sec );    
  
   } else {
 
    # exact
  
-   $res = db_col( "select x from pri natural join sec natural join snip natural join _x where pri=? and sec_$lang=?", $pri, $sec );
+   $res = $db->col( "select x from pri natural join sec natural join snip natural join _x where pri=? and sec_$lang=?", $pri, $sec );
  
   }  
 
  }
+ 
+ my $maxx = $db->one( "select max(x) from _x" ) + 1;
       
- my $bvec = Bit::Vector->new( meta_maxx );
+ my $bvec = Bit::Vector->new( $maxx );
    
  $bvec->Index_List_Store ( @$res );
- 
- cache_set( (caller(0))[3], @_, $bvec ); 
- 
+  
  return $bvec;  
   
 }   
@@ -120,25 +122,24 @@ sub vector_bit {
 
  my $res;
 
- if( $res = cache_get( (caller(0))[3], @_ ) ) { return $res } 
-
- my ( $lang, @args ) = @_;
+ my ( $db, $lang, @args ) = @_;
+ 
+ my $maxx = $db->one( "select max(x) from _x" ) + 1;
      
  # OR base vector is a completely empty vector
- my $ors = $empty->Clone;
- 
+ my $ors =  Bit::Vector->new( $maxx ); 
+
  # AND base vector is a completely filled vector 
- my $ands = $full->Clone;
+ my $ands = Bit::Vector->new( $maxx );
+ $ands->Fill;
   
- # flag to detect if any or's were present
- my $hasor = 0;
+ my $hasor = 0; # flag to detect if any ors were present
  
- for (my $i = 0; $i <= $#args; $i=$i+2 ) {
+ for ( my $i = 0; $i <= $#args; $i = $i + 2 ) {
   
   $args[$i+1] =~ /^(\+|\-)(.*)$/;
     
   my $oper = $1 // '0'; # the default operand is 0 = or
-  
   my $rest = $2 // $args[$i+1]; 
   
   $rest =~ s/\?/\_/g; # user interface ? -> database interface _
@@ -146,7 +147,7 @@ sub vector_bit {
   
   #warn $rest;
             
-  my $bvec = vectorize( $lang, $args[$i], $rest );
+  my $bvec = vectorize( $db, $lang, $args[$i], $rest );
               
   given ( $oper ) {
   
@@ -162,41 +163,32 @@ sub vector_bit {
   
  }
  
+ # if ors vere present then and them with ands
  $hasor and $ands->And( $ands, $ors );
  
- cache_set( (caller(0))[3], @_, $ands );
-
  return $ands;
        
 }
 
-sub vector_array {
+sub vector_array { # get vector as array of indexes
 
  my $res;
-
- if( $res = cache_get( (caller(0))[3], @_ ) ) { return $res } 
    
  my $bvec = vector_bit( @_ );
  
  my @arr = $bvec->Index_List_Read;
- 
- cache_set( (caller(0))[3], @_, \@arr );
-  
+   
  return \@arr;
 
 }
 
-sub vector_array_random {
+sub vector_array_rand {
 
  my $res;
-
- if( $res = cache_get( (caller(0))[3], @_ ) ) { return $res } 
 
  my $arr = vector_array ( @_ );
  
  my @rand = shuffle ( @{ $arr } );
-
- cache_set( (caller(0))[3], @_, \@rand );
  
  return \@rand;
   
@@ -206,14 +198,9 @@ sub vector_pager {
 
  my $res;
 
- if( $res = cache_get( (caller(0))[3], @_ ) ) { return $res } 
-
- # lower maps to from, upper maps to to and this is the purpose
- my ( $from, $to, $perpage, @args ) = @_;
- 
- #die join "\n", @args;
- 
- my $svec = vector_array( @args );
+ my ( $db, $lang, $from, $to, $perpage, @args ) = @_;
+  
+ my $svec = vector_array( $db, $lang, @args );
  
  my $total = scalar @{ $svec };
       
@@ -240,9 +227,7 @@ sub vector_pager {
  do { push @xs, $svec->[$_-1] } foreach ( $from .. $to );
   
  my @out = ( $total, $page, $pages, $from, $to , $first, $prev, $next, $last, \@xs );
-  
- cache_set( (caller(0))[3], @_, \@out );
-  
+    
  return \@out;
 
 }
@@ -251,15 +236,13 @@ sub vector_pointer {
 
  my $res;
 
- if( $res = cache_get( (caller(0))[3], @_ ) ) { return $res } 
+ my ( $db, $lang, $album, $n, $perpage, @args ) = @_;
 
- my ( $album, $n, $perpage, @args ) = @_;
-
- my $svec = vector_array( @args );
+ my $svec = vector_array( $db, $lang, @args );
   
  my $total = scalar @{ $svec };
    
- my $x = db_one( 'select x from _x where album=? and n=?', $album, $n );
+ my $x = $db->one( 'select x from _x where album=? and n=?', $album, $n );
     
  my $idx = bsearch( $svec, $x ); 
 
@@ -272,9 +255,8 @@ sub vector_pointer {
  
  $idx > 0 and do {
 
-  $first = db_one( "select album||'/'||n from _x where x=?", $svec->[0] );
-
-  $prev = db_one( "select album||'/'||n from _x where x=?", $svec->[$idx-1] );
+  $first = $db->one( "select album||'/'||n from _x where x=?", $svec->[0] );
+  $prev = $db->one( "select album||'/'||n from _x where x=?", $svec->[$idx-1] );
   
  };
 
@@ -283,16 +265,13 @@ sub vector_pointer {
   
  $idx < ( $total - 1 ) and do {
 
-  $last = db_one( "select album||'/'||n from _x where x=?", $svec->[$total-1] );
-
-  $next = db_one( "select album||'/'||n from _x where x=?", $svec->[$idx+1] );
+  $last = $db->one( "select album||'/'||n from _x where x=?", $svec->[$total-1] );
+  $next = $db->one( "select album||'/'||n from _x where x=?", $svec->[$idx+1] );
   
  };
 
  my @out = ( $total, $idx+1, $x, $page, $first, $prev, $next, $last );
- 
- cache_set( (caller(0))[3], @_, \@out );
-  
+   
  return \@out;
     
 }
@@ -300,15 +279,11 @@ sub vector_pointer {
 sub vector_count {
 
  my $res;
-
- if( $res = cache_get( (caller(0))[3], @_ ) ) { return $res } 
    
  my $bvec = vector_bit( @_ );
   
  my $total = $bvec->Norm;
- 
- cache_set( (caller(0))[3], @_, $total );
- 
+  
  return $total; 
  
 }

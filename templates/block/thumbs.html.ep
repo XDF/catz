@@ -1,11 +1,6 @@
 % use Catz::Util::String qw ( enurl );
 % foreach my $thumb ( @{ $thumbs } ) {
-% my $size;
-% if ( $formation eq 'narrow') {
-%  $size = 'width="140"';
-% } else { 
-%  $size = 'height="' . $thumbsize . '"';
-% }
+% my $size = qq{height="$thumbsize"};
 <a class="spacious" href="/<%= $lang %>/inspect/<%== $path // '' %><%== $path ? '/' : '' %><%== $thumb->[0] %>/<%== $thumb->[1] %>/"><img src="<%== $photobase %>/<%== $thumb->[0] %>/<%== $thumb->[2] %>" <%== $size %>></a>
 % }
 %#

@@ -33,19 +33,22 @@ $c += 2;
 
 # setup
 
-$t->get_ok('/set/?palette=dark')->status_is(200)->content_like(qr/OK/);
-$t->get_ok('/set/?palette=bright')->status_is(200)->content_like(qr/OK/);
-$t->get_ok('/set/?thumbsize=200')->status_is(200)->content_like(qr/OK/);
-$t->get_ok('/set/?thumbsize=100')->status_is(200)->content_like(qr/OK/);
-$t->get_ok('/set/?thumbsperpage=40')->status_is(200)->content_like(qr/OK/);
+$t->get_ok('/set/palette/dark/')->status_is(200)->content_like(qr/OK/);
+$t->get_ok('/set/palette/bright/')->status_is(200)->content_like(qr/OK/);
+$t->get_ok('/set/thumbsize/200/')->status_is(200)->content_like(qr/OK/);
+$t->get_ok('/set/thumbsize/100/')->status_is(200)->content_like(qr/OK/);
+$t->get_ok('/set/thumbsperpage/40/')->status_is(200)->content_like(qr/OK/);
+$t->get_ok('/set/dt/0/')->status_is(200)->content_like(qr/OK/);
+
+$c += 18;
+
+$t->get_ok('/set/thumbsperpage/1000/')->status_is(200)->content_like(qr/FAILED/);
+$t->get_ok('/set/thumbsize/900/')->status_is(200)->content_like(qr/FAILED/);
+$t->get_ok('/set/palette/klajsdf/')->status_is(200)->content_like(qr/FAILED/);
+$t->get_ok('/set/dt/8032904/')->status_is(200)->content_like(qr/FAILED/);
+$t->get_ok('/set/dt/aksdjdsklf/')->status_is(200)->content_like(qr/FAILED/);
 
 $c += 15;
-
-$t->get_ok('/set/?thumbsperpage=1000')->status_is(200)->content_like(qr/FAILED/);
-$t->get_ok('/set/?thumbsize=900')->status_is(200)->content_like(qr/FAILED/);
-$t->get_ok('/set/?palette=klajsdf')->status_is(200)->content_like(qr/FAILED/);
-
-$c += 9;
 
 # news
 
