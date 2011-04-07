@@ -79,7 +79,7 @@ sub browse {
  $stash->{next} = $next;
  $stash->{last} = $last;
 
- my $thumbs = $self->fetch('photo_thumbs', $xs ) ;
+ my $thumbs = $self->fetch('photo_thumbs', @{ $xs } ) ;
         
  $self->{stash}->{thumbs} = $thumbs;
  $self->{stash}->{formation} = 'wide';

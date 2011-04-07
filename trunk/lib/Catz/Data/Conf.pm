@@ -42,10 +42,9 @@ my $conf = { # config is one hash ref
  
  cache => {
   driver => 'File',
-  namespace => 'catzz.biz',
-  root_dir => "$base/data/cache",
-  depth => 3,
-  max_key_length => 250
+  namespace => 'cache', # we use this single simple namespace for all caching
+  root_dir => "$base/data",
+  depth => 3
  },
  
  # enables/disables page level caching

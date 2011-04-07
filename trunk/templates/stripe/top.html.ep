@@ -8,7 +8,7 @@
 % use Catz::Util::String qw ( enurl );
 % my $site = qq{<span class="enlarge">$t->{SITE}</a>};
 % $action ne 'front' and $site = qq{<a href="/$lang/">$site</a>}; 
-<table class="p100 top center"><tr>
+<table class="p100 box top center"><tr>
 <td class="p33"><%== $site %></td>
 <td class="p34"><a href="<%== $otherlang %>"><%= $t->{OTHERLANG} %></a></td>
 <td class="p33"><%== include 'elem/setup', key => 'palette' %></td>

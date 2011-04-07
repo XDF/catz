@@ -1,7 +1,7 @@
 #
-# The MIT License
-# 
+# Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
+# Licensed under The MIT License
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -39,7 +39,7 @@ sub count {
   
  my @set = @{ $xs } [ 0 .. $stash->{count} - 1 ];
  
- my $thumbs = $self->fetch ( 'photo_thumbs', \@set ) ;
+ my $thumbs = $self->fetch ( 'photo_thumbs', @set ) ;
  
  $stash->{thumbs} = $thumbs; 
  

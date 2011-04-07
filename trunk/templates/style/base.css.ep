@@ -42,7 +42,7 @@
  my $size_huge = round ( $size_normal * 1.75 ) . '%';
  $size_normal .= '%';
  
- my $roundness = '3px';
+ my $roundness = '8px';
  
  my $rounding = qq(-moz-border-radius: $roundness;
  -webkit-border-radius: $roundness;
@@ -55,7 +55,7 @@
 .<%== $set %>_<%== $key %> { <%== $set eq 'back' ? 'background-' : '' %>color: <%== $color->{$palette}->{$set}->{$key} %>; }
 %  }
 % } 
-% my $fore_base = $color->{$palette}->{front}->{base};
+% my $fore_base = $color->{$palette}->{fore}->{base};
 % my $back_base = $color->{$palette}->{back}->{base};
 
 html { height: 100%; background-color: <%== $back_base %>; }
@@ -110,12 +110,22 @@ body {
 
 .top { vertical-align: top; }
 
+.box { 
+ border: 0px;
+ border-style: solid;
+ border-color: <%== $color->{$palette}->{fore}->{dark} %>;
+ background-color: <%== $color->{$palette}->{fore}->{light} %>; 
+ margin: 0.5em;
+ padding: 0.5em;
+ <%== $rounding %>
+}
              
 h1 {
  font-size: <%== $size_huge %>;
  display: inline;
  font-family: <%== $font_title %>;
  letter-spacing: 2px;
+ font-weight: bold;
 }
 
 h2,h3,h4,h5,h6 {
@@ -123,6 +133,7 @@ h2,h3,h4,h5,h6 {
  display: inline;
  font-family: <%== $font_title %>;
  letter-spacing: 2px;
+ font-weight: bold;
 }
 
 
@@ -149,8 +160,9 @@ form { display: inline; }
 ul { margin-left: 1em; }
 
 li { 
- list-style: square outside; 
- line-height: 1.4em; 
+ list-style: disc;
+ list-style-position: outside; 
+ line-height: 1.3em; 
 }
 
 .p10  { width: 10%; }
