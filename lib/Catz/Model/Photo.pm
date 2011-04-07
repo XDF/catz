@@ -34,10 +34,10 @@ use Catz::Util::Time qw ( dtexpand );
 
 sub photo_thumbs {
 
- my ( $db,$lang, $xs ) = @_; 
+ my ( $db,$lang, @xs ) = @_; 
  
  my $thumbs = $db->all( "select _x.album,_x.n,file||'_LR.JPG',width_lr,height_lr,null from photo natural join _x where x in (" 
-  . ( join ',', @$xs ) .  ') order by x' );
+  . ( join ',', @xs ) .  ') order by x' );
 
  foreach my $row ( @$thumbs ) {
   # using date as a default metadata for thumbs

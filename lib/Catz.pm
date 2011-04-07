@@ -120,26 +120,33 @@ sub before {
 
  my $self = shift; my $stash = $self->{stash};
  
+ 
  # force all URLs to end with slash 
  $self->req->url->path->trailing_slash or do {
-   
-  # this redirect code is a modified version from Mojolicious core
-  # and appears to work as expected
+
+  my $path = $self->req->url->path->to_string;
+ 
+  if ( not ( $path =~ /\..{2,4}$/ ) ) { # skip slash adding for static files
+    
+   # this redirect code is a modified version from Mojolicious core
+   # and appears to work as expected
        
-  my $res = $self->res;
-  $res->code(301); # a permanent redirect
+   my $res = $self->res;
+   $res->code(301); # a permanent redirect
 
-  my $headers = $res->headers;
+   my $headers = $res->headers;
   
-  # add slash to the end of the path
-  $headers->location($self->req->url->path->to_string.'/'); 
-  # if there was query parameters, they get dropped on redirect
+   # add slash to the end of the path
+   $headers->location("$path/"); 
+   # if there was query parameters, they get dropped on redirect
   
-  $headers->content_length(0);
+   $headers->content_length(0);
+ 
+   $self->rendered;
 
-  $self->rendered;
-
-  return $self;
+   return $self;
+   
+  }
  
  };
  
@@ -235,17 +242,17 @@ sub before {
  
  if ( conf('cache_page' ) ) {
   
-  if ( my $res = cache_get ( $stash->{dt}, $stash->{url}, 
-   map { $stash->{$_} } @{ setup_keys() } ) ) {
+  if ( my $res = cache_get ( cachekey ( $self ) ) ) {
  
    $self->res->code(200);
    $self->res->headers->content_type( $res->[0] );
-   $self->res->headers->content_length( $res->[1] );
    $self->res->body( $res->[2] );
    $self->rendered;
-
    $stash->{cached} = 1;
-   warn ( "cached" ); 
+   #warn ( "CACHE HIT $stash->{url}" );
+   return $self;
+  } else {
+   #warn ( "CACHE MISS $stash->{url}" );
   }
  }
      
@@ -254,10 +261,19 @@ sub before {
 sub after {
 
  my $self = shift; my $stash = $self->{stash};
+    
+ ( defined $stash->{controller} and defined $stash->{action} and
+ defined $stash->{url} ) or return; 
  
- $self->{stash}->{cached} and return;
+ # we will not cache setup change request 
+ # since they must alter the session data
+ $stash->{action} eq 'set' and return;
+ 
+ # no recaching: if the result came from the cache don't cache it again
+ defined $stash->{cached} and return;
  
  if ( conf('cache_page' ) ) {
+ 
   if ( $self->req->method eq 'GET' and $self->res->code == 200 ) {
    
    my @set = ( 
@@ -266,12 +282,23 @@ sub after {
     $self->res->body 
    ); 
  
-   cache_set ( $stash->{dt}, $stash->{url}, 
-   ( map { $stash->{$_} } @{ setup_keys() } ), \@set );
+   #warn ( "CACHING $stash->{url}" );
+   
+   cache_set ( cachekey ( $self ), \@set );
   
   }
  }
  
+}
+
+sub cachekey {
+ 
+ return ( 
+  $_[0]->{stash}->{dt}, 
+  $_[0]->{stash}->{url}, 
+  map { $_[0]->{stash}->{$_} } @{ setup_keys() }
+ ); 
+
 }
 
 1;

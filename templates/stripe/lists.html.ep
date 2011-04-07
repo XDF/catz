@@ -1,5 +1,5 @@
 % use Catz::Util::Number qw ( fmt );
-<div class="p100 back_dark"><h2><%= $t->{LISTS} %></h2></div>
+<div class="box"><div class="p100 back_dark"><h2 class="fore_red"><%= $t->{LISTS} %></h2></div>
 % my $i = 0;
 % foreach my $row ( @{ $pris } ) {
 <table class="p100 <%= ( $i % 2 == 0 ) ? 'back_medium' : 'back_light' %>"><tr>
@@ -8,7 +8,7 @@
 </tr></table>
 % $i++;
 % }
-
+</div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
