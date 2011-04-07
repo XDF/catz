@@ -623,10 +623,39 @@ my @secondary = (
  inner join sec d on (c.breed_en=d.sec_en) inner join pri e on (d.pid=e.pid)
  inner join pri f on (b.pid=f.pid) where e.pri='breed' and f.pri='ems3' },
 
- # delete old home country secondaries
- #qq{ delete from sec where pid in ( select pid from pri where pri='country' ) },
-    
- );
+ # creating pre-orderder listings to be able to show lists faster at runtime
+ qq { drop table if exists _list },
+ 
+ qq { create table _list (ord text,lang text,pri text,sec text,
+  count integer, album text,n integer) },
+ 
+ qq { insert into _list select 'a2z','en',pri,sec,count,album,n from (
+  select pri,sec_en as sec,count(distinct x) as count,min(x),
+  _x.album,_x.n from pri natural join snip natural join sec
+  natural join _x where pri not in ( 'dt', 'out' )
+  group by pri,sec_en ) order by sort_pri,sort_en },    
+
+ qq { insert into _list select 'top','en',pri,sec,count,album,n from (
+  select pri,sec_en as sec,count(distinct x) as count,min(x),
+  _x.album,_x.n from pri natural join snip natural join sec
+  natural join _x where pri not in ( 'dt', 'out' )
+  group by pri,sec_en ) order by sort_pri,count desc,sort_en },
+  
+ qq { insert into _list select 'a2z','fi',pri,sec,count,album,n from (
+  select pri,sec_fi as sec,count(distinct x) as count,min(x),
+  _x.album,_x.n from pri natural join snip natural join sec
+  natural join _x where pri not in ( 'dt', 'out' )
+  group by pri,sec_fi ) order by  sort_pri,sort_fi },    
+
+ qq { insert into _list select 'top','fi',pri,sec,count,album,n from (
+  select pri,sec_fi as sec,count(distinct x) as count,min(x),
+  _x.album,_x.n from pri natural join snip natural join sec
+  natural join _x where pri not in ( 'dt', 'out' )
+  group by pri,sec_fi ) order by sort_pri,count desc,sort_fi },
+  
+ qq { create index _list_ix1 on _list(ord,lang,pri) },  
+   
+);
 
 sub load_secondary {
 

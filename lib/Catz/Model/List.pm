@@ -45,9 +45,8 @@ sub list_general {
   
   when ( 'a2z' ) {
  
-   $list = $db->all( qq{select null,pri,sec_$lang,count(distinct x),min(x),
-   _x.album||'/'||_x.n from pri natural join snip natural join sec
-   natural join _x where pri=? group by sec_$lang order by sort_$lang}, $subject
+   $list = $db->all( qq{select null,pri,sec,count,album,n from _list where
+    ord='a2z' and lang=? and pri=? order by rowid }, $lang, $subject
    );
       
    my $last = 'XXXXXXXXX';
@@ -70,9 +69,8 @@ sub list_general {
   
   when ( 'top' ) {
   
-   $list = $db->all( "select null,pri,sec_$lang,count(distinct x),min(x),_x.album||'/'||_x.n 
-   from pri natural join snip natural join sec natural join _x 
-   where pri=? group by sec_$lang order by count(distinct x) desc", $subject
+   $list = $db->all( qq{select null,pri,sec,count,album,n from _list where
+    ord='top' and lang=? and pri=? order by rowid }, $lang, $subject
    );
 
    my $last = 999999999;
@@ -126,7 +124,7 @@ sub list_links {
 
    when ( 'pris' ) {
 
-    $links =  $db->all("select pri,count(distinct sec_$lang) from snip natural join sec natural join pri where pri not in ('out','dt') group by pri order by sort_pri");
+    $links =  $db->all("select pri,count from _pri_count group by pri order by sort_pri");
    
    }
 

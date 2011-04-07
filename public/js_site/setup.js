@@ -34,6 +34,6 @@ function setupChange( key, val ) {
 
 function setupChangeThumbsperpage ( from, n ) {
 
- window.location = '../' + from + '-' + ( parseInt ( from ) + parseInt ( n ) - 1 );
+ window.location = '../' + from + '-' + ( parseInt ( from ) + parseInt ( n ) - 1 ) + '/';
 
 } 
