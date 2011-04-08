@@ -22,36 +22,47 @@
 // THE SOFTWARE.
 //
 
+// stores the previous value of the find activation
+// to detect if the value has really changed 
 var prevVal = '';
 
+// keeps a reference to the previous find request
+// in order to make it abortable if a new request
+// is issued before it is completed
 var prevReq;
 
 function doFind() {
 
  what = $('#find').val();
  
- if ( what != prevVal ) {
+ if ( what != prevVal ) { // if the value has really changed ...
  
   prevVal = what;
   
-  if ( what == '' ) {
- 
-   if ( prevReq ) { prevReq.abort(); }
- 
-   $('div#found').html('');
-   
-  } else {
-
-   if ( prevReq ) { prevReq.abort(); }
-
-   prevReq = $.ajax ({
-    url: 'http://localhost:3000/en/find/' + what + '/',
-    success: function( data ){
-     
-      prevReq = null;
-      prevVal = data;  
+  if ( what == '' ) { // there is nothing to find
     
-      $('div#found').html( data );
+   if ( prevReq ) { prevReq.abort(); } // terminate ongoing request if any
+ 
+   $('div#found').html(''); // clear the visible results
+   
+  } else { // there is something to find
+
+   if ( prevReq ) { prevReq.abort(); }  // terminate ongoing request if any
+   
+   // extract '/fi' or '/en' from the current URL to make find
+   // language specific
+   head = $(location).attr('pathname').toString().substring ( 0, 3 );
+   
+   // make the AJAX call to find service
+   // store the reference to the call to prevReq    
+   prevReq = $.ajax ({
+    url: head + '/find/' + what + '/',
+    success: function( data ){ // when te request completes this get executed
+     
+      prevReq = null; // clear the reference to this request
+      prevVal = data; // store for comparison   
+    
+      $('div#found').html( data ); // update the visible results
      
     }  
    });
