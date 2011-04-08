@@ -281,6 +281,10 @@ LENSS
 lenses
 objektiivit
 #
+EXCEPTION
+500 exception occured
+500 poikkeustilanne
+#
 LISTS
 lists
 luettelot
@@ -300,6 +304,10 @@ uutiset
 NEWS_LATEST
 latest news
 tuoreimmat uutiset
+#
+NOT_FOUND
+404 page or resource not found
+404 sivua tai resurssia ei löydy
 #
 NUM_GALLERY
 photo galleries

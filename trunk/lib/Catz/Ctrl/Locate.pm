@@ -33,7 +33,7 @@ use parent 'Catz::Ctrl::Base';
 sub find {
 
  my $self = shift; my $stash = $self->{stash};
-
+ 
  $stash->{find} = $self->fetch ( 'find', $stash->{what} );
 
  $self->render( template => 'block/find' );
