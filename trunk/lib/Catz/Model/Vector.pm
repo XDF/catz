@@ -41,6 +41,7 @@ use POSIX qw( floor ceil );
 
 use Catz::Data::Cache;
 use Catz::Data::DB;
+use Catz::Util::Number qw( fullnum33 );
 
 sub bsearch {
 
@@ -196,38 +197,41 @@ sub vector_pager {
 
  my $res;
 
- my ( $db, $lang, $from, $to, $perpage, @args ) = @_;
-  
- my $svec = vector_array( $db, $lang, @args );
+ my ( $db, $lang, $x, $perpage, @args ) = @_;
  
+ my $maxx = $db->one ( 'select max(x) from _x' );
+  
+ my $svec = vector_array( $db, $lang, @args ); # get an array of xs
+  
+ my $xfrom = bsearch( $svec, $x ); # search for the x 
+
+ $xfrom == -1 and return 0; # total = 0 = nothing found
+
  my $total = scalar @{ $svec };
-      
+
  my $pages = ceil ( $total / $perpage );
- 
- my $page = floor ( ( $from - 1 ) / $perpage ) + 1;
-     
- my $first = "1-$perpage";
- 
- my $prev = undef;
- 
- $page > 1 and $prev = ( $from - $perpage ) . '-' . ( $to - $perpage );
- 
- my $next = undef; 
 
- $page < $pages and $next = ( $from + $perpage ) . '-' . ( $to + $perpage );
- 
- my $last = ( ( ( $pages - 1 )  * $perpage ) + 1 )  . '-' . ( $pages * $perpage );  
-  
- ( $to > $total ) and $to = $total;
-   
- my @xs = ();
-  
- do { push @xs, $svec->[$_-1] } foreach ( $from .. $to );
-  
- my @out = ( $total, $page, $pages, $from, $to , $first, $prev, $next, $last, \@xs );
-    
- return \@out;
+ my $xlast = $total - 1;
 
+ my $page = floor ( $xfrom / $perpage ) + 1;
+ 
+ # silently roll to the first photo on this page if not yet there
+ $xfrom = ( ( $page - 1 ) * $perpage );  
+  
+ my $xto = $xfrom + $perpage;
+ 
+ $xto > $xlast and $xto = $xlast;
+
+ my $from = $xfrom + 1; 
+ 
+ my $to = $xto + 1;
+ 
+ my @root = { $svec->[$_*$perpage] } foreach ( 0 .. $pages - 1  );
+         
+ my @xs = { $svec->[$_] } foreach ( $xfrom .. $xto );
+  
+ return ( $maxx, $total, $page, $pages, $from, $to , \@root, \@xs );
+      
 }
 
 sub vector_pointer {
@@ -272,6 +276,19 @@ sub vector_pointer {
    
  return \@out;
     
+}
+
+sub vector_first {
+
+ # return the index of the first photo in the vector
+
+ my ( $db, $lang, @args ) = @_;
+
+ my $min = vector_bit ( $db, $lang, @args );
+ 
+ # if no bits set then a very large number was set
+ $min > 999999999 ? undef : $min; 
+ 
 }
 
 sub vector_count {

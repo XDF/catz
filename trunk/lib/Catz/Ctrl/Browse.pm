@@ -31,60 +31,28 @@ use parent 'Catz::Ctrl::Present';
 
 sub browse {
 
- my $self = shift;
+ my $self = shift; my $s = $self->{stash};
  
- my $stash = $self->{stash};
+ $self->process_path or $self->not_found and return;
+ 
+ $self->process_id or $self->not_found and return;
    
- my ( $lower, $upper ) = split /\-/, $stash->{range};
+ ( 
+  $s->{maxx}, $s->{total}, $s->{page}, $s->{pages}, 
+  $s->{from}, $s->{to}, $s->{root}, $s->{xs}, 
+  ) = $self->fetch('vector_pager', 
+   $s->{x}, $s->{perpage}, @{ $s->{path_array} }  
+  );
+                 
+ $s->{total} == 0 and $self->not_found and return; 
+ # no photos found by search 
  
- my $maxx = $self->fetch ( 'maxx' );
- 
- # verify the range
- ( ( $lower > 0 ) and ( $upper < $maxx + 1 ) and ( ( $upper - $lower ) > 8 ) and
-  ( ( $upper - $lower ) < 50 ) and ( ( $lower - 1 ) % 5 == 0 ) and ( $upper % 5 == 0 ) )
-  or $self->render_not_found;
-
- $stash->{path} and do { 
- 
-  my @args = split /\//, $stash->{path};
+ scalar @{ $s->{xs} } == 0 and $self->not_found and return; 
+ # no photos in this page
   
-  ( scalar ( @args ) % 2 ) == 0 or do { $self->render_not_found; return; }; 
-  
-  $stash->{args} = \@args;
-  
- };  
-         
- # set this amount of photos to both stash and session
- # so session gets changed automatically by url 
- my $perpage = $upper - $lower + 1;
- $stash->{thumbsperpage} = $perpage; 
- $self->session( thumbsperpage => $perpage );
- 
- my ( $total, $page, $pages, $from, $to, $first, $prev, $next, $last, $xs ) = 
-  @{ $self->fetch('vector_pager', 
-   $lower, $upper, $perpage, @{ $stash->{args} }  
-  ) };
-       
- $total == 0 and $self->render_not_found; # no photos found by search 
- scalar @{ $xs } == 0 and $self->render_not_found; # no photos in this page
-  
- $stash->{total} = $total;
- $stash->{page} = $page;
- $stash->{pages} = $pages;
- $stash->{perpage} = $perpage;
- $stash->{from} = $from;
- $stash->{to} = $to;
- $stash->{first} = $first;
- $stash->{prev} = $prev;
- $stash->{next} = $next;
- $stash->{last} = $last;
-
- my $thumbs = $self->fetch('photo_thumbs', @{ $xs } ) ;
-        
- $self->{stash}->{thumbs} = $thumbs;
- $self->{stash}->{formation} = 'wide';
- $stash->{showmeta} = 1;
-     
+ ( $s->{thumbs}, $s->{min}, $s->{max} ) = 
+   $self->fetch( 'photo_thumbs', @{ $s->{xs} } ) ;
+             
  $self->render( template => 'page/browse' );
     
 }

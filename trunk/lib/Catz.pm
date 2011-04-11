@@ -59,14 +59,17 @@ sub startup {
  # if the site root is requested then detect the correct language
  $r->route('/')->to( "main#detect" );
  
+ # stylesheets
  $r->route( '/style/reset' )->to( 'main#reset' );
  $r->route( '/style/:palette' )->to( 'main#base' );
  
+ # set sessions parameters
  $r->route( '/set/:key/:val' )->to( 'main#set' );
  
- # all site content are located under /en or /fi
+ # all site content is found under /:lang where lang is 'en' or 'fi'
  my $l = $r->route ('/:lang', lang => qr/en|fi/ );
  
+ # the front page is the root under language
  $l->route( '/' )->to( 'main#front' );
   
  $l->route( '/news' )->to ( "main#news" );
@@ -87,26 +90,29 @@ sub startup {
  
  $l->route( '/search' )->to ( "search#search" ); 
  
- # browse photos based on the search pattern or no pattern 
- # current setting 1,5 supports photo sets up to 99,999 photos
+ # browse photos based on the search pattern 
+ # or no pattern and id that is \d\d\d\d\d\d 
+ # supports 999 galleries 999 photos seach
 
- $l->route( '/browse/(*path)/:range', range => qr/\d{1,5}\-\d{1,5}/ )->to (
+ $l->route( '/browse/(*path)/:id', id => qr/\d{6}/ )->to (
   "browse#browse"
  );
  
- $l->route( '/browse/:range', range => qr/\d{1,5}\-\d{1,5}/ )->to (
+ $l->route( '/browse/:id', id => qr/\d{6}/ )->to (
   "browse#browse", path => undef
  );
+
+ # inspect and show photos based on the search pattern 
+ # or no pattern and id that is \d\d\d\d\d\d 
+ # supports 999 galleries 999 photos seach
  
  my $v = $l->route ( '/:action', action => qr/inspect|show/ ); 
-  
- # inspect/show a photo based on the search pattern or no pattern
- 
- $v->route( '/(*path)/:album/:n', 
-  album => qr/\d{8}[a-z\d]+/, n => qr/\d{1,3}/ )->to( controller => 'view' );
+   
+ $v->route( '/(*path)/:id', id => qr/\d{6}/ )->to( 
+  controller => 'view' 
+ );
 
- $v->route( '/:album/:n', 
-  album => qr/\d{8}[a-z\d]+/, n => qr/\d{1,3}/ )->to( 
+ $v->route( '/:id', id => qr/\d{6}/ )->to( 
    controller => 'view', path => undef 
   );
  

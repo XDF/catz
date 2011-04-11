@@ -40,21 +40,11 @@ use Catz::Util::Log qw ( logclose logopen logit );
 use Catz::Util::String qw ( dna );
 use Catz::Util::Time qw ( dt dtexpand dtlang );
 
-my $lock = conf ( 'file_lock' );
-
-# the existence of the lock file prevents further
-# processing and exists silently
--f $lock and exit;
-
 # store the beginning timestamp to be able to 
 # calculate  total exectution time in secods
 my $btime = time(); 
 
 my $dt = dt(); # the run is identified by YYYYMMSSHHMMSS
-
-# creating lock file to prevent further cron executions
-# DISABLE FOR TESTING 
-#file_write ( $lock, "Catz loader lock file $dt" );
 
 logopen ( conf ( 'path_log' ) . "/$dt.log" );
 
@@ -125,7 +115,8 @@ foreach my $head ( @{ conf ( 'metafiles' ) } ) {
  
   if ( $head eq 'gallerymeta' ) { # complex loading
   
-   foreach my $pile ( topiles ( $data ) ) {  
+   # reverse makes the oldest gallery to load first and get the smallest S
+   foreach my $pile ( reverse topiles ( $data ) ) {  
    
     if ( $pile =~ /^(\!.+?\n)?(20\d{6}[a-z]+\d{0,1})\n/g ) {
     

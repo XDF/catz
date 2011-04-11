@@ -32,6 +32,9 @@ use warnings;
 
 use DBI;
 
+use feature qw( switch );
+
+use Catz::Data::Cache;
 use Catz::Data::Conf;
 
 sub new {
@@ -43,7 +46,7 @@ sub new {
   undef, undef, conf( 'dbargs_runtime' )
  ) || die ( $DBI::errstr );   
 
- my $self = { db => $db };
+ my $self = { dt => $dt, db => $db };
  
  bless($self, $class);
 
@@ -51,38 +54,71 @@ sub new {
  
 }
 
-sub one {
+sub run {
 
- my ( $self, $sql, @args ) = @_;
-
- my $arr = $self->{db}->selectrow_arrayref( $sql, undef, @args );
+ my ( $self, $comm, $sql, @args ) = @_;
  
- return $arr->[0];
+ my $dt = $self->{dt}; 
  
-}
-
-sub row {
-
- my ( $self, $sql, @args ) = @_;
-
- return $self->{db}->selectrow_arrayref( $sql, undef, @args );
-
-}
-
-sub col {
-
- my ( $self, $sql, @args ) = @_;
-
- return $self->{db}->selectcol_arrayref( $sql, undef, @args );
-
-}
-
-sub all {
-
- my ( $self, $sql, @args ) = @_;
+ my $res;
  
- return $self->{db}->selectall_arrayref( $sql, undef, @args );
+ if ( conf('cache_db' ) ) {
+ 
+  # try to get the requested result from the cache
+  
+  $res = cache_get ( $dt, $comm, $sql, @args );
+ 
+  $res and return $res; # if cache hit then done
+ 
+ }
+
+ given ( $comm ) {
+  
+  when ( 'one' ) { 
+
+   my $arr = $self->{db}->selectrow_arrayref( $sql, undef, @args );
+  
+   $res = $arr->[0];
+  
+  }
+  
+  when ( 'row' ) {
+  
+   $res = $self->{db}->selectrow_arrayref( $sql, undef, @args );
+
+  }
+  
+  when ( 'col' ) {
+  
+   $res = $self->{db}->selectcol_arrayref( $sql, undef, @args );
+  
+  }
+  
+  when ( 'all' ) {
+  
+   $res = $self->{db}->selectall_arrayref( $sql, undef, @args );
+  
+  }
+ 
+  default { die "unknown database command '$comm'" }
+ 
+ }
+
+ if ( conf('cache_db' ) ) {
+  cache_set ( $dt, $comm, $sql, @args, $res );
+ }
+  
+ return $res;
 
 }
+
+sub one { my $self = shift; $self->run('one',@_) }
+
+sub row { my $self = shift; $self->run('row',@_) }
+
+sub col { my $self = shift; $self->run('col',@_) }
+
+sub all { my $self = shift; $self->run('all',@_) }
+
 
 1; 
