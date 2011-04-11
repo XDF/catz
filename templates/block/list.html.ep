@@ -1,4 +1,4 @@
- % use Catz::Util::String qw ( enurl );
+% use Catz::Util::String qw ( enurl );
 <table class="p100">
 % foreach my $rec ( @$list ) {
 <tr>

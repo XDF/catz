@@ -1,5 +1,5 @@
- % foreach my $text ( @$text ) {
-<%= $text %> 
+ % foreach my $comm ( @$comment ) {
+<%= $comm %> 
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine

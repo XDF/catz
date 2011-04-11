@@ -131,6 +131,7 @@ sub vector_bit {
  # AND base vector is a completely filled vector 
  my $ands = Bit::Vector->new( $maxx );
  $ands->Fill;
+ $ands->Bit_Off(0); # 0th bit is unused as xs start from 1
   
  my $hasor = 0; # flag to detect if any ors were present
  
@@ -272,13 +273,12 @@ sub vector_first {
 
  my ( $db, $lang, @args ) = @_;
 
- my $bvec = vector_bit ( $db, $lang, @args );
+ my $svec = vector_array ( $db, $lang, @args );
+   
+ scalar @{ $svec } == 0 and return undef;
   
- my $min = $bvec->Min;
- 
- # if no bits set then a very large number was set
- $min > 999999999 ? undef : $min; 
- 
+ return $svec->[0];
+  
 }
 
 sub vector_count {

@@ -39,7 +39,7 @@ sub photo_thumbs {
  my $min = 99999999;
  my $max = 00000000; 
  
- my $thumbs = $db->all( qq{select id,album,file||'_LR.JPG',width_lr,height_lr,
+ my $thumbs = $db->all( qq{select id,album,file||'_LR.JPG',width_lr,height_lr, 
   bytes_lr from _photo where x in (} . ( join ',', @xs ) .  ') order by x' );
 
  foreach my $row ( @$thumbs ) {
@@ -49,7 +49,7 @@ sub photo_thumbs {
   $d > $max and $max = $d;
  } 
 
- return [ ( $thumbs, dtexpand ( $min, $lang ), dtexpand ( $max, $lang ) ) ];
+ return [ $thumbs, dtexpand ( $min, $lang ), dtexpand ( $max, $lang ) ];
 
 }
 

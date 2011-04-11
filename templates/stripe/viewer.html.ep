@@ -2,25 +2,25 @@
 % $origin eq 'x' and $pre = '';
 <table class="p100 center"><tr><td>
 % if ( $pos > 0) {
-<a title="<%= $t->{PHOTO_FIRST} %>" href="<%== $pre %><%== $pin->[0] %>/"><img src="/icons/first.png"></a>
+<a title="<%= $t->{PHOTO_FIRST} %>" href="<%== $pre %><%== $pin->[0] %>/"><%= $t->{PHOTO_FIRST} %></a>
 % } else { 
-<img src="/icons/_first.png">
+<%= $t->{PHOTO_FIRST} %>
 % }
 </td><td>
 % if ( $pos > 0 ) {
-<a href="<%== $pre %><%== $pin->[1] %>/"><img src="/icons/prev.png"></a>
+<a title="<%= $t->{PHOTO_PREV} %>" href="<%== $pre %><%== $pin->[1] %>/"><%= $t->{PHOTO_PREV} %></a>
 % } else {
 <%= $t->{PHOTO_PREV} %>
 % }
 </td><td>
 % if ( $pos < $total ) {
-<a href="<%== $pre %><%== $pin->[2] %>/"><img src="/icons/next.png"></a>
+<a title="<%= $t->{PHOTO_NEXT} %>" href="<%== $pre %><%== $pin->[2] %>/"><%= $t->{PHOTO_NEXT} %></a>
 % } else { 
 <%= $t->{PHOTO_NEXT} %>
 % }
 </td><td>
 % if ( $pos < $total ) {
-<a href="<%== $pre %><%== $pin->[3] %>/"><img src="/icons/last.png"></a>
+<a title="<%= $t->{PHOTO_LAST} %>" href="<%== $pre %><%== $pin->[3] %>/"><%= $t->{PHOTO_LAST} %></a>
 % } else {
 <%= $t->{PHOTO_LAST} %>
 % }

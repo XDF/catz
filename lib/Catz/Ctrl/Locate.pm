@@ -32,11 +32,43 @@ use parent 'Catz::Ctrl::Base';
 
 sub find {
 
- my $self = shift; my $stash = $self->{stash};
+ my $self = shift; my $s = $self->{stash};
  
- $stash->{find} = $self->fetch ( 'find', $stash->{what} );
+ $s->{find} = $self->fetch ( 'find', $s->{what} );
 
  $self->render( template => 'block/find' );
+
+}
+
+sub sample {
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ my $xs; my @set;
+ 
+ $s->{path} = 'dummy';
+ 
+ if ( $s->{what} ) {
+ 
+  $xs = [ map { $_->[3] } @{ $self->fetch ( 'find', $s->{what} ) } ];
+ 
+  @set = @{ $xs };
+  
+ } else {
+
+  $xs = $self->fetch ( 'vector_array_rand',  @{ $s->{path_array} } );
+ 
+  @set = @{ $xs } [ 0 .. $s->{count} - 1 ];
+  
+ }
+ 
+ #die join '-', @set;
+ 
+ my $res = $self->fetch ( 'photo_thumbs', @set );
+ 
+ $s->{thumb} = $res->[0];
+    
+ $self->render( template => 'block/thumb' );
 
 }
 
