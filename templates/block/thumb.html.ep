@@ -1,12 +1,7 @@
-% use Catz::Util::String qw ( enval );
-% my $i = 0;
-% foreach my $detail ( @$details ) {
-% if ( ( $i++ % 2 ) == 0 ) {
-<a class="even" href="/<%= $lang %>/view/<%= enval ( $detail->[0] ) %>/<%= enval ( $detail->[1] ) %>/<%= $album %>/<%= $n %>/">
-% } else {
-<a class="odd" href="/<%= $lang %>/view/<%= enval ( $detail->[0] ) %>/<%= enval ( $detail->[1] ) %>/<%= $album %>/<%= $n %>/">  
-% }
-<%= $detail->[1] %></a> 
+% use Catz::Util::String qw ( enurl );
+% foreach my $thumb ( @{ $thumbs } ) {
+% my $size = qq{height="$thumbsize"};
+<a class="spacious" href="/<%= $lang %>/inspect/<%== $path // '' %><%== $path ? '/' : '' %><%== $thumb->[0] %>/"><img src="<%== $photobase %>/<%== $thumb->[1] %>/<%== $thumb->[2] %>" <%== $size %>></a>
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine

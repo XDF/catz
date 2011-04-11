@@ -449,39 +449,39 @@ SETUP_palette_dark
 dark palette
 tumma ulkoasu
 #
-SETUP_thumbsperpage_10
+SETUP_perpage_10
 10 thumbnails per page
 10 pikkukuvaa sivulla
 #
-SETUP_thumbsperpage_15
+SETUP_perpage_15
 15 thumbnails per page
 15 pikkukuvaa sivulla
 #
-SETUP_thumbsperpage_20
+SETUP_perpage_20
 20 thumbnails per page
 20 pikkukuvaa sivulla
 #
-SETUP_thumbsperpage_25
+SETUP_perpage_25
 25 thumbnails per page
 25 pikkukuvaa sivulla
 #
-SETUP_thumbsperpage_30
+SETUP_perpage_30
 30 thumbnails per page
 30 pikkukuvaa sivulla
 #
-SETUP_thumbsperpage_35
+SETUP_perpage_35
 35 thumbnails per page
 35 pikkukuvaa sivulla
 #
-SETUP_thumbsperpage_40
+SETUP_perpage_40
 40 thumbnails per page
 40 pikkukuvaa sivulla
 #
-SETUP_thumbsperpage_45
+SETUP_perpage_45
 45 thumbnails per page
 45 pikkukuvaa sivulla
 #
-SETUP_thumbsperpage_50
+SETUP_perpage_50
 50 thumbnails per page
 50 pikkukuvaa sivulla
 #

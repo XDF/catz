@@ -584,20 +584,21 @@ my @secondary = (
   n integer not null, id text not null) },
   
  qq{ insert into _x (album,n,id) select album,n,makeid(s,n) from photo 
-  natural join album order by s,n },
+  natural join album order by s desc,n asc },
  
  qq{ create index _x_ix1 on _x ( album, n ) },
  qq{ create index _x_ix2 on _x ( id ) },
  
  qq{ drop table if exists _photo },
  
- qq{ create table _photo (x integer primary key not null, album text not null, 
-  file text not null, width_hr not null, height_hr not null, bytes_hr not null,
-  width_lr not null, height_lr not null, bytes_lr not null)},
+ qq{ create table _photo (x integer primary key not null, id text not null,   
+  album text not null, file text not null, width_hr not null, height_hr not
+  null, bytes_hr not null, width_lr not null, height_lr not null, bytes_lr
+  not null)},
   
- qq{ insert into _photo (x,album,file,width_hr,height_hr,bytes_hr,width_lr,
-  height_lr,bytes_lr) select x,album,file,width_hr,height_hr,bytes_hr,width_lr,
-  height_lr,bytes_lr from photo natural join _x order by x },
+ qq{ insert into _photo (x,id,album,file,width_hr,height_hr,bytes_hr,width_lr,
+  height_lr,bytes_lr) select x,id,album,file,width_hr,height_hr,bytes_hr,
+  width_lr,height_lr,bytes_lr from photo natural join _x order by x },
   
  qq{ drop table if exists _pri_sec_count },
  

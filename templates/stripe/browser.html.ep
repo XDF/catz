@@ -1,9 +1,11 @@
+% my $pre = '../';
+% $origin eq 'x' and $pre = '';
 <div class="p100 center">
 % my $sep = '.';
 % if ( $page > 1 ) {
-<a href="../<%== $first %>/"><%= $t->{PAGE_FIRST} %></a>
+<a href="<%== $pre %><%== $pin->[0] %>/"><%= $t->{PAGE_FIRST} %></a>
 <%== $sep %>
-<a href="../<%== $prev %>/"><%= $t->{PAGE_PREV} %></a>
+<a href="<%== $pre %><%== $pin->[$page-2] %>/"><%= $t->{PAGE_PREV} %></a>
 % } else { 
 <%= $t->{PHOTO_FIRST} %>
 <%== $sep %>
@@ -11,26 +13,21 @@
 % }
 <%== $sep %>
 <form>
-<span class="air"><%= $t->{PAGE} %> <SELECT NAME="page" onchange="location.href='../' + this.options[this.selectedIndex].value + '/' ">
-% my $pg = 1;
-% my @pagelist = ( 1 .. $pages );
-% foreach my $p ( @pagelist ) {
-% my $a = ( ( ( $p - 1 )  * $perpage ) + 1 ); 
-% my $b = $a + $perpage - 1;
-% my $target = "$a-$b"; 
-% if ( $page == $p ) {
-<OPTION SELECTED value="<%== $target %>"><%= $p %></OPTION>
+<span class="air"><%= $t->{PAGE} %> <SELECT NAME="page" onchange="location.href='<%== $pre %>' + this.options[this.selectedIndex].value + '/' ">
+% foreach my $i ( 0 .. ( scalar @{ $pin } -1 ) ) {
+% if ( $page == ( $i + 1 ) ) {
+<OPTION SELECTED value="<%== $pin->[$i] %>"><%= $i+1 %></OPTION>
 % } else { 
-<OPTION value="<%== $target %>"><%= $p %></OPTION>
+<OPTION value="<%== $pin->[$i] %>"><%= $i+1 %></OPTION>
 % }
 % }
 </SELECT></span>
 </form> / <%= $pages %>
 <%== $sep %>
 % if ( $page < $pages ) {
-<a href="../<%== $next %>/"><%= $t->{PAGE_NEXT} %></a>
+<a href="<%== $pre %><%== $pin->[$page] %>/"><%= $t->{PAGE_NEXT} %></a>
 <%== $sep %>
-<a href="../<%== $last %>/"><%= $t->{PAGE_LAST} %></a>
+<a href="<%== $pre %><%== $pin->[$pages-1] %>/"><%= $t->{PAGE_LAST} %></a>
 % } else { 
 <%= $t->{PHOTO_FIRST} %>
 <%== $sep %>

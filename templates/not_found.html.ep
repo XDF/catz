@@ -1,3 +1,4 @@
+% layout 'page';
 <h1><%= $t->{NOT_FOUND} %></h1>
 %#
 %# Catz - the world's most advanced cat show photo engine

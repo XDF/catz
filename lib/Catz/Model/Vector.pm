@@ -31,7 +31,7 @@ use feature qw( switch );
 
 use parent 'Exporter';
 our @EXPORT = qw( 
- vector_bit vector_array vector_array_rand 
+ vector_bit vector_array vector_array_rand vector_first 
  vector_pager vector_pointer vector_count
 );
 
@@ -198,13 +198,11 @@ sub vector_pager {
  my $res;
 
  my ( $db, $lang, $x, $perpage, @args ) = @_;
- 
- my $maxx = $db->one ( 'select max(x) from _x' );
-  
+     
  my $svec = vector_array( $db, $lang, @args ); # get an array of xs
-  
- my $xfrom = bsearch( $svec, $x ); # search for the x 
-
+   
+ my $xfrom = bsearch( $svec, $x ); # search for the x
+ 
  $xfrom == -1 and return 0; # total = 0 = nothing found
 
  my $total = scalar @{ $svec };
@@ -218,7 +216,7 @@ sub vector_pager {
  # silently roll to the first photo on this page if not yet there
  $xfrom = ( ( $page - 1 ) * $perpage );  
   
- my $xto = $xfrom + $perpage;
+ my $xto = $xfrom + $perpage - 1;
  
  $xto > $xlast and $xto = $xlast;
 
@@ -226,11 +224,15 @@ sub vector_pager {
  
  my $to = $xto + 1;
  
- my @root = { $svec->[$_*$perpage] } foreach ( 0 .. $pages - 1  );
+ my @root = map { $svec->[$_*$perpage] } ( 0 .. $pages - 1  );
+ 
+ my $pin = $db->col(
+  qq{select id from _x where x in (} . ( join ',', @root ) . ') order by x' 
+ );
          
- my @xs = { $svec->[$_] } foreach ( $xfrom .. $xto );
-  
- return ( $maxx, $total, $page, $pages, $from, $to , \@root, \@xs );
+ my @xs = map { $svec->[$_] } ( $xfrom .. $xto );
+   
+ return [ ( $total, $page, $pages, $from, $to , $pin, \@xs ) ];
       
 }
 
@@ -238,43 +240,29 @@ sub vector_pointer {
 
  my $res;
 
- my ( $db, $lang, $album, $n, $perpage, @args ) = @_;
-
- my $svec = vector_array( $db, $lang, @args );
-  
- my $total = scalar @{ $svec };
-   
- my $x = $db->one( 'select x from _x where album=? and n=?', $album, $n );
+ my ( $db, $lang, $x, @args ) = @_;
+     
+ my $svec = vector_array ( $db, $lang, @args ); # get an array of xs
     
- my $idx = bsearch( $svec, $x ); 
-
- #$idx == -1 and $self->render(status => 404);
-   
- my $page = floor ( $idx / $perpage ) + 1;
-      
- my $first = undef;
- my $prev = undef;
+ my $idx = bsearch( $svec, $x ); # search for the x
  
- $idx > 0 and do {
-
-  $first = $db->one( "select album||'/'||n from _x where x=?", $svec->[0] );
-  $prev = $db->one( "select album||'/'||n from _x where x=?", $svec->[$idx-1] );
   
- };
+ $idx == -1 and return 0; # total = 0 = nothing found
+ 
+ my $total = scalar @{ $svec };
+ 
+ my @root = ( 
+  $svec->[0], # first 
+  $svec->[ $idx > 0 ? $idx : 0 ], # previous
+  $svec->[ $idx < ( $total - 1 ) ? $idx : ( $total - 1 ) ], # next
+  $svec->[$total-1] # last
+ );
 
- my $last = undef;
- my $next = undef; 
-  
- $idx < ( $total - 1 ) and do {
-
-  $last = $db->one( "select album||'/'||n from _x where x=?", $svec->[$total-1] );
-  $next = $db->one( "select album||'/'||n from _x where x=?", $svec->[$idx+1] );
-  
- };
-
- my @out = ( $total, $idx+1, $x, $page, $first, $prev, $next, $last );
-   
- return \@out;
+ my $pin = $db->col(
+  qq{select id from _x where x in (} . ( join ',', @root ) . ') order by x' 
+ );
+ 
+ return [ ( $total, $idx + 1, $pin ) ];
     
 }
 
@@ -284,7 +272,9 @@ sub vector_first {
 
  my ( $db, $lang, @args ) = @_;
 
- my $min = vector_bit ( $db, $lang, @args );
+ my $bvec = vector_bit ( $db, $lang, @args );
+  
+ my $min = $bvec->Min;
  
  # if no bits set then a very large number was set
  $min > 999999999 ? undef : $min; 

@@ -2,10 +2,10 @@
 <table class="p100"><tr><td class="p34 top">
 %== include 'stripe/top';
 %== include 'stripe/viewer';
-%== include 'block/texts';
-%== include 'stripe/details';
+%== include 'stripe/text';
+%== include 'stripe/detail';
 </td><td class="p66 top odd">
-<img src="<%== $photobase %>/<%== $image->[0] %>/<%== $image->[1] %>" width="700">
+<img src="<%== $photobase %>/<%== $image->[1] %>/<%== $image->[2] %>" width="700">
 </td></tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine

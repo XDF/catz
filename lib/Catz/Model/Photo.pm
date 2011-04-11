@@ -27,7 +27,7 @@
 package Catz::Model::Photo;
 
 use parent 'Exporter';
-our @EXPORT = qw ( photo_thumbs photo_details photo_image photo_texts );
+our @EXPORT = qw ( photo_thumbs photo_detail photo_image photo_text );
 
 use Catz::Data::DB;
 use Catz::Util::Time qw ( dtexpand );
@@ -39,33 +39,35 @@ sub photo_thumbs {
  my $min = 99999999;
  my $max = 00000000; 
  
- my $thumbs = $db->all( qq{select album,file||'_LR.JPG',width_lr,height_lr 
-  from _photo where x in (} . ( join ',', @xs ) .  ') order by x' );
+ my $thumbs = $db->all( qq{select id,album,file||'_LR.JPG',width_lr,height_lr,
+  bytes_lr from _photo where x in (} . ( join ',', @xs ) .  ') order by x' );
 
  foreach my $row ( @$thumbs ) {
   # extract date from the album name (first eight characters)
-  my $d = int (  substr ( $row->[0], 0, 8 ) );
+  my $d = int (  substr ( $row->[1], 0, 8 ) ); 
   $d < $min and $min = $d;
-  $d < $max and $max = $d;
+  $d > $max and $max = $d;
  } 
 
- return ( $thumbs, dtexpand ( $min, $lang ), dtexpand ( $max, $lang ) );
+ return [ ( $thumbs, dtexpand ( $min, $lang ), dtexpand ( $max, $lang ) ) ];
 
 }
 
-sub photo_details {
+sub photo_detail {
 
  my ( $db, $lang, $x ) = @_;
 
- return $db->all ( qq{select pri,sec_$lang from pri natural join sec natural join snip natural join _x where x=? order by sort_pri,sort_$lang}, $x );
+ return $db->all ( qq{select pri,sec_$lang from pri natural join sec natural
+  join snip natural join _x where x=? order by sort_pri,sort_$lang}, $x );
 
 }
 
-sub photo_texts {
+sub photo_text {
 
  my ( $db, $lang, $x ) = @_;
 
- return $db->col ( qq{select sec_$lang from pri natural join sec natural join snip natural join _x where x=? and pri='out' order by p}, $x );
+ return $db->col ( qq{select sec_$lang from pri natural join sec natural join
+  snip natural join _x where x=? and pri='out' order by p}, $x );
 
 
 }
@@ -74,7 +76,8 @@ sub photo_image {
 
  my ( $db, $lang, $x ) = @_;
  
- return $db->row ( qq{select album,file||'.JPG',width_hr,height_hr from photo natural join _x where x=?},$x);
+ return $db->row ( qq{select id,album,file||'.JPG',width_hr,height_hr,bytes_hr
+  from _photo where x=?},$x);
 
 }
 
