@@ -6,13 +6,7 @@
 % use Catz::Data::Setup;
 % use Catz::Util::String qw ( ucclcc );
 % my $func = 'setupChange'; # the default JavaScript function to be called
-% my $arg1 = qq{'$key'};
-% $key eq 'thumbsperpage' and do {
-%  # the special case of thumbsperpage -> call different func 
-%  # with differenct first argumenta   
-%  $func .= ucclcc( $key ); 
-%  $arg1 = stash ( 'from' ); # the first photo number in the set from stash
-% }; 
+% my $arg1 = qq{'$key'}; 
 <select id="setup_<%= $key %>" onchange="<%= $func %>(<%== $arg1 %>,$('#setup_<%= $key %>').val())">
 }
 % my $values = setup_values ( $key );

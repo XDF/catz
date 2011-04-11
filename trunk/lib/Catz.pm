@@ -78,44 +78,32 @@ sub startup {
 
  $l->route( '/find/:what' )->to ( "locate#find" );
 
-  $l->route( '/sample/(*path)/:count', count => qr/\d{1,4}/ )->to (
-  "sample#count"
+ $l->route( '/sample/(*path)/:count', count => qr/\d{1,2}/ )->to (
+  "view#sample"
  );
 
- $l->route( '/sample/:count', count => qr/\d{1,4}/ )->to (
-  "sample#count", path => undef
+ $l->route( '/sample/:count', count => qr/\d{1,2}/ )->to (
+  "view#sample", path => undef
  );
  
  $l->route('/list/:subject/:mode')->to('list#list');
  
  $l->route( '/search' )->to ( "search#search" ); 
  
- # browse photos based on the search pattern 
- # or no pattern and id that is \d\d\d\d\d\d 
- # supports 999 galleries 999 photos seach
-
- $l->route( '/browse/(*path)/:id', id => qr/\d{6}/ )->to (
-  "browse#browse"
- );
+ # view photos based on the arguments or no argumets 
+ # id \d{6} supports 999 galleries 999 photos seach
  
- $l->route( '/browse/:id', id => qr/\d{6}/ )->to (
-  "browse#browse", path => undef
- );
-
- # inspect and show photos based on the search pattern 
- # or no pattern and id that is \d\d\d\d\d\d 
- # supports 999 galleries 999 photos seach
- 
- my $v = $l->route ( '/:action', action => qr/inspect|show/ ); 
+ my $v = $l->route ( '/:action', action => qr/browse|inspect|show/ ); 
    
- $v->route( '/(*path)/:id', id => qr/\d{6}/ )->to( 
-  controller => 'view' 
- );
+ $v->route( '/(*path)/:id', id => qr/\d{6}/ )->to( controller => 'view' );
 
  $v->route( '/:id', id => qr/\d{6}/ )->to( 
-   controller => 'view', path => undef 
-  );
- 
+  controller => 'view', path => undef 
+ );
+  
+  
+ $v->route( '(*path)' )->to ( controller => 'view' );
+   
  # add hooks to subs that are executed before and after the dispatch
  $self->hook ( before_dispatch => \&before );  
  $self->hook( after_dispatch => \&after );

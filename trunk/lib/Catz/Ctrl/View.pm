@@ -27,102 +27,184 @@ package Catz::Ctrl::View;
 use strict;
 use warnings;
 
-use parent 'Catz::Ctrl::Present';
+use parent 'Catz::Ctrl::Base';
+
+use List::MoreUtils qw ( all );
+
+use Catz::Data::DB;
+use Catz::Util::Number qw ( fullnum3 minnum );
+use Catz::Util::String qw ( deurl );
+
+sub process_id {
+ 
+ #
+ # processes the id parameter from the stash to stash
+ # if id is not present then resolve it
+ #
+ # returns true in success, return false on reject
+ #
+ 
+ my $self = shift; my $s = $self->{stash};
+ 
+ if ( defined $s->{id} ) { # id was given in request
+  
+  $s->{origin} = 'id';
+    
+  $s->{x} = $self->fetch( 'id2x', $s->{id} );
+    
+  $s->{x} or return 0;
+          
+ } else { # no id given, must find the id of the first photo in the set
+ 
+  $s->{origin} = 'x';
+ 
+  $s->{x} = $self->fetch ( 'vector_first', @{ $s->{path_array} } );
+    
+  $s->{x} or return 0;
+  
+  $s->{id} = $self->fetch ( 'x2id', $s->{x} );
+
+  $s->{id} or return 0; 
+   
+ }
+ 
+ return 1;
+
+
+}
+
+sub process_path {
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ # processes the path parameter from the stash to stash
+ # returns true in success, return false on reject   
+ my @path = ();
+ 
+ if ( defined $s->{path} ) {
+ 
+  @path =  split /\//, $s->{path};
+  
+  # reject if any empty path parts
+  ( all { defined $_ } @path ) or return 0;  
+   
+ }
+
+ # arguments must come in as pairs
+ scalar @path % 2 == 0 or return 0;
+ 
+ # URL decode each element and store them to stash
+ $s->{path_array} = [ map { deurl $_ } @path ];
+ $s->{path_count} = scalar @path;
+   
+ return 1;
+
+}
+
+sub browse {
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ $self->process_path or $self->not_found and return;
+ 
+ $self->process_id or $self->not_found and return;
+   
+ my $res = $self->fetch('vector_pager', 
+   $s->{x}, $s->{perpage}, @{ $s->{path_array} }  
+  );
+  
+ $s->{total} = $res->[0];
+ $s->{page} = $res->[1];
+ $s->{pages} = $res->[2];
+ $s->{from} = $res->[3];
+ $s->{to} = $res->[4];
+ $s->{pin} = $res->[5];
+ $s->{xs} = $res->[6];
+                   
+ $s->{total} == 0 and $self->not_found and return; 
+ # no photos found by search 
+ 
+ scalar @{ $s->{xs} } == 0 and $self->not_found and return; 
+ # no photos in this page
+ 
+ $res = $self->fetch( 'photo_thumbs', @{ $s->{xs} } ) ;
+ 
+ $s->{thumbs} = $res->[0];
+ $s->{min} = $res->[1];
+ $s->{max} = $res->[2]; 
+             
+ $self->render( template => 'page/browse' );
+    
+}
 
 sub inspect {
 
- my $self = shift;
-  
- my $stash = $self->{stash};
-
- $stash->{path} and do { 
+ my $self = shift; my $s = $self->{stash};
  
-  my @args = split /\//, $stash->{path};
-  
-  ( scalar ( @args ) % 2 ) == 0 or do { $self->render_not_found; return; }; 
-  
-  $stash->{args} = \@args;
-  
- };
-          
- my $perpage =  $stash->{'thumbsperpage'};
-  
- my ( $total, $pos, $x, $page, $first, $prev, $next, $last ) = 
-  @{ 
-     $self->fetch('vector_pointer', 
-      $stash->{album}, $stash->{n}, $perpage, @{ $stash->{args} } 
-     ) 
-   }; 
-  
- my $details = $self->fetch( 'photo_details', $x );
-
- my $texts =  $self->fetch( 'photo_texts', $x );
-
- my $image =  $self->fetch( 'photo_image', $x );
+ $self->process_path or $self->not_found and return;
  
- $self->{stash}->{total} = $total;
- $self->{stash}->{pos} = $pos;
- $self->{stash}->{page} = $page;
- $self->{stash}->{perpage} = $perpage;
- $self->{stash}->{first} = $first;
- $self->{stash}->{prev} = $prev;
- $self->{stash}->{next} = $next;
- $self->{stash}->{last} = $last;
+ $self->process_id or $self->not_found and return;
+    
+ my $res = $self->fetch('vector_pointer', $s->{x}, @{ $s->{path_array} } );
+  
+ $s->{total} = $res->[0];
+ $s->{pos} = $res->[1];
+ $s->{pin} = $res->[2];
  
- $self->{stash}->{texts} = $texts;
- $self->{stash}->{details} = $details;
- $self->{stash}->{image} = $image;
-     
+ warn ( $s->{total} );
+  
+ $s->{detail} = $self->fetch( 'photo_detail', $s->{x});
+
+ $s->{text} =  $self->fetch( 'photo_text', $s->{x} );
+
+ $s->{image} =  $self->fetch( 'photo_image', $s->{x} );
+      
  $self->render( template => 'page/inspect' );
 
 }
 
 sub show {
 
- my $self = shift;
-  
- my $stash = $self->{stash};
-
- $stash->{path} and do { 
+ my $self = shift; my $s = $self->{stash};
  
-  my @args = split /\//, $stash->{path};
-  
-  ( scalar ( @args ) % 2 ) == 0 or do { $self->render_not_found; return; }; 
-  
-  $stash->{args} = \@args;
-  
- };
-          
- my $perpage =  $self->session('thumbsperpage');
-  
- my ( $total, $pos, $x, $page, $first, $prev, $next, $last ) = 
-  @{ 
-     $self->fetch( 'vector_pointer', 
-      $stash->{album}, $stash->{n}, $perpage, @{ $stash->{args} } 
-     ) 
-   }; 
-  
- my $details = $self->fetch ( 'photo_details', $x );
-
- my $texts = $self->fetch ( 'photo_texts', $x );
-
- my $image = $self->fetch ( 'photo_image', $x );
+ $self->process_path or $self->not_found and return;
  
- $self->{stash}->{total} = $total;
- $self->{stash}->{pos} = $pos;
- $self->{stash}->{page} = $page;
- $self->{stash}->{perpage} = $perpage;
- $self->{stash}->{first} = $first;
- $self->{stash}->{prev} = $prev;
- $self->{stash}->{next} = $next;
- $self->{stash}->{last} = $last;
+ $self->process_id or $self->not_found and return;
+    
+ my $res = $self->fetch('vector_pointer', $s->{x}, $s->{path_array}); 
  
- $self->{stash}->{texts} = $texts;
- $self->{stash}->{details} = $details;
- $self->{stash}->{image} = $image;
-     
+ $s->{total} = $res->[0];
+ $s->{pos} = $res->[1];
+ $s->{pin} = $res->[2];
+ 
+ die;
+  
+ $s->{details} = $self->fetch( 'photo_details', $s->{x});
+
+ $s->{texts} =  $self->fetch( 'photo_texts', $s->{x} );
+
+ $s->{image} =  $self->fetch( 'photo_image', $s->{x} );
+           
  $self->render( template => 'page/show' );
 
+}
+
+sub sample {
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ $self->process_path or $self->not_found and return;
+ 
+ $self->process_id or $self->not_found and return;
+  
+ my $xs = $self->fetch ( 'vector_array_rand',  @{ $s->{args_array} } );
+  
+ my @set = @{ $xs } [ 0 .. $s->{count} - 1 ];
+ 
+ $s->{thumb} = $self->fetch ( 'photo_thumbs', @set ) ;
+  
+ $self->render( template => 'block/thumb' );
+      
 }
 
 1;

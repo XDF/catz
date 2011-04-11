@@ -1,3 +1,4 @@
+% layout 'page';
 <h1><%= $t->{EXCEPTION} %></h1>
 <div><%= $exception->message %> (<%= $exception->line->[0] %>)</div><br>
 <table>

@@ -1,36 +1,30 @@
+% my $pre = '../';
+% $origin eq 'x' and $pre = '';
 <table class="p100 center"><tr><td>
-% if ( defined $first ) {
-<a title="<%= $t->{PHOTO_FIRST} %>" href="../../<%= $first %>/"><img src="/icons/first.png"></a>
+% if ( $pos > 0) {
+<a title="<%= $t->{PHOTO_FIRST} %>" href="<%== $pre %><%== $pin->[0] %>/"><img src="/icons/first.png"></a>
 % } else { 
 <img src="/icons/_first.png">
 % }
 </td><td>
-% if ( defined $prev ) {
-<a href="../../<%== $prev %>/"><img src="/icons/prev.png"></a>
+% if ( $pos > 0 ) {
+<a href="<%== $pre %><%== $pin->[1] %>/"><img src="/icons/prev.png"></a>
 % } else {
 <%= $t->{PHOTO_PREV} %>
 % }
 </td><td>
-% my $a = ( ( ( $page - 1 )  * $perpage ) + 1 ); 
-% my $b = $a + $perpage - 1;
-% my $target = "$a-$b";
-<a title="<%= $t->{THUMBS} %>" href="/<%= $lang %>/browse/<%== $path? $path.'/' : '' %><%== $target %>/"><img src="/icons/browse.png"></a>
-</td>
-<td>
-% if ( defined $next ) {
-<a href="../../<%== $next %>/"><img src="/icons/next.png"></a>
+% if ( $pos < $total ) {
+<a href="<%== $pre %><%== $pin->[2] %>/"><img src="/icons/next.png"></a>
 % } else { 
 <%= $t->{PHOTO_NEXT} %>
 % }
 </td><td>
-% if ( defined $last ) {
-<a href="../../<%== $last %>/"><img src="/icons/last.png"></a>
+% if ( $pos < $total ) {
+<a href="<%== $pre %><%== $pin->[3] %>/"><img src="/icons/last.png"></a>
 % } else {
 <%= $t->{PHOTO_LAST} %>
 % }
 </td><td>
-<a title="VIEW!!!" href="../../<%= $first %>/"><img src="/icons/view.png"></a>
-</td>s</tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

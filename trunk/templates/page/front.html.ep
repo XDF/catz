@@ -3,8 +3,8 @@
 %== include 'stripe/top';
 %== include 'stripe/find';
 %== include 'stripe/albums';
-%== include 'stripe/news';
-%== include 'stripe/lists';
+%== include 'stripe/new';
+%== include 'stripe/list';
 %== include 'stripe/intro';
 %== include 'stripe/bottom';
 </td><td class="top p50"><div class="box">
