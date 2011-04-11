@@ -48,6 +48,7 @@ use Catz::Util::Time qw ( dtexpand );
 use Catz::Util::File qw ( filehead filesize filethumb findphotos pathcut );
 use Catz::Util::Image qw ( exif widthheight );
 use Catz::Util::Log qw ( logit );
+use Catz::Util::Number qw ( fullnum33 );
 use Catz::Util::String qw ( trim );
 
 my $sql = { 
@@ -69,10 +70,10 @@ my $sql = {
  dna_upd => 'update dna set dna=?, dt=? where class=? and item=?', 
  dna_trn =>  "delete from dna where class='album' and item not in ( select album from album )",
   
- album_col => 'select album from album order by album',
+ album_count_one => 'select count(*) from album',
  album_del => 'delete from album where album=?',
  loc_row => 'select loc_en,loc_fi from album where album=?',
- album_ins => 'insert into album (album,name_en,name_fi,origined,created,modified,loc_en,loc_fi,nat) values (?,?,?,?,?,?,?,?,?)',
+ album_ins => 'insert into album (album,s,name_en,name_fi,origined,created,modified,loc_en,loc_fi,nat) values (?,?,?,?,?,?,?,?,?,?)',
   
  org_del => 'delete from org where album=?',
  org_ins => 'insert into org (album,org_en,org_fi) values (?,?,?)',
@@ -145,7 +146,12 @@ sub load_begin {
  logit ( 'preparing ' . scalar ( keys %{ $sql } ). ' SQL statements' );
  
  foreach ( keys %{ $sql } ) { $stm->{$_} = $dbc->prepare ( $sql->{$_} ) }
-  
+ 
+ logit ( 'registering functions' );
+ 
+ # registers int s, n to string id converting functions
+ $dbc->func( 'makeid', 2, \&fullnum33, 'create_function' );
+   
  logit ( "storing run dt '$dt'" );
   
  load_exec ( 'run_ins', $dt ); 
@@ -275,7 +281,7 @@ sub load_nomatch {
   
  } else {
  
-  logit ( "DNA not found for '$class' '$item', the new DNA is '$dnanew'" ); 
+  logit ( "DNA not found '$class' '$item' '$dnanew'" ); 
 
   load_exec ( 'dna_ins', $dnanew, $dt, $class, $item );
 
@@ -406,8 +412,13 @@ sub load_complex {
  # ready to be iterated over and inserted into the database  
  
  load_exec ( 'album_del', $album );
+ 
+ # albums must be inserted from oldest to newest in order this to generate
+ # collect order numbers to S
+ my $s = load_exec ( 'album_count_one' ) + 1;
+ 
  load_exec ( 
-  'album_ins', $album, $d->{name_en}, $d->{name_fi}, $d->{origined},
+  'album_ins', $album, $s, $d->{name_en}, $d->{name_fi}, $d->{origined},
   $d->{created}, $d->{modified}, $d->{loc_en}, $d->{loc_fi}, 
   $d->{nat}
  );
@@ -569,26 +580,35 @@ my @secondary = (
 
  qq{ drop table if exists _x },
  
- qq{ create table _x ( x integer primary key not null, album text not null, 
- n integer not null) },
+ qq{ create table _x (x integer primary key not null, album text not null, 
+  n integer not null, id text not null) },
   
- qq{ insert into _x ( album, n ) select album,n from photo order by
- album desc,n asc },
+ qq{ insert into _x (album,n,id) select album,n,makeid(s,n) from photo 
+  natural join album order by s,n },
  
  qq{ create index _x_ix1 on _x ( album, n ) },
+ qq{ create index _x_ix2 on _x ( id ) },
  
+ qq{ drop table if exists _photo },
+ 
+ qq{ create table _photo (x integer primary key not null, album text not null, 
+  file text not null, width_hr not null, height_hr not null, bytes_hr not null,
+  width_lr not null, height_lr not null, bytes_lr not null)},
+  
+ qq{ insert into _photo (x,album,file,width_hr,height_hr,bytes_hr,width_lr,
+  height_lr,bytes_lr) select x,album,file,width_hr,height_hr,bytes_hr,width_lr,
+  height_lr,bytes_lr from photo natural join _x order by x },
+  
  qq{ drop table if exists _pri_sec_count },
  
  qq{ create table _pri_sec_count ( pri text not null, sort_pri integer not null, 
   sec_en text not null, sort_en text not null, sec_fi text not null, sort_fi text not null, 
-  count integer not null, min_x integer not null, album text not null,
-  n integer not null ) },
+  count integer not null, x integer not null ) },
   
  qq { insert into _pri_sec_count ( pri,sort_pri,sec_en,sort_en,sec_fi,sort_fi,count,
-  min_x,album,n ) select pri,sort_pri,sec_en,sort_en,sec_fi,sort_fi,
-  count(distinct x),min(x),_x.album,_x.n from 
-  pri natural join sec natural join snip, _x where sort_pri<10000
-  and snip.album=_x.album and (snip.n=_x.n or snip.n=0)
+  x ) select pri,sort_pri,sec_en,sort_en,sec_fi,sort_fi,
+  count(distinct x),min(x) from pri natural join sec natural join snip, _x 
+  where sort_pri<10000 and snip.album=_x.album and (snip.n=_x.n or snip.n=0)
   group by pri,sec_en,sec_fi order by count(distinct x) desc,
   sort_pri asc,sort_en asc,sort_fi asc },
   # sorting is vital: rows are stored in the order they are later fetched
@@ -627,33 +647,33 @@ my @secondary = (
  qq { drop table if exists _list },
  
  qq { create table _list (ord text,lang text,pri text,sec text,
-  count integer, album text,n integer) },
+  count integer, x integer) },
  
- qq { insert into _list select 'a2z','en',pri,sec,count,album,n from (
-  select pri,sec_en as sec,count(distinct x) as count,min(x),
-  _x.album,_x.n from pri natural join snip natural join sec
+ qq { insert into _list select 'a2z','en',pri,sec_en,count,min_x from (
+  select pri,sort_pri,sec_en,sort_en,count(distinct x) as count,min(x)
+  as min_x from pri natural join snip natural join sec
   natural join _x where pri not in ( 'dt', 'out' )
   group by pri,sec_en ) order by sort_pri,sort_en },    
 
- qq { insert into _list select 'top','en',pri,sec,count,album,n from (
-  select pri,sec_en as sec,count(distinct x) as count,min(x),
-  _x.album,_x.n from pri natural join snip natural join sec
+ qq { insert into _list select 'top','en',pri,sec_en,count,min_x from (
+  select pri,sort_pri,sec_en,sort_en,count(distinct x) as count,min(x)
+  as min_x from pri natural join snip natural join sec
   natural join _x where pri not in ( 'dt', 'out' )
   group by pri,sec_en ) order by sort_pri,count desc,sort_en },
   
- qq { insert into _list select 'a2z','fi',pri,sec,count,album,n from (
-  select pri,sec_fi as sec,count(distinct x) as count,min(x),
-  _x.album,_x.n from pri natural join snip natural join sec
+ qq { insert into _list select 'a2z','fi',pri,sec_fi,count,min_x from (
+  select pri,sort_pri,sec_fi,sort_fi,count(distinct x) as count,min(x)
+  as min_x from pri natural join snip natural join sec
   natural join _x where pri not in ( 'dt', 'out' )
-  group by pri,sec_fi ) order by  sort_pri,sort_fi },    
+  group by pri,sec_fi ) order by sort_pri,sort_fi },    
 
- qq { insert into _list select 'top','fi',pri,sec,count,album,n from (
-  select pri,sec_fi as sec,count(distinct x) as count,min(x),
-  _x.album,_x.n from pri natural join snip natural join sec
+ qq { insert into _list select 'top','fi',pri,sec_fi,count,min_x from (
+  select pri,sort_pri,sec_fi,sort_fi,count(distinct x) as count,min(x)
+  as min_x from pri natural join snip natural join sec
   natural join _x where pri not in ( 'dt', 'out' )
   group by pri,sec_fi ) order by sort_pri,count desc,sort_fi },
   
- qq { create index _list_ix1 on _list(ord,lang,pri) },  
+ qq { create index _list_ix1 on _list(ord,lang,pri) },
    
 );
 

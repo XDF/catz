@@ -53,6 +53,9 @@ my $conf = { # config is one hash ref
  # enables/disables model level caching
  cache_model => 0,
  
+ # enables/disables database level caching
+ cache_db => 0,
+ 
  # file where to find the key for the signed cookie
  cookie_key => $base . '/data/internal/cookie.key',
   
@@ -79,7 +82,6 @@ my $conf = { # config is one hash ref
 
  },
  
- file_lock => "lock.txt",
  file_meta => "meta.zip", 
  
  # lenses' techical names and the corresponding visible names 
@@ -184,14 +186,14 @@ my $conf = { # config is one hash ref
  setup_defaults => { 
   palette => 'bright',
   photosize => 'full',
-  thumbsperpage => 20,
+  perpage => 20,
   thumbsize => 140
  },
 
  setup_values => { 
   palette => [ qw ( dark bright ) ],
   photosize => [ qw ( full fit_width fit_height fit_all ) ],
-  thumbsperpage => [ qw( 10 15 20 25 30 35 40 45 50 ) ],
+  perpage => [ qw( 10 15 20 25 30 35 40 45 50 ) ],
   thumbsize => [ qw ( 100 120 140 160 180 200 ) ]
  }
  

@@ -25,7 +25,7 @@
 package Catz::Model::Misc;
 
 use parent 'Exporter';
-our @EXPORT = qw ( maxx news find search );
+our @EXPORT = qw ( album maxx news find search id2x x2id );
 
 # a generic module to provide access various meta data stuff
 # stored in the database
@@ -73,6 +73,22 @@ sub search {
 
  die 'locate_search not yet implemented';
 
+}
+
+sub id2x {
+
+ my ( $db, $lang, $id ) = @_;
+ 
+ return $db->one("select x from _x where id=?",$id);
+ 
+}
+
+sub x2id {
+
+ my ( $db, $lang, $x ) = @_;
+ 
+ return $db->one("select id from _x where x=?",$x);
+ 
 }
 
 1;

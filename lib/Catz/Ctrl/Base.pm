@@ -71,17 +71,29 @@ sub redirect_temp { # temporary redirect 302
  
 }
 
+sub not_found {
+
+ my $self = shift;
+
+ # using the Mojolicious built-in feature
+ $self->render_not_found;
+ 
+ # we return true to make "$self->not_found and return;"
+ # to work at controller
+ 1; 
+ 
+}
 
 sub fetch { 
 
  # fetch data from any Model to any Controller 
- # expects sub name and and argument list
+ # expects model sub name and and argument list
  
  my ( $self, @args ) = @_;
  
  my $stash = $self->{stash};
 
- # minimal passthru to Access module
+ # just a minimal passthru to Access module
  return access ( $stash->{dt}, $stash->{lang}, @args ); 
   
 }

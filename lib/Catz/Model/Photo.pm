@@ -34,19 +34,22 @@ use Catz::Util::Time qw ( dtexpand );
 
 sub photo_thumbs {
 
- my ( $db,$lang, @xs ) = @_; 
+ my ( $db, $lang, @xs ) = @_;
  
- my $thumbs = $db->all( "select _x.album,_x.n,file||'_LR.JPG',width_lr,height_lr,null from photo natural join _x where x in (" 
-  . ( join ',', @xs ) .  ') order by x' );
+ my $min = 99999999;
+ my $max = 00000000; 
+ 
+ my $thumbs = $db->all( qq{select album,file||'_LR.JPG',width_lr,height_lr 
+  from _photo where x in (} . ( join ',', @xs ) .  ') order by x' );
 
  foreach my $row ( @$thumbs ) {
-  # using date as a default metadata for thumbs
-  # extract if from the album name (first eight characters)
-  # and convert it to a language specific format
-  $row->[5] = dtexpand ( substr ( $row->[0], 0, 8 ), $lang );
- }
+  # extract date from the album name (first eight characters)
+  my $d = int (  substr ( $row->[0], 0, 8 ) );
+  $d < $min and $min = $d;
+  $d < $max and $max = $d;
+ } 
 
- return $thumbs;
+ return ( $thumbs, dtexpand ( $min, $lang ), dtexpand ( $max, $lang ) );
 
 }
 

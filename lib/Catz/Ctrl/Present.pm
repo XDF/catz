@@ -29,27 +29,72 @@ use warnings;
 
 use parent 'Catz::Ctrl::Base';
 
+use List::MoreUtils qw ( all );
+
 use Catz::Data::DB;
+use Catz::Util::Number qw ( fullnum3 minnum );
+use Catz::Util::String qw ( deurl );
 
-sub args {
-
- my $self = shift;
+sub process_id {
  
- my $stash = $self->{stash};
-   
- my @args = ();
+ #
+ # processes the id parameter from the stash to stash
+ # if id is not present then resolve it
+ #
+ # returns true in success, return false on reject
+ #
+ 
+ my $self = shift; my $stash = $self->{stash};
+ 
+ if ( defined $stash->{id} ) { # id was given in request
+    
+  $stash->{x} = $self->fetch( 'id2x', $stash->{id} ); 
   
- # split arguments into an array, filter out empty arguments
- # if path is not defined then browsing all photos and skip processing
- $stash->{path} and ( @args = grep { defined $_ } split /\//, $stash->{path} );
+  $stash->{x} or return 0; 
+        
+ } else { # no id given, must find the id of the first photo in the set
  
- # store the new argument array back to stash
- $stash->{args_string} = join '/', @args;
- $stash->{args_array} = \@args;
- $stash->{args_count} = scalar @args;
+  $stash->{x} = $self->fetch ( 'vector_first', @{ $stash->{path_array} } );
+  
+  $stash->{x} or return 0;
+  
+  $stash->{id} = $self->fetch ( 'x2id', $stash->{x} );
+
+  $stash->{id} or return 0; 
+   
+ }
  
+ return 1;
+
+
+}
+
+sub process_path {
+
+ my $self = shift; my $stash = $self->{stash};
+ 
+ # processes the path parameter from the stash to stash
+ # returns true in success, return false on reject   
+ my @path = ();
+ 
+ if ( defined $stash->{path} ) {
+ 
+  @path =  split /\//, $stash->{path};
+  
+  # reject if any empty path parts
+  ( all { defined $_ } @path ) or return 0;  
+   
+ 
+ }
+
  # arguments must come in as pairs
- scalar @args % 2 == 0 or $self->render_not_found;
+ scalar @path % 2 == 0 or return 0;
+ 
+ # URL decode each element and store them to stash
+ $stash->{path_array} = [ map { deurl $_ } @path ];
+ $stash->{path_count} = scalar @path;
+   
+ return 1;
 
 }
 

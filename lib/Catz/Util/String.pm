@@ -66,9 +66,9 @@ sub clean { $_ = $_[0]; s/ +/ /; $_; }
 sub decode { $_ = $_[0]; s/\-(\d\d\d)/chr($1)/ge; s|_| |g; return $_; }
 
 #
-# decodes an url unassembling it to parts and then reassembling
+# url decodes a string
 #
-sub deurl { join '/', ( map { uri_unescape( $_ ) } split /\//, $_[0] ) }
+sub deurl { uri_unescape( $_[0] ) }
 
 #
 # returns MD5 checksum for a string as a base64 string
@@ -90,10 +90,9 @@ sub dna { md5_base64 ( $_[0] ) }
 sub encode { join '', map { chrsolve( ord ( $_ ) ) } split //, $_[0] }
 
 #
-# encodes an url unassembling it to parts and then reassembling
+# url encodes a string
 #
-sub enurl { join '/', ( map { uri_escape( $_ ) } split /\//, $_[0] ) }
-sub enval { uri_escape ( $_[0] ) }
+sub enurl { uri_escape( $_[0] ) }
 
 #
 # limits string length to a given length, if truncates then adds '...'
