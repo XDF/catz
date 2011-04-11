@@ -1,12 +1,11 @@
 <div class="p100 box"><h2><%= $t->{NEWS_LATEST} %></h2> <a href="/<%= $lang %>/news/"><%= $t->{NEWS_ALL} %></a>
-% my $i = 0;
+<ul>
 % foreach my $row ( @$news ) {
-<table class="p100 <%= ( $i % 2 == 0 ) ? 'back_medium' : 'back_light' %>"><tr>
-<td class="p20 right"><%= $row->[1] %></td>
-<td class="p80 left"><a href="/<%= $lang %>/news/#<%= $row->[0] %>"><%= $row->[2] %></a></td>
-% $i++;
-</tr></table>
+<li><%= $row->[1] %>
+<a href="/<%= $lang %>/news/#<%= $row->[0] %>"><%= $row->[2] %></a>
+</li>
 % }
+</ul>
 </div>
 %#
 %# Catz - the world's most advanced cat show photo engine

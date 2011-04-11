@@ -63,7 +63,7 @@ sub find {
 
  $pattern = '%' . $pattern . '%';
 
- return $db->all (qq{select pri,sec_$lang,count from ( select pri,sec_$lang,sort_$lang,count from _pri_sec_count where sec_$lang like ? order by rowid limit 30 ) order by sort_$lang},$pattern);
+ return $db->all (qq{select pri,sec_$lang,count,x from ( select pri,sec_$lang,sort_$lang,count,x from _pri_sec_count where sec_$lang like ? order by rowid limit 15) order by sort_$lang},$pattern);
 
 }
 

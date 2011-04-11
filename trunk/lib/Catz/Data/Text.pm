@@ -261,6 +261,10 @@ FIND
 instant find
 pikahaku
 #
+FIND_NOTHING
+nothing found
+ei tuloksia
+#
 IDEAS
 ideas
 ideat
@@ -342,40 +346,40 @@ pages
 sivua
 #
 PAGE_FIRST
-first
-alkuun
+first page
+ensimmäinen sivu
 #
 PAGE_PREV
-previous
-edellinen
+previous page
+edellinen sivu
 #
 PAGE_NEXT
-next
-seuraava
+next page
+seuraava sivu
 #
 PAGE_LAST
-last
-loppuun
+last page
+viimeinen sivu
 #
 PHOTO
 photo
 kuva
 #
 PHOTO_FIRST
-first
-alkuun
+first photo
+ensimmäinen kuva
 #
 PHOTO_PREV
-previous
-edellinen
+previous photo
+edellinen kuva
 #
 PHOTO_NEXT
-next
-seuraava
+next photo
+seuraava kuva
 #
 PHOTO_LAST
-last
-loppuun
+last photo
+viimeinen kuva
 #
 PHOTOS
 photos

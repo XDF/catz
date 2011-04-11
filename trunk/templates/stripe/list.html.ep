@@ -1,13 +1,11 @@
 % use Catz::Util::Number qw ( fmt );
 <div class="box"><div class="p100 back_dark"><h2 class="fore_red"><%= $t->{LISTS} %></h2></div>
-% my $i = 0;
+<ul>
 % foreach my $row ( @{ $pris } ) {
-<table class="p100 <%= ( $i % 2 == 0 ) ? 'back_medium' : 'back_light' %>"><tr>
-<td class="p20 right"><%= fmt ( $row->[1], $lang ) %></td>
-<td class="p80 left"><a href="/<%= $lang %>/list/<%= $row->[0] %>/a2z/"><%= $t->{uc($row->[0]).'S'} %></a></td>
-</tr></table>
-% $i++;
+<li><%= fmt ( $row->[1], $lang ) %>
+<a href="/<%= $lang %>/list/<%= $row->[0] %>/a2z/"><%= $t->{uc($row->[0]).'S'} %></a></li>
 % }
+<ul>
 </div>
 %#
 %# Catz - the world's most advanced cat show photo engine

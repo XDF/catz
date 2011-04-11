@@ -38,7 +38,7 @@ my $base = '/catz';
 
 my $conf = { # config is one hash ref
 
- base_photo => 'http://www.heikkisiltala.com/galleries/',
+ base_photo => 'http://www.heikkisiltala.com/galleries',
  
  cache => {
   driver => 'File',
@@ -179,7 +179,10 @@ my $conf = { # config is one hash ref
  #path_meta => $base . '/data/meta',
  path_meta => '/www/galleries/0dat',
  path_model => $base . '/lib/Catz/Model', 
- path_photo => '/www/galleries', 
+ path_photo => '/www/galleries',
+ path_tmpl => "$base/tmpl",
+ 
+ prefix_layout => 'plate', 
  
  #results => map { $_ => 1 } qw ( BIS BIV BOB BOX CAC CACE CACIB CACS CAGCIB CAGPIB CAP CAPE CAPIB CAPS CH EC EP EX EX1 EX2 EX3 EX4 EX5 EX6 EX7 EX8 EX9 GIC GIP IC IP KM NOM PR SC SP 1 2 3 4 5 6 7 8 9 1. 2. 3. 4. 5. 6. 7. 8. 9. )
 

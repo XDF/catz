@@ -50,7 +50,9 @@
 <%= stash('path') %> (<%= $t->{PHOTO} %> <%= stash('pos') %>/<%= stash('total') %>) - <%= $t->{SITE} %>
 % }
 % }
-% default { die "unknow action '$action' in page title construction" }
+% default {  
+<%= $t->{SITE} %>
+% }
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine

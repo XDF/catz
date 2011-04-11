@@ -51,7 +51,8 @@ sub startup {
     
  my $r = $self->routes;
  
- $self->renderer->layout_prefix( 'layout' );
+ $self->renderer->root ( conf ( 'path_tmpl' ) );
+ $self->renderer->layout_prefix ( conf ( 'prefix_layout' ) );
  
  # All controllers are in Catz::Ctrl 
  $r->namespace( 'Catz::Ctrl' );
@@ -78,12 +79,12 @@ sub startup {
 
  $l->route( '/find/:what' )->to ( "locate#find" );
 
- $l->route( '/sample/(*path)/:count', count => qr/\d{1,2}/ )->to (
-  "view#sample"
+ $l->route( '/sample/:what/:count', count => qr/\d{1,2}/ )->to (
+  "locate#sample"
  );
 
  $l->route( '/sample/:count', count => qr/\d{1,2}/ )->to (
-  "view#sample", path => undef
+  "locate#sample", what => undef
  );
  
  $l->route('/list/:subject/:mode')->to('list#list');

@@ -13,7 +13,7 @@
 % }
 <%== $sep %>
 <form>
-<span class="air"><%= $t->{PAGE} %> <SELECT NAME="page" onchange="location.href='<%== $pre %>' + this.options[this.selectedIndex].value + '/' ">
+<span class="air"><%= $t->{PAGE} %> <SELECT NAME="page" onchange="location.href = '<%== $pre %>' + this.options[this.selectedIndex].value + '/' ">
 % foreach my $i ( 0 .. ( scalar @{ $pin } -1 ) ) {
 % if ( $page == ( $i + 1 ) ) {
 <OPTION SELECTED value="<%== $pin->[$i] %>"><%= $i+1 %></OPTION>

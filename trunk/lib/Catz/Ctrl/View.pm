@@ -45,7 +45,7 @@ sub process_id {
  #
  
  my $self = shift; my $s = $self->{stash};
- 
+  
  if ( defined $s->{id} ) { # id was given in request
   
   $s->{origin} = 'id';
@@ -59,11 +59,11 @@ sub process_id {
   $s->{origin} = 'x';
  
   $s->{x} = $self->fetch ( 'vector_first', @{ $s->{path_array} } );
-    
+      
   $s->{x} or return 0;
   
   $s->{id} = $self->fetch ( 'x2id', $s->{x} );
-
+  
   $s->{id} or return 0; 
    
  }
@@ -129,7 +129,7 @@ sub browse {
  
  $res = $self->fetch( 'photo_thumbs', @{ $s->{xs} } ) ;
  
- $s->{thumbs} = $res->[0];
+ $s->{thumb} = $res->[0];
  $s->{min} = $res->[1];
  $s->{max} = $res->[2]; 
              
@@ -144,21 +144,19 @@ sub inspect {
  $self->process_path or $self->not_found and return;
  
  $self->process_id or $self->not_found and return;
-    
+     
  my $res = $self->fetch('vector_pointer', $s->{x}, @{ $s->{path_array} } );
   
  $s->{total} = $res->[0];
  $s->{pos} = $res->[1];
  $s->{pin} = $res->[2];
- 
- warn ( $s->{total} );
-  
+    
  $s->{detail} = $self->fetch( 'photo_detail', $s->{x});
 
- $s->{text} =  $self->fetch( 'photo_text', $s->{x} );
+ $s->{comment} =  $self->fetch( 'photo_text', $s->{x} );
 
  $s->{image} =  $self->fetch( 'photo_image', $s->{x} );
-      
+        
  $self->render( template => 'page/inspect' );
 
 }
@@ -176,15 +174,13 @@ sub show {
  $s->{total} = $res->[0];
  $s->{pos} = $res->[1];
  $s->{pin} = $res->[2];
- 
- die;
-  
+   
  $s->{details} = $self->fetch( 'photo_details', $s->{x});
 
  $s->{texts} =  $self->fetch( 'photo_texts', $s->{x} );
 
  $s->{image} =  $self->fetch( 'photo_image', $s->{x} );
-           
+            
  $self->render( template => 'page/show' );
 
 }
@@ -194,15 +190,17 @@ sub sample {
  my $self = shift; my $s = $self->{stash};
  
  $self->process_path or $self->not_found and return;
- 
+
  $self->process_id or $self->not_found and return;
-  
- my $xs = $self->fetch ( 'vector_array_rand',  @{ $s->{args_array} } );
+    
+ my $xs = $self->fetch ( 'vector_array_rand',  @{ $s->{path_array} } );
   
  my @set = @{ $xs } [ 0 .. $s->{count} - 1 ];
  
- $s->{thumb} = $self->fetch ( 'photo_thumbs', @set ) ;
-  
+ my $res = $self->fetch ( 'photo_thumbs', @set );
+ 
+ $s->{thumb} = $res->[0];
+    
  $self->render( template => 'block/thumb' );
       
 }

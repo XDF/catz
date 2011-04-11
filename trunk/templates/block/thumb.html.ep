@@ -1,7 +1,7 @@
 % use Catz::Util::String qw ( enurl );
-% foreach my $thumb ( @{ $thumbs } ) {
-% my $size = qq{height="$thumbsize"};
-<a class="spacious" href="/<%= $lang %>/inspect/<%== $path // '' %><%== $path ? '/' : '' %><%== $thumb->[0] %>/"><img src="<%== $photobase %>/<%== $thumb->[1] %>/<%== $thumb->[2] %>" <%== $size %>></a>
+% foreach my $th ( @{ $thumb } ) {
+% my $width = int ( ( $thumbsize / $th->[4] ) * $th->[3] );
+<a href="/<%= $lang %>/inspect/<%== $path // '' %><%== $path ? '/' : '' %><%== $th->[0] %>/"><img src="<%== $photobase %>/<%== $th->[1] %>/<%== $th->[2] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine

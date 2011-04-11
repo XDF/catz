@@ -1,12 +1,12 @@
-% use Catz::Util::String qw ( enval );
+% use Catz::Util::String qw ( enurl );
 <div class="p100 shrink">
 % foreach my $detail ( @$detail ) {
 <%= $t->{uc($detail->[0])} %>: 
-<a href="/<%= $lang %>/browse/<%= enval ( $detail->[0] ) %>/<%= enval ( $detail->[1] ) %>/1-<%= $thumbsperpage %>/">
+<a href="/<%= $lang %>/browse/<%= enurl ( $detail->[0] ) %>/<%= enurl ( $detail->[1] ) %>/">
 <%= $detail->[1] %>
 </a><br>  
 % }
- </div>
+</div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
