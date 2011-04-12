@@ -79,12 +79,20 @@ sub startup {
 
  $l->route( '/find/:what' )->to ( "locate#find" );
 
- $l->route( '/sample/:what/:count', count => qr/\d{1,2}/ )->to (
+ $l->route( '/sample/:what/:count', count => qr/\d{2}/ )->to (
   "locate#sample"
  );
 
- $l->route( '/sample/:count', count => qr/\d{1,2}/ )->to (
+ $l->route( '/sample/:count', count => qr/\d{2}/  )->to (
   "locate#sample", what => undef
+ );
+
+ $l->route( '/sample/:what' )->to (
+  "locate#sample", count => conf ('samples')
+ );
+ 
+ $l->route( '/sample' )->to (
+  "locate#sample", what => undef, count => conf ('samples')
  );
  
  $l->route('/list/:subject/:mode')->to('list#list');
@@ -104,6 +112,8 @@ sub startup {
   
   
  $v->route( '(*path)' )->to ( controller => 'view' );
+ 
+ $v->route( '/' )->to ( controller => 'view', path => undef );
    
  # add hooks to subs that are executed before and after the dispatch
  $self->hook ( before_dispatch => \&before );  

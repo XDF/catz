@@ -7,11 +7,14 @@ my $c = 0;
 
 foreach my $lang ( qw ( en fi ) ) {
 
- $t->get_ok("/$lang/search/")->status_is(200);
- $t->get_ok("/$lang/search/?what=cat%3D*s*+%2Bems3%3D%3F%3FO")->status_is(200);
+ foreach my $what ( qw ( a s miu mim o 12 'e 200 ilt tavi ) ) {
 
- $c += 4;
- 
+  $t->get_ok("/$lang/find/$what/")->status_is(200);
+   
+  $c=$c+2;
+
+ } 
+
 }
 
 done_testing($c);

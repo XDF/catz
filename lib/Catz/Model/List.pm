@@ -45,7 +45,7 @@ sub list_general {
   
   when ( 'a2z' ) {
  
-   $list = $db->all( qq{select null,pri,sec,count,album,n from _list where
+   $list = $db->all( qq{select null,pri,sec,count,x from _list where
     ord='a2z' and lang=? and pri=? order by rowid }, $lang, $subject
    );
       
@@ -69,7 +69,7 @@ sub list_general {
   
   when ( 'top' ) {
   
-   $list = $db->all( qq{select null,pri,sec,count,album,n from _list where
+   $list = $db->all( qq{select null,pri,sec,count,x from _list where
     ord='top' and lang=? and pri=? order by rowid }, $lang, $subject
    );
 
@@ -110,7 +110,7 @@ sub list_links {
   
    when ( 'news' ) {
    
-    $links = $db->all("select dt,dt,title_$lang from mnews order by dt desc limit 10");
+    $links = $db->all("select dt,dt,title_$lang from mnews order by dt desc limit 6");
      
     do { $_->[1] = dtexpand ( substr ( $_->[0], 0, 8 ), $lang ) } foreach @$links;
 

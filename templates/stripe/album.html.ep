@@ -1,11 +1,9 @@
-<div class="box">
-<h2><%= $t->{ALBUMS_LATEST} %></h2>
-<ul>
+<div class="box"><ul>
 % foreach my $row ( @{ $albums } ) {
 <li><a href="/<%= $lang %>/album/<%= $row->[0] %>/"><%= $row->[1] %></a> <%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOS} %></li>
 % }
-</ul>
-</div>
+<li><a href="/<%= $lang %>/list/album/a2z/"><%= $t->{ALBUMS_ALL} %></li>
+</ul></div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

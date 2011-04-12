@@ -87,7 +87,7 @@ sub vectorize {
   
  if ( $pri eq 'has' ) {
  
-  $res = $db->col( "select distinct(x) from pri natural join sec natural join snip natural join _x where pri=?", $sec );
+  $res = $db->col( "select x from pri natural join sec natural join snip natural join _x where pri=? group by x", $sec );
             
  } else { # no 'has'
  
@@ -252,18 +252,33 @@ sub vector_pointer {
  
  my $total = scalar @{ $svec };
  
- my @root = ( 
-  $svec->[0], # first 
-  $svec->[ $idx > 0 ? $idx : 0 ], # previous
-  $svec->[ $idx < ( $total - 1 ) ? $idx : ( $total - 1 ) ], # next
-  $svec->[$total-1] # last
- );
-
- my $pin = $db->col(
-  qq{select id from _x where x in (} . ( join ',', @root ) . ') order by x' 
+ my @pin;
+ 
+ # first
+ push @pin, $db->one( 
+  'select id from _x where x=?',
+  $svec->[0]
  );
  
- return [ ( $total, $idx + 1, $pin ) ];
+ # previous
+ push @pin, $db->one(
+  'select id from _x where x=?',
+  $svec->[ $idx > 0 ? $idx - 1  : 0 ]
+ );
+ 
+ # next
+ push @pin, $db->one(
+  'select id from _x where x=?',
+  $svec->[ $idx < ( $total - 1 ) ? $idx+1 : ( $total - 1 ) ]
+ );
+ 
+ # last
+ push @pin, $db->one(
+  'select id from _x where x=?',
+  $svec->[$total-1]
+ );
+   
+ return [ ( $total, $idx + 1, \@pin ) ];
     
 }
 
