@@ -2,13 +2,12 @@
 <table class="p100"><tr><td class="top p50">
 %== include 'stripe/top';
 %== include 'stripe/find';
-%== include 'stripe/albums';
+%== include 'stripe/album';
 %== include 'stripe/new';
 %== include 'stripe/list';
 %== include 'stripe/intro';
 %== include 'stripe/bottom';
 </td><td class="top p50"><div class="box">
-%== include 'stripe/slogan';
 <div id="samples"></div>
 </div></td></tr></table>
 %#

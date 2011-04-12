@@ -113,6 +113,8 @@ sub browse {
    $s->{x}, $s->{perpage}, @{ $s->{path_array} }  
   );
   
+ $res == 0 and $self->not_found and return;
+  
  $s->{total} = $res->[0];
  $s->{page} = $res->[1];
  $s->{pages} = $res->[2];
@@ -146,6 +148,8 @@ sub inspect {
  $self->process_id or $self->not_found and return;
      
  my $res = $self->fetch('vector_pointer', $s->{x}, @{ $s->{path_array} } );
+ 
+ $res == 0 and $self->not_found and return; 
   
  $s->{total} = $res->[0];
  $s->{pos} = $res->[1];
@@ -168,41 +172,23 @@ sub show {
  $self->process_path or $self->not_found and return;
  
  $self->process_id or $self->not_found and return;
-    
- my $res = $self->fetch('vector_pointer', $s->{x}, $s->{path_array}); 
+     
+ my $res = $self->fetch('vector_pointer', $s->{x}, @{ $s->{path_array} } );
  
+ $res == 0 and $self->not_found and return;
+  
  $s->{total} = $res->[0];
  $s->{pos} = $res->[1];
  $s->{pin} = $res->[2];
-   
- $s->{details} = $self->fetch( 'photo_details', $s->{x});
+    
+ $s->{detail} = $self->fetch( 'photo_detail', $s->{x});
 
- $s->{texts} =  $self->fetch( 'photo_texts', $s->{x} );
+ $s->{comment} =  $self->fetch( 'photo_text', $s->{x} );
 
  $s->{image} =  $self->fetch( 'photo_image', $s->{x} );
-            
+        
  $self->render( template => 'page/show' );
 
-}
-
-sub sample {
-
- my $self = shift; my $s = $self->{stash};
- 
- $self->process_path or $self->not_found and return;
-
- $self->process_id or $self->not_found and return;
-    
- my $xs = $self->fetch ( 'vector_array_rand',  @{ $s->{path_array} } );
-  
- my @set = @{ $xs } [ 0 .. $s->{count} - 1 ];
- 
- my $res = $self->fetch ( 'photo_thumbs', @set );
- 
- $s->{thumb} = $res->[0];
-    
- $self->render( template => 'block/thumb' );
-      
 }
 
 1;

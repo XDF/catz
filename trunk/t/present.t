@@ -5,78 +5,105 @@ my $t = Test::Mojo->new(app => 'Catz');
 
 my $c = 0;
 
-# typical browsing scenarios
+foreach my $lang ( qw ( en fi ) ) {
 
-$t->get_ok('/fi/browse/nick/Mikke/1-5/')->status_is(404); # too few photos
-$t->get_ok('/en/browse/nick/Mikke/100-200/')->status_is(404); # too much photos
-$t->get_ok('/fi/browse/nick/Mikke/')->status_is(404); # no photos
+ foreach my $mode ( qw ( browse inspect show ) ) {
 
-$c += 6;
+  # no id
+  
+  $t->get_ok("/$lang/$mode/")
+   ->status_is(200)
+   ->content_like(qr/\.JPG/);
 
-$t->get_ok('/fi/browse/1-5/')->status_is(404);
-$t->get_ok('/fi/browse/100-200/')->status_is(404);
-$t->get_ok('/fi/browse/101-200/')->status_is(404);
+  $t->get_ok("/$lang/$mode/nick/Mikke/")
+   ->status_is(200)
+   ->content_like(qr/\.JPG/);
+   
+  $t->get_ok("/$lang/$mode/cat/Peku/")
+   ->status_is(200)
+   ->content_like(qr/\.JPG/);
+ 
+  $c=$c+9;
 
-$c += 6;
+  # with id
+  
+  $t->get_ok("/$lang/$mode/157164/")
+   ->status_is(200)
+   ->content_like(qr/\.JPG/);
 
-$t->get_ok('/fi/browse/1-45/')->status_is(200)->status_is(200);
-$t->get_ok('/en/browse/101-145/')->status_is(200)->status_is(200);
+  $t->get_ok("/$lang/$mode/nick/Mikke/157164/")
+   ->status_is(200)
+   ->content_like(qr/\.JPG/);
+   
+  $t->get_ok("/$lang/$mode/cat/Peku/046182/")
+   ->status_is(200)
+   ->content_like(qr/\.JPG/);
 
-$c += 6;
+  $c=$c+9;
 
-$t->get_ok('/fi/browse/nick/Mikke/1-45/')->status_is(200)->content_like(qr/img src/);
-$t->get_ok('/en/browse/nick/Mikke/101-145/')->status_is(200)->content_like(qr/img src/);
+  # more complex rules
 
-$c += 6;
+  $t->get_ok("/$lang/$mode/nick/Mikke/ems3/TUV/ems1/d/")
+   ->status_is(200)
+   ->content_like(qr/\.JPG/);
 
-# typical viewing scenarios
+  $t->get_ok("/$lang/$mode/nick/Mikke/ems3/+TUV/ems1/+d/")
+   ->status_is(200)
+   ->content_like(qr/\.JPG/);
 
-$t->get_ok('/fi/inspect/nick/Mikke/adsf3rasdfa/')->status_is(404);
-$t->get_ok('/en/inspect/nick/Mikke/23293929/')->status_is(404);
-$t->get_ok('/fi/show/nick/Mikke/adsf3rasdfa/')->status_is(404);
-$t->get_ok('/en/show/nick/Mikke/23293929/')->status_is(404);
+  $t->get_ok("/$lang/$mode/nick/Mikke/ems3/+TUV/ems1/+d/157164/")
+   ->status_is(200)
+   ->content_like(qr/\.JPG/);
+  
+  $t->get_ok("/$lang/$mode/ems3/-TUV/ems1/+d/")
+   ->status_is(200)
+   ->content_like(qr/\.JPG/);  
+ 
+  $t->get_ok("/$lang/$mode/has/cat/")
+   ->status_is(200)
+   ->content_like(qr/\.JPG/);
 
-$c += 8;
+  $t->get_ok("/$lang/$mode/has/ems5/")
+   ->status_is(200)
+   ->content_like(qr/\.JPG/);
 
-$t->get_ok('/fi/inspect/83a83d89/')->status_is(404);
-$t->get_ok('/fi/inspect/93k-1000/')->status_is(404);
-$t->get_ok('/fi/show/83a83d89/')->status_is(404);
-$t->get_ok('/fi/show/93k-1000/')->status_is(404);
+  $t->get_ok("/$lang/$mode/has/cat/170012/")
+   ->status_is(200)
+   ->content_like(qr/\.JPG/);
 
-$c += 8;
+  $c=$c+21; 
 
-$t->get_ok('/fi/inspect/nick/Mimosa/20090802helsinki/168/')->status_is(200)->content_like(qr/img src/);
-$t->get_ok('/en/inspect/breeder/Cesmes/20090802helsinki/168/')->status_is(200)->content_like(qr/img src/);
-$t->get_ok('/fi/show/nick/Mimosa/20090802helsinki/168/')->status_is(200)->content_like(qr/img src/);
-$t->get_ok('/en/show/breeder/Cesmes/20090802helsinki/168/')->status_is(200)->content_like(qr/img src/);
+  # 404
+ 
+  $t->get_ok("/$lang/$mode/nick/Mikke/789321/") # non-existsing id 
+   ->status_is(404);
 
-$c += 12;
+  $t->get_ok("/$lang/$mode/nick/Mikke/046182/") # non-existing id in a set 
+   ->status_is(404);
 
-$t->get_ok('/en/inspect/breeder/20090802helsinki/168/')->status_is(404);
-$t->get_ok('/en/inspect/Cesmes/20090802helsinki/168/')->status_is(404);
-$t->get_ok('/en/inspect/breeder/1-20/')->status_is(404);
-$t->get_ok('/en/inspect/Cesmes/1-20/')->status_is(404);
-$t->get_ok('/en/show/breeder/20090802helsinki/168/')->status_is(404);
-$t->get_ok('/en/show/Cesmes/20090802helsinki/168/')->status_is(404);
-$t->get_ok('/en/show/breeder/1-20/')->status_is(404);
-$t->get_ok('/en/show/Cesmes/1-20/')->status_is(404);
+  $t->get_ok("/$lang/$mode/cat/Peku/87/") # too short id
+   ->status_is(404);
 
-$c += 16;
+  $t->get_ok("/$lang/$mode/cat/Peku/0461824/") # too long id
+   ->status_is(404);
 
-$t->get_ok('/fi/sample/nick/Mimosa/5/')->status_is(200)->content_like(qr/img src/);
-$t->get_ok('/en/sample/15/')->status_is(200)->content_like(qr/img src/);
+  $t->get_ok("/$lang/$mode/cat/") # no argument pair
+   ->status_is(404);
 
-$c += 6;
+  $t->get_ok("/$lang/$mode/breeder/just_a_random_text/") # unknown breeder
+   ->status_is(404);
 
-$t->get_ok('/en/sample/')->status_is(404);
-
-$c += 2;
-
-$t->get_ok('/fi/find/ol/')->status_is(200);
-$t->get_ok('/en/find/s/')->status_is(200);
-$t->get_ok('/en/find/mik/')->status_is(200);
-
-$c += 6;
+  $t->get_ok("/$lang/$mode/breeder/just_a_random_text/046182/") 
+   ->status_is(404); # unknown breeder
+  
+  $t->get_ok("/$lang/$mode/has/-ems3/ems3/+TUV/") # nothing found
+   ->status_is(404);
+  
+  $c=$c+16;
+  
+ }
+ 
+}
 
 done_testing($c);
       

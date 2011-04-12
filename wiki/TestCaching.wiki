@@ -1,0 +1,21 @@
+#summary Test results for the caching subsystem (early testing)
+#labels Cache,CHI,CHI::Driver::File,Perl
+
+= Summary =
+
+*Preliminary results, errors coming, check back later!*
+
+System tests (Files=6, Tests=1126) of an early version of the system was run with different cache settings. Here are the results. Using CHI with CHI::Driver::File backend on a standard USB IDE hard disk (Windows 7 64-bit). Assumably the hard disk characteristics are not important since the data is likely to come from Windows disk block cache. Times are seconds.
+
+|| *Page* || *Model* || *DB* || *First run cache cleared* || *Second run with cache* || *Performance boost* ||
+|| 0 || 0 || 0 || 276 || 275 || 1x ||
+|| 0 || 0 || 1 || 77 || 37 || 7.4x ||
+|| 0 || 1 || 0 || 200 || 97 || 2.8x ||
+|| 0 || 1 || 1 || 64 || 19 || 14.5x ||
+|| 1 || 0 || 0 || 281 || 116 (2 tests failed) || 2.4x ||
+|| 1 || 0 || 1 || 237 (10 tests failed) || 13 s || 21.2x ||
+|| 1 || 1 || 0 || ? || ? || ? ||
+|| 1 || 1 || 1 || 418 || 13 || 21.2x ||
+
+The cache size after the last test run in the table was 6.9 MB.
+     

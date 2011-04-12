@@ -4,9 +4,9 @@
 % use feature qw ( switch );
 <table class="p100">
 % my $i = 0;
-% while ( $i < scalar ( @{ $args } ) ) {
-% my $key = $args->[ $i++ ];
-% my $val = $args->[ $i++ ];
+% while ( $i < scalar ( @{ $path_array } ) ) {
+% my $key = $path_array->[ $i++ ];
+% my $val = $path_array->[ $i++ ];
 % my $visible = $val;  
 % my $tag = 'SEARCH';
 % my $begins = ( substr ( $val, -1, 1 ) eq '*' ) ? 1 : 0;

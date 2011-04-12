@@ -1,10 +1,9 @@
-% 
-% layout 'page';
+ % layout 'page';
 <div>
 %== include 'stripe/viewer';
 </div>
 <div class="center">
-<img src="<%== $photobase %>/<%== $image->[0] %>/<%== $image->[1] %>">
+<img src="<%== $photobase %>/<%== $image->[1] %>/<%== $image->[2] %>">
 </div>
 %#
 %# Catz - the world's most advanced cat show photo engine

@@ -30,40 +30,32 @@ use warnings;
 use parent 'Catz::Ctrl::Base';
 
 use Catz::Model::Photo;
-use Catz::Model::Vector;
 use Catz::Data::Search;
 use Catz::Util::String qw ( enurl );
 
 sub search {
 
- my $self = shift;
- 
- my $stash = $self->{stash};
- 
- my $what = $stash->{what};
- 
- $stash->{what} = $stash->{what} // '';
- $stash->{args} = undef;
- $stash->{found} = 0;
- 
- if ( $what ) {
- 
-  $stash->{args} = search2args ( $what );
+ my $self = shift; my $s = $self->{stash};
   
-  $stash->{found} = vector_count ( $stash->{lang}, @{ $stash->{args} } );
+ $s->{path_array} = [];
+ $s->{found} = 0;
+ $s->{what} = $self->param('what') // undef;
+   
+ if ( defined $s->{what} ) {
+ 
+  $s->{path_array} = search2args ( $s->{what} );
   
-  my $xs = vector_array_random ( $stash->{lang}, @{ $stash->{args} } );
-  
-  # limit random samples to 30 by slicing the arrayref
-  ( scalar ( @{ $xs } ) > 30 ) and $xs = [ @$xs[0..29] ];
+  #warn join '-', @{ $s->{path_array} };
+    
+  $s->{found} = $self->fetch ( 'vector_count', @{ $s->{path_array} } );
       
-  $stash->{thumbs} = photo_thumbs ( $stash->{lang}, $xs );
-  $stash->{formation} = 'asdfasdf';
-  $stash->{path} = join '/', map { enurl $_ } @{ $stash->{args} }; 
- 
+  $s->{path} = join '/', map { enurl $_ } @{ $s->{path_array} }; 
+
+  $s->{thumbs} = undef;
+   
  } else {
  
-  $stash->{thumbs} = undef;
+  $s->{thumbs} = undef;
  
  }
  

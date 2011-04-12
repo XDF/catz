@@ -1,10 +1,11 @@
-<div class="p100 box"><h2><%= $t->{NEWS_LATEST} %></h2> <a href="/<%= $lang %>/news/"><%= $t->{NEWS_ALL} %></a>
+<div class="p100 box">
 <ul>
 % foreach my $row ( @$news ) {
 <li><%= $row->[1] %>
 <a href="/<%= $lang %>/news/#<%= $row->[0] %>"><%= $row->[2] %></a>
 </li>
 % }
+<li><a href="/<%= $lang %>/news/"><%= $t->{NEWS_ALL} %></a></li>
 </ul>
 </div>
 %#

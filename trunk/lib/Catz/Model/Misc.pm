@@ -25,7 +25,7 @@
 package Catz::Model::Misc;
 
 use parent 'Exporter';
-our @EXPORT = qw ( album maxx news find search id2x x2id );
+our @EXPORT = qw ( album maxx news find sample search id2x x2id );
 
 # a generic module to provide access various meta data stuff
 # stored in the database

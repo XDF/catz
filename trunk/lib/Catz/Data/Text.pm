@@ -69,6 +69,10 @@ ALBUMS
 albums
 albumit
 #
+ALBUMS_ALL
+all albums
+kaikki albumit
+#
 ALBUMS_LATEST
 latest albums
 tuoreimmat albumit
@@ -304,6 +308,10 @@ http://creativecommons.org/licenses/by/3.0/deed.fi
 NEWS
 news
 uutiset
+#
+NEWS_ALL
+all news
+kaikki uutiset
 #
 NEWS_LATEST
 latest news

@@ -50,7 +50,11 @@ sub sample {
  
  if ( $s->{what} ) {
  
-  $xs = [ map { $_->[3] } @{ $self->fetch ( 'find', $s->{what} ) } ];
+  my $res = $self->fetch ( 'find', $s->{what} );
+  
+  scalar @{ $res } == 0 and $self->not_found and return; 
+ 
+  $xs = [ map { $_->[3] } @{ $res } ];
  
   @set = @{ $xs };
   

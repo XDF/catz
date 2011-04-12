@@ -1,8 +1,9 @@
 <form class="unit block p100" action="/" method="get">
-<h2><%= $t->{FIND} %></h2>
-<input type="text" id="find">
+<table class="p100"><tr>
+<td class="center p70"><h2><%= $t->{FIND} %></h2>
+<input type="text" id="find"></td><td class="center p30">
 <a href="/<%= $lang %>/search/"</a><%= $t->{SEARCH} %></a>
-</form>
+</td></tr></table>
 <div id="found" class="p100"></div>
 %#
 %# Catz - the world's most advanced cat show photo engine

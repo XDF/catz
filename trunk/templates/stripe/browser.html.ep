@@ -13,17 +13,16 @@
 % }
 <%== $sep %>
 <form>
-<span class="air"><%= $t->{PAGE} %> <SELECT NAME="page" onchange="location.href = '<%== $pre %>' + this.options[this.selectedIndex].value + '/' ">
+<span class="air"><%= $t->{PAGE} %> 
+<select name="page" onchange="location.href='<%== $pre %>'+this.options[this.selectedIndex].value+'/'">
 % foreach my $i ( 0 .. ( scalar @{ $pin } -1 ) ) {
 % if ( $page == ( $i + 1 ) ) {
-<OPTION SELECTED value="<%== $pin->[$i] %>"><%= $i+1 %></OPTION>
+<option selected value="<%== $pin->[$i] %>"><%= $i+1 %></option>
 % } else { 
-<OPTION value="<%== $pin->[$i] %>"><%= $i+1 %></OPTION>
+<option value="<%== $pin->[$i] %>"><%= $i+1 %></option>
 % }
 % }
-</SELECT></span>
-</form> / <%= $pages %>
-<%== $sep %>
+</select></span></form> / <%= $pages %> <%== $sep %>
 % if ( $page < $pages ) {
 <a href="<%== $pre %><%== $pin->[$page] %>/"><%= $t->{PAGE_NEXT} %></a>
 <%== $sep %>

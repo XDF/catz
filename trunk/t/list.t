@@ -3,9 +3,17 @@ use Test::Mojo;
     
 my $t = Test::Mojo->new(app => 'Catz');
 
-$t->get_ok('/en/list/cat/a2z/')->status_is(200);
-$t->get_ok('/fi/list/cat/a2z/')->status_is(200);
-$t->get_ok('/en/list/breeder/a2z/')->status_is(200);
-$t->get_ok('/en/list/ems5/a2z/')->status_is(200);
+my $c = 0;
 
-done_testing(8);
+foreach my $lang ( qw ( en fi ) ) {
+
+ $t->get_ok("/$lang/list/cat/a2z/")->status_is(200);
+ $t->get_ok("/$lang/list/ems4/top/")->status_is(200);
+ $t->get_ok("/$lang/list/breeder/a2z/")->status_is(200);
+ $t->get_ok("/$lang/list/ems5/top/")->status_is(200);
+
+ $c=$c+8;
+ 
+}
+
+done_testing($c);
