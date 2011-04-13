@@ -1,9 +1,10 @@
 % use Catz::Util::String qw ( enurl );
+% use Catz::Util::Time qw ( dtexpand );
 <div class="p100 shrink">
 % foreach my $detail ( @$detail ) {
 <%= $t->{uc($detail->[0])} %>: 
 <a href="/<%= $lang %>/browse/<%= enurl ( $detail->[0] ) %>/<%= enurl ( $detail->[1] ) %>/">
-<%= $detail->[1] %>
+<%= $detail->[0] ne 'dt' ? $detail->[1] : dtexpand ( $detail->[1], $lang ) %>
 </a><br>  
 % }
 </div>

@@ -46,7 +46,7 @@ sub sample {
  
  my $xs; my @set;
  
- $s->{path} = 'dummy';
+ $s->{path} = undef;
  
  if ( $s->{what} ) {
  

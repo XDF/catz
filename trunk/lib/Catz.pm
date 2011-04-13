@@ -200,9 +200,9 @@ sub before {
  $stash->{url} = $self->req->url;
  
  # fetch texts for the current language and make them available to all
- # controller and templates as $t 
- $stash->{t} = text ( $stash->{ $stash->{lang} } // 'en' );
-                                                                                 
+ # controller and templates as variable t 
+ $stash->{t} = text ( $stash->{lang} // 'en' );
+                                                                                  
  setup_init ( $self );
  
  #

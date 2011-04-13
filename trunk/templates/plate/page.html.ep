@@ -12,6 +12,7 @@
 <script type="text/javascript" src="/js_site/setup.js"></script>
 <script type="text/javascript" src="/js_site/find.js"></script>
 <script type="text/javascript" src="/js_site/sample.js"></script>
+<script type="text/javascript" src="/js_site/fit.js"></script>
 <meta http-equiv="content-language" content="<%= $lang %>">
 <meta meta="generator" content="<%= $t->{APPLICATION} %>">
 <meta meta="author" content="<%= $t->{AUTHOR} %>">

@@ -1,20 +1,19 @@
 % use Catz::Util::String qw ( enurl );
-<table class="p100">
 % foreach my $rec ( @$list ) {
-<tr>
+<div>
 % if ( defined $rec->[0] ) {
-<td><h2><%= $rec->[0] %></h2></td>
-% } else {
-<td>&nbsp;</td>
-%} 
+% if ( $mode eq 'a2z' ) {
+<h2><%= $rec->[0] %></h2>
+% } else { 
+<h2><%= $rec->[0] %></h2>
+% }
+% } 
 % my $mode = 'browse';
 % $rec->[3] == 1 and $mode = 'inspect';
 % my $text = $rec->[3] == 1 ? $t->{PHOTO} : $t->{PHOTOS};    
-<td class="p50"><a href="/<%= $lang %>/<%= $mode %>/<%= $rec->[1] %>/<%== enurl( $rec->[2] ) %>/"><%= $rec->[2] %></a></td>
-<td class="shrink"><%= $rec->[3] %> <%= $text %></td>
-</tr>
+<a href="/<%= $lang %>/<%= $mode %>/<%= $rec->[1] %>/<%== enurl( $rec->[2] ) %>/"><%= $rec->[2] %></a>
+<span class="shrink"><%= $rec->[3] %> <%= $text %></div>
 % }
-</table>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

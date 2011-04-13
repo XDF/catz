@@ -1,4 +1,12 @@
 % layout 'page';
+%== include 'stripe/top';
+<div><h1><%= $t->{uc($subject).'S'} %> <%= $t->{'MODE_'.uc($mode)} %></h1>
+% if ( $mode eq 'a2z' ) {
+<a href="/<%= $lang %>/list/<%= $subject %>/top/"><%= $t->{MODE_TOP} %></a>
+% } else {
+<a href="/<%= $lang %>/list/<%= $subject %>/a2z/"><%= $t->{MODE_A2Z} %></a>
+% }
+</div>
 %== include 'block/list';
 %#
 %# Catz - the world's most advanced cat show photo engine

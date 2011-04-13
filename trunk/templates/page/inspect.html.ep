@@ -1,11 +1,11 @@
 % layout 'page';
-<table class="p100"><tr><td class="p34 top">
 %== include 'stripe/top';
 %== include 'stripe/viewer';
+<table class="p100"><tr><td class="p34 top">
 %== include 'stripe/text';
 %== include 'stripe/detail';
-</td><td class="p66 top odd">
-<img src="<%== $photobase %>/<%== $image->[1] %>/<%== $image->[2] %>" width="700">
+</td><td id="fitparent" class="p66 top odd">
+<img id="fittarget" src="<%== $photobase %>/<%== $image->[1] %>/<%== $image->[2] %>">
 </td></tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine

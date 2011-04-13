@@ -48,7 +48,7 @@ foreach my $pile ( topiles ( join '', <DATA> ) ) {
  #print "storing $lines[0] = $lines[2]\n";
  
  $en->{$lines[0]} = $lines[1];  
- $en->{$lines[0]} = $lines[2];
+ $fi->{$lines[0]} = $lines[2];
         
 }
 
@@ -124,6 +124,10 @@ Copyright
 FIRSTYEAR
 1994
 1994
+#
+DT
+timestamp
+aikaleima
 #
 DATE
 date
@@ -333,11 +337,11 @@ NEXT
 next
 seuraava
 #
-ORDER_A2Z
+MODE_A2Z
 alphabetically
 aakkosittain
 #
-ORDER_TOP
+MODE_TOP
 most common first
 yleisyysjärjestyksessä
 #
@@ -454,12 +458,16 @@ is pattern
 on merkkijono
 #
 SETUP_palette_bright
-bright palette
-vaalea ulkoasu
+bright
+vaalea
+#
+SETUP_palette_neutral
+neutral
+neutraali
 #
 SETUP_palette_dark
-dark palette
-tumma ulkoasu
+dark
+tumma
 #
 SETUP_perpage_10
 10 thumbnails per page
