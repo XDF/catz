@@ -12,7 +12,11 @@
 % } else {
 <%= $t->{PHOTO_PREV} %>
 % }
-</td><td>
+</td>
+<td><a href="/<%= $lang %>/browse/<%= $path %><%= $path %><%= $path ? '/' : '' %><%= $id %>/">browse</a></td>
+<td><a href="/<%= $lang %>/inspect/<%= $path %><%= $path %><%= $path ? '/' : '' %><%= $id %>/">inspect</a></td>
+<td><a href="/<%= $lang %>/show/<%= $path %><%= $path ? '/' : '' %><%= $id %>/">show</a></td>
+<td>
 % if ( $pos < $total ) {
 <a title="<%= $t->{PHOTO_NEXT} %>" href="<%== $pre %><%== $pin->[2] %>/"><%= $t->{PHOTO_NEXT} %></a>
 % } else { 

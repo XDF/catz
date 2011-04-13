@@ -83,27 +83,16 @@ sub news {
 
 }
 
-sub reset {
-
- my $self = shift;
-  
- $self->render ( template => 'style/reset', format => 'css' );
-
-}
+sub reset { $_[0]->render ( template => 'style/reset', format => 'css' ) }
 
 sub base {
 
- my $self = shift; my $stash = $self->{stash};
+ my $self = shift; my $s = $self->{stash};
 
- my $palette = $stash->{palette};
-
- my $color = setup_colors;
-
- defined $color->{$palette} or do { $self->render_not_found; return };
+ setup_verify ( 'palette', $s->{palette} ) or $self->not_found and return;
   
  $self->render ( 
-  template => 'style/base', 
-  color => $color,
+  template => 'style/base',
   format => 'css' 
  );
 

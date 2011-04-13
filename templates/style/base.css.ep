@@ -1,4 +1,5 @@
 <%
+
  #
  # Catz - the world's most advanced cat show photo engine
  # Copyright (c) 2010-2011 Heikki Siltala
@@ -24,13 +25,6 @@
  # 
 
  use Math::Round qw ( round );
-
- my $color_back  = 'EEEEEE'; 
- my $color_front  = '000000';
- my $color_box1  = 'EEEEEE';
- my $color_box2 = 'EEEEEE';
- my $color_alt1 = 'FFFFFF';
- my $color_alt2 = '772211';
  
  my $font_default = 'Verdana, Arial, sans-serif';
  my $font_title = 'Arial Black, Verdana, Arial, sans-serif';
@@ -48,27 +42,58 @@
  -webkit-border-radius: $roundness;
  -khtml-border-radius: $roundness;
  border-radius: $roundness;);  
- 
-%>
-% foreach my $set ( qw ( fore back ) ) {
-%  foreach my $key ( keys %{ $color->{$palette}->{$set} } ) {
-.<%== $set %>_<%== $key %> { <%== $set eq 'back' ? 'background-' : '' %>color: <%== $color->{$palette}->{$set}->{$key} %>; }
-%  }
-% } 
-% my $fore_base = $color->{$palette}->{fore}->{base};
-% my $back_base = $color->{$palette}->{back}->{base};
 
-html { height: 100%; background-color: <%== $back_base %>; }
+ #
+ # The grayscale palettes of the system developed by Heikki Siltala 
+ # 
+
+ 
+ my $color = {
+
+  dark => {
+   back => '#000000', # the screen background
+   area => '#1a1a1a', # separates an area from the background
+   dim => '#999999', # dimmed text, dimmer than text
+   text => '#b5b5b5', # color of the regular text 
+   high => '#ffffff', # highlighted text
+   xtra => '#ff3333', # a special color for a special purpose :-D
+  },
+  
+  neutral => {
+   back => '#d5d5d5', # the screen background
+   area => '#e5e5e5', # separates an area from the background
+   dim => '#999999', # dimmed text, dimmer than text
+   text => '#444444', # color of the regular text 
+   high => '#000000', # highlighted text
+   xtra => '#cc1515', # a special color for a special purpose :-D 
+  },
+  
+  bright => {
+   back => '#ffffff', # the screen background
+   area => '#d8d8d8', # separates an area from the background
+   dim => '#757575', # dimmed text, dimmer than text
+   text => '#444444', # color of the regular text 
+   high => '#000000', # highlighted text
+   xtra => '#bb0909', # a special color for a special purpose :-D 
+  },
+  
+ };
+
+
+%>
+ 
+html { height: 100%; background-color: <%== $color->{$palette}->{back} %>; }
 
 body {
- color: <%== $fore_base %>;
+ color: <%== $color->{$palette}->{text} %>;
  padding-top: 1em;
  padding-bottom: 1em;
  padding-left: 2em;
  padding-right: 2em;
- background-color: <%== $back_base %>;
+ background-color: <%== $color->{$palette}->{back} %>;
  font-family: <%== $font_default %>; 
  font-size: <%== $size_normal %>;
+ font-weight: 100;
  text-align: center;
  height: 100%;
 }
@@ -106,7 +131,9 @@ body {
 
 .unit { padding-top: 0.4em; padding-bottom: 0.4em; }
 
-.match { border-bottom: 2px dotted <%== $color->{$palette}->{fore}->{light} %>;  }
+.match { border-bottom: 2px dotted <%== $color->{$palette}->{dim} %>;  }
+
+.xtra { font-weight: 600; color: <%== $color->{$palette}->{xtra} %>; }
 
 .left { text-align: left; padding-left: 0.5em; }
 .center { text-align: center; }
@@ -116,38 +143,37 @@ body {
 
 .box {
  border: 1px;
- border-color: <%== $fore_base %>;   
+ border-color: <%== $color->{$palette}->{area} %>;   
  margin: 0.5em;
  padding: 0.5em;
 }
              
 h1 {
- font-size: <%== $size_huge %>;
+ font-size: <%== $size_big %>;
  display: inline;
- font-family: <%== $font_title %>;
- letter-spacing: 2px;
- font-weight: bold;
+ font-family: <%== $font_default %>;
+ letter-spacing: 0.25em;
+ font-weight: 400;
 }
 
 h2,h3,h4,h5,h6 {
  font-size: <%== $size_big %>;
  display: inline;
- font-family: <%== $font_title %>;
- letter-spacing: 2px;
- font-weight: bold;
+ font-family: <%== $font_default %>;
+ letter-spacing: 0.25em;
+ font-weight: 400;
 }
 
 
 a:link, a:visited, a:active {
- color: <%== $color->{$palette}->{fore}->{dark} %>;
- font-weight: bold; 
- // color: <%== $color->{$palette}->{fore}->{blue} %>;
+ color: <%== $color->{$palette}->{high} %>;
+ font-weight: 600; 
  text-decoration: none;
 } 
 
 a:hover {
- color: <%== $back_base %>;
- background-color: <%== $fore_base %>;
+ color: <%== $color->{$palette}->{back} %>;
+ background-color: <%== $color->{$palette}->{high} %>;
  text-decoration: none;   
 }
 

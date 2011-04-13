@@ -6,9 +6,13 @@
 %#
 % use Catz::Data::Setup;
 % use Catz::Util::String qw ( enurl );
-% my $site = qq{<span class="enlarge">$t->{SITE}</a>};
-<table class="p100 center"><tr>
-% $action ne 'front' and $site = qq{<a href="/$lang/">$site</a>}; 
+% my $site = qq{<a href="/$lang/">$t->{SITE}</a>};
+% $action eq 'front' and do {
+%  $site = $t->{SITE};
+%  $site =~ s/z/<span class=\"xtra\">z<\/span>/g;  
+%  $site = "<h1>$site</h1>";
+% };  
+<table class="p100 center"><tr> 
 <td class="p33"><%== $site %></td>
 <td class="p34"><a href="<%== $otherlang %>"><%= $t->{OTHERLANG} %></a></td>
 <td class="p33"><%== include 'elem/setup', key => 'palette' %></td>

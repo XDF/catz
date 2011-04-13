@@ -189,14 +189,14 @@ my $conf = { # config is one hash ref
  samples => 30,
 
  setup_defaults => { 
-  palette => 'bright',
+  palette => 'neutral',
   photosize => 'full',
   perpage => 20,
   thumbsize => 140
  },
 
  setup_values => { 
-  palette => [ qw ( dark bright ) ],
+  palette => [ qw ( dark neutral bright ) ],
   photosize => [ qw ( full fit_width fit_height fit_all ) ],
   perpage => [ qw( 10 15 20 25 30 35 40 45 50 ) ],
   thumbsize => [ qw ( 100 120 140 160 180 200 ) ]
