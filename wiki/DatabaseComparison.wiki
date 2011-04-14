@@ -4,9 +4,9 @@
 = Summary =
 
 If you need a very fast relational database for a limited amount of data (up to some gigabytes) 
-and don't need concurrent write access then SQLite is your choice. It is a cleverly designed
+and don't need high scalability on writes then SQLite is your choice. It is a cleverly designed
 ultra-lightweight ACID compliant relational database that requires no administration. If you have plenty of data,
-need for advanced features like functions and access control or there is concurrent write access then PostgreSQL is made for you. It is an advanced relational database with a feature set comparable to major
+need for advanced features like functions and access control or there is a need for concurrent write access then PostgreSQL is made for you. It is an advanced relational database with a feature set comparable to major
 commercial database products. 
 
 = The comparison table =
@@ -18,10 +18,10 @@ commercial database products.
 || *Reputation* || Often strongly underestimated without no true reason. SQLite is not just for embedded mobile solutions. Can scale both on size and on concurrent read access. || Is often overshadowed by MySQL with no obvious reason. PostgreSQL is a very mature product offering more features than MySQL. ||
 || *Administration work required* || Practially none. There are a couple of parameters to play with if you are fan of database tuning. || Requires tuning and DBA work ||
 || *Feature set size* || Limited feature set suited for most common uses || Complete feature set comparable to major commercial databases ||
-|| *Speed* || Due to its minimal design runs extremely fast. Requires no initial tuning. Inserts might run 45 times faster than with PostgreSQL. Complex multi-table queries is the only area where PostgreSQL is always faster. || In simple operations typically significantly slower than SQLite. This doesn't mean PostgreSQL is slow. PostgreSQL is fast. Typically requires some tuning to get the optimal performance. ||
+|| *Speed* || Due to its minimal design runs extremely fast. Requires no initial tuning. Inserts might run 45 times faster than with an untuned PostgreSQL. Complex multi-table queries is the only area where PostgreSQL is always faster. || In simple operations typically significantly slower than SQLite. This doesn't mean PostgreSQL is slow. PostgreSQL is fast. Typically requires some tuning to get the optimal performance. ||
 || *Database size* || Since one database is one file there are some obvious limitations || Practically unlimited ||
 || *Typical uses* || Very large application coverage from simple embedded linked-in mobile solutions to reasonable-sized online web services or to large statistical information sets || Traditional database server application areas ||
-|| *Concurrent access* || Scales well on concurrent read only access. Due to database level locking doesn't scale on concurrent write access. || Scales well on concurrent reads and writes. ||
+|| *Concurrent access* || Scales well on concurrent read access. Traditionally doesn't scale well on concurrent writes. The current version has Write-Ahead Logging to overcome this. || Scales well on concurrent reads and writes. ||
 || *Network access* || No with base product. However there are several tools available for that. With Perl you can use DBD::Proxy or DBD::Gopher || Yes, via TCP or Unix sockets ||
 || *Datatypes* || Minimal set: INTEGER, REAL, TEXT, BLOB || All you can imagine ||
 || *Database constraints* || Primary keys, Not null, Uniqueness, Basic check constraints, Basic triggers || Primary keys, Not null, Foreign keys, Uniqueness, Check constraints, Advanced triggers etc||  
