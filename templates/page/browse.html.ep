@@ -1,6 +1,6 @@
 % layout 'page';
-<table class="p100 "><tr><td class="p40 top">
 %== include 'stripe/top';
+<table class="p100 "><tr><td class="p40 top">
 %== include 'stripe/browser';
 %== include 'stripe/thumbset';
 </td><td class="p60 top odd">
