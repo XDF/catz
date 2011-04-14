@@ -1,8 +1,8 @@
-<div class="box"><ul>
+<div><ul class="p100">
 % foreach my $row ( @{ $albums } ) {
 <li><a href="/<%= $lang %>/album/<%= $row->[0] %>/"><%= $row->[1] %></a> <%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOS} %></li>
 % }
-<li><a href="/<%= $lang %>/list/album/a2z/"><%= $t->{ALBUMS_ALL} %></li>
+<li><a href="/<%= $lang %>/list/album/a2z/"><%= $t->{ALBUMS_ALL} %></a></li>
 </ul></div>
 %#
 %# Catz - the world's most advanced cat show photo engine

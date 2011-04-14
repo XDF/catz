@@ -1,15 +1,22 @@
 % layout 'page';
-<table class="p100"><tr><td class="top p50">
+<div class="box">
 %== include 'stripe/top';
+</div>
+<table class="p100"><tr><td class="top p50">
+<div class="unit">
 %== include 'stripe/find';
+</div><div class="unit">
 %== include 'stripe/album';
+</div><div class="unit">
 %== include 'stripe/new';
+</div><div class="unit">
 %== include 'stripe/list';
+</div>
 %== include 'stripe/intro';
 %== include 'stripe/bottom';
-</td><td class="top p50"><div class="box">
+</td><td class="top p50">
 <div id="samples"></div>
-</div></td></tr></table>
+</td></tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

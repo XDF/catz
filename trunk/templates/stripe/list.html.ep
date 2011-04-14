@@ -1,16 +1,18 @@
 % use Catz::Util::Number qw ( fmt );
 % my $i = 1;
-<table class="p100"><tr>
+<div><table class="p100"><tr>
 % foreach my $row ( @{ $pris } ) {
-<td class="p50"><%= fmt ( $row->[1], $lang ) %>
-<a href="/<%= $lang %>/list/<%= $row->[0] %>/a2z/"><%= $t->{uc($row->[0]).'S'} %></a></td>
+<td class="p50">
+<a href="/<%= $lang %>/list/<%= $row->[0] %>/a2z/">
+<%= fmt ( $row->[1], $lang ) %>
+<%= $t->{uc($row->[0]).'A'} %></a>
+</td>
 % if ( $i % 2 == 0 ) {
 </tr><tr>
 % }
 % $i++;
 % }
-</tr></table>
-</div>
+</tr></table></div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

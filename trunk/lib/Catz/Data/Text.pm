@@ -42,7 +42,7 @@ foreach my $pile ( topiles ( join '', <DATA> ) ) {
     
  my @lines = tolines ( $pile );
 
- ( $lines[0] and $lines[1] and $lines[2] ) or die "text definition error";
+ ( $lines[0] and $lines[1] and $lines[2] ) or die "text definition error: '$lines[0]' '$lines[1]' '$lines[2]'";
  
  #print "storing $lines[0] = $lines[1]\n";
  #print "storing $lines[0] = $lines[2]\n";
@@ -51,6 +51,8 @@ foreach my $pile ( topiles ( join '', <DATA> ) ) {
  $fi->{$lines[0]} = $lines[2];
         
 }
+
+close DATA;
 
 sub text { $_[0] eq 'fi' ? $fi : $en; }
 
@@ -68,6 +70,10 @@ albumi
 ALBUMS
 albums
 albumit
+#
+ALBUMA
+albums
+albumia
 #
 ALBUMS_ALL
 all albums
@@ -93,6 +99,10 @@ CATS
 cats
 kissat
 #
+CATA
+cats
+kissaa
+#
 CREDITS
 Mojolicious, Perl, SQLite, jQuery, Linux
 Mojolicious, Perl, SQLite, jQuery, Linux
@@ -105,6 +115,10 @@ BODYS
 bodies
 rungot
 #
+BODYA
+bodies
+runkoa
+#
 BREEDER
 breeder
 kasvattaja
@@ -112,6 +126,10 @@ kasvattaja
 BREEDERS
 breeders
 kasvattajat
+#
+BREEDERA
+breeders
+kasvattajaa
 #
 COMPLETE_LIST
 complete list
@@ -137,6 +155,10 @@ DATES
 dates
 päivämäärät
 #
+DATEA
+dates
+päivämäärää
+#
 ETIME
 exposure time
 valotusaika
@@ -144,6 +166,10 @@ valotusaika
 ETIMES
 exposure times
 valotusajat
+#
+ETIMEA
+exposure times
+valotusaikaa
 #
 FLEN
 focal length
@@ -153,6 +179,10 @@ FLENS
 focal lengths
 polttovälit
 #
+FLENA
+focal lengths
+polttoväliä
+#
 FNUM
 aperture
 aukko
@@ -160,6 +190,10 @@ aukko
 FNUMS
 apertures
 aukot
+#
+FNUMA
+apertures
+aukkoa
 #
 GALLERIES
 photo galleries
@@ -177,6 +211,10 @@ BREEDS
 breeds
 rodut
 #
+BREEDA
+breeds
+rotua
+#
 EMS1
 EMS snippet
 EMS-koodin osa
@@ -184,6 +222,10 @@ EMS-koodin osa
 EMS1S
 EMS snippets
 EMS-koodin osat
+#
+EMS1A
+EMS snippets
+EMS_koodin osaa
 #
 EMS3
 EMS breed
@@ -193,21 +235,33 @@ EMS3S
 EMS breeds
 EMS-rodut
 #
+EMS3A
+EMS breeds
+EMS-rotua
+#
 EMS4
 EMS color and pattern
 EMS väri ja kuvio
 #
 EMS4S
 EMS colors and patterns
-EMS värit ja kuviot 
+EMS värit ja kuviot
+# 
+EMS4A
+EMS colors and patterns
+EMS väriä ja kuviota 
 #
 EMS5
-EMS
+EMS code
 EMS-koodi
 #
 EMS5S
-EMS's
+EMS codes
 EMS-koodit
+#
+EMS5A
+EMS codes
+EMS-koodia
 #
 LOC
 location
@@ -217,6 +271,10 @@ LOCS
 locations
 paikkakunnat
 #
+LOCA
+locations
+paikkakuntaa
+#
 NAT
 nationality
 kansallisuus
@@ -224,6 +282,10 @@ kansallisuus
 NATS
 nationalities
 kansallisuudet
+#
+NATA
+nationalities
+kansallisuutta
 #
 NICK
 nick
@@ -233,6 +295,10 @@ NICKS
 nicks
 lempinimet
 #
+NICKA
+nicks
+lempinimeä
+#
 ORG
 organizer
 järjestäjä
@@ -240,6 +306,10 @@ järjestäjä
 ORGS
 organizers
 järjestäjät
+#
+ORGA
+organizers
+järjestäjää
 #
 OUT
 photo comment
@@ -257,6 +327,10 @@ TITLES
 titles
 tittelit
 #
+TITLEA
+titles
+titteliä
+#
 UMB
 umbrella
 kattojärjestö
@@ -264,6 +338,10 @@ kattojärjestö
 UMBS
 umbrellas
 kattojärjestöt
+#
+UMBA
+umbrellas
+kattojärjestöä
 #
 FIND
 instant find
@@ -285,6 +363,10 @@ ISOS
 sensitivities
 herkkyydet
 #
+ISOA
+sensitivities
+herkkyyttä
+#
 LENS
 lens
 objektiivi
@@ -292,6 +374,10 @@ objektiivi
 LENSS
 lenses
 objektiivit
+#
+LENSA
+lenses
+objektiivia
 #
 EXCEPTION
 500 exception occured

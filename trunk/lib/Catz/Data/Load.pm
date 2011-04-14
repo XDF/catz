@@ -436,6 +436,10 @@ sub load_complex {
  # inserting general elements common to all photos in an album
  # n = 0, undefined photo
  # p = 0, undefinied position in photo
+
+ load_exec ( 'snip_ins', $album, 0, 0,  
+  get_sid ( 'album', $album, $album, $album, $album )
+ );
  
  load_exec ( 'snip_ins', $album, 0, 0,  
   get_sid ( 'date', 
@@ -600,31 +604,6 @@ my @secondary = (
   height_lr,bytes_lr) select x,id,album,file,width_hr,height_hr,bytes_hr,
   width_lr,height_lr,bytes_lr from photo natural join _x order by x },
   
- qq{ drop table if exists _pri_sec_count },
- 
- qq{ create table _pri_sec_count ( pri text not null, sort_pri integer not null, 
-  sec_en text not null, sort_en text not null, sec_fi text not null, sort_fi text not null, 
-  count integer not null, x integer not null ) },
-  
- qq { insert into _pri_sec_count ( pri,sort_pri,sec_en,sort_en,sec_fi,sort_fi,count,
-  x ) select pri,sort_pri,sec_en,sort_en,sec_fi,sort_fi,
-  count(distinct x),min(x) from pri natural join sec natural join snip, _x 
-  where sort_pri<10000 and snip.album=_x.album and (snip.n=_x.n or snip.n=0)
-  group by pri,sec_en,sec_fi order by count(distinct x) desc,
-  sort_pri asc,sort_en asc,sort_fi asc },
-  # sorting is vital: rows are stored in the order they are later fetched
-  # by 'order by rowid' to speed up the performance
- 
- qq{ drop table if exists _pri_count },
- 
- qq{ create table _pri_count ( pri text,sort_pri integer,count integer,
-  coverage integer ) },
- 
- qq{ insert into _pri_count ( pri,sort_pri,count,coverage ) select pri,
-  sort_pri,count(distinct sec_en),count(distinct x) from pri natural join 
-  sec natural join snip natural join _x where sort_pri<10000 group by pri 
-  order by sort_pri }, 
-  
  # delete old breed secondaries
  qq{ delete from sec where pid in ( select pid from pri where pri='breed' ) },
  
@@ -644,6 +623,49 @@ my @secondary = (
  inner join sec d on (c.breed_en=d.sec_en) inner join pri e on (d.pid=e.pid)
  inner join pri f on (b.pid=f.pid) where e.pri='breed' and f.pri='ems3' },
 
+ # delete old cuntry secondaries
+ qq{ delete from sec where pid in ( select pid from pri where pri='nat' ) },
+ 
+ # inserting all countries as secs
+ qq{ insert into sec ( pid, sec_en, sort_en, sec_fi, sort_fi )
+ select pid, nat_en, nat_en, nat_fi, nat_fi from mbreeder
+ natural join mnat,pri where pri='nat' group by pid,nat_en,nat_fi },
+ 
+  # delete all old country information (and also other orphans if any)
+ qq{ delete from snip where sid not in ( select sid from sec ) },
+ 
+ # and then duplicating every breeder snip to a nat snip  
+ qq{ insert into snip (album,n,p,sid) select c.album,c.n,c.p,f.sid from pri a 
+ natural join sec b natural join snip c inner join mbreeder d on 
+ (b.sec_en=d.breeder) natural join mnat e inner join sec f on
+ (e.nat_en=f.sec_en) inner join pri g on (f.pid=g.pid) where 
+ a.pri='breeder' and g.pri='nat' },
+    
+ qq{ drop table if exists _pri_sec_count },
+ 
+ qq{ create table _pri_sec_count ( pri text not null, sort_pri integer not null, 
+  sec_en text not null, sort_en text not null, sec_fi text not null, sort_fi text not null, 
+  count integer not null, x integer not null ) },
+  
+ qq { insert into _pri_sec_count ( pri,sort_pri,sec_en,sort_en,sec_fi,sort_fi,count,
+  x ) select pri,sort_pri,sec_en,sort_en,sec_fi,sort_fi,
+  count(distinct x),min(x) from pri natural join sec natural join snip join _x 
+  where sort_pri<10000 and snip.album=_x.album and (snip.n=_x.n or snip.n=0)
+  group by pri,sec_en,sec_fi order by count(distinct x) desc,
+  sort_pri asc,sort_en asc,sort_fi asc },
+  # sorting is vital: rows are stored in the order they are later fetched
+  # by 'order by rowid' to speed up the performance
+ 
+ qq{ drop table if exists _pri_count },
+ 
+ qq{ create table _pri_count ( pri text,sort_pri integer,count integer,
+  coverage integer ) },
+ 
+ qq{ insert into _pri_count ( pri,sort_pri,count,coverage ) select pri,
+  sort_pri,count(distinct sec_en),count(distinct x) from pri natural join 
+  sec natural join snip join _x where sort_pri<10000 and snip.album=_x.album 
+  and (snip.n=_x.n or snip.n=0) group by pri order by sort_pri }, 
+   
  # creating pre-orderder listings to be able to show lists faster at runtime
  qq { drop table if exists _list },
  
@@ -652,26 +674,26 @@ my @secondary = (
  
  qq { insert into _list select 'a2z','en',pri,sec_en,count,min_x from (
   select pri,sort_pri,sec_en,sort_en,count(distinct x) as count,min(x)
-  as min_x from pri natural join snip natural join sec
-  natural join _x where pri not in ( 'dt', 'out' )
+  as min_x from pri natural join sec natural join snip join _x where
+  sort_pri<10000 and snip.album=_x.album and (snip.n=_x.n or snip.n=0)
   group by pri,sec_en ) order by sort_pri,sort_en },    
 
  qq { insert into _list select 'top','en',pri,sec_en,count,min_x from (
   select pri,sort_pri,sec_en,sort_en,count(distinct x) as count,min(x)
-  as min_x from pri natural join snip natural join sec
-  natural join _x where pri not in ( 'dt', 'out' )
+  as min_x from pri natural join snip natural join sec join _x where 
+  sort_pri<10000 and snip.album=_x.album and (snip.n=_x.n or snip.n=0) 
   group by pri,sec_en ) order by sort_pri,count desc,sort_en },
   
  qq { insert into _list select 'a2z','fi',pri,sec_fi,count,min_x from (
   select pri,sort_pri,sec_fi,sort_fi,count(distinct x) as count,min(x)
-  as min_x from pri natural join snip natural join sec
-  natural join _x where pri not in ( 'dt', 'out' )
+  as min_x from pri natural join snip natural join sec join _x where 
+  sort_pri<10000 and snip.album=_x.album and (snip.n=_x.n or snip.n=0)
   group by pri,sec_fi ) order by sort_pri,sort_fi },    
 
  qq { insert into _list select 'top','fi',pri,sec_fi,count,min_x from (
   select pri,sort_pri,sec_fi,sort_fi,count(distinct x) as count,min(x)
-  as min_x from pri natural join snip natural join sec
-  natural join _x where pri not in ( 'dt', 'out' )
+  as min_x from pri natural join snip natural join sec join _x where 
+  sort_pri<10000 and snip.album=_x.album and (snip.n=_x.n or snip.n=0)
   group by pri,sec_fi ) order by sort_pri,count desc,sort_fi },
   
  qq { create index _list_ix1 on _list(ord,lang,pri) },

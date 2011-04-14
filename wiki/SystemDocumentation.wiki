@@ -1,0 +1,37 @@
+#summary Catz system documentation
+
+= Actions =
+
+The actions of the system (action types available via HTTP call) are listed here.
+
+== Root level actions ==
+
+|| *Action* || *Type* || *Purpose* ||
+|| / || redirect || Detects the language and redirects to the correct branch ||
+|| /set || ajax || sets a session parameter ||
+|| /style/reset|| stylesheet ||  The reset stylesheet (Yahoo) ||
+|| /style/base || stylesheet ||  The stylesheet of the system ||
+
+== Language level actions ==
+
+|| / || page || the front page of the service ||
+|| /browse || page || photo browsing (thumbnails) ||
+|| /inspect || page || view photo with full information ||
+|| /news || page || all news ||
+|| /list || page || list subjects of a subject area ||
+|| /search || page || the advanced search form ||
+|| /show || page || view photo with reduced information ||
+|| /feed || RSS XML || news feed ||
+|| /find || ajax || quick find provider ||
+|| /sample || ajax || sample photos provider ||
+
+= Subjects =
+
+The system has things called subjects that are ways to list, browse and search photos. Here are the subjects and their orderings and attributes in lists.
+
+|| *Name* || *Code* || *Orderings (breaks or additional data)* || *Attributes* || *Special handling* ||
+|| Album || album || a2z reverse (year breaks), top (order number) ||          || Convert technical name to the human readable name ||
+|| Date || date || a2z reverse (year breaks), top (order number) ||          || Convert technical name to the human readable name ||
+
+*To be continued*
+     

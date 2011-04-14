@@ -52,7 +52,7 @@
 
   dark => {
    back => '#000000', # the screen background
-   area => '#1a1a1a', # separates an area from the background
+   area => '#333333', # separates an area from the background
    dim => '#999999', # dimmed text, dimmer than text
    text => '#b5b5b5', # color of the regular text 
    high => '#ffffff', # highlighted text
@@ -86,10 +86,8 @@ html { height: 100%; background-color: <%== $color->{$palette}->{back} %>; }
 
 body {
  color: <%== $color->{$palette}->{text} %>;
- padding-top: 1em;
- padding-bottom: 1em;
- padding-left: 2em;
- padding-right: 2em;
+ margin: 0 0 0 0;
+ padding: 0 0 0 0 ;
  background-color: <%== $color->{$palette}->{back} %>;
  font-family: <%== $font_default %>; 
  font-size: <%== $size_normal %>;
@@ -143,9 +141,7 @@ body {
 
 .box {
  border: 1px;
- border-color: <%== $color->{$palette}->{area} %>;   
- margin: 0.5em;
- padding: 0.5em;
+ background-color: <%== $color->{$palette}->{area} %>;   
 }
              
 h1 {
