@@ -25,13 +25,5 @@ The actions of the system (action types available via HTTP call) are listed here
 || /find || ajax || quick find provider ||
 || /sample || ajax || sample photos provider ||
 
-= Subjects =
 
-The system has things called subjects that are ways to list, browse and search photos. Here are the subjects and their orderings and attributes in lists.
-
-|| *Name* || *Code* || *Orderings (breaks or additional data)* || *Attributes* || *Special handling* ||
-|| Album || album || a2z reverse (year breaks), top (order number) ||          || Convert technical name to the human readable name ||
-|| Date || date || a2z reverse (year breaks), top (order number) ||          || Convert technical name to the human readable name ||
-
-*To be continued*
-     
+      

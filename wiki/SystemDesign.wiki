@@ -1,0 +1,63 @@
+#summary Catz system design from the user's viewpoint
+
+= The primary objective: to find the photos =
+
+When the user arrives to the service, the primary functions she is expecting are
+ # to change the UI language if not correctly guessed -> provide a langauge
+   changing link on a high-priority screen location
+ # to watch cat show photos immediately -> provide lots of random photo
+   thumbnails on the frond page to choose from
+ # to watch the photos from the latest shows immediately -> provide direct
+   links to photos of the latest shows
+ # to find the specific photos she are looking for immediately -> provide 
+   simple real-time quick find functionality on the front page
+   
+The seconary functions that the front page will have access to
+ # to locate the photos via intuitive lists (these are also provided for
+   search engines)
+ # to locate the photos via an advanced search engine with flexible search
+   syntax
+ # latest site news
+                   
+= The secondary objective: to watch the photos =
+
+When the user has found the photos she likes to watch them one by one or
+selectively choosing from the photo set. There are various ways to arrange this.
+
+= Lists =
+
+Add Attributes
+
+|| *Subject* || *Subtypes* || *Detail* || *Attributes* ||  
+|| album || date descending break by year || - || count date org location coverages ||
+|| loc || alphabetically ascending no break, photo count largest first || album date descending || count first last || 
+|| org || alphabetically ascending no break, photo count largest first || album date descending || count first last ||
+|| breed + ems3 combined || alphabetically asceding no break, photo count largest first || EMS code || count first last ||
+|| breeder || alphabetically ascending break by first letter, country name ascending break by country, photo count largest first || cat || count first last nat ||
+|| nick || alphabetically ascending break by first letter, photo count largest first || - || count first last ||
+|| title || alphabetically ascending not break, photo count largest first || - || count first last ||  
+   
+= Find = 
+
+ * album
+ * date
+ * loc
+ * org
+ * cat
+ * breed + ems3 combined
+ * breeder
+ * ems5
+ * ems4
+ * ems1
+
+= Search =
+
+ * album technical name (includes location and date)
+ * org
+ * cat (includes breeder name)
+ * country code 
+ * ems (includes all ems forms and breed)
+ * nick   
+                  
+
+      
