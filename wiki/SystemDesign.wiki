@@ -23,7 +23,7 @@ selectively choosing from the photo set. There are various ways to arrange this.
 Add Attributes
 
 || *Subject* || *Subtypes* || *Detail* || *Attributes* ||  
-|| album || date descending break by year || - || count date org location coverages ||
+|| album || date descending break by year || - || count date org umb loc coverages ||
 || loc || alphabetically ascending no break, photo count largest first || album date descending || count first last || 
 || org || alphabetically ascending no break, photo count largest first || album date descending || count first last ||
 || breed + ems3 combined || alphabetically asceding no break, photo count largest first || EMS code || count first last ||
@@ -43,6 +43,8 @@ Add Attributes
  * ems5
  * ems4
  * ems1
+ * title? any?
+ * nick?  
 
 = Search =
 
@@ -50,7 +52,8 @@ Add Attributes
  * album (includes loc date org)
  * cat (includes breeder) 
  * ems (includes all ems forms and breed)
- * text?  
+ * text?
+ * nick?   
  * has cat/ems
  * and/or/not     
                   

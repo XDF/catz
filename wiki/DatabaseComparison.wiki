@@ -24,7 +24,7 @@ commercial database products.
 || *Concurrent access* || Scales well on concurrent read access. Traditionally doesn't scale well on concurrent writes. The current version has Write-Ahead Logging to overcome this. || Scales well on concurrent reads and writes. ||
 || *Network access* || No with base product. However there are several tools available for that. With Perl you can use DBD::Proxy or DBD::Gopher || Yes, via TCP or Unix sockets ||
 || *Datatypes* || Minimal set: INTEGER, REAL, TEXT, BLOB || All you can imagine ||
-|| *Database constraints* || Primary keys, Not null, Uniqueness, Basic check constraints, Basic triggers || Primary keys, Not null, Foreign keys, Uniqueness, Check constraints, Advanced triggers etc||  
+|| *Database constraints* || Primary keys, Not null, Foreign keys, Uniqueness, Basic check constraints, Basic triggers || Primary keys, Not null, Foreign keys, Uniqueness, Check constraints, Advanced triggers etc||  
 || *Pre-built database functions* || Basic set || Complete set ||
 || *Write your own database functions* || Yes but only via API || Yes, with multiple languages ||
 || *Query optimizer* || Simple || Advanced ||
