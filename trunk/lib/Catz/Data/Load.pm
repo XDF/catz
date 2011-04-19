@@ -61,6 +61,8 @@ sub run {
   
  my $res;
  
+ logit ( "$comm: $sql " . ( join ",", @args ) );
+ 
  given ( $comm ) {
   
   when ( 'one' ) {
@@ -97,9 +99,27 @@ sub run {
 
 }
 
-sub stm { $dbc->do($_[0]) }
+sub stm {  
 
-sub stmx { $dbc->do($_[0]); return $dbc->func('last_insert_rowid') }
+ my $sql = shift;
+ 
+ logit ( "stm: $sql " . ( join ",", @_ ) ); 
+ 
+ $dbc->do($sql,undef,@_); 
+
+}
+
+sub stmx {
+
+ my $sql = shift;
+ 
+ logit ( "stmx: $sql " . ( join ",", @_ ) ); 
+ 
+ $dbc->do($sql,undef,@_);
+ 
+ return $dbc->func('last_insert_rowid');
+ 
+}
 
 sub one { run('one',@_) }
 
@@ -123,7 +143,7 @@ sub load_begin {
   
  stm( 'insert into run(dt) values (?)', $dt );
  
- logit ('done'); 
+ logit ( 'done' ); 
  
 }
 
@@ -263,10 +283,10 @@ sub load_folder {
  
  defined $albumid or do { # new album
  
-  $albumid = stmx('insert album(folder) values (?)',$album);
+  $albumid = stmx('insert into album(folder) values (?)',$album);
 
  };
- 
+  
  # deleteting photos that are "out of scope"
  stm('delete from photo where albumid=? and n>?',$albumid,scalar @photos);
  
@@ -301,13 +321,15 @@ sub load_folder {
   
   } else {
   
-   $photoid = stmx(qq{insert into photo(file,n,hwidth,hheight,hbytes,lwidth,
-   lheight,lbytes) values (?,?,?,?,?,?,?,?)},$file,$n,$hwidth,$hheight,
-    $hbytes,$lwidth,$lheight,$lbytes,$photoid);  
+   $photoid = stmx(qq{insert into photo(albumid,file,n,hwidth,hheight,hbytes,lwidth,
+   lheight,lbytes) values (?,?,?,?,?,?,?,?,?)},$albumid,$file,$n,$hwidth,$hheight,
+    $hbytes,$lwidth,$lheight,$lbytes);  
   
   }
   
-  my $exif = exif ( $album, $photo );
+  #my $exif = exif ( $album, $photo );
+  
+  $n++;
   
  }
  
