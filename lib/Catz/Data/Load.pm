@@ -51,99 +51,110 @@ use Catz::Util::Log qw ( logit );
 use Catz::Util::Number qw ( fullnum33 );
 use Catz::Util::String qw ( trim );
 
+my $sql = { 
+
+ # this hash ref has all SQL statements used by the loader
+ # _ins = insert statement
+ # _ind = insert statement with automatic primary key generation
+ # _upd = update statement
+ # _del = delete statement
+ # _trn = truncate statement executed automatically at the end of the loading
+
+ run_ins => 'insert into run values (?)',
+ run_one => 'select max(dt) from run',
+ run_count_one => 'select count(*) from run', 
+ 
+ dna_del => 'delete from dna where class=? and item=?',
+ dna_one => 'select dna from dna where class=? and item=?',
+ dna_ins => 'insert into dna (dna,dt,class,item) values (?,?,?,?)',
+ dna_upd => 'update dna set dna=?, dt=? where class=? and item=?', 
+ dna_trn =>  "delete from dna where class='album' and item not in ( select album from album )",
+  
+ album_count_one => 'select count(*) from album',
+ album_del => 'delete from album where album=?',
+ loc_row => 'select loc_en,loc_fi from album where album=?',
+ album_ins => 'insert into album (album,s,name_en,name_fi,origined,created,modified,loc_en,loc_fi,nat) values (?,?,?,?,?,?,?,?,?,?)',
+  
+ org_del => 'delete from org where album=?',
+ org_ins => 'insert into org (album,org_en,org_fi) values (?,?,?)',
+ org_row => 'select org_en,org_fi from org where album=?',
+ org_trn => 'delete from org where album not in ( select album from album )', 
+  
+ umb_del => 'delete from umb where album=?',
+ umb_ins => 'insert into umb (album,umb_en,umb_fi) values (?,?,?)',
+ umb_row => 'select umb_en,umb_fi from umb where album=?',
+ umb_trn => 'delete from umb where album not in ( select album from album )',
+ 
+ photo_one => 'select count(*) from photo where album=? and n=?',
+ photo_del => 'delete from photo where album=?',
+ photo_ins => 'insert into photo (album,n,file,width_hr,height_hr,bytes_hr,width_lr,height_lr,bytes_lr) values (?,?,?,?,?,?,?,?,?)',
+ max_n_one => 'select max(n) from photo where album=?', 
+
+ dexif_del => 'delete from dexif where album=?',
+ dexif_ins => 'insert into dexif (album,n,key,val) values (?,?,?,?)',
+ dexif_all => 'select n,key,val from dexif where album=? order by n,key',
+ dexif_trn => 'delete from dexif where album not in ( select album from album )',
+   
+ fexif_del => 'delete from fexif where album=?',
+ fexif_ins => 'insert into fexif (album,n,key,val) values (?,?,?,?)',
+ fexif_all => 'select n,key,val from fexif where album=? order by n,key',
+ fexif_trn => 'delete from fexif where album not in ( select album from photo )',
+ 
+ mexif_del => 'delete from mexif where album=?',
+ mexif_ins => 'insert into mexif (album,n,key,val) values (?,?,?,?)',
+ mexif_all => 'select n,key,val from mexif where album=? order by n,key',
+   
+ snip_del => 'delete from snip where album=?', 
+ snip_ins => 'insert into snip (album,n,p,sid) values (?,?,?,?)',
+ snip_trn => 'delete from snip where album not in ( select album from album )', 
+ 
+ sec_one => 'select sid from sec where pid=? and sec_en=?', 
+ # strongly assuming that pid, sec_en uniquely identifies an row
+ sec_ind => 'insert into sec (pid,sec_en,sort_en,sec_fi,sort_fi) values (?,?,?,?,?)',
+ sec_trn => 'delete from sec where ( pid not in (select pid from pri) ) or ( sid not in ( select sid from snip ) )',
+
+ pri_one => 'select pid from pri where pri=?',
+ 
+ exif_keys_col => 'select key from dexif where album=? and n=? union select key from fexif where album=? and n=? union select key from mexif where album=? and n=?',  
+ dexif_val_one => 'select val from dexif where album=? and n=? and key=?',
+ fexif_val_one => 'select val from fexif where album=? and n=? and key=?',
+ mexif_val_one => 'select val from mexif where album=? and n=? and key=?'
+  
+};
+
+# defined the correct table truncation order
+# only tables defined here will be trunacated
+# (if there is _trn SQL but the table is not here the SQL is not used)
+my @trnorder = qw ( dna dexif fexif snip sec umb org ); 
+
+my $stm = {}; # variable to hold prepared SQL statements
+
 # static database connection initialized at 
-# the beginning of load and closed at the end of load
+# the beginning and closed at the end
 my $dbc;
-
-sub run {
-
- my ( $comm, $sql, @args ) = @_;
-  
- my $res;
- 
- logit ( "$comm: $sql " . ( join ",", @args ) );
- 
- given ( $comm ) {
-  
-  when ( 'one' ) {
-  
-   my $arr = $dbc->selectrow_arrayref( $sql, undef, @args );
-  
-   $res = $arr->[0];
-  
-  }
-  
-  when ( 'row' ) {
-  
-   $res = $dbc->selectrow_arrayref( $sql, undef, @args );
-
-  }
-  
-  when ( 'col' ) {
-  
-   $res = $dbc->selectcol_arrayref( $sql, undef, @args );
-  
-  }
-  
-  when ( 'all' ) {
-  
-   $res = $dbc->selectall_arrayref( $sql, undef, @args );
-  
-  }
- 
-  default { die "unknown database command '$comm'" }
- 
- }
-
- return $res;
-
-}
-
-sub stm {  
-
- my $sql = shift;
- 
- logit ( "stm: $sql " . ( join ",", @_ ) ); 
- 
- $dbc->do($sql,undef,@_); 
-
-}
-
-sub stmx {
-
- my $sql = shift;
- 
- logit ( "stmx: $sql " . ( join ",", @_ ) ); 
- 
- $dbc->do($sql,undef,@_);
- 
- return $dbc->func('last_insert_rowid');
- 
-}
-
-sub one { run('one',@_) }
-
-sub row { run('row',@_) }
-
-sub col { run('col',@_) }
-
-sub all { run('all',@_) }
 
 sub load_begin {
 
  my ( $dt, $dbfile ) = @_;
   
- logit ( "connecting '$dbfile'" );
+ logit ( "connecting database '$dbfile'" );
 
  $dbc = DBI->connect( 
   conf ( 'dbconn' ) . $dbfile , '', '', conf ( 'dbargs_load' ) 
- )  or die "unable to connect to '$dbfile': $DBI::errstr";
+ )  or die "unable to connect to database $dbfile: $DBI::errstr";
 
+ logit ( 'preparing ' . scalar ( keys %{ $sql } ). ' SQL statements' );
+ 
+ foreach ( keys %{ $sql } ) { $stm->{$_} = $dbc->prepare ( $sql->{$_} ) }
+ 
+ logit ( 'registering functions' );
+ 
+ # registers int s, n to string id converting functions
+ $dbc->func( 'makeid', 2, \&fullnum33, 'create_function' );
+   
  logit ( "storing run dt '$dt'" );
   
- stm( 'insert into run(dt) values (?)', $dt );
- 
- logit ( 'done' ); 
+ load_exec ( 'run_ins', $dt ); 
  
 }
 
@@ -151,45 +162,93 @@ sub load_end {
 
  my $vacuum = 0; # default is not to vacuum
  
- my $runs = $dbc->selectrow_array('select count(*) from run');
-  
  # for every fifth run do vacuum 
- ( $runs % 5 == 0 ) and $vacuum = 1;
+ ( load_exec ( 'run_count_one' ) % 5 == 0 ) and $vacuum = 1;
    
+ logit ( 'finishing statements' );
  
- logit ( 'truncating orphan albums' );
- stm(qq{delete from album where albumid not in 
-  (select albumid from photo)});
+ foreach ( keys %{ $stm } ) { $stm->{$_}->finish }
  
- logit ( 'truncating orphan objects' );
- stm(qq{delete from object where objectid not in (
-   select objectid from inalbum union all
-   select objectid from inphoto union all
-   select objectid_meta from inexif union all
-   select objectid_data from inexif union all
-   select objectid_file from inexif union all
-   select objectid from inposition)});
+ logit ( 
+  'truncating orphan values from ' . scalar ( @trnorder ) . ' tables' 
+ );
  
- logit ( 'committing' );
+ foreach my $trn ( @trnorder ) {
+ 
+  $dbc->do ( $sql->{ $trn . '_trn' } );
+ 
+ }  
+ 
+ logit ( 'committing database' );
+
  $dbc->commit;
  
- logit ( 'analyzing' );
- stm( 'analyze' );
+ logit ( 'analyzing database' );
+ 
+ $dbc->do( 'analyze' );
  
  if ( $vacuum ) {
-  logit ( 'vacuuming' );
-  {  
-   local $dbc->{AutoCommit} = 1; 
-   do( 'vacuum' );
+ 
+  logit ( 'vacuuming database' );
+
+  {
+  
+   local $dbc->{AutoCommit} = 1;
+ 
+   $dbc->do( 'vacuum' );
+ 
   }
+  
  }
- logit ( 'disconnecting' );
+
+ logit ( 'disconnecting database' );
+
  $dbc->disconnect;  
+
+}
+
+sub load_exec {
+
+ # general database statement executor
+ # the statement key points to the statement to get executed
+
+ my ( $key, @args ) = @_;
+ 
+ defined $stm->{$key} or die "statement '$key' is unknown";
+ 
+ #logit ( "$key " . join ( '-', @args ) );
+  
+ $stm->{$key}->execute ( @args );
+ 
+ given ( $key ) {
+ 
+  when ( /one$/ ) { return $stm->{$key}->fetchrow_array }
+  
+  when ( /row$/ ) { return $stm->{$key}->fetchrow_array }
+  
+  when ( /col$/ ) { # there is no fetchcol_array or fetchcol_arrayref 
+  
+   my $arr = $stm->{$key}->fetchall_arrayref;
+   
+   my @out = map { $_->[0] } @{ $arr };
+   
+   return @out; 
+  
+  }
+  
+  when ( /all$/ ) { return $stm->{$key}->fetchall_array }
+  
+  when ( /ind$/ ) { return $dbc->sqlite_last_insert_rowid() }
+ 
+ }
+ 
+ # default is not to return anything
 
 }
 
 sub load_nomatch {
 
+ #
  # checks if DNA matches, if it doesn't then store the new DNA
 
  # returns true if no match = something to do 
@@ -197,12 +256,9 @@ sub load_nomatch {
  
  my ( $class, $item, $dnanew ) = @_;
  
- # the current run is the latest run
- my $dt = one('select max(dt) from run');
+ my $dt = load_exec ( 'run_one' ); # get the current run's dt
  
- # 
- my $dnaold = one(qq{select dna from dna where class=? and item=?},
-  $class,$item);
+ my $dnaold = load_exec ( 'dna_one', $class, $item );
  
  if ( defined $dnaold ) {
  
@@ -216,9 +272,9 @@ sub load_nomatch {
   
    logit ( "DNA mismatch '$class' '$item' '$dnaold' '$dnanew'" );
    
-   stm('update dna set dna=?,dt=? where class=? and item=?',
-    $dnanew,$dt,$class,$item);
-
+   load_exec ( 'dna_del', $class, $item );
+   load_exec ( 'dna_ins', $dnanew, $dt, $class, $item );
+   
    return 1;
      
   }
@@ -227,46 +283,12 @@ sub load_nomatch {
  
   logit ( "DNA not found '$class' '$item' '$dnanew'" ); 
 
-  stm('insert into dna(class,item,dna,dt) values (?,?,?,?)',
-   $class,$item,$dnanew,$dt);
+  load_exec ( 'dna_ins', $dnanew, $dt, $class, $item );
 
   return 1;
  
  }
   
-}
-
-sub obj {
-
- my ( $subject, $obj_en, $sort_en, $obj_fi, $sort_fi ) = @_;
- 
- my $subjectid = one('select subjectid from subject where subject=?',$subject);
-
- defined $subjectid or die "subject '$subject' is unknown";
-
- # redundant values are converted to null
- $sort_fi eq $obj_fi and $sort_fi = undef;
- $obj_fi eq $obj_en and $obj_fi = undef;
- $sort_en eq $obj_en and $sort_en = undef;
-  
- my $objectid = one(qq{select objectid from object where subjectid=? 
-  and object_en=?},$subjectid,$obj_en);
-  
- if ( defined $objectid ) {  
- 
-  # we do an update even there is really nothing to update
-  stm(qq{update object set object_en=?,sort_en=?,object_fi=?,sort_fi=?
-   where objectid=?},$obj_en,$sort_en,$obj_fi,$sort_fi,$objectid);
- 
- } else { # new object
-  
-  $objectid = stmx(qq{insert into object(subjectid,object_en,sort_en,object_fi,
-   sort_fi) values (?,?,?,?,?)});
- 
- }
- 
- return $objectid; 
-
 }
 
 sub load_folder {
@@ -275,88 +297,37 @@ sub load_folder {
  
  my $album = pathcut ( $folder );
  
+ load_exec ( 'photo_del', $album );
+ load_exec ( 'fexif_del', $album );
+    
  my @photos = fixgap ( findphotos ( $folder ) );
 
  logit ('loading '. scalar @photos . " photos from '$folder'" );
  
- my $albumid = one('select albumid from album where folder=?',$album);
- 
- defined $albumid or do { # new album
- 
-  $albumid = stmx('insert into album(folder) values (?)',$album);
-
- };
-  
- # deleteting photos that are "out of scope"
- stm('delete from photo where albumid=? and n>?',$albumid,scalar @photos);
- 
- my $n = 1; # photos are numbered starting from 1
+ my $n = 1; # photos are numbered staring from 1
  
  foreach my $photo (@photos) {
-
-  my $file = filehead ( $photo );
+      
+  my $head = filehead ( $photo );
              
   my $thumb = filethumb ( $photo );
 
   -f $thumb or die "missing thumbnail file '$thumb'";  
    
-  my ( $hwidth, $hheight ) = widthheight( $photo );
+  my ( $width_hr, $height_hr ) = widthheight( $photo );
   
-  my $hbytes = filesize ( $photo );
+  my $bytes_hr = filesize ( $photo );
   
-  my ( $lwidth, $lheight ) = widthheight( $thumb );
+  my ( $width_lr, $height_lr ) = widthheight( $thumb );
   
-  my $lbytes = filesize ( $thumb );
-
-  my $photoid = one('select photoid from photo where albumid=? and n=?',
-   $albumid, $n );
-   
-  if ( defined $photoid ) {
+  my $bytes_lr = filesize ( $thumb );
   
-   # we do an update even there is really nothing to update
-   
-   stm(qq{update photo set file=?,hwidth=?,hheight=?,hbytes=?,lwidth=?,
-    lheight=?,lbytes=? where photoid=?},$file,$hwidth,$hheight,$hbytes,$lwidth,
-    $lheight,$lbytes,$photoid);
+  load_exec ( 
+   'photo_ins', $album, $n, $head, $width_hr, $height_hr,
+   $bytes_hr, $width_lr, $height_lr, $bytes_lr 
+  );
   
-  } else {
-  
-   $photoid = stmx(qq{insert into photo(albumid,file,n,hwidth,hheight,hbytes,lwidth,
-   lheight,lbytes) values (?,?,?,?,?,?,?,?,?)},$albumid,$file,$n,$hwidth,$hheight,
-    $hbytes,$lwidth,$lheight,$lbytes);  
-  
-  }
-  
-  #my $exif = exif ( $album, $photo );
-  
-  $n++;
-  
- }
- 
-}
-
-1; 
-  
-__END__
-  
-  foreach my $key ( keys %{ $exif } ) {
-  
-   my $objectid = obj ( $_,  $exif -> { $_ },  $exif -> { $_ },  
-    $exif -> { $_ },  $exif -> { $_ } );
-    
-   if ( one('select count(*) from inexif where photoid=? and objectid_file=?',
-    $photoid,$objectid ) ) { # insert new
-    
-    do('insert into inexif(photoid,objectid_file')
-    
-    
-   } else { # update 
-   
-    do 
-   
-   } 
-  
-  }
+  my $exif = exif ( $album, $photo );
   
   do {
    load_exec ( 'fexif_ins', $album, $n, $_, $exif -> { $_ }  ) 

@@ -93,8 +93,6 @@ foreach my $folder ( @folders ) {
 
 }
 
-goto TEST;
-
 SKIP_FOLDERS:
 
 # phase 2: load files
@@ -173,8 +171,7 @@ logit ( "recreating secondary tables" );
 
 load_secondary;
 
-
-TEST:
+SKIP_POST:
 
 load_end; # finish
 
