@@ -29,9 +29,11 @@ use warnings;
 
 use Time::localtime;
 
+use POSIX qw( floor );
+
 use parent 'Exporter';
 
-our @EXPORT_OK = qw( dtexpand dt dtlang thisyear ); 
+our @EXPORT_OK = qw( dtexpand dt dtlang thisyear );
 
 #
 # expands timestamp from YYYYMMDD or YYYYMMDDHHMMSS into 

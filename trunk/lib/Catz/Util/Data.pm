@@ -36,12 +36,17 @@ our @EXPORT_OK = qw(
  plaincat textchoose textremove tolines topiles umb 
 );
 
+use Memoize;
+
 use Catz::Data::Conf;
 use Catz::Util::File qw ( filenum );
 #use Catz::Util::Log qw ( logit ); #debugging use
 use Catz::Util::Number qw ( round );
 use Catz::Util::String qw ( clean trim ucclcc );
 use Catz::Util::Time qw ( dtexpand );
+
+
+memoize ( 'exifsort' );
 
 sub exifsort {
 
@@ -104,6 +109,8 @@ sub exifsort {
  
 }
 
+memoize ( 'expand_common' );
+
 sub expand_common {
 
  ### NOT USED RIGHT NOW!
@@ -115,6 +122,8 @@ sub expand_common {
  return $text; 
 
 }
+
+memoize ( 'exptext' );
 
 sub exptext {
 
@@ -142,6 +151,8 @@ sub exptext {
  
 }
 
+memoize ( 'explink' );
+
 sub explink {
 
  my $text = shift;
@@ -155,6 +166,8 @@ sub explink {
  return $text;
    
 }
+
+memoize ( 'macro' );
 
 sub macro {
 
@@ -227,6 +240,8 @@ sub macro {
  
 } 
 
+memoize ( 'expmacro' );
+
 sub expmacro {
 
  my $text = shift;
@@ -247,6 +262,8 @@ sub expmacro {
  
 }
 
+memoize ( 'plaincat' );
+
 sub plaincat {
 
  # removes all freetext parts -> just cat data is left
@@ -258,6 +275,8 @@ sub plaincat {
  return trim ( clean ( $text ) );
 
 }
+
+memoize ( 'lens' );
 
 sub lens {
 
@@ -303,6 +322,8 @@ sub lens {
 
 }
 
+memoize ( 'body' );
+
 sub body {
  
  $_ = $_[0];
@@ -322,6 +343,8 @@ sub body {
  return undef; 
  
 }
+
+memoize ( 'nat' );
 
 sub nat { 'FI' } # at the moment all galleries are from Finland
 
@@ -446,6 +469,8 @@ sub fixgap {
 
 }
 
+memoize ( 'loc' );
+
 sub loc {
 
  my $loc = $_[0];
@@ -457,6 +482,8 @@ sub loc {
  return ucclcc($loc), ucclcc($loc);
      
 }
+
+memoize ( 'org' );
 
 sub org { 
  
@@ -519,6 +546,7 @@ sub org {
   
 }
 
+memoize ( 'umb' );
 
 sub umb { 
  
