@@ -169,6 +169,7 @@ my $conf = { # config is one hash ref
  
  # metafiles to be loaded and the loading order
  metafiles => [ qw ( exifmeta newsmeta natmeta breedmeta breedermeta gallerymeta ) ],
+ #metafiles => [ qw ( exifmeta newsmeta natmeta breedmeta breedermeta gallerymeta ) ],
   #metafiles => [ qw ( textmeta newsmeta countrymeta breedmeta breedermeta gallerymeta ) ],
  
  # the filename ending for thumbnail files

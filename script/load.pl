@@ -70,7 +70,7 @@ lc($ARGV[0]) eq 'meta' and goto SKIP_FOLDERS;
 
 # phase 1: load folders
 
-my @folders =  
+my @folders =   
  grep { /\d{8}[a-z0-9]+$/ } finddirs ( conf ( 'path_photo' ) );
 
 logit ( 'verifying ' . scalar ( @folders ) . ' folders' );
@@ -149,7 +149,15 @@ foreach my $head ( @{ conf ( 'metafiles' ) } ) {
     $table = conf ( 'file2table' ) -> ( $file );   
    }
   
-   load_simple ( $table, $data );
+   if ( $table eq 'mexif' ) {
+  
+    load_exif ( $table, $data );
+    
+   } else {
+   
+    load_simple ( $table, $data );
+    
+   }
   
   }
   
@@ -157,19 +165,9 @@ foreach my $head ( @{ conf ( 'metafiles' ) } ) {
  
 }
 
-# phase 3: postprocessing = inserting to sec more elements
-
 $changes == 0 and goto SKIP_POST;
 
-logit ( "postprocessing secondaries" ); 
-
-load_pprocess ( $loaded );
-
-# phase 4: recreating secondary tables
-
-logit ( "recreating secondary tables" ); 
-
-load_secondary;
+load_post;
 
 SKIP_POST:
 
