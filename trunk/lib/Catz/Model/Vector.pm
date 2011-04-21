@@ -83,11 +83,20 @@ sub vectorize {
  
  my ( $db, $lang, $pri, $sec ) = @_;
  
+ # create a bit vector of x indexes based on pri + sec pair
+ 
  my $res;
+ 
+ # first we ask if this data comes from album, exif or position
+ my $orig = $db->one ('select origin from pri where pri=?',$pri);
+ 
+ $orig or return undef; # unknown pri
+ 
+ $orig eq 'exif' and $orig .= 'f'; # we use exif view INEXIFF, not the base table
   
  if ( $pri eq 'has' ) {
- 
-  $res = $db->col( "select x from pri natural join sec natural join snip natural join _x where pri=? group by x", $sec );
+    
+  $res = $db->col( "select x from photo natural join in$orig where sid in (select sid from sec natural join pri where pri=? )", $sec )
             
  } else { # no 'has'
  
@@ -95,35 +104,39 @@ sub vectorize {
   
    # pattern matching
 
-   $res = $db->col( "select x from pri natural join sec natural join snip natural join _x where pri=? and sec_$lang like ?", $pri, $sec );    
- 
+   $res = $db->col ( "select x from photo natural join in$orig where sid in ( select sid from sec_$lang natural join pri where pri=? and sec like ? )", $pri, $sec )
+       
   } else {
 
    # exact
  
-   $res = $db->col( "select x from pri natural join sec natural join snip natural join _x where pri=? and sec_$lang=?", $pri, $sec );
+   $res = $db->col ( "select x from photo natural join in$orig where sid in ( select sid from sec_$lang natural join pri where pri=? and sec=? )", $pri, $sec )
  
   }  
 
  }
  
- my $maxx = $db->one( "select max(x) from _x" ) + 1;
+ warn ( $res );
+
+ # creating an empty bit vector one larger than there are photos
+ # since 0 index in not used 
+ my $maxx = $db->one( "select max(x) from photo" ) + 1;
       
  my $bvec = Bit::Vector->new( $maxx );
    
- $bvec->Index_List_Store ( @$res );
+ $bvec->Index_List_Store ( @$res ); # store the x indexes as bits
   
  return $bvec;  
   
 }   
 
-sub vector_bit {
+sub vector_bit { # fetch a bit vector for a set of arguments
 
  my $res;
 
  my ( $db, $lang, @args ) = @_;
  
- my $maxx = $db->one( "select max(x) from _x" ) + 1;
+ my $maxx = $db->one( "select max(x) from photo" ) + 1;
      
  # OR base vector is a completely empty vector
  my $ors =  Bit::Vector->new( $maxx ); 
@@ -227,13 +240,14 @@ sub vector_pager {
  
  my @root = map { $svec->[$_*$perpage] } ( 0 .. $pages - 1  );
  
- my $pin = $db->col(
-  qq{select id from _x where x in (} . ( join ',', @root ) . ') order by x' 
- );
+ my @pin = map { fullnum33 ( $_[0], $_[1] ) }  
+  @{ $db->all(
+  qq{select s,n from album natural join photo where x in (} . ( join ',', @root ) . ') order by x' 
+ ) };
          
  my @xs = map { $svec->[$_] } ( $xfrom .. $xto );
    
- return [ ( $total, $page, $pages, $from, $to , $pin, \@xs ) ];
+ return [ ( $total, $page, $pages, $from, $to , \@pin, \@xs ) ];
       
 }
 
@@ -253,30 +267,31 @@ sub vector_pointer {
  my $total = scalar @{ $svec };
  
  my @pin;
+ my $sql = 'select s,n from album natural join photo where x=?'; 
  
  # first
- push @pin, $db->one( 
-  'select id from _x where x=?',
+ push @pin, fullnum33 ( @{ $db->row( 
+  $sql,
   $svec->[0]
- );
+ )});
  
  # previous
- push @pin, $db->one(
-  'select id from _x where x=?',
+ push @pin, fullnum33 ( @{ $db->row( 
+  $sql,
   $svec->[ $idx > 0 ? $idx - 1  : 0 ]
- );
+ )});
  
  # next
- push @pin, $db->one(
-  'select id from _x where x=?',
+ push @pin, fullnum33 ( @{ $db->row( 
+  $sql,
   $svec->[ $idx < ( $total - 1 ) ? $idx+1 : ( $total - 1 ) ]
- );
+ )});
  
  # last
- push @pin, $db->one(
-  'select id from _x where x=?',
+ push @pin, fullnum33 ( @{ $db->row( 
+  $sql,
   $svec->[$total-1]
- );
+ )});
    
  return [ ( $total, $idx + 1, \@pin ) ];
     

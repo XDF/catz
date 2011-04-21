@@ -104,8 +104,8 @@ my $sql = {
  photo_x_upd => 'update photo set x=? where aid=? and n=?',
  sid_col => 'select sid from sec',
  inalbum_sid_one => 'select count(distinct aid||n) from inalbum natural join photo where sid=?',
- inexif_sid_one => 'select count(distinct aid||n) from inexif where sid_meta=? or sid_data=? or sid_file=?',
- inpos_sid_one => 'select count(distinct aid||n) from inpos where sid=?',
+ inexif_sid_one => 'select count(distinct aid||n) from inexif natural join photo where sid_meta=? or sid_data=? or sid_file=?',
+ inpos_sid_one => 'select count(distinct aid||n) from inpos natural join photo where sid=?',
  sec_cnt_upd => 'update sec set cnt=? where sid=?',
  
  album_trn => 'delete from album where aid not in ( select aid from inalbum union select aid from inexif union select aid from inpos union select aid from photo )',

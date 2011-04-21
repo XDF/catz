@@ -2,7 +2,7 @@
 # Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
 # Licensed under The MIT License
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -20,44 +20,21 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-#
+#  
+
+package Catz::Ctrl::Result;
 
 use strict;
 use warnings;
 
-use lib '../lib';
+use parent 'Catz::Ctrl::Base';
 
-use feature qw ( say );
+sub result {
 
-use Catz::Data::Conf;
-use Catz::Util::File qw ( fileread filewrite fileremove findlatest pathcut );
-
-# rolls to the latest database by updating the key file
-
-# latest key file
-my $keyold = findlatest ( conf ( 'path_master' ), 'txt' );
-
-# current dt
-my $dtold = substr ( pathcut ( $keyold ), 0, 14 );
-
-# latest database file
-my $dbnew = findlatest ( conf ( 'path_master' ), 'db' );
-
-# new dt
-my $dtnew = substr ( pathcut ( $dbnew ), 0, 14 );
-
-$dtold eq $dtnew and do { 
-
- say "already at the latest dt '$dtold', no need to roll";
+ my $self = shift; my $s = $self->{stash};
  
- exit;
- 
-};
 
-# create the new key file
-filewrite ( conf ( 'path_master' ) . "/$dtnew.txt", "Catz database key file" );
+}
 
-# remove the old key file
-fileremove ( $keyold );
 
-say "rolled from '$dtold' to '$dtnew'";
+1;

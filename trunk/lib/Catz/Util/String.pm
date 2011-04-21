@@ -30,9 +30,10 @@ use warnings;
 use base 'Exporter';
 
 our @EXPORT_OK = qw ( 
- clean decode deurl dna encode enurl enval lcc limit nobreak trim ucc ucclcc 
+ clean decode deurl dna encode enurl enval lcc limit nobreak pack unpack trim ucc ucclcc 
 ); 
 
+use MIME::Base32 qw( RFC ); 
 use Digest::MD5 qw ( md5_base64 );
 use URI::Escape::XS qw ( uri_escape uri_unescape );
 
@@ -114,6 +115,10 @@ sub lcc { $_ = $_[0]; tr|ÜÅÄÖ|üåäö|; lc }
 # converts all spaces in a string to HTML nbsp entities
 #
 sub nobreak { $_ = $_[0]; s/ /\&nbsp;/g; $_; }
+
+sub pack { MIME::Base32::encode ( $_[0] ) }
+
+sub unpack { MIME::Base32::decode ( $_[0] ) }
 
 #
 # trims all whitespace chars from the beginning and from the end
