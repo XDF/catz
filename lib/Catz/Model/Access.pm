@@ -40,6 +40,7 @@ use Catz::Data::DB;
 use Catz::Model::List;
 use Catz::Model::Misc;
 use Catz::Model::Photo;
+use Catz::Model::Result;
 use Catz::Model::Vector;
 
 my $dbs = {}; # static hashref to keep database connections hashed on dt

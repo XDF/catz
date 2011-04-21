@@ -37,18 +37,29 @@ use parent 'Exporter';
 
 our @EXPORT = qw ( cache_get cache_set );
 
+use DBI;
 use CHI;
 
 use Catz::Data::Conf;
+use Catz::Util::Time qw ( thisweek thisyear );
 
 # all data in Catz can live in the same CHI namespace since
 # * models use sub name as a key
 # * pages use url name as a key
+# * SQL? ???????????????????????????????
 # and since sub never starts with '/' and urls always
 # start with '/' there will be no key crashes
 
+my %setup = %{ conf ('cache' ) };
+
+$setup{dbh} = DBI->connect (
+ conf ( 'dbconn' ) . conf ( 'path_cache' ) . '/' . 
+ thisyear . sprintf ( "%02d", thisweek ) . '.db',
+ undef, undef, conf( 'dbargs_cache' )
+);
+
 # using a static reference to the real cache object
-my $cache = CHI->new( %{ conf ('cache' ) } );
+my $cache = CHI->new( %setup );
 
 # the cache key separator
 use constant SEP => '#';

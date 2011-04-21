@@ -27,13 +27,13 @@ package Catz::Util::Time;
 use strict;
 use warnings;
 
-use Time::localtime;
-
+use DateTime;
+use Time::localtime; 
 use POSIX qw( floor );
 
 use parent 'Exporter';
 
-our @EXPORT_OK = qw( dtexpand dt dtlang thisyear );
+our @EXPORT_OK = qw( dtexpand dt dtlang thisyear thisweek );
 
 #
 # expands timestamp from YYYYMMDD or YYYYMMDDHHMMSS into 
@@ -86,5 +86,10 @@ sub thisyear {
  return $y + 1900;
  
 }
+
+#
+# returns the current week number
+#
+sub thisweek { DateTime->now->week_number }
 
 1;

@@ -76,5 +76,13 @@ sub sample {
 
 }
 
+sub result {
+
+  my $self = shift; my $s = $self->{stash};
+  
+  
+
+}
+
 
 1;

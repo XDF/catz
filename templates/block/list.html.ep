@@ -1,18 +1,22 @@
 % use Catz::Util::String qw ( enurl );
-% foreach my $rec ( @$list ) {
+% my $last = 'XXXXXXXXXXXXXX';
+% my $i = 1;
+% foreach my $row ( @$list ) {
 <div>
-% if ( defined $rec->[0] ) {
 % if ( $mode eq 'a2z' ) {
-<h2><%= $rec->[0] %></h2>
-% } else { 
-<h2><%= $rec->[0] %></h2>
-% }
+%  my $now = substr ( $row->[1], 0, 1 );
+%  if ( $last ne $now ) {
+<h2><%= $now %></h2>
+%    $last = $now; 
+%  }
+ % } else { 
+<h2><%= $i++ %></h2>
 % } 
 % my $mode = 'browse';
-% $rec->[3] == 1 and $mode = 'inspect';
-% my $text = $rec->[3] == 1 ? $t->{PHOTO} : $t->{PHOTOS};    
-<a href="/<%= $lang %>/<%= $mode %>/<%= $rec->[1] %>/<%== enurl( $rec->[2] ) %>/"><%= $rec->[2] %></a>
-<span class="shrink"><%= $rec->[3] %> <%= $text %></div>
+% $row->[3] == 1 and $mode = 'inspect';
+% my $text = $row->[3] == 1 ? $t->{PHOTO} : $t->{PHOTOS};    
+<a href="/<%= $lang %>/<%= $mode %>/<%= $row->[0] %>/<%== enurl( $row->[1] ) %>/"><%= $row->[1] %></a>
+<span class="shrink"><%= $row->[2] %> <%= $text %></div>
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine

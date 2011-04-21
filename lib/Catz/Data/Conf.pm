@@ -41,10 +41,8 @@ my $conf = { # config is one hash ref
  base_photo => 'http://www.heikkisiltala.com/galleries',
  
  cache => {
-  driver => 'File',
-  namespace => 'cache', # we use this single simple namespace for all caching
-  root_dir => "$base/data",
-  depth => 3
+  driver => 'DBI',
+  namespace => 'cache', # we use this single simple namespace for all caching 
  },
  
  # enables/disables page level caching
@@ -56,8 +54,15 @@ my $conf = { # config is one hash ref
  # enables/disables database level caching
  cache_db => 0,
  
+# file where to find the kurl for catshow.fi
+ catshow_url => $base . '/data/internal/catshow.txt',
+
  # file where to find the key for the signed cookie
- cookie_key => $base . '/data/internal/cookie.key',
+ cookie_key => $base . '/data/internal/cookie.txt',
+
+ # db arguments for CHI cache backend
+ dbargs_cache => { AutoCommit => 1, RaiseError => 0, PrintError => 1 },
+
   
  # db arguments for the web system
  dbargs_runtime => { AutoCommit => 1, RaiseError => 1, PrintError => 1 },
@@ -175,6 +180,7 @@ my $conf = { # config is one hash ref
  # the filename ending for thumbnail files
  part_thumb => '_LR.JPG',
 
+ path_cache => $base . '/data/cache',
  path_log => $base . '/' . 'log',
  path_master => $base . '/data/master',
  #path_meta => $base . '/data/meta',

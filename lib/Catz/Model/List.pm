@@ -45,49 +45,18 @@ sub list_general {
   
   when ( 'a2z' ) {
  
-   $list = $db->all( qq{select null,pri,sec,count,x from _list where
-    ord='a2z' and lang=? and pri=? order by rowid }, $lang, $subject
+   $list = $db->all( qq{select pri,sec,cnt from sec_$lang natural join 
+    pri where pri=? order by sec}, $subject
    );
-      
-   my $last = 'XXXXXXXXX';
-   
-   foreach my $row ( @$list ) {
-   
-    my $first = substr( $row->[2], 0, 1 );
-
-    $last eq $first or do {
-
-     $row->[0] = $first;
-     
-     $last = $row->[0];   
-   
-   };
-   
+       
   }
-  
- }
-  
+    
   when ( 'top' ) {
   
-   $list = $db->all( qq{select null,pri,sec,count,x from _list where
-    ord='top' and lang=? and pri=? order by rowid }, $lang, $subject
+   $list = $db->all( qq{select pri,sec,cnt from sec_$lang natural join
+    pri where pri=? order by cnt desc }, $subject
    );
-
-   my $last = 999999999;
-   my $ord = 0;
-
-   foreach my $row ( @$list ) {
-   
-    $last == $row->[3] or do {
-    
-     $row->[0] = ++$ord . '.';
-     
-     $last = $row->[3]; 
-    
-    };
-   
-   }
-  
+ 
   }
   
   default { die "unknown mode '$mode' in list creation" }
@@ -118,13 +87,29 @@ sub list_links {
    
    when ( 'albums' ) {
    
-    $links = $db->all("select album.album,name_$lang,count(distinct x) from album natural join _x group by album.album order by album desc limit 6");
+    # first fetch the latest albums
+    my $albums = $db->all("select aid,folder from album order by folder desc limit 5");
+    
+    my @res = ();
+    
+    foreach my $row ( @{ $albums } ) {
+    
+     my $name = $db->one("select sec from inalbum natural join sec_$lang natural join pri where pri='name' and aid=?",$row->[0]);
+     
+     my $n = $db->one('select max(n) from photo where aid=?', $row->[0] );
+     
+     push @res, ( [ $row->[1], $name, $n ] );
+    
+    
+    }
+   
+    $links = \@res;
    
    }
 
    when ( 'pris' ) {
 
-    $links =  $db->all("select pri,count from _pri_count group by pri order by sort_pri");
+    $links =  $db->all("select pri,cnt from sec_$lang natural join pri group by pri order by disp");
    
    }
 

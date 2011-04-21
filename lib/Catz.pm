@@ -40,7 +40,7 @@ use Catz::Util::File qw ( fileread findlatest pathcut );
 
 # last epoch time we checked for the database key file
 my $lastcheck = 0;
-my $lastdt = undef;  
+my $lastdt = undef;
 
 sub startup {
 
@@ -94,6 +94,11 @@ sub startup {
  $l->route( '/sample' )->to (
   "locate#sample", what => undef, count => conf ('samples')
  );
+
+ $l->route( '/result/:key', key => qr/[A-Z2-7]{5,}/ )->to (
+  "locate#result"
+ );
+
  
  $l->route('/list/:subject/:mode')->to('list#list');
  
@@ -223,7 +228,7 @@ sub before {
  
   # find the latest key file
 
-  my $file = findlatest ( conf ( 'path_master' ), 'key' );
+  my $file = findlatest ( conf ( 'path_master' ), 'txt' );
   
   defined $file or die "unable to find the latest key file";
   

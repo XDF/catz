@@ -2,14 +2,14 @@
 # Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
 # Licensed under The MIT License
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#          
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
 # 
@@ -20,44 +20,39 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-#
+#  
+
+package Catz::Model::Result;
 
 use strict;
 use warnings;
 
-use lib '../lib';
+use parent 'Exporter';
+our @EXPORT = qw ( catshow_result );
 
-use feature qw ( say );
+use Mojo::UserAgent;
 
 use Catz::Data::Conf;
-use Catz::Util::File qw ( fileread filewrite fileremove findlatest pathcut );
+use Catz::Data::Result;
+use Catz::Util::String qw ( unpack );
+use Catz::Util::File qw ( fileread );
 
-# rolls to the latest database by updating the key file
+my $urls = fileread ( conf ( 'catshow_url') ); 
 
-# latest key file
-my $keyold = findlatest ( conf ( 'path_master' ), 'txt' );
+my ( $url_count, $url_data ) = split /\n/, $urls; 
 
-# current dt
-my $dtold = substr ( pathcut ( $keyold ), 0, 14 );
+( defined $url_count and defined $url_data ) or die "catshow url config error";
 
-# latest database file
-my $dbnew = findlatest ( conf ( 'path_master' ), 'db' );
+my $ua = Mojo::UserAgent->new; # a static object will do fine
 
-# new dt
-my $dtnew = substr ( pathcut ( $dbnew ), 0, 14 );
+sub catshow_result {
 
-$dtold eq $dtnew and do { 
-
- say "already at the latest dt '$dtold', no need to roll";
+ my ( $db, $lang, $key ) = @_;
  
- exit;
+ my ( $date, $loc, $cat ) = split /;/, unpack ( $key );
  
-};
+ ( defined $date and defined $loc and defined $cat ) or return undef;
+    
 
-# create the new key file
-filewrite ( conf ( 'path_master' ) . "/$dtnew.txt", "Catz database key file" );
 
-# remove the old key file
-fileremove ( $keyold );
-
-say "rolled from '$dtold' to '$dtnew'";
+}
