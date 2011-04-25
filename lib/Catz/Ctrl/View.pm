@@ -83,11 +83,17 @@ sub process_path {
  
  if ( defined $s->{path} ) {
  
+  #warn ( $s->{path} );
+ 
   @path =  split /\//, $s->{path};
   
   # reject if any empty path parts
-  ( all { defined $_ } @path ) or return 0;  
-   
+  ( all { defined $_ } @path ) or return 0;
+  
+  #warn ( join '-', @path );
+  
+  #warn ( $s->{url} );
+    
  }
 
  # arguments must come in as pairs
@@ -105,9 +111,13 @@ sub browse {
 
  my $self = shift; my $s = $self->{stash};
  
+ #warn ( $s->{path} );
+ 
  $self->process_path or $self->not_found and return;
  
  $self->process_id or $self->not_found and return;
+ 
+ #warn ( join '-', @{ $s->{path_array} }  );
    
  my $res = $self->fetch('vector_pager', 
    $s->{x}, $s->{perpage}, @{ $s->{path_array} }  

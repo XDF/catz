@@ -130,6 +130,7 @@ sub before {
 
  my $self = shift; my $stash = $self->{stash};
  
+ #warn ( $self->req->url->path->to_string );
  
  # force all URLs to end with slash 
  $self->req->url->path->trailing_slash or do {

@@ -24,7 +24,7 @@
 
 // stores the previous value of the find text
 // to detect if the value has really changed 
-var prevVal = '';
+var prevVal = '89435jklkasd83i34089h3n5n23';
 
 // keeps a reference to the previous find and sample requests
 // in order to make them abortable if a new requests are issued
