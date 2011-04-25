@@ -1,7 +1,9 @@
+% use Catz::Util::Number qw ( fullnum33 ); 
 % use Catz::Util::String qw ( enurl );
 % foreach my $th ( @{ $thumb } ) {
-% my $width = int ( ( $thumbsize / $th->[4] ) * $th->[3] );
-<a href="/<%= $lang %>/inspect/<%== $path // '' %><%== $path ? '/' : '' %><%== $th->[0] %>/"><img src="<%== $photobase %>/<%== $th->[1] %>/<%== $th->[2] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
+% my $id = fullnum33 ( $th->[0], $th->[1] );
+% my $width = int ( ( $thumbsize / $th->[5] ) * $th->[4] );
+<a href="/<%= $lang %>/inspect/<%== $path // '' %><%== $path ? '/' : '' %><%== $id %>/"><img src="<%== $photobase %>/<%== $th->[2] %>/<%== $th->[3] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine

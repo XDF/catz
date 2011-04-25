@@ -13,9 +13,6 @@
 % ( $action eq 'front' ) and do {
 <script type="text/javascript" src="/js_site/find.js"></script>
 % };
-% ( $action eq 'front' or $action eq 'search' ) and do {
-<script type="text/javascript" src="/js_site/sample.js"></script>
-% };
 % ( $action eq 'inspect' or $action eq 'show' ) and do { 
 <script type="text/javascript" src="/js_site/fit.js"></script>
 % };

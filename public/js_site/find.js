@@ -22,14 +22,15 @@
 // THE SOFTWARE.
 //
 
-// stores the previous value of the find activation
+// stores the previous value of the find text
 // to detect if the value has really changed 
 var prevVal = '';
 
-// keeps a reference to the previous find request
-// in order to make it abortable if a new request
-// is issued before it is completed
-var prevReq;
+// keeps a reference to the previous find and sample requests
+// in order to make them abortable if a new requests are issued
+// before the previous ones have been completed
+var prevReqFind;
+var prevReqSample;
 
 function doFind() {
 
@@ -38,31 +39,49 @@ function doFind() {
  if ( what != prevVal ) { // if the value has really changed ...
  
   prevVal = what;
+
+  // terminate ongoing requests if any
+  if ( prevReqFind ) { prevReqFind.abort(); }  
+  if ( prevReqSample ) { prevReqSample.abort(); } 
+  
+  // extract '/fi' or '/en' from the current URL
+  // to make find language sensitive
+  head = $(location).attr('pathname').toString().substring ( 0, 3 );
   
   if ( what == '' ) { // there is nothing to find
-    
-   if ( prevReq ) { prevReq.abort(); } // terminate ongoing request if any
- 
-   $('div#found').html(''); // clear the visible results
-   
-  } else { // there is something to find
 
-   if ( prevReq ) { prevReq.abort(); }  // terminate ongoing request if any
-   
-   // extract '/fi' or '/en' from the current URL to make find
-   // language specific
-   head = $(location).attr('pathname').toString().substring ( 0, 3 );
-   
-   // make the AJAX call to find service
-   // store the reference to the call to prevReq    
-   prevReq = $.ajax ({
+   // clear the find results
+   $('div#found').html(''); 
+       
+   // load "anonymous" samples
+   prevReqSample = $.ajax ({
+    url: head + '/sample/',
+    success: function( data ){ // when te request completes this get executed
+     
+      prevReqSample = null; // clear the reference to this request
+      $('div#samples').html( data ); // update the result to DOM   
+     
+    }  
+   });
+    
+  } else { // there is something to find
+     
+   prevReqFind = $.ajax ({
     url: head + '/find/' + what + '/',
     success: function( data ){ // when te request completes this get executed
      
-      prevReq = null; // clear the reference to this request
-      prevVal = data; // store for comparison   
-    
+      prevReqFind = null; // clear the reference to this request
       $('div#found').html( data ); // update the visible results
+     
+    }  
+   });
+
+   prevReqSample = $.ajax ({
+    url: head + '/sample/' + what + '/',
+    success: function( data ){ // when te request completes this get executed
+     
+      prevReqSample = null; // clear the reference to this request
+      $('div#samples').html( data ); // update the result to DOM   
      
     }  
    });
@@ -74,14 +93,14 @@ function doFind() {
 } 
 
 $(document).ready(function() {
-
- $('#find').keyup(function() {
-   doFind();
- });
  
  // intial rendering when page loads, important to bring
  // last content back up when returning to a page 
  doFind();
 
+ // run every time there is a keyboard action on find field
+ $('#find').keyup(function() {
+  doFind();
+ });
 
 });

@@ -3,7 +3,7 @@
 %== include 'stripe/viewer';
 </div>
 <div class="center" id="fitparent">
-<img id="fittarget" src="<%== $photobase %>/<%== $image->[1] %>/<%== $image->[2] %>">
+<img id="fittarget" src="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>">
 </div>
 %#
 %# Catz - the world's most advanced cat show photo engine

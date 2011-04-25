@@ -13,8 +13,8 @@
 <h2><%= $i++ %></h2>
 % } 
 % my $mode = 'browse';
-% $row->[3] == 1 and $mode = 'inspect';
-% my $text = $row->[3] == 1 ? $t->{PHOTO} : $t->{PHOTOS};    
+% $row->[2] == 1 and $mode = 'inspect';
+% my $text = $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOS};    
 <a href="/<%= $lang %>/<%= $mode %>/<%= $row->[0] %>/<%== enurl( $row->[1] ) %>/"><%= $row->[1] %></a>
 <span class="shrink"><%= $row->[2] %> <%= $text %></div>
 % }

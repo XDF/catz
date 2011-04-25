@@ -44,7 +44,9 @@ sub sample {
 
  my $self = shift; my $s = $self->{stash};
  
- my $xs; my @set;
+ ( $s->{count} < 10 or  $s->{count} > 99 ) and $self->not_found and return;
+ 
+ my $xs; my @set = ();
  
  $s->{path} = undef;
  
@@ -52,23 +54,26 @@ sub sample {
  
   my $res = $self->fetch ( 'find', $s->{what} );
   
-  scalar @{ $res } == 0 and $self->not_found and return; 
- 
-  $xs = [ map { $_->[3] } @{ $res } ];
- 
-  @set = @{ $xs };
-  
+  scalar @$res == 0 and $self->not_found and return;
+     
+  # get x's of the first item found (pri, sec)
+  # this behavior may be changed later 
+  $xs = $self->fetch ( 'vector_array_rand', $res->[0]->[0], $res->[0]->[1] );
+   
  } else {
 
   $xs = $self->fetch ( 'vector_array_rand',  @{ $s->{path_array} } );
- 
-  @set = @{ $xs } [ 0 .. $s->{count} - 1 ];
-  
+     
  }
  
- #die join '-', @set;
+ my $limit = $s->{count} - 1;
  
- my $res = $self->fetch ( 'photo_thumbs', @set );
+ # not enough samples found, stick to those found
+ ( scalar @$xs  < ( $s->{count} ) ) and $limit = scalar @$xs - 1;
+ 
+ @set = @{ $xs } [ 0 .. $limit ];
+ 
+ my $res = $self->fetch ( 'photo_thumb', @set );
  
  $s->{thumb} = $res->[0];
     

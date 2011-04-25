@@ -27,29 +27,32 @@
 package Catz::Model::Photo;
 
 use parent 'Exporter';
-our @EXPORT = qw ( photo_thumbs photo_detail photo_image photo_text );
+our @EXPORT = qw ( photo_thumb photo_detail photo_image photo_text );
 
 use Catz::Data::DB;
 use Catz::Util::Time qw ( dtexpand );
 
-sub photo_thumbs {
+sub photo_thumb {
 
  my ( $db, $lang, @xs ) = @_;
  
  my $min = 99999999;
  my $max = 00000000; 
  
- my $thumbs = $db->all( qq{select id,album,file||'_LR.JPG',width_lr,height_lr, 
-  bytes_lr from _photo where x in (} . ( join ',', @xs ) .  ') order by x' );
+ my $thumbs = $db->all( qq{select s,n,folder,file||'_LR.JPG',lwidth,lheight from album natural join photo where x in (} . ( join ',', @xs ) .  ') order by x' );
 
  foreach my $row ( @$thumbs ) {
-  # extract date from the album name (first eight characters)
-  my $d = int (  substr ( $row->[1], 0, 8 ) ); 
+  # extract date from the folder name (first eight characters)
+  my $d = int (  substr ( $row->[2], 0, 8 ) ); 
   $d < $min and $min = $d;
   $d > $max and $max = $d;
  } 
 
- return [ $thumbs, dtexpand ( $min, $lang ), dtexpand ( $max, $lang ) ];
+ return [ 
+  $thumbs, 
+  $min ne 99999999 ? dtexpand ( $min, $lang ) : undef, 
+  $max ne 00000000 ? dtexpand ( $max, $lang ) : undef
+ ];
 
 }
 
@@ -57,8 +60,11 @@ sub photo_detail {
 
  my ( $db, $lang, $x ) = @_;
 
- return $db->all ( qq{select pri,sec_$lang from pri natural join sec natural
-  join snip natural join _x where x=? order by sort_pri,sort_$lang}, $x );
+ return $db->all ( qq{select pri,sec from (
+  select pri,disp,sec,sort from pri natural join sec_$lang natural join inalbum natural join photo where x=? union all
+  select pri,disp,sec,sort from pri natural join sec_$lang natural join inexiff natural join photo where x=? union all
+  select pri,disp,sec,sort from pri natural join sec_$lang natural join inpos natural join photo where pri<>'text' and x=?
+ ) order by disp,sort}, $x, $x, $x );
 
 }
 
@@ -66,8 +72,7 @@ sub photo_text {
 
  my ( $db, $lang, $x ) = @_;
 
- return $db->col ( qq{select sec_$lang from pri natural join sec natural join
-  snip natural join _x where x=? and pri='out' order by p}, $x );
+ return $db->col ( qq{select sec from pri natural join sec_$lang natural join inpos natural join photo where pri='text' and x=? order by p}, $x );
 
 
 }
@@ -76,8 +81,7 @@ sub photo_image {
 
  my ( $db, $lang, $x ) = @_;
  
- return $db->row ( qq{select id,album,file||'.JPG',width_hr,height_hr,bytes_hr
-  from _photo where x=?},$x);
+ return $db->row ( qq{select s,n,folder,file||'.JPG',hwidth,hheight from album natural join photo where x=?},$x);
 
 }
 

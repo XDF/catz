@@ -31,7 +31,7 @@ use Number::Format;
 
 use base 'Exporter';
 
-our @EXPORT_OK = qw( float fmt fullnum3 fullnum4 fullnum33 minnum round ); 
+our @EXPORT_OK = qw( float fmt fullnum3 fullnum4 fullnum33 minnum minnum33 round ); 
 
 # Static creation of Number::Format objects, used later in formatting sub
 
@@ -88,6 +88,15 @@ sub fullnum4 { sprintf ( "%04d" , $_[0] ) }
 # converts a null padded integer into a real integer
 #
 sub minnum { int ( $_[0] ) }
+
+#
+# converts two integers each padded to 3 digits to real integers
+#
+sub minnum33 { 
+
+ ( int ( substr ( $_[0], 0, 3 ) ), int ( substr ( $_[0], 3, 3 ) ) )  
+
+}
 
 #
 # rounds a float

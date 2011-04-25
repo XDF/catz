@@ -129,7 +129,7 @@ sub browse {
  scalar @{ $s->{xs} } == 0 and $self->not_found and return; 
  # no photos in this page
  
- $res = $self->fetch( 'photo_thumbs', @{ $s->{xs} } ) ;
+ $res = $self->fetch( 'photo_thumb', @{ $s->{xs} } ) ;
  
  $s->{thumb} = $res->[0];
  $s->{min} = $res->[1];
