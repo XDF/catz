@@ -1,29 +1,22 @@
-#summary Test results for the caching subsystem (early testing)
-#labels Cache,CHI,CHI::Driver::File,Perl
+#summary Test results of the caching subsystem (early testing)
+#labels Cache,CHI,SQLite,CHI::Driver::DBI,Perl
 
 = Summary =
 
-*Preliminary results, errors coming, check back later!*
+The system tests (Files=6, Tests=1126) of an early version of the system were run with different cache settings. Here are the results. Using CHI with CHI::Driver::DBI backend on SQLite located to a standard USB IDE hard disk. Assumably the hard disk characteristics are not important since the data is likely to come from Windows block cache. Times are seconds. The cache file was deleted between the cache mode setting changes. The cache DB file size after the last test run was 7.7 MB.
 
-System tests (Files=6, Tests=1126) of an early version of the system was run with different cache settings. Here are the results. Using CHI with CHI::Driver::File backend on a standard USB IDE hard disk (Windows 7 64-bit). Assumably the hard disk characteristics are not important since the data is likely to come from Windows disk block cache. Times are seconds.
+= Desktop, i7, Windows 7 64-bit = 
 
-|| *Page* || *Model* || *DB* || *First run cache cleared* || *Second run with cache* || *Performance boost* ||
-|| 0 || 0 || 0 || 276 || 275 || 1x ||
-|| 0 || 0 || 1 || 77 || 37 || 7.4x ||
-|| 0 || 1 || 0 || 200 || 97 || 2.8x ||
-|| 0 || 1 || 1 || 64 || 19 || 14.5x ||
-|| 1 || 0 || 0 || 281 || 116 (2 tests failed) || 2.4x ||
-|| 1 || 0 || 1 || 237 (10 tests failed) || 13 s || 21.2x ||
-|| 1 || 1 || 0 || ? || ? || ? ||
-|| 1 || 1 || 1 || 418 || 13 || 21.2x ||
+|| *Page* || *Model* || *DB* || *Initial run* || *Second run* || *Performance boost* ||
+|| 0 || 0 || 0 || 66 || 66 || 1x   ||
+|| 0 || 0 || 1 || 34 || 24 || 2.8x ||
+|| 0 || 1 || 0 || 39 || 22 || 3.0x ||
+|| 0 || 1 || 1 || 35 || 21 || 3.1x ||
+|| 1 || 0 || 0 || 71 || 14 || 4.7x ||
+|| 1 || 0 || 1 || 37 || 13 || 5.1x ||
+|| 1 || 1 || 0 || 43 || 15 || 4.4x ||
+|| 1 || 1 || 1 || 40 || 13 || 5.1x ||
 
-The cache size after the last test run in the table was 6.9 MB.
+= Laptop, xyz, Windows 7 32-bit =
 
-= 2011-04-25 = 
-
-Switched to the improved final data model. With no caching all tests pass in 65 seconds compared to 275 seconds -> 4.2x. Now set all cache on (page, model, db). Initial run took 39 seconds (assumably lots of writes to db and db file size increasing). DB size 7.7 MB. Second run took 12 secons.
-
-Then tested different combinations. No issues. So is DBI/SQLite backend more reliable than the file backend?
-
-All tests must be rerun and the result table updated accoringly.  
-     
+*Not yet tested*     
