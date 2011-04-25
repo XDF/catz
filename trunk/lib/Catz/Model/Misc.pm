@@ -31,6 +31,7 @@ our @EXPORT = qw ( album maxx news find sample search id2x x2id );
 # stored in the database
 
 use Catz::Data::DB;
+use Catz::Util::Number qw ( fullnum33 minnum33 );
 use Catz::Util::Time qw ( dtexpand );
 
 sub maxx {
@@ -63,7 +64,7 @@ sub find {
 
  $pattern = '%' . $pattern . '%';
 
- return $db->all (qq{select pri,sec_$lang,count,x from ( select pri,sec_$lang,sort_$lang,count,x from _pri_sec_count where sec_$lang like ? order by rowid limit 15) order by sort_$lang},$pattern);
+ return $db->all (qq{select pri,sec,cnt from (select pri,sec,sort,cnt from pri natural join sec_$lang where pri<>'text' and sec like ? order by cnt desc limit 15) order by sort,pri,cnt},$pattern);
 
 }
 
@@ -79,7 +80,9 @@ sub id2x {
 
  my ( $db, $lang, $id ) = @_;
  
- return $db->one("select x from _x where id=?",$id);
+ my ( $s, $n ) = minnum33 ( $id );
+ 
+ return $db->one("select x from album natural join photo where s=? and n=?",$s,$n);
  
 }
 
@@ -87,7 +90,12 @@ sub x2id {
 
  my ( $db, $lang, $x ) = @_;
  
- return $db->one("select id from _x where x=?",$x);
+ my $res = $db->row("select s,n from album natural join photo where x=?",$x);
+ 
+ defined $res->[0] and defined $res->[1] and
+  return ( fullnum33 ( $res->[0], $res->[1] ) );
+  
+ return undef;
  
 }
 

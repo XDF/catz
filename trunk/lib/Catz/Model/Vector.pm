@@ -78,21 +78,26 @@ sub bsearch {
  
  }
 
-
 sub vectorize {
  
  my ( $db, $lang, $pri, $sec ) = @_;
  
- # create a bit vector of x indexes based on pri + sec pair
+ # creating an empty bit vector one larger than there are photos
+ # since 0 index in not used 
+ my $maxx = $db->one( "select max(x) from photo" ) + 1;
  
+ # create a bit vector of x indexes based on pri + sec pair
  my $res;
  
  # first we ask if this data comes from album, exif or position
- my $orig = $db->one ('select origin from pri where pri=?',$pri);
+ my $orig = $db->one (
+  'select origin from pri where pri=?', 
+  $pri ne 'has' ? $pri : $sec 
+ );
+  
+ $orig or return Bit::Vector->new( $maxx ); # unknown pri -> return empty vector
  
- $orig or return undef; # unknown pri
- 
- $orig eq 'exif' and $orig .= 'f'; # we use exif view INEXIFF, not the base table
+ $orig eq 'exif' and $orig .= 'f'; # we use exif view INEXIFF, not INEXIF
   
  if ( $pri eq 'has' ) {
     
@@ -115,13 +120,7 @@ sub vectorize {
   }  
 
  }
- 
- warn ( $res );
-
- # creating an empty bit vector one larger than there are photos
- # since 0 index in not used 
- my $maxx = $db->one( "select max(x) from photo" ) + 1;
-      
+       
  my $bvec = Bit::Vector->new( $maxx );
    
  $bvec->Index_List_Store ( @$res ); # store the x indexes as bits
@@ -161,7 +160,7 @@ sub vector_bit { # fetch a bit vector for a set of arguments
   #warn $rest;
             
   my $bvec = vectorize( $db, $lang, $args[$i], $rest );
-              
+                
   given ( $oper ) {
   
    when ( '+' ) { $ands->And( $ands, $bvec) ; }
@@ -240,7 +239,9 @@ sub vector_pager {
  
  my @root = map { $svec->[$_*$perpage] } ( 0 .. $pages - 1  );
  
- my @pin = map { fullnum33 ( $_[0], $_[1] ) }  
+ #warn ( scalar @root );
+ 
+ my @pin = map { fullnum33 ( $_->[0], $_->[1] ) }  
   @{ $db->all(
   qq{select s,n from album natural join photo where x in (} . ( join ',', @root ) . ') order by x' 
  ) };

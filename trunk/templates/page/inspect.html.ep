@@ -5,7 +5,7 @@
 %== include 'stripe/text';
 %== include 'stripe/detail';
 </td><td id="fitparent" class="p66 top odd">
-<img id="fittarget" src="<%== $photobase %>/<%== $image->[1] %>/<%== $image->[2] %>">
+<img id="fittarget" src="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>">
 </td></tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine

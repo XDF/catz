@@ -28,7 +28,7 @@ use strict;
 use warnings;
 
 use parent 'Exporter';
-our @EXPORT = qw ( catshow_result );
+our @EXPORT = qw ( result_query );
 
 use Mojo::UserAgent;
 
@@ -45,7 +45,7 @@ my ( $url_count, $url_data ) = split /\n/, $urls;
 
 my $ua = Mojo::UserAgent->new; # a static object will do fine
 
-sub catshow_result {
+sub result_query {
 
  my ( $db, $lang, $key ) = @_;
  

@@ -42,7 +42,8 @@ my $conf = { # config is one hash ref
  
  cache => {
   driver => 'DBI',
-  namespace => 'cache', # we use this single simple namespace for all caching 
+  namespace => 'cache', # we use this single simple namespace for all caching
+  create_table => 1 
  },
  
  # enables/disables page level caching

@@ -18,4 +18,12 @@ System tests (Files=6, Tests=1126) of an early version of the system was run wit
 || 1 || 1 || 1 || 418 || 13 || 21.2x ||
 
 The cache size after the last test run in the table was 6.9 MB.
+
+= 2011-04-25 = 
+
+Switched to the improved final data model. With no caching all tests pass in 65 seconds compared to 275 seconds -> 4.2x. Now set all cache on (page, model, db). Initial run took 39 seconds (assumably lots of writes to db and db file size increasing). DB size 7.7 MB. Second run took 12 secons.
+
+Then tested different combinations. No issues. So is DBI/SQLite backend more reliable than the file backend?
+
+All tests must be rerun and the result table updated accoringly.  
      
