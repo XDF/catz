@@ -68,8 +68,19 @@ sub decode { $_ = $_[0]; s/\-(\d\d\d)/chr($1)/ge; s|_| |g; return $_; }
 
 #
 # url decodes a string
+# slash gets double-decoded
 #
-sub deurl { uri_unescape( $_[0] ) }
+sub deurl { 
+
+ my $str = uri_unescape( $_[0] );
+ 
+ $str =~ s|\@|/|g;  # slash decoding hack !!! not for production !!!
+ 
+ #warn ( "deurl $_[0] -> $str " );
+ 
+ return $str; 
+ 
+}
 
 #
 # returns MD5 checksum for a string as a base64 string
@@ -93,7 +104,19 @@ sub encode { join '', map { chrsolve( ord ( $_ ) ) } split //, $_[0] }
 #
 # url encodes a string
 #
-sub enurl { uri_escape( $_[0] ) }
+sub enurl { 
+
+ my $str = $_[0];
+
+ $str =~ s|/|\@|g; # slash encoding hack !!! not for production !!!
+  
+ $str =  uri_escape ( $str ); 
+ 
+ #warn ( "enurl $_[0] -> $str " );
+ 
+ return $str; 
+ 
+}
 
 #
 # limits string length to a given length, if truncates then adds '...'
