@@ -66,7 +66,7 @@ my $changes = 0; # flag that should be turned on if something has changed
 
 load_begin ( $dt, $newdb );
 
-lc($ARGV[0]) eq 'meta' and goto SKIP_FOLDERS;
+lc($ARGV[0] // '') eq 'meta' and goto SKIP_FOLDERS;
 
 # phase 1: load folders
 
