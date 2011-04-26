@@ -5,7 +5,7 @@
 
 The system tests (Files=6, Tests=1126) of an early version of the system were run with different cache settings. Here are the results. Using CHI with CHI::Driver::DBI backend on SQLite located to a standard USB IDE hard disk. Assumably the hard disk characteristics are not important since the data is likely to come from Windows block cache. Times are seconds. The cache file was deleted between the cache mode setting changes. The cache DB file size after the last test run was 7.7 MB.
 
-= Desktop, i7, Windows 7 64-bit = 
+= Desktop, 4 core i7, Windows 7 64-bit = 
 
 || *Page* || *Model* || *DB* || *Initial run* || *Second run* || *Performance boost* ||
 || 0 || 0 || 0 || 66 || 66 || 1x   ||
@@ -17,6 +17,14 @@ The system tests (Files=6, Tests=1126) of an early version of the system were ru
 || 1 || 1 || 0 || 43 || 15 || 4.4x ||
 || 1 || 1 || 1 || 40 || 13 || 5.1x ||
 
-= Laptop, xyz, Windows 7 32-bit =
+= Laptop, 2 core Celeron, Windows 7 32-bit =
 
-*Not yet tested*     
+|| *Page* || *Model* || *DB* || *Initial run* || *Second run* || *Performance boost* ||
+|| 0 || 0 || 0 || 217 || 213 || 1x  ||
+|| 0 || 0 || 1 || 99 || 76 || 2.8x ||
+|| 0 || 1 || 0 || 120 || 73 || 2.9x ||
+|| 0 || 1 || 1 || 101 || 64 || 3.3x ||
+|| 1 || 0 || 0 || 223 || 47 || 4.5x ||
+|| 1 || 0 || 1 || 105 || 45 || 4.7x ||
+|| 1 || 1 || 0 || 126 || 48 || 4.4x ||
+|| 1 || 1 || 1 || 108 || 43 || 5.0x || 
