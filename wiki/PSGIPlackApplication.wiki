@@ -1,0 +1,49 @@
+#summary Considering a raw PSGI/Plack application
+#labels PSGI,Plack,Perl
+
+= General =
+
+  * Perl OO OK
+  * Perl Moose not needed not used
+  * Method call based, not instance variable based
+
+= Dispatching =
+
+Basic dispatching based on switch statement. Each Brick refine the dispatching from there so they have more rules.
+
+= System hashref $z =
+
+There is a need for a system hashref $z like $c in Catalyst. That should be passed between the calls. It should be PSGI/Plack independent (prepare for future changes).
+
+What to provide via $z and what to provide via OO inheritance is a matter of serious consideration.
+
+= Stash =
+
+There is no stash to pass data in the system. The Bricks are called on defined arguments (idea from Mason and its caching).
+
+= Brick =
+                                                       
+Methods:
+  * init: verify the call, extract pieces from $env and $z, pass them to run
+  * run: collect data from model and do the logic
+  * render: render the output based on the data from run method
+
+Component caching done between init and run: data passed to run are caching arguments, result of render is the cached output
+
+== init ==
+
+Init receives $z system hashref as an argument and returns an array of arguments to be passed to run, first argument indicates the status
+
+== run ==
+
+Run receives the brick call parameters prepared by init and contain the application logic. Typically it retrieves data from Model. Run collects the data to where? and passes it render.
+
+Run can also report status like 404 if there is no data found from the Model. 
+
+== render ==
+
+Is there in need for tempalting (Xslate, MicroMason, Mason2) or is Pure-Perl returning a string response sufficient.
+
+Xslate is very fast and doesn't allow Perl embedded which forces clean render separation from run.
+
+Render method goes away if external templating is uses.
