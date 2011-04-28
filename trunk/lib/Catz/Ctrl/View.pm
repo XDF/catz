@@ -29,7 +29,7 @@ use warnings;
 
 use parent 'Catz::Ctrl::Base';
 
-use List::MoreUtils qw ( all );
+use List::MoreUtils qw ( any all );
 
 use Catz::Data::DB;
 use Catz::Util::Number qw ( fullnum3 minnum );
@@ -85,7 +85,45 @@ sub process_path {
  
   #warn ( $s->{path} );
  
-  @path =  split /\//, $s->{path};
+  my @inpath =  split /\//, $s->{path};
+
+ # now it is time to do some hacking
+ # since Mojolicious don't provide access to real raw URI
+ # but always decodes encoded slashes this hack is needed
+
+ # it identifies if pri-sec pair have real pri's and if not
+ # they get merged to previous sec
+
+  my $pri = $self->fetch ( 'pri' );
+
+  push @{ $pri }, 'has';
+
+  my $collect = '';
+  my $mode = 0;
+
+  while ( my $val = shift @inpath ) {
+
+   if ( $mode == 0 ) {
+        
+    if ( any { $_ eq $val } @{ $pri } ) {
+     push @path, $val;
+     #warn ( "ok key: $val" );
+     $mode = 1;
+    } else {
+      $#path > 0 or return 0;
+      $path[$#path] .= "/$val";
+      #warn ( "delayed val: $val" ); 
+    }
+
+   } else {
+
+    #warn ( "val: $val" );
+    push @path, $val;
+    $mode = 0;
+
+   }
+
+  }
   
   # reject if any empty path parts
   ( all { defined $_ } @path ) or return 0;
