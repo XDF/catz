@@ -1,6 +1,8 @@
-#summary Catz system design from the user's viewpoint
+#summary Catz application design notes
 
-= The primary objective: to find the photos =
+= The front page =
+
+The front page has the following primary functions ...
 
 When the user arrives to the service, the primary functions she is expecting are
  # to change the UI language if not correctly guessed -> provide a langauge changing link on a high-priority screen location
@@ -55,7 +57,35 @@ Add Attributes
  * text?
  * nick?   
  * has cat/ems
- * and/or/not     
-                  
+ * and/or/not
 
-      
+= The page layout =
+
+Every page consists of vertical stripes. Stripes are block DOM objects, typically DIVs, always spawning the whole page width.     
+                  
+== Top ==
+
+Every page has the top stripe that is visually separated from the page content. The top bar contains items on left and items on right.
+
+Items on left are (from left to right):
+  * site name: the site's name that is a link to site's front pagepage (exception is the front page that has passive site slogan here)
+
+Items on right (from right to left) are:
+  * the language changing link
+  * setup change dropdowns 
+    * palette change on every page
+    * thumb size & number of thumbs on browsing
+    * image size & data shown on viewing
+
+== Ingress ==
+
+Ingress stripe contains the page title (H1). There is also the possibility to use the right side of the stripe for some other data of functionality.
+
+== Iterator ==
+
+Iterator's purpose is to provide navigation functions for the current page. So contents of the iterator is different on every page. Iterator uses text links and form elements like dropdowns, not icons.
+
+  * List iterator: change mode a2z, top etc.
+  * Inspect iterator: go to browse, go to view
+  * Browse iterator: first page, previous page, go to page (dropdown), next page, last page, go to inspect
+  * View iterator: first page, previous page, go to photo (input field?), next photo, last photo, go to browse, go to inspect
