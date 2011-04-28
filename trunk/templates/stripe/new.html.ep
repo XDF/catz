@@ -1,11 +1,10 @@
-<div><ul class="p100">
+<div><h2>Uutisia</h2>
 % foreach my $row ( @$news ) {
-<li><%= $row->[1] %>
-<a href="/<%= $lang %>/news/#<%= $row->[0] %>"><%= $row->[2] %></a>
-</li>
+<%= $row->[1] %>
+<a href="/<%= $lang %>/news/#<%= $row->[0] %>"><%= $row->[2] %></a>,
 % }
-<li><a href="/<%= $lang %>/news/"><%= $t->{NEWS_ALL} %></a></li>
-</ul></div>
+<a href="/<%= $lang %>/news/"><%= $t->{NEWS_ALL} %></a>
+</div>                                                         
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

@@ -1,9 +1,3 @@
-%#
-%# The topmost stripe
-%# 
-%# consists of site link (or logo on front page),
-%# language change link and palette setup
-%#
 % use Catz::Data::Setup;
 % use Catz::Util::String qw ( enurl );
 % my $site = qq{<a href="/$lang/">$t->{SITE}</a>};
@@ -11,14 +5,19 @@
 %  $site = $t->{SITE};
 %  $site =~ s/z/<span class=\"xtra\">z<\/span>/g;  
 %  $site = "<h1>$site</h1>";
-% };  
-<table class="p100 center"><tr><td class="p50">
-<table class="p100 center"><tr> 
-<td class="p33"><%== $site %></td>
-<td class="p34"><a href="<%== $otherlang %>"><%= $t->{OTHERLANG} %></a></td>
-<td class="p33"><%== include 'elem/setup', key => 'palette' %></td>
-<tr></table>
-</td><td><%= $t->{SLOGAN} %></td></tr></table>
+% };
+<table class="flip p100"><tr><td class="left">  
+<span class="aero"><%== $site %></span>
+<span class="aero"><%= $t->{SLOGAN} %></span>
+<td><td class="right">
+% if ( $action eq 'browse' ) {
+%== include 'stripe/thumbset';
+% }
+<span class="aero">
+<%== include 'elem/setup', key => 'palette' %>
+</span>
+<a class="aero" href="<%== $otherlang %>"><%= $t->{OTHERLANG} %></a>
+</td></tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

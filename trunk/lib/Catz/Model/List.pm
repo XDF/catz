@@ -109,7 +109,7 @@ sub list_links {
 
    when ( 'pris' ) {
 
-    $links =  $db->all("select pri,cnt from sec_$lang natural join pri group by pri order by disp");
+    $links =  $db->all("select pri,num from pri where pri<>'text' order by disp");
    
    }
 

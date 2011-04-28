@@ -1,35 +1,37 @@
 % my $pre = '../';
 % $origin eq 'x' and $pre = '';
-<table class="p100 center"><tr><td>
+% my $sep = '.';
+<div class="flop center">
 % if ( $pos > 1 ) {
 <a title="<%= $t->{PHOTO_FIRST} %>" href="<%== $pre %><%== $pin->[0] %>/"><%= $t->{PHOTO_FIRST} %></a>
 % } else { 
 <%= $t->{PHOTO_FIRST} %>
 % }
-</td><td>
+<%== $sep %>
 % if ( $pos > 1 ) {
 <a title="<%= $t->{PHOTO_PREV} %>" href="<%== $pre %><%== $pin->[1] %>/"><%= $t->{PHOTO_PREV} %></a>
 % } else {
 <%= $t->{PHOTO_PREV} %>
 % }
-</td>
-<td><a href="/<%= $lang %>/browse/<%= $path %><%= $path ? '/' : '' %><%= $id %>/">browse</a></td>
-<td><a href="/<%= $lang %>/inspect/<%= $path %><%= $path ? '/' : '' %><%= $id %>/">inspect</a></td>
-<td><a href="/<%= $lang %>/show/<%= $path %><%= $path ? '/' : '' %><%= $id %>/">show</a></td>
-<td>
+<%== $sep %>
+<a href="/<%= $lang %>/browse/<%= $path %><%= $path ? '/' : '' %><%= $id %>/">browse</a>
+<%== $sep %>
+<a href="/<%= $lang %>/inspect/<%= $path %><%= $path ? '/' : '' %><%= $id %>/">inspect</a>
+<%== $sep %>
+<a href="/<%= $lang %>/show/<%= $path %><%= $path ? '/' : '' %><%= $id %>/">show</a>
+<%== $sep %>
 % if ( $pos < $total ) {
 <a title="<%= $t->{PHOTO_NEXT} %>" href="<%== $pre %><%== $pin->[2] %>/"><%= $t->{PHOTO_NEXT} %></a>
 % } else { 
 <%= $t->{PHOTO_NEXT} %>
 % }
-</td><td>
+<%== $sep %>
 % if ( $pos < $total ) {
 <a title="<%= $t->{PHOTO_LAST} %>" href="<%== $pre %><%== $pin->[3] %>/"><%= $t->{PHOTO_LAST} %></a>
 % } else {
 <%= $t->{PHOTO_LAST} %>
 % }
-</td>
-</tr></table>
+</div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

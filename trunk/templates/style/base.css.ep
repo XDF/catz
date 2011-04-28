@@ -36,7 +36,7 @@
  my $size_huge = round ( $size_normal * 1.75 ) . '%';
  $size_normal .= '%';
  
- my $roundness = '8px';
+ my $roundness = '5px';
  
  my $rounding = qq(-moz-border-radius: $roundness;
  -webkit-border-radius: $roundness;
@@ -52,7 +52,8 @@
 
   dark => {
    back => '#000000', # the screen background
-   area => '#333333', # separates an area from the background
+   area1 => '#222222', # separates an area from the background
+   area2 => '#444444', # separates an area from the background
    dim => '#999999', # dimmed text, dimmer than text
    text => '#b5b5b5', # color of the regular text 
    high => '#ffffff', # highlighted text
@@ -60,8 +61,9 @@
   },
   
   neutral => {
-   back => '#d5d5d5', # the screen background
-   area => '#e5e5e5', # separates an area from the background
+   back => '#c5c5c5', # the screen background
+   area1 => '#d5d5d5', # separates an area from the background
+   area2 => '#e5e5e5', # separates an area from the background
    dim => '#999999', # dimmed text, dimmer than text
    text => '#444444', # color of the regular text 
    high => '#000000', # highlighted text
@@ -70,7 +72,8 @@
   
   bright => {
    back => '#ffffff', # the screen background
-   area => '#d8d8d8', # separates an area from the background
+   area1 => '#d8d8d8', # separates an area from the background
+   area2 => '#e8e8e8', # separates an area from the background
    dim => '#757575', # dimmed text, dimmer than text
    text => '#444444', # color of the regular text 
    high => '#000000', # highlighted text
@@ -97,7 +100,7 @@ body {
 }
 
 #page {
- margin: 1em auto;
+ margin-top: 0 auto;
  text-align: left;
  min-width: 760px;
  max-width: 1600px;
@@ -142,6 +145,15 @@ body {
 .box {
  border: 1px;
  background-color: <%== $color->{$palette}->{area} %>;   
+}
+
+.flip { 
+ background-color:  <%== $color->{$palette}->{area1} %>; 
+ <%== $rounding %>
+}
+.flop { 
+ background-color:  <%== $color->{$palette}->{area2} %>; 
+ <%== $rounding %>
 }
              
 h1 {

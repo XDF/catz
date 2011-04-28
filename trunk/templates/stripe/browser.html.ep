@@ -1,7 +1,7 @@
 % my $pre = '../';
 % $origin eq 'x' and $pre = '';
-<div class="p100 center">
 % my $sep = '.';
+<div class="flop center">
 % if ( $page > 1 ) {
 <a href="<%== $pre %><%== $pin->[0] %>/"><%= $t->{PAGE_FIRST} %></a>
 <%== $sep %>

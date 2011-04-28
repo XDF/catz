@@ -1,9 +1,11 @@
-<div><ul class="p100">
+<div><h2>Tuoreimmat albumit</h2>
+% my $mode = 'flip';
 % foreach my $row ( @{ $albums } ) {
-<li><a href="/<%= $lang %>/album/<%= $row->[0] %>/"><%= $row->[1] %></a> <%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOS} %></li>
+<span class="aero <%==$mode %>"><a href="/<%= $lang %>/album/<%= $row->[0] %>/"><%= $row->[1] %></a> <%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOS} %></span>
+% $mode = $mode eq 'flip' ? '' : 'flip'; 
 % }
-<li><a href="/<%= $lang %>/list/album/a2z/"><%= $t->{ALBUMS_ALL} %></a></li>
-</ul></div>
+<a href="/<%= $lang %>/list/album/a2z/"><%= $t->{ALBUMS_ALL} %></a>
+</div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

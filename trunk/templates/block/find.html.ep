@@ -1,18 +1,13 @@
 % use Catz::Util::String qw ( enurl limit );
 % my $i = 0;
-<ul>
 % foreach my $sugg ( @{ $find } ) {
 % my $text = $sugg->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOS};
 % my $out = $sugg->[1]; 
 % $out =~ s/($what)/<span class="match">$1<\/span>/ig; # this is a temporary solution -> special chars come to string -> bad
-<li>
-<a title="<%= $t->{uc($sugg->[0])} %>: <%= $sugg->[1] %> (<%= $sugg->[2] %> <%= $text %>)" href="/<%= $lang %>/<%= $sugg->[2] == 1 ? 'inspect' : 'browse' %>/<%= $sugg->[0] %>/<%= enurl($sugg->[1]) %>/"><%== $out %></a>
-</li> 
-</table>
+<a title="<%= $t->{uc($sugg->[0])} %>: <%= $sugg->[1] %> (<%= $sugg->[2] %> <%= $text %>)" href="/<%= $lang %>/<%= $sugg->[2] == 1 ? 'inspect' : 'browse' %>/<%= $sugg->[0] %>/<%= enurl($sugg->[1]) %>/"><%== $out %></a><br>
 % }
-</ul)
 % ( scalar ( @$find ) == 0 ) and do { 
-<div class="enlarge"><%= $t->{FIND_NOTGHINT} %></div>
+<div class="enlarge"><%= $t->{FIND_NOTHING} %></div>
 % };
 %#
 %# Catz - the world's most advanced cat show photo engine
