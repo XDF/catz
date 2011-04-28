@@ -1,12 +1,9 @@
 % layout 'page';
 %== include 'stripe/top';
 %== include 'stripe/viewer';
-<table class="p100"><tr><td class="p34 top">
 %== include 'stripe/text';
 %== include 'stripe/detail';
-</td><td id="fitparent" class="p66 top odd">
 <img id="fittarget" src="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>">
-</td></tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

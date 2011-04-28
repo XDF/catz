@@ -275,6 +275,18 @@ LOCA
 locations
 paikkakuntaa
 #
+NAME
+album
+albumi
+#
+NAMES
+albums
+albumit
+#
+NAMEA
+albums
+albumia
+#
 NAT
 nationality
 kansallisuus
@@ -556,64 +568,60 @@ dark
 tumma
 #
 SETUP_perpage_10
-10 thumbnails per page
-10 pikkukuvaa sivulla
+10 thumbs
+10 kuvaa
 #
 SETUP_perpage_15
-15 thumbnails per page
-15 pikkukuvaa sivulla
+15 thumbs
+15 kuvaa
 #
 SETUP_perpage_20
-20 thumbnails per page
-20 pikkukuvaa sivulla
+20 thumbs
+20 kuvaa
 #
 SETUP_perpage_25
-25 thumbnails per page
-25 pikkukuvaa sivulla
+25 thumbs
+25 thumbs
 #
 SETUP_perpage_30
-30 thumbnails per page
-30 pikkukuvaa sivulla
+30 thumbs
+30 kuvaa
 #
 SETUP_perpage_35
-35 thumbnails per page
-35 pikkukuvaa sivulla
+35 thumbs
+35 kuvaa
 #
 SETUP_perpage_40
-40 thumbnails per page
-40 pikkukuvaa sivulla
+40 thumbs
+40 kuvaa
 #
 SETUP_perpage_45
-45 thumbnails per page
-45 pikkukuvaa sivulla
+45 thumbs
+45 kuvaa
 #
 SETUP_perpage_50
-50 thumbnails per page
-50 pikkukuvaa sivulla
+50 thumbs
+50 kuvaa
 #
 SETUP_thumbsize_100
-100 pixels thumbnails
-100 pikselin pikkukuvat
+tiny
+pienin
 #
-SETUP_thumbsize_120
-120 pixels thumbnails
-120 pikselin pikkukuvat
+SETUP_thumbsize_125
+small
+pieni
 #
-SETUP_thumbsize_140
-140 pixels thumbnails
-140 pikselin pikkukuvat
+SETUP_thumbsize_150
+default
+vakio
 #
-SETUP_thumbsize_160
-160 pixels thumbnails
-160 pikselin pikkukuvat
-#
-SETUP_thumbsize_180
-180 pixels thumbnails
-180 pikselin pikkukuvat
+SETUP_thumbsize_175
+large
+suuri
 #
 SETUP_thumbsize_200
-200 pixels thumbnails
-200 pikselin pikkukuvat
+x-large
+suurin
 #
 SITE
 catzz.biz

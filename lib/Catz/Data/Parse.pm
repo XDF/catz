@@ -109,7 +109,7 @@ sub cat {
     
    s/^(CFA|FIFE|TICA)\s+//; # remove umbrellas from titles
    
-   s/\d\d\d\d//; # remove years from WW, SW etc. 
+   s/\d\d\d\d//; # remove years from WW, SW etc.
   
   } split /,/, $1;
   

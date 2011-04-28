@@ -200,14 +200,14 @@ my $conf = { # config is one hash ref
   palette => 'neutral',
   photosize => 'full',
   perpage => 20,
-  thumbsize => 140
+  thumbsize => 150
  },
 
  setup_values => { 
   palette => [ qw ( dark neutral bright ) ],
   photosize => [ qw ( full fit_width fit_height fit_all ) ],
   perpage => [ qw( 10 15 20 25 30 35 40 45 50 ) ],
-  thumbsize => [ qw ( 100 120 140 160 180 200 ) ]
+  thumbsize => [ qw ( 100 125 150 175 200 ) ]
  }
  
 };

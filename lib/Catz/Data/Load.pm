@@ -24,10 +24,9 @@
 
 package Catz::Data::Load;
 
+use 5.12.2;
 use strict;
 use warnings;
-
-use feature qw( say switch );
 
 use parent 'Exporter';
 
@@ -35,8 +34,6 @@ our @EXPORT = qw (
  load_begin load_end load_exec load_folder load_nomatch 
  load_simple load_exif load_complex load_post load_secondary 
 );
-
-use feature qw ( switch );
 
 use Data::Dumper;
 use DBI;
@@ -98,14 +95,19 @@ my $sql = {
 
  album_col => 'select aid from album order by folder',
  album_s_null_upd => 'update album set s=null',
- album_s_upd => 'update album set s=? where aid=?',
+ album_s_upd => 'update album set s=? where aid=?'
+,
  photo_all => 'select aid,n from photo natural join album order by folder desc, n asc',
  photo_x_null_upd => 'update photo set x=null',
  photo_x_upd => 'update photo set x=? where aid=? and n=?',
- sid_col => 'select sid from sec',
- inalbum_sid_one => 'select count(distinct aid||n) from inalbum natural join photo where sid=?',
- inexif_sid_one => 'select count(distinct aid||n) from inexif natural join photo where sid_meta=? or sid_data=? or sid_file=?',
- inpos_sid_one => 'select count(distinct aid||n) from inpos natural join photo where sid=?',
+
+ pri_num_null_upd => 'update pri set num=null',
+ sec_cnt_null_upd => 'update sec set cnt=null',
+ pri_num_all => 'select pid,count(*) from pri natural join sec group by pid',
+ sec_cnt_inalbum_all => "select sec.sid,count(distinct x) from inalbum natural join photo natural join sec natural join pri where origin='album' group by sec.sid",
+ sec_cnt_inexiff_all => "select sid,count(distinct x) from photo natural join inexiff where sid in ( select sid from inexiff ) group by sid",
+ sec_cnt_inpos_all => "select sec.sid,count(distinct x) from inpos natural join photo natural join sec natural join pri where origin='pos' group by sec.sid",
+ pri_num_upd => 'update pri set num=? where pid=?',
  sec_cnt_upd => 'update sec set cnt=? where sid=?',
  
  album_trn => 'delete from album where aid not in ( select aid from inalbum union select aid from inexif union select aid from inpos union select aid from photo )',
@@ -198,7 +200,7 @@ sub load_exec {
  
  defined $stm->{$key} or die "statement '$key' is unknown";
  
- # logit ( "$key " . join ( ',', grep { defined } @args ) );
+ #logit ( "$key " . join ( ',', grep { defined } @args ) );
   
  $stm->{$key}->execute ( @args );
  
@@ -624,20 +626,42 @@ sub load_post {
   load_exec ( 'photo_x_upd', $i++, $row->[0], $row->[1] ); 
  
  }
- 
- logit ( 'updating sec cnt' );
- 
- foreach my $sid ( load_exec ( 'sid_col' ) ) {
- 
-  $i = 0;
-  
-  $i += load_exec ( 'inalbum_sid_one', $sid );
-  $i += load_exec ( 'inexif_sid_one', $sid, $sid, $sid );
-  $i += load_exec ( 'inpos_sid_one', $sid );
- 
-  load_exec ( 'sec_cnt_upd', $i, $sid );  
- 
+
+ logit ( 'updating pri num' );
+
+ load_exec ( 'pri_num_null_upd' ); # clear all previous counts on pri
+                                                           
+ foreach my $row ( load_exec ( 'pri_num_all' ) ) {
+
+  load_exec ( 'pri_num_upd', $row->[1], $row->[0] );
+
+ } 
+
+ load_exec ( 'sec_cnt_null_upd' ); # clear all previous counts on sec
+
+ logit ( 'updating sec cnt inalbum' );
+
+ foreach my $row ( load_exec ( 'sec_cnt_inalbum_all' ) ) {
+
+  load_exec ( 'sec_cnt_upd', $row->[1], $row->[0] );
+
  }
+
+ logit ( 'updating sec cnt inexiff' );
+ 
+ foreach my $row ( load_exec ( 'sec_cnt_inexiff_all' ) ) {
+
+  load_exec ( 'sec_cnt_upd', $row->[1], $row->[0] );
+
+ }
+
+ logit ( 'updating sec cnt inpos' );
+
+ foreach my $row ( load_exec ( 'sec_cnt_inpos_all' ) ) {
+
+  load_exec ( 'sec_cnt_upd', $row->[1], $row->[0] );
+
+ }  
 
 }
 
