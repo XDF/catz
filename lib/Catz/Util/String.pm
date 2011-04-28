@@ -74,7 +74,7 @@ sub deurl {
 
  my $str = uri_unescape( $_[0] );
  
- $str =~ s|\@|/|g;  # slash decoding hack !!! not for production !!!
+ #$str =~ s|\@|/|g;  # slash decoding hack !!! not for production !!!
  
  #warn ( "deurl $_[0] -> $str " );
  
@@ -108,7 +108,7 @@ sub enurl {
 
  my $str = $_[0];
 
- $str =~ s|/|\@|g; # slash encoding hack !!! not for production !!!
+ #$str =~ s|/|\@|g; # slash encoding hack !!! not for production !!!
   
  $str =  uri_escape ( $str ); 
  
