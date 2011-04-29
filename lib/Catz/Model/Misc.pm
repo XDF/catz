@@ -60,11 +60,11 @@ sub news {
 
 sub find {
 
- my ( $db, $lang, $pattern ) = @_;
+ my ( $db, $lang, $pattern, $count ) = @_;
 
  $pattern = '%' . $pattern . '%';
 
- return $db->all (qq{select pri,sec,cnt from (select pri,sec,sort,cnt from pri natural join sec_$lang where pri<>'text' and sec like ? order by cnt desc limit 200) order by sort,pri,cnt},$pattern);
+ return $db->all (qq{select pri,sec,cnt from (select pri,sec,sort,cnt from pri natural join sec_$lang where pri<>'text' and sec like ? order by cnt desc limit $count) order by sort,pri,cnt},$pattern);
 
 }
 

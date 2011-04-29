@@ -29,6 +29,10 @@ use warnings;
 
 use parent 'Catz::Ctrl::Base';
 
+use List::MoreUtils qw ( any );
+
+use Catz::Util::String qw ( deurl );
+
 sub process_args {
 
  my $self = shift; my $s = $self->{stash};
