@@ -1,7 +1,7 @@
 % my $pre = '../';
 % $origin eq 'x' and $pre = '';
 % my $sep = '.';
-<div class="flop center">
+<table class="flop p100"><tr><td class="left">
 % if ( $page > 1 ) {
 <a href="<%== $pre %><%== $pin->[0] %>/"><%= $t->{PAGE_FIRST} %></a>
 <%== $sep %>
@@ -32,7 +32,9 @@
 <%== $sep %>
 <%= $t->{PHOTO_PREV} %>
 % }
-</div>
+</td><td class="center">
+inspect
+</td></tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

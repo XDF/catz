@@ -5,7 +5,7 @@
 <%= $t->{uc($detail->[0])} %>: 
 <a href="/<%= $lang %>/browse/<%= enurl ( $detail->[0] ) %>/<%= enurl ( $detail->[1] ) %>/">
 <%= $detail->[0] ne 'dt' ? $detail->[1] : dtexpand ( $detail->[1], $lang ) %>
-</a>, 
+</a> . 
 % }
 </div>
 %#

@@ -1,9 +1,9 @@
 % use Catz::Util::Number qw ( fmt );
-<div><h2>Meillä on</h2>
+<div><h2>Meillä on</h2> .
 % foreach my $row ( @{ $pris } ) {
-<a href="/<%= $lang %>/list/<%= $row->[0] %>/a2z/">
+<a href="/<%= $lang %>/list/<%== $row->[0] %>/a2z/">
 <%= fmt ( $row->[1], $lang ) %>
-<%= $t->{uc($row->[0]).'A'} %></a>,
+<%= $t->{uc($row->[0]).'A'} %></a> .
 % }
 </div>
 %#

@@ -555,17 +555,29 @@ SEARCH_IS_PATTERN
 is pattern 
 on merkkijono
 #
+SETUP_display_full
+full data
+täydet tiedot
+#
+SETUP_display_brief
+brief data
+tiivit tiedot
+#
+SETUP_display_none
+no data
+ei tietoja
+#
 SETUP_palette_bright
-bright
-vaalea
+bright palette
+vaaleat sävyt
 #
 SETUP_palette_neutral
-neutral
-neutraali
+neutral palette
+neutraalit sävyt
 #
 SETUP_palette_dark
-dark
-tumma
+dark palette
+tummat sävyt
 #
 SETUP_perpage_10
 10 thumbs
@@ -581,7 +593,7 @@ SETUP_perpage_20
 #
 SETUP_perpage_25
 25 thumbs
-25 thumbs
+25 kuvaa
 #
 SETUP_perpage_30
 30 thumbs
@@ -603,25 +615,33 @@ SETUP_perpage_50
 50 thumbs
 50 kuvaa
 #
+SETUP_photosize_fit
+fit to screen
+sovita ruutuun
+#
+SETUP_photosize_original
+original size
+aito koko
+#
 SETUP_thumbsize_100
-tiny
-pienin
+tiny size
+pienin koko
 #
 SETUP_thumbsize_125
-small
-pieni
+small size
+pieni koko
 #
 SETUP_thumbsize_150
-default
-vakio
+default size
+oletuskoko
 #
 SETUP_thumbsize_175
-large
-suuri
+large size
+suuri koko
 #
 SETUP_thumbsize_200
-x-large
-suurin
+x-large size
+suurin koko
 #
 SITE
 catzz.biz

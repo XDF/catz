@@ -107,7 +107,7 @@ sub startup {
  # view photos based on the arguments or no argumets 
  # id \d{6} supports 999 galleries 999 photos seach
  
- my $v = $l->route ( '/:action', action => qr/browse|inspect|show/ ); 
+ my $v = $l->route ( '/:action', action => qr/browse|view/ ); 
    
  $v->route( '/(*path)/:id', id => qr/\d{6}/ )->to( controller => 'view' );
 

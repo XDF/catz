@@ -6,18 +6,23 @@
 %  $site =~ s/z/<span class=\"xtra\">z<\/span>/g;  
 %  $site = "<h1>$site</h1>";
 % };
+% if ( $action ne 'view' or $display ne 'none' ) {
 <table class="flip p100"><tr><td class="left">  
 <span class="aero"><%== $site %></span>
 <span class="aero"><%= $t->{SLOGAN} %></span>
 <td><td class="right">
 % if ( $action eq 'browse' ) {
-%== include 'stripe/thumbset';
+<%== include 'elem/setup', key => 'perpage' %>
+<%== include 'elem/setup', key => 'thumbsize' %>
 % }
-<span class="aero">
+% if ( $action eq 'view' ) {
+<%== include 'elem/setup', key => 'photosize' %>
+<%== include 'elem/setup', key => 'display' %>
+% }
 <%== include 'elem/setup', key => 'palette' %>
-</span>
 <a class="aero" href="<%== $otherlang %>"><%= $t->{OTHERLANG} %></a>
 </td></tr></table>
+% }
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

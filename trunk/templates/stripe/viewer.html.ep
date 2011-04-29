@@ -31,6 +31,9 @@
 % } else {
 <%= $t->{PHOTO_LAST} %>
 % }
+% if ( $display eq 'none' ) {
+<%== include 'elem/setup', key => 'display' %>
+% }
 </div>
 %#
 %# Catz - the world's most advanced cat show photo engine

@@ -1,7 +1,18 @@
-<table class="p100 center top"><tr>
-<td class="p50 right"><%== include 'elem/setup', key => 'perpage' %></td>
-<td class="p50 left"><%== include 'elem/setup', key => 'thumbsize' %></td>
-</tr></table>
+ % layout 'page';
+%== include 'stripe/top';
+<div>
+%== include 'stripe/viewer';
+</div>
+% if ( $display ne 'none' ) {
+<div class="center flip"><h1>Page title comes here (page 12/23)</h1></div>
+% }
+% if ( $display eq 'full' ) {
+%== include 'stripe/detail';
+% }
+<div class="center" id="fitparent">
+<a href="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>">
+<img id="fittarget" src="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>"></a>
+</div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
