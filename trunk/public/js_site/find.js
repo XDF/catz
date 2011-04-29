@@ -24,7 +24,7 @@
 
 // stores the previous value of the find text
 // to detect if the value has really changed 
-var prevVal = '89435jklkasd83i34089h3n5n23';
+var prevVal = '89435jklkasd83i89h3n5n23';
 
 // keeps a reference to the previous find and sample requests
 // in order to make them abortable if a new requests are issued
@@ -67,7 +67,7 @@ function doFind() {
   } else { // there is something to find
      
    prevReqFind = $.ajax ({
-    url: head + '/find/' + what + '/',
+    url: head + '/find?what=' + what,
     success: function( data ){ // when te request completes this get executed
      
       prevReqFind = null; // clear the reference to this request
@@ -77,7 +77,7 @@ function doFind() {
    });
 
    prevReqSample = $.ajax ({
-    url: head + '/sample/' + what + '/',
+    url: head + '/sample?what=' + what,
     success: function( data ){ // when te request completes this get executed
      
       prevReqSample = null; // clear the reference to this request

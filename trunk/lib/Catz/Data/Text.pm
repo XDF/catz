@@ -671,3 +671,15 @@ VIEW_PHOTO
 view photo
 katso kuva
 #
+BROWSE
+browse thumbnails
+selaa pikkukuvia
+#
+INSPECT
+more information
+tarkemmat tiedot
+#
+VIEW
+view photos
+katso kuvat
+#

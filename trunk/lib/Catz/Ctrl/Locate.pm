@@ -29,12 +29,39 @@ use warnings;
 
 use parent 'Catz::Ctrl::Base';
 
+use Catz::Data::Conf;
+use Catz::Util::Number qw ( round );
+
+sub process_width {
+
+ my $self = shift; my $s = $self->{stash};
+
+ my $width = $self->param( 'width' ) // 1200;
+
+ $width =~ /^\d{3,4}$/ or $width = 1200;
+  
+ $width > 599 or $width = 600;
+ 
+ $width < 2001 or $width = 2000;
+
+ $s->{count_thumb} = 30 + 
+  round ( ( ( $width - 600 ) / ( 2000 - 600 ) ) * 50 );
+
+ $s->{count_find} = $s->{count_thumb};
+
+}
 
 sub find {
 
  my $self = shift; my $s = $self->{stash};
+
+ $self->process_width;
+
+ $s->{what} = $self->param( 'what' ) // undef;
+
+ $s->{what} or ( $self->not_found and return );
  
- $s->{find} = $self->fetch ( 'find', $s->{what} );
+ $s->{find} = $self->fetch ( 'find', $s->{what}, $s->{count_find} );
 
  $self->render( template => 'block/find' );
 
@@ -43,41 +70,50 @@ sub find {
 sub sample {
 
  my $self = shift; my $s = $self->{stash};
- 
- ( $s->{count} < 10 or  $s->{count} > 99 ) and $self->not_found and return;
- 
- my $xs; my @set = ();
- 
- $s->{path} = undef;
- 
+
+ $self->process_width;
+
+ $s->{what} = $self->param( 'what' ) // undef;
+
+ my @set = ();
+
  if ( $s->{what} ) {
  
-  my $res = $self->fetch ( 'find', $s->{what} );
+  my $res = $self->fetch ( 'find', $s->{what}, $s->{count_find} );
   
-  scalar @$res == 0 and $self->not_found and return;
-     
-  # get x's of the first item found (pri, sec)
-  # this behavior may be changed later 
-  $xs = $self->fetch ( 'vector_array_rand', $res->[0]->[0], $res->[0]->[1] );
-   
+  scalar @$res > 0 and do {
+
+   foreach my $i ( 0 .. ( scalar @$res - 1 ) ) {
+
+    if ( scalar @set < $s->{count_thumb} ) {
+
+     push @set, @{ 
+      $self->fetch ( 'vector_array_rand', $res->[$i]->[0], $res->[$i]->[1] )
+     };
+
+    }   
+
+   }
+
+  };
+  
  } else {
 
-  $xs = $self->fetch ( 'vector_array_rand',  @{ $s->{path_array} } );
+  @set = @{ $self->fetch ( 'vector_array_rand' ) };
      
  }
+
+ if ( scalar @set > $s->{count_thumb} ) {
+
+  @set = @set[ 0 .. $s->{count_thumb} - 1 ];
+
+ }
  
- my $limit = $s->{count} - 1;
- 
- # not enough samples found, stick to those found
- ( scalar @$xs  < ( $s->{count} ) ) and $limit = scalar @$xs - 1;
- 
- @set = @{ $xs } [ 0 .. $limit ];
- 
- my $res = $self->fetch ( 'photo_thumb', @set );
- 
- $s->{thumb} = $res->[0];
-    
- $self->render( template => 'block/thumb' );
+ my $th = $self->fetch ( 'photo_thumb', @set );
+
+ $s->{thumb} = $th->[0];
+
+ $self->render( template => 'block/sample' );
 
 }
 

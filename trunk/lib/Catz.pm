@@ -29,7 +29,6 @@ use warnings;
 
 use parent 'Mojolicious';
 
-#use Catz::Data::DB;
 use Catz::Data::Text;
 use Catz::Data::Setup;
 use Catz::Data::Cache;
@@ -77,27 +76,11 @@ sub startup {
  
  $l->route( '/feed' )->to ( "main#feed" );
 
- $l->route( '/find/:what' )->to ( "locate#find" );
+ $l->route( '/find' )->to ( "locate#find" );
 
- $l->route( '/sample/:what/:count', count => qr/\d{2}/ )->to (
-  "locate#sample"
- );
-
- $l->route( '/sample/:count', count => qr/\d{2}/  )->to (
-  "locate#sample", what => undef
- );
-
- $l->route( '/sample/:what' )->to (
-  "locate#sample", count => conf ('samples')
- );
- 
- $l->route( '/sample' )->to (
-  "locate#sample", what => undef, count => conf ('samples')
- );
-
- $l->route( '/result/:key', key => qr/[A-Z2-7]{5,}/ )->to (
-  "locate#result"
- );
+ $l->route( '/sample' )->to ( "locate#sample" );
+ #key => qr/[A-Z2-7]{5,}/
+ $l->route( '/result',  )->to ( "locate#result" );
 
  
  $l->route('/list/:subject/:mode')->to('list#list');

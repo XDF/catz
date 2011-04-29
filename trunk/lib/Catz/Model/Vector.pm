@@ -32,7 +32,7 @@ use feature qw( switch );
 use parent 'Exporter';
 our @EXPORT = qw( 
  vector_bit vector_array vector_array_rand vector_first 
- vector_pager vector_pointer vector_count
+ vector_pager vector_pointer vector_count vector_inspect
 );
 
 use Bit::Vector;
@@ -183,8 +183,6 @@ sub vector_bit { # fetch a bit vector for a set of arguments
 }
 
 sub vector_array { # get vector as array of indexes
-
- my $res;
    
  my $bvec = vector_bit( @_ );
  
@@ -195,8 +193,6 @@ sub vector_array { # get vector as array of indexes
 }
 
 sub vector_array_rand {
-
- my $res;
 
  my $arr = vector_array ( @_ );
  
@@ -326,9 +322,7 @@ sub vector_count {
 
 sub vector_inspect {
 
- my $arr = vector_count ( @_ );
-
- return scalar @{ $arr };
+ return vector_count ( @_ );
 
 }
 

@@ -1,8 +1,7 @@
 % layout 'page';
 %== include 'stripe/top';
-%== include 'stripe/viewer';
-%== include 'stripe/text';
-<img id="fittarget" src="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>">
+%== include 'stripe/mode';
+INSPECT
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

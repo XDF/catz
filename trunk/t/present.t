@@ -7,7 +7,7 @@ my $c = 0;
 
 foreach my $lang ( qw ( en fi ) ) {
 
- foreach my $mode ( qw ( browse show ) ) {
+ foreach my $mode ( qw ( browse view ) ) {
 
   # no id
   
