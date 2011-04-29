@@ -64,8 +64,8 @@ sub startup {
  $r->route( '/style/reset' )->to( 'main#reset' );
  $r->route( '/style/:palette' )->to( 'main#base' );
  
- # set sessions parameters
- $r->route( '/set/:key/:val' )->to( 'main#set' );
+ # set user parameters
+ $r->route( '/set' )->to( 'main#set' );
  
  # all site content is found under /:lang where lang is 'en' or 'fi'
  my $l = $r->route ('/:lang', lang => qr/en|fi/ );
@@ -103,70 +103,25 @@ sub startup {
  $l->route('/list/:subject/:mode')->to('list#list');
  
  $l->route( '/search' )->to ( "search#search" ); 
- 
- # view photos based on the arguments or no argumets 
- # id \d{6} supports 999 galleries 999 photos seach
- 
- my $v = $l->route ( '/:action', action => qr/browse|view/ ); 
-   
- $v->route( '/(*path)/:id', id => qr/\d{6}/ )->to( controller => 'view' );
-
- $v->route( '/:id', id => qr/\d{6}/ )->to( 
-  controller => 'view', path => undef 
- );
   
-  
- $v->route( '(*path)' )->to ( controller => 'view' );
- 
- $v->route( '/' )->to ( controller => 'view', path => undef );
-   
+ $l->route ( '/browse' )->to ( "present#browse" ); 
+ $l->route ( '/view' )->to ( "present#view" ); 
+    
  # add hooks to subs that are executed before and after the dispatch
  $self->hook ( before_dispatch => \&before );  
- $self->hook( after_dispatch => \&after );
+ $self->hook ( after_dispatch => \&after );
  
 }
 
 sub before {
 
  my $self = shift; my $stash = $self->{stash};
- 
- # PSGI has this set
- # warn ( $self->req->env->{REQUEST_URI} );
- 
- # force all URLs to end with slash 
- $self->req->url->path->trailing_slash or do {
-
-  my $path = $self->req->url->path->to_string;
- 
-  if ( not ( $path =~ /\..{2,4}$/ ) ) { # skip slash adding for static files
-    
-   # this redirect code is a modified version from Mojolicious core
-   # and appears to work as expected
-       
-   my $res = $self->res;
-   $res->code(301); # a permanent redirect
-
-   my $headers = $res->headers;
   
-   # add slash to the end of the path
-   $headers->location("$path/"); 
-   # if there was query parameters, they get dropped on redirect
-  
-   $headers->content_length(0);
- 
-   $self->rendered;
-
-   return $self;
-   
-  }
- 
- };
- 
  # default to "index,follow", actions may modify it as needed 
  $stash->{meta_index} = 1;
  $stash->{meta_follow} = 1;
  
- $stash->{photobase} = conf ('base_photo');
+ $stash->{photobase} = conf ( 'base_photo' );
  
  # the language detection
  # - detect correct langauge based on the beginning of URL
@@ -280,6 +235,8 @@ sub after {
  # we will not cache setup change request 
  # since they must alter the session data
  $stash->{action} eq 'set' and return;
+
+ setup_exit ( $self );
  
  # no recaching: if the result came from the cache don't cache it again
  defined $stash->{cached} and return;

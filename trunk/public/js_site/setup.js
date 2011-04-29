@@ -25,7 +25,7 @@
 function setupChange( key, val ) {
  
  $.ajax ({
-  url: '/set/' + key + '/' + val + '/', 
+  url: '/set/?' + key + '=' + val, 
   async: false, cache: false,
   success: function(){ location.reload(); }  
  });

@@ -194,24 +194,7 @@ my $conf = { # config is one hash ref
  
  #results => map { $_ => 1 } qw ( BIS BIV BOB BOX CAC CACE CACIB CACS CAGCIB CAGPIB CAP CAPE CAPIB CAPS CH EC EP EX EX1 EX2 EX3 EX4 EX5 EX6 EX7 EX8 EX9 GIC GIP IC IP KM NOM PR SC SP 1 2 3 4 5 6 7 8 9 1. 2. 3. 4. 5. 6. 7. 8. 9. )
 
- samples => 30,
-
- setup_defaults => {
-  display => 'full',
-  palette => 'neutral',
-  photosize => 'fit',
-  perpage => 20,
-  thumbsize => 150
- },
-
- setup_values => {
-  
-  display => [ qw ( none brief full ) ], 
-  palette => [ qw ( dark neutral bright ) ],
-  photosize => [ qw ( fit original ) ],
-  perpage => [ qw( 10 15 20 25 30 35 40 45 50 ) ],
-  thumbsize => [ qw ( 100 125 150 175 200 ) ]
- }
+ samples => 30
  
 };
  

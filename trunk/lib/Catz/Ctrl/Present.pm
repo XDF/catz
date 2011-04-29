@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Ctrl::View;
+package Catz::Ctrl::Present;
 
 use strict;
 use warnings;
@@ -37,28 +37,32 @@ use Catz::Util::String qw ( deurl );
 
 sub process_id {
  
- #
- # processes the id parameter from the stash to stash
- # if id is not present then resolve it
- #
+ # processes the id parameter from the request
+ # sets the photo x to stash
+
  # returns true in success, return false on reject
- #
  
  my $self = shift; my $s = $self->{stash};
   
- if ( defined $s->{id} ) { # id was given in request
+ if ( defined $self->param('id') ) { # id was given in request
+
+  my $id = $self->param('id');
+
+  ( length ( $id ) == 6 and $id =~ /^\d+$/ )  or return 0;
+
+  $s->{origin} = 'id'; # mark that this was request had an id
+ 
+  $s->{id} = $id;
   
-  $s->{origin} = 'id';
-    
-  $s->{x} = $self->fetch( 'id2x', $s->{id} );
+  $s->{x} = $self->fetch( 'id2x', $id );
     
   $s->{x} or return 0;
           
  } else { # no id given, must find the id of the first photo in the set
  
-  $s->{origin} = 'x';
+  $s->{origin} = 'x'; # mark that the id was resolved
  
-  $s->{x} = $self->fetch ( 'vector_first', @{ $s->{path_array} } );
+  $s->{x} = $self->fetch ( 'vector_first', @{ $s->{args_array} } );
       
   $s->{x} or return 0;
   
@@ -67,79 +71,73 @@ sub process_id {
   $s->{id} or return 0; 
    
  }
+
+ $s->{id_string} = '';
+ $s->{pad_string} = '';
  
- return 1;
+ if ( $s->{origin} eq 'id' ) {
+                
+   $s->{pad_string} = '?';
 
+   if ( $s->{args_string} ne '' ) {
 
-}
-
-sub process_path {
-
- my $self = shift; my $s = $self->{stash};
- 
- # processes the path parameter from the stash to stash
- # returns true in success, return false on reject   
- my @path = ();
- 
- if ( defined $s->{path} ) {
- 
-  #warn ( $s->{path} );
- 
-  my @inpath =  split /\//, $s->{path};
-
- # now it is time to do some hacking
- # since Mojolicious don't provide access to real raw URI
- # but always decodes encoded slashes this hack is needed
-
- # it identifies if pri-sec pair have real pri's and if not
- # they get merged to previous sec
-
-  my $pri = $self->fetch ( 'pri' );
-
-  push @{ $pri }, 'has';
-
-  my $collect = '';
-  my $mode = 0;
-
-  while ( my $val = shift @inpath ) {
-
-   if ( $mode == 0 ) {
-        
-    if ( any { $_ eq $val } @{ $pri } ) {
-     push @path, $val;
-     #warn ( "ok key: $val" );
-     $mode = 1;
-    } else {
-      $#path > 0 or return 0;
-      $path[$#path] .= "/$val";
-      #warn ( "delayed val: $val" ); 
-    }
+    $s->{id_string} = '&id=' . $s->{id};
 
    } else {
 
-    #warn ( "val: $val" );
-    push @path, $val;
-    $mode = 0;
+    $s->{id_string} = 'id=' . $s->{id};
 
    }
 
-  }
-  
-  # reject if any empty path parts
-  ( all { defined $_ } @path ) or return 0;
-  
-  #warn ( join '-', @path );
-  
-  #warn ( $s->{url} );
-    
+ } else {
+   
+  if ( $s->{args_string} ne '' ) {
+
+    $s->{pad_string}= '?';
+
+   }
+
+ } 
+
+ return 1;
+}
+
+sub process_args {
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ # processes the get parameters of the request
+ # returns true in success, false on reject
+   
+ my @args = ();
+ my $str = '';
+
+ my $pri = $self->fetch ( 'pri' );
+
+ push @{ $pri }, 'has';
+
+ foreach my $key ( $self->param ) {
+
+  any { $_ eq $key } @{ $pri } and do {
+
+   my @vals = $self->param( $key );
+
+   foreach my $val ( @vals ) {
+
+    $str eq '' or $str .= '&';
+    $str .= "$key=$val"; 
+    push @args, $key; 
+    push @args, $val;
+
+   }
+
+  };
+
  }
 
- # arguments must come in as pairs
- scalar @path % 2 == 0 or return 0;
- 
- # URL decode each element and store them to stash
- $s->{path_array} = [ map { deurl $_ } @path ];
- $s->{path_count} = scalar @path;
+ $s->{args_string} = $str;  
+ $s->{args_count} = scalar @args;
+ $s->{args_array} = [ map { deurl $_ } @args ];
    
  return 1;
 
@@ -151,18 +149,19 @@ sub browse {
  
  #warn ( $s->{path} );
  
- $self->process_path or $self->not_found and return;
- 
+ $self->process_args or $self->not_found and return;
  $self->process_id or $self->not_found and return;
- 
- #warn ( join '-', @{ $s->{path_array} }  );
+
+ #warn ( join '-', @{ $s->{args_array} }  );
+
+ warn ( $s->{x} );
    
  my $res = $self->fetch('vector_pager', 
-   $s->{x}, $s->{perpage}, @{ $s->{path_array} }  
+   $s->{x}, $s->{perpage}, @{ $s->{args_array} }  
   );
-  
+ 
  $res == 0 and $self->not_found and return;
-  
+
  $s->{total} = $res->[0];
  $s->{page} = $res->[1];
  $s->{pages} = $res->[2];
@@ -190,12 +189,14 @@ sub browse {
 sub view {
 
  my $self = shift; my $s = $self->{stash};
- 
- $self->process_path or $self->not_found and return;
- 
+
+  
+ $self->process_args or $self->not_found and return;
+
+
  $self->process_id or $self->not_found and return;
      
- my $res = $self->fetch('vector_pointer', $s->{x}, @{ $s->{path_array} } );
+ my $res = $self->fetch('vector_pointer', $s->{x}, @{ $s->{args_array} } );
  
  $res == 0 and $self->not_found and return;
   
