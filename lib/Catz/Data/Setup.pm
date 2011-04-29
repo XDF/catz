@@ -25,30 +25,30 @@ package Catz::Data::Setup;
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( 
- setup_init setup_verify setup_set setup_signature 
- setup_colors setup_values setup_keys setup_pagekey );
+our @EXPORT = qw ( setup_init setup_exit setup_set setup_values setup_verify );
 
-use Catz::Data::Conf;        
 
-# local copies based on conf - mostly for fun :-D
-# actually they might provide a tiny performance boost
+my $defaults = {
+ display => 'full',
+ palette => 'neutral',
+ photosize => 'fit',
+ perpage => 20,
+ thumbsize => 150
+};
 
-my $ok = {}; # for key vefification
+my $values = {
+ display => [ qw ( none brief full ) ], 
+ palette => [ qw ( dark neutral bright ) ],
+ photosize => [ qw ( fit original ) ],
+ perpage => [ qw( 10 15 20 25 30 35 40 45 50 ) ],
+ thumbsize => [ qw ( 100 125 150 175 200 ) ]
+};
 
-my $defaults = {}; # to get default values
+my @keys = keys %{ $defaults }; 
+      
+my $ok = {}; # for simple key vefification
 
-my $values = {}; # to get value lists
-
-my $keys = []; # to get keys 
-
-foreach my $key ( keys %{ conf('setup_defaults' ) } ) {
-
- push @{ $keys }, $key;
-
- $defaults->{$key} = conf('setup_defaults')->{$key};
- 
- $values->{$key} = conf( 'setup_values' )->{$key};
+foreach my $key ( @keys ) {
 
  foreach my $val ( @{ $values->{$key} } ) {
  
@@ -56,6 +56,83 @@ foreach my $key ( keys %{ conf('setup_defaults' ) } ) {
   
  }
 
+}
+
+sub setup_init {
+
+ # read incoming cookies and populate stash from them or from default values
+
+ my $app = shift;
+
+ foreach my $key ( @keys ) {
+
+  #warn ( "setting up $key" ); 
+
+  my $val = $app->cookie ( $key );
+
+  if ( $val and ( length ( $val ) < 51 ) and $ok->{$key}->{$val} ) {
+
+   $app->stash->{ $key } = $val; # value from cookie
+
+  #warn ( "-> $key = $val from cookie" ); 
+
+  } else {
+
+   $app->stash->{$key} = $defaults->{ $key }; # default value
+
+   #warn ( "-> setting up $key from defaults" ); 
+  } 
+
+ }
+
+ my $val = $app->cookie ( 'dt' );
+
+ $val and $val =~ /^d{14}$/ and $app->stash->{ 'dt' } = $val;
+ 
+}
+
+sub setup_exit {
+
+ my $app = shift;
+
+ foreach my $key ( @keys ) {
+
+  if ( $stash->{$key} and ( $stash->{$key} ne $defaults->{key} ) ) {
+   
+   $app->cookie ( $key => $val, { path => '/' } );
+ 
+  }
+
+ }
+
+ $stash->{dt} and $app->cookie ( 'dt' => $stash->{dt} );
+
+}
+
+sub setup_set {
+
+ my ( $app, $key, $val ) = @_;
+
+ if ( 
+  $key and 
+  $val and 
+  ( length ( $key ) < 51 ) and 
+  ( length ( $val ) < 51 ) and 
+  $ok->{$key}->{$val} 
+ ) {
+
+  $app->cookie ( $key => $val, { path => '/' }  );
+ 
+  return 1; # modification occured
+
+ }
+
+ $key and $key eq 'dt' and $val and $val =~ /^d{14}$/ and do {  
+  $app->stash->{ 'dt' } = $val;
+  return 1;
+ };
+ 
+ return 0; # no modification occured 
 }
 
 sub setup_values {
@@ -68,64 +145,6 @@ sub setup_values {
  
 }
 
-sub setup_keys {
-
- # return a values list as arrayref for one setup key 
-
- return $keys;
- 
-}
-
-sub setup_init {
-
- # if the value is not set in session or the value is invalid
- # then put the default value to the session 
- 
- my $app = shift;
- 
- foreach my $key ( @$keys ) {
-
-  my $val = $app->session( $key );
-
-  ( defined $val and setup_verify ( $key, $val ) ) or
-   $app->session( $key => $defaults->{$key} );
-
-  # copy all key-value pairs from session to stash
-  $app->stash->{$key} = $app->session($key);
-
- }
- 
-}
-
-sub setup_set {
-
- my ( $app, $key, $val ) = @_;
- 
- # changes one setup value
-  
- setup_verify ( $key, $val ) and do {
-  
-  # if verify ok then change session data ...
-  $app->session( $key => $val );
- 
-  # ... and stash data  
-  $app->stash->{$key} = $val;
-  
-  # report that the modification was done
-  return 1; 
-  
- };
- 
- return 0; # report that no modification occured 
-
-}
-
-sub setup_verify {
-
- # verifies a single setup key-value pair
-
- $ok->{$_[0]}->{$_[1]};
- 
-}
+sub setup_verify { $ok->{$_[0]}->{$_[1]} };
 
 1;

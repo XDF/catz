@@ -89,66 +89,31 @@ sub base {
 
  my $self = shift; my $s = $self->{stash};
 
- setup_verify ( 'palette', $s->{palette} ) or $self->not_found and return;
+ setup_verify ( 'palette', $s->{palette} ) or ( $self->not_found and return );
   
- $self->render ( 
-  template => 'style/base',
-  format => 'css' 
- );
+ $self->render ( template => 'style/base', format => 'css' );
 
 }
 
 sub set {
 
  my $self = shift; my $stash = $self->{stash};
- 
- $stash->{key} eq 'dt' and do { # special case for 'dt'
- 
-  $stash->{val} eq '0' and do {
-  
-   delete $self->session->{dt}; 
-   
-   $self->render( text => 'OK' );
-   
-   return;                      
-  
-  };
- 
-  ( $stash->{val} =~ /^\d{14}$/ ) or do {
- 
-   $self->render( text => 'FAILED' );
-    
-   return;
-  
-  };
- 
-  if ( conf( 'path_master ') . '/' . $stash->{val} . 'db' ) {
-   
-   # the db file exists
-   
-    $self->session( dt => $stash->{val} );
-   
-    $self->render( text => 'OK' );
-   
-  } else {
-  
-   $self->render( text => 'FAILED' );
-  
-  }  
- 
-  return;
-  
- };
-   
- if ( setup_set ( $self, $stash->{key}, $stash->{val} ) ) { 
 
-  $self->render( text => 'OK' );
-  
- } else {
- 
-  $self->render( text => 'FAILED' );
+ my @params = $self->param;
+
+ my $i = 0;
+
+ foreach my $key ( @params ) {
+
+  warn "param $key ";  
+  warn $self->param($key);
+
+  setup_set ( $self, $key, $self->param( $key ) ) and $i++;
  
  }
+ 
+ if ( $i ) { $self->render( text => 'OK' ) }  else 
+  {  $self->render( text => 'FAILED' ) }
  
 }
 
