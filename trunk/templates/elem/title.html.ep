@@ -21,7 +21,7 @@
 % } 
 % }
 % when ( 'browse' ) {
-% my $a = stash( 'path_array' );
+% my $a = stash( 'args_array' );
 % if ( ( scalar @$a ) == 0 ) {
 <%= $t->{ALL} %> (<%= $t->{PHOTO} %> <%= stash('page') %>/<%= stash('apges') %>) - <%= $t->{SITE} %>
 % } elsif ( scalar ( @$a ) < 3 ) {
@@ -31,7 +31,7 @@
 % }
 % }
 % when ( 'inspect' ) {
-% my $a = stash( 'path_array' );
+% my $a = stash( 'args_array' );
 % if ( ( scalar @$a ) == 0 ) {
 <%= $t->{ALL} %> (<%= $t->{PHOTO} %> <%= stash('pos') %>/<%= stash('total') %>) - <%= $t->{SITE} %>
 % } elsif ( scalar ( @$a ) < 3 ) {
@@ -40,8 +40,8 @@
 <%= stash('path') %> (<%= $t->{PHOTO} %> <%= stash('pos') %>/<%= stash('total') %>) - <%= $t->{SITE} %>
 % }
 % }
-% when ( 'show' ) {
-% my $a = stash( 'path_array' );
+% when ( 'view' ) {
+% my $a = stash( 'args_array' );
 % if ( ( scalar @$a ) == 0 ) {
 <%= $t->{ALL} %> (<%= $t->{PHOTO} %> <%= stash('pos') %>/<%= stash('total') %>) - <%= $t->{SITE} %>
 % } elsif ( scalar ( @$a ) < 3 ) {

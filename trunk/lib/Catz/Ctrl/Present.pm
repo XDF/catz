@@ -31,7 +31,6 @@ use parent 'Catz::Ctrl::Base';
 
 use List::MoreUtils qw ( any all );
 
-use Catz::Data::DB;
 use Catz::Util::Number qw ( fullnum3 minnum );
 use Catz::Util::String qw ( deurl );
 
@@ -154,7 +153,7 @@ sub browse {
 
  #warn ( join '-', @{ $s->{args_array} }  );
 
- warn ( $s->{x} );
+ #warn ( $s->{x} );
    
  my $res = $self->fetch('vector_pager', 
    $s->{x}, $s->{perpage}, @{ $s->{args_array} }  

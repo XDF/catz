@@ -61,13 +61,15 @@ sub detect {
 
 sub front {
 
- my $self = shift; my $stash = $self->{stash};
+ my $self = shift; my $s = $self->{stash};
    
  foreach my $key ( qw ( news albums pris ) ) {
  
-  $stash->{$key} = $self->fetch ( 'list_links', $key );
+  $s->{$key} = $self->fetch ( 'list_links', $key );
  
  }
+
+ $s->{maxx} = $self->fetch ( 'maxx' );
     
  $self->render( template => 'page/front' );
 
@@ -105,8 +107,8 @@ sub set {
 
  foreach my $key ( @params ) {
 
-  warn "param $key ";  
-  warn $self->param($key);
+  #warn "param $key ";  
+  #warn $self->param($key);
 
   setup_set ( $self, $key, $self->param( $key ) ) and $i++;
  

@@ -38,7 +38,7 @@ sub maxx {
 
  my ( $db, $lang ) = @_;
  
- return $db->one ( 'select max(x) from _x' );
+ return $db->one ( 'select max(x) from photo' );
   
 }
 

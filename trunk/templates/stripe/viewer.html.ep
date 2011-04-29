@@ -1,36 +1,29 @@
-% my $pre = '../';
-% $origin eq 'x' and $pre = '';
-% my $sep = '.';
+% use Catz::Data::Conf;
+% my $sep = conf ( 'sep' );
 <div class="flop center">
+% my $label1 = $t->{PHOTO_FIRST};
+% my $label2 = $t->{PHOTO_PREV};
 % if ( $pos > 1 ) {
-<a title="<%= $t->{PHOTO_FIRST} %>" href="<%== $pre %><%== $pin->[0] %>/"><%= $t->{PHOTO_FIRST} %></a>
+<a title="<%= $label1 %>" href="<%== include 'href/id', toid => $pin->[0] %>"><%= $label1 %></a>
+<%== $sep %>
+<a title="<%= $label2 %>" href="<%== include 'href/id', toid => $pin->[1] %>"><%= $label2 %></a>
 % } else { 
-<%= $t->{PHOTO_FIRST} %>
+<%= $label1 %><%== $sep %><%= $label2 %>
 % }
 <%== $sep %>
-% if ( $pos > 1 ) {
-<a title="<%= $t->{PHOTO_PREV} %>" href="<%== $pre %><%== $pin->[1] %>/"><%= $t->{PHOTO_PREV} %></a>
-% } else {
-<%= $t->{PHOTO_PREV} %>
-% }
+<a href="<%== include 'href/path', topath => 'browse' %>"><%= $t->{THUMBS} %></a>
 <%== $sep %>
-<a href="/<%= $lang %>/browse/<%= $path %><%= $path ? '/' : '' %><%= $id %>/">browse</a>
-<%== $sep %>
-<a href="/<%= $lang %>/inspect/<%= $path %><%= $path ? '/' : '' %><%= $id %>/">inspect</a>
-<%== $sep %>
-<a href="/<%= $lang %>/show/<%= $path %><%= $path ? '/' : '' %><%= $id %>/">show</a>
-<%== $sep %>
+% $label1 = $t->{PHOTO_NEXT};
+% $label2 = $t->{PHOTO_LAST};
 % if ( $pos < $total ) {
-<a title="<%= $t->{PHOTO_NEXT} %>" href="<%== $pre %><%== $pin->[2] %>/"><%= $t->{PHOTO_NEXT} %></a>
+<a title="<%= $label1 %>" href="<%== include 'href/id', toid => $pin->[2] %>"><%= $label1 %></a>
+<%== $sep %>
+<a title="<%= $label2 %>" href="<%== include 'href/id', toid => $pin->[3] %>"><%= $label2 %></a>
 % } else { 
-<%= $t->{PHOTO_NEXT} %>
+<%= $label1 %><%== $sep %><%= $label2 %>
 % }
 <%== $sep %>
-% if ( $pos < $total ) {
-<a title="<%= $t->{PHOTO_LAST} %>" href="<%== $pre %><%== $pin->[3] %>/"><%= $t->{PHOTO_LAST} %></a>
-% } else {
-<%= $t->{PHOTO_LAST} %>
-% }
+<a href="<%== include 'href/path', topath => 'inspect' %>">inspect</a>
 % if ( $display eq 'none' ) {
 <%== include 'elem/setup', key => 'display' %>
 % }

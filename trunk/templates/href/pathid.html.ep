@@ -1,18 +1,5 @@
- % layout 'page';
-%== include 'stripe/top';
-% if ( $display ne 'none' ) {
-%== include 'elem/title';
-% }
-<div>
-%== include 'stripe/viewer';
-</div>
-% if ( $display eq 'full' ) {
-%== include 'stripe/detail';
-% }
-<div class="center" id="fitparent">
-<a href="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>">
-<img id="fittarget" src="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>"></a>
-</div>
+%# Create link to different path & id but to same params
+/<%== $lang %>/<%== $topath %>?<%== $args_string %><%== length ( $args_string ) > 0 ? '&id=' : 'id=' %><%== $id %>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

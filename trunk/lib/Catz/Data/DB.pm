@@ -26,13 +26,12 @@ package Catz::Data::DB;
 
 # extending DBI is generally not recommended
 # so we need a separate class to act as a database
-   
+
+use 5.12.2;   
 use strict;
 use warnings;
 
 use DBI;
-
-use feature qw( switch );
 
 use Catz::Data::Cache;
 use Catz::Data::Conf;

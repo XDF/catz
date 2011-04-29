@@ -324,4 +324,12 @@ sub vector_count {
  
 }
 
+sub vector_inspect {
+
+ my $arr = vector_count ( @_ );
+
+ return scalar @{ $arr };
+
+}
+
 1;
