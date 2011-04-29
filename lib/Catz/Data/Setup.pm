@@ -123,16 +123,26 @@ sub setup_set {
 
   $app->cookie ( $key => $val, { path => '/' }  );
  
-  return 1; # modification occured
+  return 1; # OK
 
  }
 
- $key and $key eq 'dt' and $val and $val =~ /^d{14}$/ and do {  
-  $app->stash->{ 'dt' } = $val;
-  return 1;
- };
- 
- return 0; # no modification occured 
+ if ( $key and $key eq 'dt' ) {
+
+   $val eq '0' and do {
+    $app->stash->{ 'dt' } = $val;
+    return 1; # OK
+   }; 
+
+   $val =~ /^\d{14}$/ and do {
+    $app->stash->{ 'dt' } = $val;
+    return 1; # OK
+   }; 
+
+  }
+  
+  #warn ( "key $key val $val" ); 
+  return 0; # FAILED 
 }
 
 sub setup_values {

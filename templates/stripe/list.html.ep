@@ -1,5 +1,6 @@
 % use Catz::Util::Number qw ( fmt );
 <div><h2>Meillä on</h2> .
+<a href="/<%= $lang %>/browse/"><%= fmt ( $maxx, $lang ) %> <%= $t->{PHOTOA} %></a> .
 % foreach my $row ( @{ $pris } ) {
 <a href="/<%= $lang %>/list/<%== $row->[0] %>/a2z/">
 <%= fmt ( $row->[1], $lang ) %>

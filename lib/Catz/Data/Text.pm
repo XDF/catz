@@ -265,15 +265,15 @@ EMS-koodia
 #
 LOC
 location
-paikkakunta
+paikka
 #
 LOCS
 locations
-paikkakunnat
+paikat
 #
 LOCA
 locations
-paikkakuntaa
+paikkaa
 #
 NAME
 album
@@ -456,42 +456,46 @@ pages
 sivua
 #
 PAGE_FIRST
-first page
-ensimmäinen sivu
+<< first page
+<< ensimmäinen sivu
 #
 PAGE_PREV
-previous page
-edellinen sivu
+< previous page
+< edellinen sivu
 #
 PAGE_NEXT
-next page
-seuraava sivu
+next page >
+seuraava sivu >
 #
 PAGE_LAST
-last page
-viimeinen sivu
+last page >>
+viimeinen sivu >>
 #
 PHOTO
 photo
 kuva
 #
 PHOTO_FIRST
-first photo
-ensimmäinen kuva
+<< first photo
+<< ensimmäinen kuva
 #
 PHOTO_PREV
-previous photo
-edellinen kuva
+< previous photo
+< edellinen kuva
 #
 PHOTO_NEXT
-next photo
-seuraava kuva
+next photo >
+seuraava kuva >
 #
 PHOTO_LAST
-last photo
-viimeinen kuva
+last photo >>
+viimeinen kuva >>
 #
 PHOTOS
+photos
+kuvat
+#
+PHOTOA
 photos
 kuvaa
 #
@@ -580,39 +584,39 @@ dark palette
 tummat sävyt
 #
 SETUP_perpage_10
-10 thumbs
+10 photos
 10 kuvaa
 #
 SETUP_perpage_15
-15 thumbs
+15 photos
 15 kuvaa
 #
 SETUP_perpage_20
-20 thumbs
+20 photos
 20 kuvaa
 #
 SETUP_perpage_25
-25 thumbs
+25 photos
 25 kuvaa
 #
 SETUP_perpage_30
-30 thumbs
+30 photos
 30 kuvaa
 #
 SETUP_perpage_35
-35 thumbs
+35 photos
 35 kuvaa
 #
 SETUP_perpage_40
-40 thumbs
+40 photos
 40 kuvaa
 #
 SETUP_perpage_45
-45 thumbs
+45 photos
 45 kuvaa
 #
 SETUP_perpage_50
-50 thumbs
+50 photos
 50 kuvaa
 #
 SETUP_photosize_fit
@@ -662,4 +666,8 @@ pikkukuvat
 TITLE_FEED
 www.heikkisiltala.com feed
 www.heikkisiltala.com virta
+#
+VIEW_PHOTO
+view photo
+katso kuva
 #

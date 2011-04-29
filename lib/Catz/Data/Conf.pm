@@ -194,8 +194,10 @@ my $conf = { # config is one hash ref
  
  #results => map { $_ => 1 } qw ( BIS BIV BOB BOX CAC CACE CACIB CACS CAGCIB CAGPIB CAP CAPE CAPIB CAPS CH EC EP EX EX1 EX2 EX3 EX4 EX5 EX6 EX7 EX8 EX9 GIC GIP IC IP KM NOM PR SC SP 1 2 3 4 5 6 7 8 9 1. 2. 3. 4. 5. 6. 7. 8. 9. )
 
- samples => 30
+ samples => 30,
  
+ sep => '.' 
+
 };
  
 sub conf { $conf->{$_[0]} } # an unified API sub to read any config
