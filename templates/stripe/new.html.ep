@@ -1,9 +1,9 @@
-<div><h2>Uutisia</h2>
+<div><h2>Uutisia</h2> .
 % foreach my $row ( @$news ) {
 <%= $row->[1] %>
-<a href="/<%= $lang %>/news/#<%= $row->[0] %>"><%= $row->[2] %></a>,
+<a class="aero" href="/<%= $lang %>/news/#<%= $row->[0] %>"><%= $row->[2] %></a> .
 % }
-<a href="/<%= $lang %>/news/"><%= $t->{NEWS_ALL} %></a>
+<a class="aero" href="/<%= $lang %>/news/"><%= $t->{NEWS_ALL} %></a>
 </div>                                                         
 %#
 %# Catz - the world's most advanced cat show photo engine

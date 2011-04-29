@@ -13,7 +13,7 @@
 % ( $action eq 'front' ) and do {
 <script type="text/javascript" src="/js_site/find.js"></script>
 % };
-% ( $action eq 'inspect' or $action eq 'show' ) and do { 
+% ( $action eq 'view' and $photosize eq 'fit' ) and do { 
 <script type="text/javascript" src="/js_site/fit.js"></script>
 % };
 <meta http-equiv="content-language" content="<%= $lang %>">

@@ -1,9 +1,15 @@
 % use Catz::Util::Number qw ( fullnum33 ); 
 % use Catz::Util::String qw ( enurl );
+% if ( $action eq 'sample' ) {
+<h2 class="block">Samples</h2><div class="aero">
+% }
 % foreach my $th ( @{ $thumb } ) {
 % my $id = fullnum33 ( $th->[0], $th->[1] );
-% my $width = int ( ( $thumbsize / $th->[5] ) * $th->[4] );
-<a href="/<%= $lang %>/inspect/<%== $path // '' %><%== $path ? '/' : '' %><%== $id %>/"><img src="<%== $photobase %>/<%== $th->[2] %>/<%== $th->[3] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
+% my $width = int ( ( $thumbsize / $th->[5] ) * $th->[4] ); 
+<a href="/<%= $lang %>/view/<%== $path // '' %><%== $path ? '/' : '' %><%== $id %>/"><img src="<%== $photobase %>/<%== $th->[2] %>/<%== $th->[3] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
+% }
+% if ( $action eq 'sample' ) {
+</div>
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine

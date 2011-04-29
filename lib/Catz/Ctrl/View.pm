@@ -187,33 +187,7 @@ sub browse {
     
 }
 
-sub inspect {
-
- my $self = shift; my $s = $self->{stash};
- 
- $self->process_path or $self->not_found and return;
- 
- $self->process_id or $self->not_found and return;
-     
- my $res = $self->fetch('vector_pointer', $s->{x}, @{ $s->{path_array} } );
- 
- $res == 0 and $self->not_found and return; 
-  
- $s->{total} = $res->[0];
- $s->{pos} = $res->[1];
- $s->{pin} = $res->[2];
-    
- $s->{detail} = $self->fetch( 'photo_detail', $s->{x});
-
- $s->{comment} =  $self->fetch( 'photo_text', $s->{x} );
-
- $s->{image} =  $self->fetch( 'photo_image', $s->{x} );
-        
- $self->render( template => 'page/inspect' );
-
-}
-
-sub show {
+sub view {
 
  my $self = shift; my $s = $self->{stash};
  
@@ -235,7 +209,7 @@ sub show {
 
  $s->{image} =  $self->fetch( 'photo_image', $s->{x} );
         
- $self->render( template => 'page/show' );
+ $self->render( template => 'page/view' );
 
 }
 

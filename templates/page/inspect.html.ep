@@ -2,7 +2,6 @@
 %== include 'stripe/top';
 %== include 'stripe/viewer';
 %== include 'stripe/text';
-%== include 'stripe/detail';
 <img id="fittarget" src="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>">
 %#
 %# Catz - the world's most advanced cat show photo engine

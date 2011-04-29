@@ -196,16 +196,19 @@ my $conf = { # config is one hash ref
 
  samples => 30,
 
- setup_defaults => { 
+ setup_defaults => {
+  display => 'full',
   palette => 'neutral',
-  photosize => 'full',
+  photosize => 'fit',
   perpage => 20,
   thumbsize => 150
  },
 
- setup_values => { 
+ setup_values => {
+  
+  display => [ qw ( none brief full ) ], 
   palette => [ qw ( dark neutral bright ) ],
-  photosize => [ qw ( full fit_width fit_height fit_all ) ],
+  photosize => [ qw ( fit original ) ],
   perpage => [ qw( 10 15 20 25 30 35 40 45 50 ) ],
   thumbsize => [ qw ( 100 125 150 175 200 ) ]
  }

@@ -1,10 +1,10 @@
-<div><h2>Tuoreimmat albumit</h2>
+<div><h2>Tuoreimmat albumit</h2> .
 % my $mode = 'flip';
 % foreach my $row ( @{ $albums } ) {
-<span class="aero <%==$mode %>"><a href="/<%= $lang %>/album/<%= $row->[0] %>/"><%= $row->[1] %></a> <%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOS} %></span>
+<span class="aero"><a href="/<%= $lang %>/album/<%= $row->[0] %>/"><%= $row->[1] %></a> <%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOS} %></span> .
 % $mode = $mode eq 'flip' ? '' : 'flip'; 
 % }
-<a href="/<%= $lang %>/list/album/a2z/"><%= $t->{ALBUMS_ALL} %></a>
+<a class="aero" href="/<%= $lang %>/list/album/a2z/"><%= $t->{ALBUMS_ALL} %></a>
 </div>
 %#
 %# Catz - the world's most advanced cat show photo engine
