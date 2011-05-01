@@ -98,13 +98,16 @@ sub startup {
 
 sub before {
 
- my $self = shift; my $stash = $self->{stash};
+ my $self = shift; my $s = $self->{stash};
   
  # default to "index,follow", actions may modify it as needed 
- $stash->{meta_index} = 1;
- $stash->{meta_follow} = 1;
+ $s->{meta_index} = 1;
+ $s->{meta_follow} = 1;
  
- $stash->{photobase} = conf ( 'base_photo' );
+ # the layout separator character from conf to stash
+ $s->{sep} = conf ( 'sep' );
+ 
+ $s->{photobase} = conf ( 'base_photo' );
  
  # the language detection
  # - detect correct langauge based on the beginning of URL
@@ -116,37 +119,37 @@ sub before {
   # too short to detect language
   # default to english
  
-  $stash->{lang} = 'en';
-  $stash->{otherlang} = '/fi/'; 
+  $s->{lang} = 'en';
+  $s->{otherlang} = '/fi/'; 
  
  } elsif ( substr ( $self->req->url, 0, 3 ) eq '/fi' ) {
  
-  $stash->{lang} = 'fi';
+  $s->{lang} = 'fi';
 
-  $stash->{otherlang} = '/en' . substr ( $self->req->url, 3 );
+  $s->{otherlang} = '/en' . substr ( $self->req->url, 3 );
   
  } elsif( substr ( $self->req->url, 0, 3 ) eq '/en' ) {
  
-  $stash->{lang} = 'en';
+  $s->{lang} = 'en';
  
-  $stash->{otherlang} = '/fi' . substr ( $self->req->url, 3 );
+  $s->{otherlang} = '/fi' . substr ( $self->req->url, 3 );
 
  } else {
  
   # default to english
  
-  $stash->{lang} = 'en';
-  $stash->{otherlang} = '/fi' . substr ( $self->req->url, 3 ); 
+  $s->{lang} = 'en';
+  $s->{otherlang} = '/fi' . substr ( $self->req->url, 3 ); 
  
  }
  
  # let the url be in the stash also
  # and there are no query params since they are dropped earlier
- $stash->{url} = $self->req->url;
+ $s->{url} = $self->req->url;
  
  # fetch texts for the current language and make them available to all
  # controller and templates as variable t 
- $stash->{t} = text ( $stash->{lang} // 'en' );
+ $s->{t} = text ( $s->{lang} // 'en' );
                                                                                   
  setup_init ( $self );
  
@@ -156,7 +159,7 @@ sub before {
  
  $self->session->{dt} and do { 
  
-  $stash->{dt} = $self->session->{dt};
+  $s->{dt} = $self->session->{dt};
   
   goto SKIP;
   
@@ -176,13 +179,13 @@ sub before {
   
   $lastdt = $new; # store it to static variable
   
-  $stash->{dt} = $new; # store it to stash
+  $s->{dt} = $new; # store it to stash
 
   $lastcheck = $now; # update the check time
   
  } else { # check has not expired
  
-  $stash->{dt} = $lastdt; # so we just copy the latest dt to stash
+  $s->{dt} = $lastdt; # so we just copy the latest dt to stash
  
  }
  
@@ -198,11 +201,11 @@ sub before {
    $self->res->headers->content_type( $res->[0] );
    $self->res->body( $res->[2] );
    $self->rendered;
-   $stash->{cached} = 1;
-   #warn ( "CACHE HIT $stash->{url}" );
+   $s->{cached} = 1;
+   #warn ( "CACHE HIT $s->{url}" );
    return $self;
   } else {
-   #warn ( "CACHE MISS $stash->{url}" );
+   #warn ( "CACHE MISS $s->{url}" );
   }
  }
      
@@ -210,19 +213,19 @@ sub before {
 
 sub after {
 
- my $self = shift; my $stash = $self->{stash};
+ my $self = shift; my $s = $self->{stash};
     
- ( defined $stash->{controller} and defined $stash->{action} and
- defined $stash->{url} ) or return; 
+ ( defined $s->{controller} and defined $s->{action} and
+ defined $s->{url} ) or return; 
  
  # we will not cache setup change request 
  # since they must alter the session data
- $stash->{action} eq 'set' and return;
+ $s->{action} eq 'set' and return;
 
  setup_exit ( $self );
  
  # no recaching: if the result came from the cache don't cache it again
- defined $stash->{cached} and return;
+ defined $s->{cached} and return;
  
  if ( conf('cache_page' ) ) {
  
@@ -234,7 +237,7 @@ sub after {
     $self->res->body 
    ); 
  
-   #warn ( "CACHING $stash->{url}" );
+   #warn ( "CACHING $s->{url}" );
    
    cache_set ( cachekey ( $self ), \@set );
   

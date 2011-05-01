@@ -216,52 +216,52 @@ breeds
 rotua
 #
 EMS1
-EMS snippet
-EMS-koodin osa
+attribute
+ominaisuus
 #
 EMS1S
-EMS snippets
-EMS-koodin osat
+attributes
+ominaisuudet
 #
 EMS1A
-EMS snippets
-EMS_koodin osaa
+attributes
+ominaisuutta
 #
 EMS3
-EMS breed
-EMS-rotu
+breed code
+rotukoodi
 #
 EMS3S
-EMS breeds
-EMS-rodut
+breed codes
+rotukoodit
 #
 EMS3A
-EMS breeds
-EMS-rotua
+breed codes
+rotukoodia
 #
 EMS4
-EMS color and pattern
-EMS väri ja kuvio
+color
+väri
 #
 EMS4S
-EMS colors and patterns
-EMS värit ja kuviot
+colors
+värit
 # 
 EMS4A
-EMS colors and patterns
-EMS väriä ja kuviota 
+colors
+väriä 
 #
 EMS5
-EMS code
-EMS-koodi
+code
+koodi
 #
 EMS5S
-EMS codes
-EMS-koodit
+codes
+koodit
 #
 EMS5A
-EMS codes
-EMS-koodia
+codes
+koodia
 #
 LOC
 location
@@ -288,27 +288,27 @@ albums
 albumia
 #
 NAT
-nationality
-kansallisuus
+country
+maa
 #
 NATS
-nationalities
-kansallisuudet
+countries
+maat
 #
 NATA
-nationalities
-kansallisuutta
+countries
+maata
 #
 NICK
-nick
+nickname
 lempinimi
 #
 NICKS
-nicks
+nicknames
 lempinimet
 #
 NICKA
-nicks
+nicknames
 lempinimeä
 #
 ORG

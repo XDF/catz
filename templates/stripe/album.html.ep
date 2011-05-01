@@ -1,7 +1,7 @@
 <div><h2>Tuoreimmat albumit</h2> .
 % my $mode = 'flip';
 % foreach my $row ( @{ $albums } ) {
-<span class="aero"><a href="/<%= $lang %>/album/<%= $row->[0] %>/"><%= $row->[1] %></a> <%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOS} %></span> .
+<a class="aero" title="<%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%= $lang %>/album/<%= $row->[0] %>/"><%= $row->[1] %></a> <%== $sep %>
 % $mode = $mode eq 'flip' ? '' : 'flip'; 
 % }
 <a class="aero" href="/<%= $lang %>/list/album/a2z/"><%= $t->{ALBUMS_ALL} %></a>

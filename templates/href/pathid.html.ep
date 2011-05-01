@@ -1,5 +1,5 @@
 %# Create link to different path & id but to same params
-/<%== $lang %>/<%== $topath %>?<%== $args_string %><%== length ( $args_string ) > 0 ? '&id=' : 'id=' %><%== $id %>
+/<%== $lang %>/<%== $topath %>?<%== $args_string %><%== length ( $args_string ) > 0 ? '&id=' : 'id=' %><%== $toid %>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
