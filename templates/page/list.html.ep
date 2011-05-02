@@ -1,4 +1,4 @@
-% layout 'page';
+% layout 'base';
 %== include 'stripe/top';
 <div><h1><%= $t->{uc($subject).'S'} %> <%= $t->{'MODE_'.uc($mode)} %></h1>
 % if ( $mode eq 'a2z' ) {

@@ -22,8 +22,9 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Ctrl::Present;
+package Catz::Ctrl::Args;
 
+use 5.12.2;
 use strict;
 use warnings;
 
@@ -103,7 +104,7 @@ sub process_id {
 
 sub process_args {
 
- my $self = shift; my $s = $self->{stash};
+ my $self = shift; my $inspect = shift; my $s = $self->{stash};
  
  # processes the get parameters of the request
  # returns true in success, false on reject
@@ -113,7 +114,7 @@ sub process_args {
 
  my $pri = $self->fetch ( 'pri' );
 
- push @{ $pri }, 'has';
+ $inspect or push @{ $pri }, 'has'; # if not inspect, accept also 'has' pri
 
  foreach my $key ( $self->param ) {
 
@@ -137,80 +138,16 @@ sub process_args {
  $s->{args_string} = $str;  
  $s->{args_count} = scalar @args;
  $s->{args_array} = [ map { deurl $_ } @args ];
+ 
+ # inspect accepts only one key-value pair
+ $inspect and $s->{args_count} != 2 and return 0;   
    
  return 1;
 
 }
 
-sub browse {
-
- my $self = shift; my $s = $self->{stash};
- 
- #warn ( $s->{path} );
- 
- $self->process_args or $self->not_found and return;
- $self->process_id or $self->not_found and return;
-
- #warn ( join '-', @{ $s->{args_array} }  );
-
- #warn ( $s->{x} );
-   
- my $res = $self->fetch('vector_pager', 
-   $s->{x}, $s->{perpage}, @{ $s->{args_array} }  
-  );
- 
- $res == 0 and $self->not_found and return;
-
- $s->{total} = $res->[0];
- $s->{page} = $res->[1];
- $s->{pages} = $res->[2];
- $s->{from} = $res->[3];
- $s->{to} = $res->[4];
- $s->{pin} = $res->[5];
- $s->{xs} = $res->[6];
-                   
- $s->{total} == 0 and $self->not_found and return; 
- # no photos found by search 
- 
- scalar @{ $s->{xs} } == 0 and $self->not_found and return; 
- # no photos in this page
- 
- $res = $self->fetch( 'photo_thumb', @{ $s->{xs} } ) ;
- 
- $s->{thumb} = $res->[0];
- $s->{min} = $res->[1];
- $s->{max} = $res->[2]; 
-             
- $self->render( template => 'page/browse' );
-    
-}
-
-sub view {
-
- my $self = shift; my $s = $self->{stash};
-
-  
- $self->process_args or $self->not_found and return;
 
 
- $self->process_id or $self->not_found and return;
-     
- my $res = $self->fetch('vector_pointer', $s->{x}, @{ $s->{args_array} } );
- 
- $res == 0 and $self->not_found and return;
-  
- $s->{total} = $res->[0];
- $s->{pos} = $res->[1];
- $s->{pin} = $res->[2];
-    
- $s->{detail} = $self->fetch( 'photo_detail', $s->{x});
 
- $s->{comment} =  $self->fetch( 'photo_text', $s->{x} );
-
- $s->{image} =  $self->fetch( 'photo_image', $s->{x} );
-        
- $self->render( template => 'page/view' );
-
-}
 
 1;

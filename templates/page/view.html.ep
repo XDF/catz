@@ -1,10 +1,19 @@
- % layout 'page';
+% layout 'base';
+<% content_for 'js_custom' => begin %>
+% ( $photosize eq 'fit' ) and do {
+<%== include 'prim/js', jsfolder => 'js_site', jsfile => 'fit' %>
+% };
+<% end %>
+<% content_for 'title' => begin %>
+<%== include 'prim/titleargs' %>
+(<%= $t->{PHOTO} %> <%= stash('pos') %>/<%= stash('total') %>) - <%= $t->{SITE} %>
+<% end %>
 %== include 'stripe/top';
 % if ( $display ne 'none' ) {
 %== include 'elem/title';
 % }
 <div>
-%== include 'stripe/viewer';
+%== include 'move/view';
 </div>
 % if ( $display eq 'full' ) {
 %== include 'stripe/detail';

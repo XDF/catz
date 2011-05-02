@@ -1,6 +1,10 @@
-% layout 'page';
+% layout 'base';
+<% content_for 'title' => begin %>
+<%== include 'prim/titleargs' %>
+(<%= $t->{PAGE} %> <%= stash('page') %>/<%= stash('pages') %>) - <%= $t->{SITE} %>
+<% end %>
 %== include 'stripe/top';
-%== include 'stripe/browser';
+%== include 'move/browse';
 %== include 'block/thumb';
 %#
 %# Catz - the world's most advanced cat show photo engine

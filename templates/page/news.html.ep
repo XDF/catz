@@ -1,4 +1,5 @@
-% layout 'page';
+% layout 'base';
+<% content_for 'title' => begin %><%= $t->{NEWS_ALL} %> - <%= $t->{SITE} %><% end %>
 <h1><%= $t->{NEWS_ALL} %></h1>
 % foreach my $row ( @{ $news } ) {
 <div class="unit">

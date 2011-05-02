@@ -190,7 +190,7 @@ my $conf = { # config is one hash ref
  path_photo => '/www/galleries',
  path_tmpl => "$base/tmpl",
  
- prefix_layout => 'plate', 
+ prefix_layout => 'frame', # the layout templates folder name 
  
  #results => map { $_ => 1 } qw ( BIS BIV BOB BOX CAC CACE CACIB CACS CAGCIB CAGPIB CAP CAPE CAPIB CAPS CH EC EP EX EX1 EX2 EX3 EX4 EX5 EX6 EX7 EX8 EX9 GIC GIP IC IP KM NOM PR SC SP 1 2 3 4 5 6 7 8 9 1. 2. 3. 4. 5. 6. 7. 8. 9. )
  

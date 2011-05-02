@@ -84,8 +84,8 @@ latest albums
 tuoreimmat albumit
 #
 APPLICATION
-catz web application platform and photo delivery engine
-catz verkkosovellusalusta ja valokuvien jakelumoottori
+CATZ web application platform and photo delivery engine
+CATZ verkkosovellusalusta ja valokuvien jakelumoottori
 #
 AUTHOR
 Heikki Siltala
@@ -572,16 +572,16 @@ no data
 ei tietoja
 #
 SETUP_palette_bright
-bright palette
-vaaleat sävyt
+bright
+vaalea
 #
 SETUP_palette_neutral
-neutral palette
-neutraalit sävyt
+neutral
+neutraali
 #
 SETUP_palette_dark
-dark palette
-tummat sävyt
+dark
+tumma
 #
 SETUP_perpage_10
 10 photos

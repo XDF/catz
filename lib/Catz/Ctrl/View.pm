@@ -22,20 +22,39 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Ctrl::Inspect;
+package Catz::Ctrl::View;
 
+use 5.12.2;
 use strict;
 use warnings;
 
 use parent 'Catz::Ctrl::Args';
 
-sub inspect {
+sub view {
 
  my $self = shift; my $s = $self->{stash};
+
   
- $self->process_args ( 1 ) or $self->not_found and return;
+ $self->process_args ( 0 ) or $self->not_found and return;
+
+
+ $self->process_id or $self->not_found and return;
+     
+ my $res = $self->fetch('vector_pointer', $s->{x}, @{ $s->{args_array} } );
  
- $self->render ( template => 'page/inspect' );
+ $res == 0 and $self->not_found and return;
+  
+ $s->{total} = $res->[0];
+ $s->{pos} = $res->[1];
+ $s->{pin} = $res->[2];
+    
+ $s->{detail} = $self->fetch( 'photo_detail', $s->{x});
+
+ $s->{comment} =  $self->fetch( 'photo_text', $s->{x} );
+
+ $s->{image} =  $self->fetch( 'photo_image', $s->{x} );
+        
+ $self->render( template => 'page/view' );
 
 }
 
