@@ -1,8 +1,5 @@
-%#
-%# The Advanced Search page
-%#
 % use Catz::Util::String qw ( enurl );
-% layout 'page';
+% layout 'base';
 <table class="p100 fill"><tr>
 <td class="p50 top">
 %== include 'stripe/top';

@@ -1,6 +1,7 @@
-% layout 'page';
+% layout 'base';
+<% content_for 'title' => begin %><%== include 'prim/titleargs' %><% end %>
 %== include 'stripe/top';
-%== include 'stripe/mode';
+%== include 'move/mode';
 INSPECT
 %#
 %# Catz - the world's most advanced cat show photo engine

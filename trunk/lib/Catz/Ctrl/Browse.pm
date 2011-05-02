@@ -22,21 +22,55 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Ctrl::Inspect;
+package Catz::Ctrl::Browse;
 
+use 5.12.2;
 use strict;
 use warnings;
 
 use parent 'Catz::Ctrl::Args';
 
-sub inspect {
+sub browse {
 
  my $self = shift; my $s = $self->{stash};
-  
- $self->process_args ( 1 ) or $self->not_found and return;
  
- $self->render ( template => 'page/inspect' );
+ #warn ( $s->{path} );
+ 
+ $self->process_args ( 0 ) or $self->not_found and return;
+ $self->process_id or $self->not_found and return;
 
+ #warn ( join '-', @{ $s->{args_array} }  );
+
+ #warn ( $s->{x} );
+   
+ my $res = $self->fetch('vector_pager', 
+   $s->{x}, $s->{perpage}, @{ $s->{args_array} }  
+  );
+ 
+ $res == 0 and $self->not_found and return;
+
+ $s->{total} = $res->[0];
+ $s->{page} = $res->[1];
+ $s->{pages} = $res->[2];
+ $s->{from} = $res->[3];
+ $s->{to} = $res->[4];
+ $s->{pin} = $res->[5];
+ $s->{xs} = $res->[6];
+                   
+ $s->{total} == 0 and $self->not_found and return; 
+ # no photos found by search 
+ 
+ scalar @{ $s->{xs} } == 0 and $self->not_found and return; 
+ # no photos in this page
+ 
+ $res = $self->fetch( 'photo_thumb', @{ $s->{xs} } ) ;
+ 
+ $s->{thumb} = $res->[0];
+ $s->{min} = $res->[1];
+ $s->{max} = $res->[2]; 
+             
+ $self->render( template => 'page/browse' );
+    
 }
 
 1;

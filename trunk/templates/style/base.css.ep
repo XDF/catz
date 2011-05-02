@@ -149,9 +149,15 @@ body {
  background-color:  <%== $color->{$palette}->{area1} %>; 
  <%== $rounding %>
 }
+
 .flop { 
  background-color:  <%== $color->{$palette}->{area2} %>; 
  <%== $rounding %>
+}
+
+.setup {
+ color: <%== $color->{$palette}->{text} %>;
+ background-color: <%== $color->{$palette}->{area1} %>;
 }
              
 h1 {

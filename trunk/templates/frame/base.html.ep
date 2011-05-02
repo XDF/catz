@@ -1,21 +1,14 @@
-%#
-%# The layout for all HTML pages of the service
-%#
+%# This is the Mojolicious "layout" for all HTML pages of the service
 % use Catz::Util::Time qw( dtlang );
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="<%= $lang %>"><head><!-- <%= dtlang ( $lang ) %> <%= $dt %> -->
-%# <title><%== include 'elem/title' %></title>
+<title><%== content_for 'title' %></title>
 <link href="/style/reset/" rel="stylesheet" type="text/css" >
 <link href="/style/<%== $palette %>/" rel="stylesheet" type="text/css" >
-<script type="text/javascript" src="/js_lib/jquery.js"></script>
-<script type="text/javascript" src="/js_lib/jquery.urlencode.js"></script>
-<script type="text/javascript" src="/js_site/setup.js"></script>
-% ( $action eq 'front' ) and do {
-<script type="text/javascript" src="/js_site/find.js"></script>
-% };
-% ( $action eq 'view' and $photosize eq 'fit' ) and do { 
-<script type="text/javascript" src="/js_site/fit.js"></script>
-% };
+<%== include 'prim/js', jsfolder => 'js_lib', jsfile => 'jquery' %>
+<%== include 'prim/js', jsfolder => 'js_lib', jsfile => 'jquery.urlencode' %>
+<%== include 'prim/js', jsfolder => 'js_site', jsfile => 'setup' %>
+<%== content_for 'js_custom' %>
 <meta http-equiv="content-language" content="<%= $lang %>">
 <meta meta="generator" content="<%= $t->{APPLICATION} %>">
 <meta meta="author" content="<%= $t->{AUTHOR} %>">

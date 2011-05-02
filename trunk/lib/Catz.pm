@@ -82,12 +82,11 @@ sub startup {
  #key => qr/[A-Z2-7]{5,}/
  $l->route( '/result',  )->to ( "locate#result" );
 
- 
  $l->route('/list/:subject/:mode')->to('list#list');
  
  $l->route( '/search' )->to ( "search#search" );   
- $l->route ( '/browse' )->to ( "present#browse" ); 
- $l->route ( '/view' )->to ( "present#view" ); 
+ $l->route ( '/browse' )->to ( "browse#browse" ); 
+ $l->route ( '/view' )->to ( "view#view" ); 
  $l->route ( '/inspect' )->to ( "inspect#inspect" ); 
     
  # add hooks to subs that are executed before and after the dispatch
@@ -153,18 +152,8 @@ sub before {
                                                                                   
  setup_init ( $self );
  
- #
- # set 'the correct dt' to stash
- #
- 
- $self->session->{dt} and do { 
- 
-  $s->{dt} = $self->session->{dt};
-  
-  goto SKIP;
-  
- }; 
- 
+ $s->{dt} and goto SKIP;
+   
  my $now = time();
 
  if ( $now - $lastcheck > 5 ) { # if the check has expired
