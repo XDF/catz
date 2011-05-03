@@ -79,10 +79,6 @@ ALBUMS_ALL
 all albums
 kaikki albumit
 #
-ALBUMS_LATEST
-latest albums
-tuoreimmat albumit
-#
 APPLICATION
 CATZ web application platform and photo delivery engine
 CATZ verkkosovellusalusta ja valokuvien jakelumoottori
@@ -363,10 +359,6 @@ FIND_NOTHING
 nothing found
 ei tuloksia
 #
-IDEAS
-ideas
-ideat
-#
 ISO
 sensitivity
 herkkyys
@@ -456,40 +448,40 @@ pages
 sivua
 #
 PAGE_FIRST
-<< first page
-<< ensimmäinen sivu
+first page
+ensimmäinen sivu
 #
 PAGE_PREV
-< previous page
-< edellinen sivu
+previous page
+edellinen sivu
 #
 PAGE_NEXT
-next page >
-seuraava sivu >
+next page
+seuraava sivu
 #
 PAGE_LAST
-last page >>
-viimeinen sivu >>
+last page
+viimeinen sivu
 #
 PHOTO
 photo
 kuva
 #
 PHOTO_FIRST
-<< first photo
-<< ensimmäinen kuva
+first photo
+ensimmäinen kuva
 #
 PHOTO_PREV
-< previous photo
-< edellinen kuva
+previous photo
+edellinen kuva
 #
 PHOTO_NEXT
-next photo >
-seuraava kuva >
+next photo
+seuraava kuva
 #
 PHOTO_LAST
-last photo >>
-viimeinen kuva >>
+last photo
+viimeinen kuva
 #
 PHOTOS
 photos
@@ -560,15 +552,15 @@ is pattern
 on merkkijono
 #
 SETUP_display_full
-full data
-täydet tiedot
+full info
+kaikki tiedot
 #
 SETUP_display_brief
-brief data
+brief info
 tiivit tiedot
 #
 SETUP_display_none
-no data
+no info
 ei tietoja
 #
 SETUP_palette_bright
@@ -660,8 +652,8 @@ suggestions
 ehdotukset
 #
 THUMBS
-thumbnails
-pikkukuvat
+thumbnails !!!OLD!!!
+pikkukuvat !!!OLD!!!
 #
 TITLE_FEED
 www.heikkisiltala.com feed
@@ -672,14 +664,26 @@ view photo
 katso kuva
 #
 BROWSE
-browse thumbnails
-selaa pikkukuvia
+browse
+selaa
 #
-INSPECT
-more information
-tarkemmat tiedot
+INFO
+info
+tiedot
 #
 VIEW
-view photos
-katso kuvat
+view
+katso
+#
+WEGOT
+we've got
+meillä on
+#
+PHOTO_EARLIEST
+earliest photo
+vanhin kuva
+#
+PHOTO_LATEST
+latest photo
+tuorein kuva
 #

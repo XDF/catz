@@ -1,5 +1,7 @@
 use Test::More;
 use Test::Mojo;
+
+use Catz::Util::String qw ( enurl );
     
 my $t = Test::Mojo->new(app => 'Catz');
 
@@ -14,9 +16,9 @@ foreach my $lang ( qw ( en fi ) ) {
  $c=$c+3;
   
 
- foreach my $n ( qw ( 10 20 25 30 50 99 ) ) {
+ foreach my $n ( qw ( 100 300 500 1111 1582 2222 ) ) {
 
-  $t->get_ok("/$lang/sample/$n/")
+  $t->get_ok("/$lang/sample?width=$n")
    ->status_is(200)
    ->content_like(qr/\.JPG/);
 
@@ -26,8 +28,8 @@ foreach my $lang ( qw ( en fi ) ) {
  
  foreach my $what ( qw ( thisisnotfound and888this99 ) ) {
 
-  $t->get_ok("/$lang/sample/$what/")
-   ->status_is(404);
+  $t->get_ok("/$lang/sample?what=$what")
+   ->status_is(200);
    
   $c=$c+2;
  
@@ -35,31 +37,24 @@ foreach my $lang ( qw ( en fi ) ) {
  
  foreach my $what ( qw ( a s miu mim o 12 'e 200 ilt tavi ) ) {
 
-  $t->get_ok("/$lang/sample/$what/")
+  $t->get_ok("/$lang/sample?what=".enurl($what))
    ->status_is(200)
    ->content_like(qr/\.JPG/);
    
   $c=$c+3;
 
-  foreach my $n ( qw ( 10 20 25 30 50 99 ) ) {
-
-   $t->get_ok("/$lang/sample/$what/$n/")
-    ->status_is(200)
-    ->content_like(qr/\.JPG/);
+  foreach my $n ( qw ( 100 300 500 1111 1582 2222 ) ) {
+  
+   my $url = "/$lang/sample?what=".enurl($what).'&width='.$n;
+   
+   $t->get_ok($url)
+     ->status_is(200)
+     ->content_like(qr/\.JPG/);
     
-   $c=$c+3;
+    $c=$c+3;
     
   }
- 
-  foreach my $n ( qw ( 0 1 100 200 10000 ) ) {
-  
-   $t->get_ok("/$lang/sample/$what/$n/")
-    ->status_is(404);
-  
-   $c=$c+2;
-  
-  }
-  
+   
  }
  
 } 

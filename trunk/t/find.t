@@ -9,8 +9,12 @@ my $c = 0;
 foreach my $lang ( qw ( en fi ) ) {
 
  foreach my $what ( qw ( a s miu mim o 12 'e 100 200 ilt tavi 1/ / & ) ) {
-
-  $t->get_ok("/$lang/find?what=".enurl($what))->status_is(200);
+  
+  my $url = "/$lang/find?what=".enurl($what);
+  
+  #warn ( $url );
+                                                                     
+  $t->get_ok( $url )->status_is(200);
    
   $c=$c+2;
 

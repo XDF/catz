@@ -2,7 +2,7 @@
 % use Catz::Util::Time qw( dtlang );
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="<%= $lang %>"><head><!-- <%= dtlang ( $lang ) %> <%= $dt %> -->
-<title><%== content_for 'title' %></title>
+<title><%== content_for 'title' %> - <%= $t->{SITE} %></title>
 <link href="/style/reset/" rel="stylesheet" type="text/css" >
 <link href="/style/<%== $palette %>/" rel="stylesheet" type="text/css" >
 <%== include 'prim/js', jsfolder => 'js_lib', jsfile => 'jquery' %>

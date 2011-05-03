@@ -155,15 +155,15 @@ body {
  <%== $rounding %>
 }
 
-.setup {
+.dropper {
  color: <%== $color->{$palette}->{text} %>;
  background-color: <%== $color->{$palette}->{area1} %>;
 }
              
 h1 {
- font-size: <%== $size_big %>;
+ font-size: <%== $size_huge %>;
  display: inline;
- font-family: <%== $font_default %>;
+ font-family: <%== $font_title %>;
  letter-spacing: 0.25em;
  font-weight: 400;
 }
@@ -171,7 +171,7 @@ h1 {
 h2,h3,h4,h5,h6 {
  font-size: <%== $size_big %>;
  display: inline;
- font-family: <%== $font_default %>;
+ font-family: <%== $font_title %>;
  letter-spacing: 0.25em;
  font-weight: 400;
 }

@@ -22,20 +22,37 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Ctrl::Inspect;
+package Catz::Ctrl::Info;
 
+use 5.12.2;
 use strict;
 use warnings;
 
 use parent 'Catz::Ctrl::Args';
 
-sub inspect {
+use Catz::Util::Time qw( dtexpand );
+
+sub info {
 
  my $self = shift; my $s = $self->{stash};
   
  $self->process_args ( 1 ) or $self->not_found and return;
+ $self->process_id or $self->not_found and return;
  
- $self->render ( template => 'page/inspect' );
+ my $res = 
+  $self->fetch( 'vector_info', @{ $s->{args_array} } );
+    
+ $s->{total} = $res->[0];
+  
+ $s->{latest} = dtexpand ( $self->fetch ( 'x2dt', $res->[1] ), $s->{lang} );
+ 
+ $s->{latestid} = $self->fetch ( 'x2id', $res->[1] );
+   
+ $s->{earliest} = dtexpand ( $self->fetch ( 'x2dt', $res->[2] ), $s->{lang} );
+ 
+ $s->{earliestid} = $self->fetch ( 'x2id', $res->[2] );
+  
+ $self->render ( template => 'page/info' );
 
 }
 

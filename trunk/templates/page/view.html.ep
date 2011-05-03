@@ -5,12 +5,11 @@
 % };
 <% end %>
 <% content_for 'title' => begin %>
-<%== include 'prim/titleargs' %>
-(<%= $t->{PHOTO} %> <%= stash('pos') %>/<%= stash('total') %>) - <%= $t->{SITE} %>
+<%== include 'prim/titleview' %>
 <% end %>
 %== include 'stripe/top';
 % if ( $display ne 'none' ) {
-%== include 'elem/title';
+%== include 'title/view';
 % }
 <div>
 %== include 'move/view';

@@ -87,7 +87,7 @@ sub startup {
  $l->route( '/search' )->to ( "search#search" );   
  $l->route ( '/browse' )->to ( "browse#browse" ); 
  $l->route ( '/view' )->to ( "view#view" ); 
- $l->route ( '/inspect' )->to ( "inspect#inspect" ); 
+ $l->route ( '/info' )->to ( "info#info" ); 
     
  # add hooks to subs that are executed before and after the dispatch
  $self->hook ( before_dispatch => \&before );  

@@ -1,6 +1,4 @@
-% use Catz::Data::Conf;
-% my $sep = conf ( 'sep' ); 
-<table class="flop p100"><tr><td class="left">
+ <div class="flop p100 center">
 % my $label1 = $t->{PAGE_FIRST};
 % my $label2 = $t->{PAGE_PREV};
 % if ( $page > 1 ) {
@@ -8,11 +6,11 @@
 <%== $sep %>
 <a href="<%== include 'link/id', toid => $pin->[$page-2] %>"><%= $label2 %></a>
 % } else { 
-<%= $label1 %><%== $sep %><%= $label2 %>
+<%= $label1 %> <%== $sep %> <%= $label2 %>
 % }
 <%== $sep %>
 <span class="air"><%= $t->{PAGE} %> 
-<select name="page" onchange="location.href='<%== include 'link/id', toid =>  "'+this.options[this.selectedIndex].value" %>">
+<select class="dropper" name="page" onchange="location.href='<%== include 'link/id', toid =>  "'+this.options[this.selectedIndex].value" %>">
 % foreach my $i ( 0 .. ( scalar @{ $pin } -1 ) ) {
 % if ( $page == ( $i + 1 ) ) {
 <option selected value="<%== $pin->[$i] %>"><%= $i+1 %></option>
@@ -28,11 +26,9 @@
 <%== $sep %>
 <a href="<%== include 'link/id', toid => $pin->[$pages-1] %>"><%= $label2 %></a>
 % } else { 
-<%= $label1 %><%== $sep %><%= $label2 %>
+<%= $label1 %> <%== $sep %> <%= $label2 %>
 % }
-</td><td class="center">
-<a href="<%== include 'link/path', topath => 'inspect' %>"><%= '*inspect*' %></a>
-</td></tr></table>
+</div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

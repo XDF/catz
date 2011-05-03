@@ -25,7 +25,11 @@
 package Catz::Model::Misc;
 
 use parent 'Exporter';
-our @EXPORT = qw ( album maxx news find sample search id2x x2id pri );
+our @EXPORT = qw ( album maxx news find sample search id2x x2id pri x2dt );
+
+use 5.12.2;
+use strict;
+use warnings;
 
 # a generic module to provide access various meta data stuff
 # stored in the database
@@ -105,6 +109,16 @@ sub pri {
 
  return $db->col('select pri from pri order by disp');
 
+}
+
+sub x2dt {
+
+ my ( $db, $lang, $x ) = @_;
+   
+ my $res = $db->one ('select folder from album natural join photo where x=?',$x);
+   
+ return substr ( $res, 0, 8 );
+ 
 }
 
 1;

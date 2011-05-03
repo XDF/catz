@@ -1,8 +1,4 @@
-% layout 'base';
-<% content_for 'title' => begin %><%== include 'prim/titleargs' %><% end %>
-%== include 'stripe/top';
-%== include 'move/mode';
-INSPECT
+<%== include 'prim/titleargs' %>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
