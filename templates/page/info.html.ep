@@ -1,12 +1,13 @@
-% use Catz::Util::Number qw ( fmt );
-<div><h2><%= $t->{WEGOT} %></h2> <%= $sep %>
-<a href="/<%= $lang %>/browse/"><%= fmt ( $maxx // 0, $lang ) %> <%= $t->{PHOTOA} %></a> <%= $sep %>
-% foreach my $row ( @{ $pris } ) {
-<a href="/<%= $lang %>/list/<%== $row->[0] %>/a2z/">
-<%= fmt ( $row->[1], $lang ) %>
-<%= $t->{uc($row->[0]).'A'} %></a> <%= $sep %>
-% }
-</div>
+% use Catz::Util::String qw ( enurl );
+% layout 'base';
+<% content_for 'title' => begin %><%== include 'prim/titleinfo' %><% end %>
+%== include 'stripe/top';
+%== include 'title/info';
+<%= $total %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>
+<%= $sep %>
+<a href="<%== include 'link/pathid', topath=> 'view', toid => $earliestid %>"><%= $earliest %></a>
+-
+<a href="<%== include 'link/pathid', topath=> 'view', toid => $latestid %>"><%= $latest %></a> 
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

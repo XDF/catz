@@ -32,7 +32,7 @@ use feature qw( switch );
 use parent 'Exporter';
 our @EXPORT = qw( 
  vector_bit vector_array vector_array_rand vector_first 
- vector_pager vector_pointer vector_count vector_inspect
+ vector_pager vector_pointer vector_count vector_info
 );
 
 use Bit::Vector;
@@ -320,10 +320,17 @@ sub vector_count {
  
 }
 
-sub vector_inspect {
+sub vector_info {
 
- return vector_count ( @_ );
+ my $bvec = vector_bit( @_ );
+  
+ my $total = $bvec->Norm;
 
+ my ( $first, undef ) = $bvec->Interval_Scan_inc( 0 );
+  
+ my ( undef, $last ) = $bvec->Interval_Scan_dec( $bvec->Size() - 1 );
+  
+ return [ $total, $first, $last ]; 
 }
 
 1;

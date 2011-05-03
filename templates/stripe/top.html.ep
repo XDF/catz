@@ -6,7 +6,6 @@
 %  $site =~ s/z/<span class=\"xtra\">z<\/span>/g;  
 %  $site = "<h1>$site</h1>";
 % };
-% if ( $action ne 'view' or $display ne 'none' ) {
 <table class="flip p100"><tr><td class="left">  
 <span class="aero"><%== $site %></span>
 <span class="aero"><%= $t->{SLOGAN} %></span>
@@ -22,7 +21,6 @@
 <%== include 'elem/setup', key => 'palette' %>
 <a class="aero" href="<%== $otherlang %>"><%= $t->{OTHERLANG} %></a>
 </td></tr></table>
-% }
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

@@ -1,9 +1,9 @@
 % layout 'base';
 <% content_for 'title' => begin %>
-<%== include 'prim/titleargs' %>
-(<%= $t->{PAGE} %> <%= stash('page') %>/<%= stash('pages') %>) - <%= $t->{SITE} %>
+<%== include 'prim/titlebrowse' %>
 <% end %>
 %== include 'stripe/top';
+%== include 'title/browse';
 %== include 'move/browse';
 %== include 'block/thumb';
 %#

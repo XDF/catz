@@ -1,12 +1,4 @@
-% use Catz::Util::Number qw ( fmt );
-<div><h2><%= $t->{WEGOT} %></h2> <%= $sep %>
-<a href="/<%= $lang %>/browse/"><%= fmt ( $maxx // 0, $lang ) %> <%= $t->{PHOTOA} %></a> <%= $sep %>
-% foreach my $row ( @{ $pris } ) {
-<a href="/<%= $lang %>/list/<%== $row->[0] %>/a2z/">
-<%= fmt ( $row->[1], $lang ) %>
-<%= $t->{uc($row->[0]).'A'} %></a> <%= $sep %>
-% }
-</div>
+<div class="unit"><h1><%== include 'prim/titleview' %></h1><%== include 'prim/mode' %></div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

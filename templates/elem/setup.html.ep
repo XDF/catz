@@ -7,7 +7,7 @@
 % use Catz::Util::String qw ( ucclcc );
 % my $func = 'setupChange'; # the default JavaScript function to be called
 % my $arg1 = qq{'$key'}; 
-<select class="setup" id="setup_<%= $key %>" onchange="<%= $func %>(<%== $arg1 %>,$('#setup_<%= $key %>').val())">
+<select class="dropper" id="setup_<%= $key %>" onchange="<%= $func %>(<%== $arg1 %>,$('#setup_<%= $key %>').val())">
 % my $values = setup_values ( $key );
 % my $now = stash ( $key );
 %# die "$key = $now";

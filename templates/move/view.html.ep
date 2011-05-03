@@ -8,7 +8,7 @@
 <%== $sep %>
 <a title="<%= $label2 %>" href="<%== include 'link/id', toid => $pin->[1] %>"><%= $label2 %></a>
 % } else { 
-<%= $label1 %><%== $sep %><%= $label2 %>
+<%= $label1 %> <%== $sep %> <%= $label2 %>
 % }
 <%== $sep %>
 <a href="<%== include 'link/path', topath => 'browse' %>"><%= $t->{THUMBS} %></a>
@@ -20,12 +20,7 @@
 <%== $sep %>
 <a title="<%= $label2 %>" href="<%== include 'link/id', toid => $pin->[3] %>"><%= $label2 %></a>
 % } else { 
-<%= $label1 %><%== $sep %><%= $label2 %>
-% }
-<%== $sep %>
-<a href="<%== include 'link/path', topath => 'inspect' %>">inspect</a>
-% if ( $display eq 'none' ) {
-<%== include 'elem/setup', key => 'display' %>
+<%= $label1 %> <%== $sep %> <%= $label2 %>
 % }
 </div>
 %#
