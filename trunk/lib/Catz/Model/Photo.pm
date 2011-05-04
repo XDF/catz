@@ -72,8 +72,9 @@ sub photo_text {
 
  my ( $db, $lang, $x ) = @_;
 
- return $db->col ( qq{select sec from pri natural join sec_$lang natural join inpos natural join photo where pri='text' and x=? order by p}, $x );
-
+ my $res = $db->col ( qq{select sec from pri natural join sec_$lang natural join inpos natural join photo where pri='text' and x=? order by p}, $x );
+ 
+ return $res;
 
 }
 

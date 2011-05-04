@@ -13,7 +13,7 @@
 <h2><%= $i++ %></h2>
 % } 
 % my $text = $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOA};    
-<a href="/<%= $lang %>/info?<%= $row->[0] %>=<%== enurl( $row->[1] ) %>"><%= $row->[1] %></a>
+<a href="/<%= $lang %>/browse?<%= $row->[0] %>=<%== enurl( $row->[1] ) %>"><%= $row->[1] %></a>
 <span class="shrink"><%= $row->[2] %> <%= $text %></div>
 % }
 %#

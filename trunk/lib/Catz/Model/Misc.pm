@@ -115,10 +115,22 @@ sub x2dt {
 
  my ( $db, $lang, $x ) = @_;
    
- my $res = $db->one ('select folder from album natural join photo where x=?',$x);
-   
- return substr ( $res, 0, 8 );
+ my $res = $db->row ('select folder,moment from album natural join photo where x=?',$x);
  
+ my $date = substr ( $res->[0], 0, 8 );
+ 
+ $date .= $res->[1] // '';
+    
+ return dtexpand ( $date, $lang );
+ 
+}
+
+sub related  {
+
+ my ( $db, $lang, $pri, $sec, $target ) = @_;
+ 
+ 
+
 }
 
 1;

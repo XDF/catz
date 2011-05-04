@@ -507,6 +507,10 @@ SEARCH_RESULT
 search result
 hakutulos
 #
+SEARCH_REFINE
+muokkaa hakua
+refine search
+#
 SEARCH_AND
 AND
 JA
@@ -640,8 +644,8 @@ x-large size
 suurin koko
 #
 SITE
-catzz.biz
-catzz.biz
+site.something
+sivuston.osoite
 #
 SLOGAN
 the world's most advanced cat show photo service
@@ -652,8 +656,8 @@ suggestions
 ehdotukset
 #
 THUMBS
-thumbnails !!!OLD!!!
-pikkukuvat !!!OLD!!!
+thumbnails
+pikkukuvat
 #
 TITLE_FEED
 www.heikkisiltala.com feed

@@ -1,1 +1,0 @@
-<div class="p100 center enlarge"><%= $t->{SLOGAN} %></div>

@@ -6,6 +6,7 @@
 %== include 'title/browse';
 %== include 'move/browse';
 %== include 'block/thumb';
+%== include 'stripe/related';
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

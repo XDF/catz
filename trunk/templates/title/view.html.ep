@@ -1,4 +1,4 @@
-<div class="unit"><h1><%== include 'prim/titleview' %></h1><%== include 'prim/mode' %></div>
+<div class="unit"><h1><%== include 'prim/titleview' %></h1></div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

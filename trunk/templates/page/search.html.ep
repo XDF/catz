@@ -1,7 +1,5 @@
 % use Catz::Util::String qw ( enurl );
 % layout 'base';
-<table class="p100 fill"><tr>
-<td class="p50 top">
 %== include 'stripe/top';
 <form name="form_search" action="/<%= $lang %>/search/" method="get">
 Search: <input type="text" name="what" <% if ( defined $what ) { %> value="<%= $what %>" <% } %>>
@@ -13,13 +11,9 @@ Search: <input type="text" name="what" <% if ( defined $what ) { %> value="<%= $
 </div>
 %== include 'stripe/explain';
 % }
-<td>
-<td class="p50 top odd">
 % $thumbs and do { 
 %== include 'block/thumbs';
 % };
-</td>
-</tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
