@@ -1,13 +1,21 @@
 % use Catz::Util::String qw ( enurl );
 % use Catz::Util::Time qw ( dtexpand );
-<div class="shrink">
+<div>
+% $comment and do {
+%  foreach my $comm ( @{ $comment } ) {
+<div class="center"><h2><%= $comm %></h2></div>
+%  }
+% };
+<div class="shrink flip">
+% my $i = 1;
 % foreach my $detail ( @$detail ) {
+<%= $i++ == 1 ? '' : $sep %>
 <%= $t->{uc($detail->[0])} %>: 
-<a href="/<%= $lang %>/info?<%= $detail->[0] %>=<%= enurl ( $detail->[1] ) %>">
+<a href="/<%= $lang %>/browse?<%= $detail->[0] %>=<%= enurl ( $detail->[1] ) %><%= $id ? '&id='.$id : '' %>">
 <%= $detail->[0] ne 'dt' ? $detail->[1] : dtexpand ( $detail->[1], $lang ) %>
-</a> . 
+</a>
 % }
-</div>
+<span></div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

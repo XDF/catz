@@ -14,6 +14,7 @@
 <div>
 %== include 'move/view';
 </div>
+%== include 'stripe/comment';
 % if ( $display eq 'full' ) {
 %== include 'stripe/detail';
 % }

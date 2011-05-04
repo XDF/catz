@@ -58,6 +58,9 @@ foreach my $key ( @keys ) {
 
 }
 
+my $MAXKEY = 50; # maximum lenght of a setup key
+my $MAXVAL = 50; # maximum lenght of a setup value
+
 sub setup_init {
 
  # read incoming cookies and populate stash from them or from default values
@@ -65,8 +68,6 @@ sub setup_init {
  my $app = shift;
 
  foreach my $key ( @keys ) {
-
-  #warn ( "setting up $key" ); 
 
   my $val = $app->cookie ( $key );
 
@@ -116,8 +117,8 @@ sub setup_set {
  if ( 
   $key and 
   $val and 
-  ( length ( $key ) < 51 ) and 
-  ( length ( $val ) < 51 ) and 
+  ( length ( $key ) < $MAXKEY ) and 
+  ( length ( $val ) < $MAXVAL ) and 
   $ok->{$key}->{$val} 
  ) {
 
@@ -155,6 +156,15 @@ sub setup_values {
  
 }
 
-sub setup_verify { $ok->{$_[0]}->{$_[1]} };
+sub setup_verify {
+
+ ( $_[0] and $_[1] ) or return 0;
+
+ length ( $_[0] ) > $MAXKEY and return 0;
+ length ( $_[1] ) > $MAXVAL and return 0; 
+
+ $ok->{$_[0]}->{$_[1]} 
+ 
+};
 
 1;

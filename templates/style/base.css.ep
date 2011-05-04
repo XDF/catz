@@ -103,7 +103,7 @@ body {
  margin-top: 0 auto;
  text-align: left;
  min-width: 760px;
- max-width: 1600px;
+%# max-width: 1600px;
 }
 
 .fill { height: 100% }
@@ -206,21 +206,9 @@ li {
  line-height: 1.3em; 
 }
 
-.p10  { width: 10%; }
-.p20  { width: 20%; }
-.p25  { width: 25%; }
-.p30  { width: 30%; }
-.p33  { width: 33%; }
-.p34  { width: 34%; }
-.p40  { width: 40%; }
-.p50  { width: 50%; }
-.p60  { width: 60%; }
-.p66  { width: 66%; }
-.p70  { width: 70%; }
-.p75  { width: 75%; }
-.p80  { width: 80%; }
-.p90  { width: 90%; }
-.p100 { width: 100%; }
+% foreach my $per ( qw ( 20 25 30 33 34 40 50 60 70 75 80 90 100 ) ) {
+.p<%== $per %>  { width: <%== $per %>%; }
+% }
 
 hr {
  background: transparent;

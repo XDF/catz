@@ -320,17 +320,4 @@ sub vector_count {
  
 }
 
-sub vector_info {
-
- my $bvec = vector_bit( @_ );
-  
- my $total = $bvec->Norm;
-
- my ( $first, undef ) = $bvec->Interval_Scan_inc( 0 );
-  
- my ( undef, $last ) = $bvec->Interval_Scan_dec( $bvec->Size() - 1 );
-  
- return [ $total, $first, $last ]; 
-}
-
 1;

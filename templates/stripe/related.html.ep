@@ -1,0 +1,3 @@
+<div>
+<h2><%= $t->{uc($args_array->[0])} %> <%= $args_array->[1] %></h2>
+</div>
