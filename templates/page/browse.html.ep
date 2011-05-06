@@ -3,7 +3,7 @@
 <%== include 'prim/titlebrowse' %>
 <% end %>
 %== include 'stripe/top';
-%== include 'title/browse';
+<div class="unit"><%== include 'prim/titlebrowse' %></div>
 %== include 'move/browse';
 %== include 'block/thumb';
 %== include 'stripe/related';

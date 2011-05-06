@@ -503,57 +503,101 @@ SEARC
 search
 haku
 #
+SEARCH_FOUND
+found
+lˆytyi
+#
+SEARCH_NOTHING
+nothing found
+ei tuloksia
+#
 SEARCH_RESULT
 search result
 hakutulos
 #
 SEARCH_REFINE
-muokkaa hakua
-refine search
+refine search 
+tarkenna hakua
 #
-SEARCH_AND
+SEARCH_TITLE_AND
 AND
 JA
 #
-SEARCH_NOT
+SEARCH_DESC_AND
+all of these rules must match
+kaikkien n‰iden s‰‰ntˆjen on toteuduttava
+#
+SEARCH_TITLE_NOT
 NOT
 EI
 #
-SEARCH_OR
+SEARCH_DESC_NOT
+all of these rules must not match
+mik‰‰n n‰ist‰ s‰‰nnˆist‰ ei saa toteutua
+#
+SEARCH_TITLE_OR
 OR
 TAI
 #
-SEARCH_BEGIN_EXACT
-begins with text
-alkaa tekstill‰
-# 
-SEARCH_CONTAIN_EXACT
-contains text
-sis‰lt‰‰ tekstin
+SEARCH_DESC_OR
+at least one of these rules must match
+v‰hint‰‰n yhden n‰ist‰ s‰‰nnˆist‰ on toteuduttava
 #
-SEARCH_END_EXACT
-ends with text
-p‰‰ttyy tekstill‰
-#
-SEARCH_IS_EXACT
-is exactly
-on t‰sm‰lleen
-#
-SEARCH_BEGIN_PATTERN
-begins with pattern
-alkaa merkkijonolla
-# 
 SEARCH_CONTAIN_PATTERN
 contains pattern
 sis‰lt‰‰ merkkijonon
 #
+SEARCH_CONTAIN_TEXT
+contains
+sis‰lt‰‰
+#
+SEARCH_BEGIN_PATTERN
+begins with pattern
+alkaa merkkijonolla
+#
+SEARCH_BEGIN_TEXT
+begins with
+alkaa
+#
 SEARCH_END_PATTERN
 ends with pattern
-p‰‰ttyy merkkijonoon
+p‰‰ttyy merkkijonolla
+#
+SEARCH_END_TEXT
+ends
+p‰‰ttyy
 #
 SEARCH_IS_PATTERN
-is pattern 
+is pattern
 on merkkijono
+#
+SEARCH_IS_TEXT
+is
+on
+#
+SEARCH_ADD
+add rule
+lis‰‰ ehto
+#
+SEARCH_SUBMIT
+submit
+l‰het‰
+#
+SEARCH_RESET
+clear
+tyhjenn‰
+#
+SEARCH_THUMB
+browse thumbnails
+selaa pikkukuvina
+#
+SEARCH_VIEW
+view photos
+katso kuvat
+#
+SEARCH_EXPLAIN
+your search explained
+hakusi selitettyn‰
 #
 SETUP_display_full
 full info
@@ -616,8 +660,8 @@ SETUP_perpage_50
 50 kuvaa
 #
 SETUP_photosize_fit
-fit to screen
-sovita ruutuun
+fit to window
+sovita ikkunaan
 #
 SETUP_photosize_original
 original size

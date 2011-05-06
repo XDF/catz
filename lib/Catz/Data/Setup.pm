@@ -25,7 +25,7 @@ package Catz::Data::Setup;
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( setup_init setup_exit setup_set setup_values setup_verify );
+our @EXPORT = qw ( setup_init setup_exit setup_set setup_values setup_keys setup_verify );
 
 
 my $defaults = {
@@ -145,6 +145,8 @@ sub setup_set {
   #warn ( "key $key val $val" ); 
   return 0; # FAILED 
 }
+
+sub setup_keys { \@keys }
 
 sub setup_values {
 

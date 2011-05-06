@@ -68,7 +68,7 @@ sub find {
 
  $pattern = '%' . $pattern . '%';
 
- return $db->all (qq{select pri,sec,cnt from (select pri,sec,sort,cnt from pri natural join sec_$lang where pri<>'text' and sec like ? order by cnt desc limit $count) order by sort,pri,cnt},$pattern);
+ return $db->all (qq{select pri,sec,cnt from (select pri,sec,sort,cnt from pri natural join prim natural join sec_$lang where pri<>'text' and sec like ? order by cnt desc limit $count) order by sort,pri,cnt},$pattern);
 
 }
 

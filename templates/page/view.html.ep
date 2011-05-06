@@ -9,7 +9,7 @@
 <% end %>
 %== include 'stripe/top';
 % if ( $display ne 'none' ) {
-%== include 'title/view';
+<div class="unit"><%== include 'prim/titleview' %></div>
 % }
 <div>
 %== include 'move/view';

@@ -1,0 +1,12 @@
+<div class="unit">
+<%= $t->{'SEARCH_TITLE_'.uc($section)} %> <%= $sep %>
+<span class="shrink"><%= $t->{'SEARCH_DESC_'.uc($section)} %></span>
+<%= $sep %>
+% my $i = 1;
+% foreach my $el ( @$elems ) {
+% $i++ > 1 and do {
+<%= $sep %>
+% };
+<%= $el %>
+% }
+</div>

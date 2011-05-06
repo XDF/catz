@@ -50,8 +50,8 @@ sub photo_thumb {
 
  return [ 
   $thumbs, 
-  $min ne 99999999 ? dtexpand ( $min, $lang ) : undef, 
-  $max ne 00000000 ? dtexpand ( $max, $lang ) : undef
+  $min ne 99999999 ? $min : undef, 
+  $max ne 00000000 ? $max : undef
  ];
 
 }

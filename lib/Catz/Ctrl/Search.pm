@@ -31,35 +31,43 @@ use parent 'Catz::Ctrl::Base';
 
 use Catz::Model::Photo;
 use Catz::Data::Search;
-use Catz::Util::String qw ( enurl );
+use Catz::Util::String qw ( deurl );
+
 
 sub search {
 
  my $self = shift; my $s = $self->{stash};
-  
- $s->{path_array} = [];
+   
+ $s->{args_array} = [];
+ $s->{args_count} = 0;
  $s->{found} = 0;
+ $s->{args_string} = undef;
+ $s->{thumb} = undef;
+ 
+ length ( $self->param('what') ) > 2000 and $self->not_found and return;
+ 
  $s->{what} = $self->param('what') // undef;
    
  if ( defined $s->{what} ) {
  
-  $s->{path_array} = search2args ( $s->{what} );
+  ( $s->{what}, $s->{args_array}, $s->{args_string} ) = search2args ( $s->{what} );
   
-  #warn join '-', @{ $s->{path_array} };
-    
-  $s->{found} = $self->fetch ( 'vector_count', @{ $s->{path_array} } );
-      
-  $s->{path} = join '/', map { enurl $_ } @{ $s->{path_array} }; 
-
-  $s->{thumbs} = undef;
+  $s->{args_count} = scalar ( @{ $s->{args_array} } );
+        
+  my @set = @{ $self->fetch ( 'vector_array_rand', @{ $s->{args_array} } ) };
+  
+  $s->{found} = scalar @set;
+  
+  scalar @set > 12 and @set = @set[ 0 .. 12 ];
    
- } else {
- 
-  $s->{thumbs} = undef;
- 
+  my $th = $self->fetch ( 'photo_thumb', @set );
+  
+  $s->{thumb} = $th->[0];
+  
+  $s->{earliest} = $th->[1];
+  $s->{latest} = $th->[2];        
+   
  }
- 
- 
  
  $self->render ( template => 'page/search' );
 
