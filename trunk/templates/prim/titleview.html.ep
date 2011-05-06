@@ -1,5 +1,6 @@
-<%== include 'prim/titleargs' %>
-(<%= $t->{PHOTO} %> <%= stash('pos') %>/<%= stash('total') %>)
+%== include 'prim/titleargs';
+<%= $sep %> <%= $t->{PHOTO} %> <%= $pos %> / <%= $total %>
+<%= $sep %>  <a href="/<%= $lang %>/search"><%= $t->{SEARCH_REFINE} %></a>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

@@ -25,31 +25,34 @@
 
 package Catz::Data::Search;
 
+use 5.12.2;
 use strict;
 use warnings;
 
 use parent 'Exporter';
 
+our @EXPORT = qw ( search2args args2search );
+
 use Text::ParseWords;
 
-our @EXPORT = qw ( search2args args2search );
+use Catz::Util::String qw ( enurl );
 
 sub search2args {
  
- # parses a search string into a key-value pairs
- # in case of an error, emits standard error tags
- 
- # returns two values, the key-pair string and error tag
+ # parses a search pattern string into key-value -pairs
  
  my $str = shift;
  
- $str =~ s/ +/ /g; # remove multiple adjacent spaces
- $str =~ s/\t+/ /g; # replace multiple adjacent tabs by one space
+ $str =~ s/\s+/ /; # convert all multiple white spaces to one space
+ 
+ my $fixed = $str;
     
  # smart split to words allowing quotation marks    
  my @args = quotewords ( ' ', 0, $str );
    
  my @out = ();
+ 
+ my $path = '';
  
  foreach my $arg ( @args ) {
  
@@ -78,14 +81,15 @@ sub search2args {
    
    push @out, $key; push @out, $val;
    
-  };
+   length $path > 0 and $path = $path . "&";
    
-  
-  
-     
+   $path .= $key . '=' . enurl ( $val );
+   
+  };
+       
  }
   
- return \@out;
+ return $fixed, \@out, $path;
 
 }
 
@@ -93,7 +97,7 @@ sub args2search {
 
  my $args = shift;
  
- my @arr = @{ $args }; # we will mungle the array so make a copy of it
+ my @arr = @{ $args }; # we will mungle the array so we make a copy of it
 
  my $str = ''; my $c = 0;
  

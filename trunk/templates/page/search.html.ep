@@ -1,18 +1,33 @@
 % use Catz::Util::String qw ( enurl );
-% layout 'base';
+% use Catz::Util::Number qw ( fmt );
+% layout 'base'; 
 %== include 'stripe/top';
-<form name="form_search" action="/<%= $lang %>/search/" method="get">
-Search: <input type="text" name="what" <% if ( defined $what ) { %> value="<%= $what %>" <% } %>>
-<input type="submit" value="Submit">
-</form>
-% if ( defined $path_array ) {
-<div>
-<a href="/<%= $lang %>/browse/<%== $path_array %>/">found <%= $found %></a>
-</div>
-%== include 'stripe/explain';
+% if ( length ( $args_string ) == 0 ) {
+<h1 class="block unit"><%= $t->{SEARCH} %></h1>
+% } else {
+%  if ( $found == 0 ) {
+<h1 class="block unit"><%= $t->{SEARCH_NOTHING} %></h1>
+%  } else {
+<h1 class="block unit"><%= fmt ( $found, $lang ) %> <%= $found == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> <%= $t->{SEARCH_FOUND} %></h1>
+%  }
 % }
-% $thumbs and do { 
-%== include 'block/thumbs';
+% if ( $found > 0 ) {
+<div class="unit">
+<a class="aero" href="/<%= $lang %>/browse?<%== $args_string %>"><%= $t->{SEARCH_THUMB} %></a>
+<a class="aero" href="/<%= $lang %>/view?<%== $args_string %>"><%= $t->{SEARCH_VIEW} %></a>
+</div>
+% }
+<form name="search_guided" action="/<%= $lang %>/search" method="get">
+<input type"=text" name="what" size="80" value="<%= $what ? $what : '' %>">
+<input type="submit" value="<%= $t->{SEARCH_SUBMIT} %>">
+<input type="reset" value="<%= $t->{SEARCH_RESET} %>">
+</form>
+%== include 'stripe/explain';
+% $found and do {
+<h2 class="block"><%= $t->{SAMPLES} %></h2>
+<div class="unit"> 
+%== include 'block/thumb';
+</div>
 % };
 %#
 %# Catz - the world's most advanced cat show photo engine

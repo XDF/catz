@@ -66,8 +66,8 @@ sub browse {
  $res = $self->fetch( 'photo_thumb', @{ $s->{xs} } ) ;
  
  $s->{thumb} = $res->[0];
- $s->{min} = $res->[1];
- $s->{max} = $res->[2]; 
+ $s->{earliest} = $res->[1];
+ $s->{latest} = $res->[2]; 
              
  $self->render( template => 'page/browse' );
     

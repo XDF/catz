@@ -84,7 +84,8 @@ sub startup {
 
  $l->route('/list/:subject/:mode')->to('list#list');
  
- $l->route( '/search' )->to ( "search#search" );   
+ $l->route( '/search' )->to ( "search#search" );
+    
  $l->route ( '/browse' )->to ( "browse#browse" ); 
  $l->route ( '/view' )->to ( "view#view" ); 
      

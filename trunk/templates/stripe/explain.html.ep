@@ -1,65 +1,64 @@
-%#
-%# Explaining of the search arguments
-%#
-% use feature qw ( switch );
-<table class="p100">
-% my $i = 0;
-% while ( $i < scalar ( @{ $path_array } ) ) {
-% my $key = $path_array->[ $i++ ];
-% my $val = $path_array->[ $i++ ];
-% my $visible = $val;  
-% my $tag = 'SEARCH';
-% my $begins = ( substr ( $val, -1, 1 ) eq '*' ) ? 1 : 0;
-% my $ends = ( substr ( $val, 0, 1 ) eq '*' ) ? 1 : 0;
-% if ( $begins and $ends ) {
-%  $tag = $tag . '_CONTAIN';
-%  $visible = substr ( $val, -1, 1 );
-% } elsif ( $begins ) {
-%  $tag = $tag . '_BEGIN';
-%  $visible = substr ( $val, 0, -1 );
-% } elsif ( $ends ) {
-%  $tag = $tag . '_END';
-%  $visible = substr ( $val, 1 );
-% } else {
-%  $tag = $tag . '_IS';
-% }
-% if ( 
-%  ( index ( $val, '?' ) > -1 ) or 
-%  ( index ( substr ( $val, 1, -1 ), '*' ) > -1 ) 
-% ) {
-%   $tag = $tag . '_PATTERN';
-% } else {
-%   $tag = $tag . '_EXACT';
-% }
-<tr>
- <td class="20p right enlarge">
-% my $first = substr ( $val, 0, 1 );
-% given ( $first ) {
-%  when ( '+' ) {
-<%= $t->{SEARCH_AND} %>
-%  }
-%  when ( '-' ) {
-<%= $t->{SEARCH_NOT} %>
-%  }
-%  default {
-<%= $t->{SEARCH_OR} %>
-%  }
-% } 
- </td>
- <td class="60p center">
- <div class="shrink">
-  <%= $t->{uc($key)} %> <%= $t->{$tag} %>
- </div>
- <div>
-  <%= $visible %>
- </div>
- </td>
- <td class="20p left">
-  remove etc. 
- </td>
-</tr>
-% }
-</table>
+<%
+use 5.12.2;
+my $i = 0;
+my @and = ();
+my @or = ();
+my @not = ();
+while ( $i < scalar ( @{ $args_array } ) ) {
+ my $key = $args_array->[ $i++ ];
+ my $val = $args_array->[ $i++ ];
+ my $visible = $val;  
+ my $tag = 'SEARCH';
+ my $begins = ( substr ( $val, -1, 1 ) eq '*' ) ? 1 : 0;
+ my $ends = ( substr ( $val, 0, 1 ) eq '*' ) ? 1 : 0;
+ if ( $begins and $ends ) {
+  $tag = $tag . '_CONTAIN';
+  $visible = substr ( $val, -1, 1 );
+ } elsif ( $begins ) {
+  $tag = $tag . '_BEGIN';
+  $visible = substr ( $val, 0, -1 );
+ } elsif ( $ends ) {
+  $tag = $tag . '_END';
+  $visible = substr ( $val, 1 );
+ } else { # not begins not ends
+  $tag = $tag . '_IS';
+ }
+ if ( 
+  ( index ( $val, '?' ) > -1 ) or 
+  ( index ( substr ( $val, 1, -1 ), '*' ) > -1 ) 
+ ) {
+   $tag = $tag . '_PATTERN';
+ } else {
+   $tag = $tag . '_TEXT';
+ }
+ my $first = substr ( $val, 0, 1 );
+ my $info = $t->{uc($key)} . ' ' . $t->{$tag} . ' ' . $visible;
+ given ( $first ) {
+  when ( '+' ) { 
+   push @and, $info;  
+  }
+  when ( '-' ) {
+   push @not, $info;
+  }
+  default {
+   push @or, $info;
+  }
+ }
+}
+%>
+% if ( scalar @and > 0 or scalar @or > 0 or scalar @not > 0 ) {
+<div><h2><%= $t->{SEARCH_EXPLAIN} %></h2>
+% scalar @and > 0 and do {
+%== include 'prim/section', section => 'and', elems => \@and; 
+% };
+% scalar @or > 0 and do {
+%== include 'prim/section', section => 'or', elems => \@or;
+% };
+% scalar @not > 0 and do {
+%== include 'prim/section', section => 'not', elems => \@not;
+% };
+</div>
+% }  
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

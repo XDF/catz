@@ -33,7 +33,7 @@ use parent 'Catz::Ctrl::Base';
 use List::MoreUtils qw ( any all );
 
 use Catz::Util::Number qw ( fullnum3 minnum );
-use Catz::Util::String qw ( deurl );
+use Catz::Util::String qw ( enurl deurl );
 
 sub process_id {
  
@@ -104,7 +104,7 @@ sub process_id {
 
 sub process_args {
 
- my $self = shift; my $inspect = shift; my $s = $self->{stash};
+ my $self = shift; my $s = $self->{stash};
  
  # processes the get parameters of the request
  # returns true in success, false on reject
@@ -114,7 +114,7 @@ sub process_args {
 
  my $pri = $self->fetch ( 'pri' );
 
- $inspect or push @{ $pri }, 'has'; # if not inspect, accept also 'has' pri
+ push @{ $pri }, 'has';
 
  foreach my $key ( $self->param ) {
 
@@ -125,7 +125,7 @@ sub process_args {
    foreach my $val ( @vals ) {
 
     $str eq '' or $str .= '&';
-    $str .= "$key=$val"; 
+    $str .= "$key=".enurl($val); 
     push @args, $key; 
     push @args, $val;
 
@@ -137,10 +137,7 @@ sub process_args {
 
  $s->{args_string} = $str;  
  $s->{args_count} = scalar @args;
- $s->{args_array} = [ map { deurl $_ } @args ];
- 
- # inspect accepts only one key-value pair
- $inspect and $s->{args_count} != 2 and return 0;   
+ $s->{args_array} = [ @args ];
    
  return 1;
 

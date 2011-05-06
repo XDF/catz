@@ -1,20 +1,27 @@
 % use Catz::Util::String qw ( enurl );
+% use Catz::Util::Time qw ( dtexpand );
 % my $last = 'XXXXXXXXXXXXXX';
 % my $i = 1;
 % foreach my $row ( @$list ) {
-<div>
+<div class="unit">
 % if ( $mode eq 'a2z' ) {
 %  my $now = substr ( $row->[1], 0, 1 );
 %  if ( $last ne $now ) {
-<h2><%= $now %></h2>
+<h2 class="unit block"><%= $now %></h2>
 %    $last = $now; 
 %  }
  % } else { 
-<h2><%= $i++ %></h2>
+<h2 class="aero"><%= $i++ %>.</h2>
 % } 
-% my $text = $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOA};    
+% my $text = $row->[3] == 1 ? $t->{PHOTO} : $t->{PHOTOA};
+<div class="unit">
 <a href="/<%= $lang %>/browse?<%= $row->[0] %>=<%== enurl( $row->[1] ) %>"><%= $row->[1] %></a>
-<span class="shrink"><%= $row->[2] %> <%= $text %></div>
+<%= $sep %>
+<%= $row->[3] %> <%= $text %> <%= $sep %> <%= dtexpand ( $row->[4], $lang ) %>
+% defined $row->[5] and do {
+- <%= dtexpand ( $row->[5], $lang ) %>
+% };  
+</div></div>
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine

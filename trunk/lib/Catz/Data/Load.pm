@@ -101,14 +101,14 @@ my $sql = {
  photo_x_null_upd => 'update photo set x=null',
  photo_x_upd => 'update photo set x=? where aid=? and n=?',
 
- pri_num_null_upd => 'update pri set num=null',
- sec_cnt_null_upd => 'update sec set cnt=null',
- pri_num_all => 'select pid,count(*) from pri natural join sec group by pid',
- sec_cnt_inalbum_all => "select sec.sid,count(distinct x) from inalbum natural join photo natural join sec natural join pri where origin='album' group by sec.sid",
- sec_cnt_inexiff_all => "select sid,count(distinct x) from photo natural join inexiff where sid in ( select sid from inexiff ) group by sid",
- sec_cnt_inpos_all => "select sec.sid,count(distinct x) from inpos natural join photo natural join sec natural join pri where origin='pos' group by sec.sid",
- pri_num_upd => 'update pri set num=? where pid=?',
- sec_cnt_upd => 'update sec set cnt=? where sid=?',
+ prim_del => 'delete from prim',
+ secm_del => 'delete from secm',
+ pri_meta_all => 'select pid,count(*) from pri natural join sec group by pid',
+ sec_meta_inalbum_all => "select sec.sid,count(distinct album.aid),count(distinct x),min(substr(folder,1,8)),max(substr(folder,1,8)) from inalbum natural join photo natural join sec natural join pri natural join album where origin='album' group by sec.sid",
+ sec_meta_inexiff_all => "select inexiff.sid,count(distinct album.aid),count(distinct x),min(substr(folder,1,8)),max(substr(folder,1,8)) from photo natural join inexiff natural join album where sid in ( select sid from inexiff ) group by sid",
+ sec_meta_inpos_all => "select sec.sid,count(distinct album.aid),count(distinct x),min(substr(folder,1,8)),max(substr(folder,1,8)) from inpos natural join photo natural join sec natural join pri natural join album where origin='pos' group by sec.sid",
+ prim_ins => 'insert into prim (pid,cnt) values (?,?)',
+ secm_ins => 'insert into secm (sid,cntalbum,cntphoto,first,last) values (?,?,?,?,?)',
  
  album_trn => 'delete from album where aid not in ( select aid from inalbum union select aid from inexif union select aid from inpos union select aid from photo )',
  inexif_trn => 'delete from inexif where sid_meta is null and sid_data is null and sid_file is null',
@@ -627,39 +627,54 @@ sub load_post {
  
  }
 
- logit ( 'updating pri num' );
+ logit ( 'inserting prim' );
 
- load_exec ( 'pri_num_null_upd' ); # clear all previous counts on pri
+ load_exec ( 'prim_del' ); # delete all previous counts on pri
                                                            
- foreach my $row ( load_exec ( 'pri_num_all' ) ) {
+ foreach my $row ( load_exec ( 'pri_meta_all' ) ) {
 
-  load_exec ( 'pri_num_upd', $row->[1], $row->[0] );
+  load_exec ( 'prim_ins',  @{ $row } );
 
  } 
 
- load_exec ( 'sec_cnt_null_upd' ); # clear all previous counts on sec
+ load_exec ( 'secm_del' ); # delete all previous counts on sec
 
- logit ( 'updating sec cnt inalbum' );
+ logit ( 'inserting secm inalbum' );
 
- foreach my $row ( load_exec ( 'sec_cnt_inalbum_all' ) ) {
+ foreach my $row ( load_exec ( 'sec_meta_inalbum_all' ) ) {
 
-  load_exec ( 'sec_cnt_upd', $row->[1], $row->[0] );
+  logit ( $row->[0] );
+
+  # if first and last albums are the same set the last to null
+  $row->[3] eq $row->[4] and $row->[4] = undef;
+
+  load_exec ( 'secm_ins', @{ $row } );
 
  }
 
- logit ( 'updating sec cnt inexiff' );
+ logit ( 'inserting secm inexiff' );
  
- foreach my $row ( load_exec ( 'sec_cnt_inexiff_all' ) ) {
+ foreach my $row ( load_exec ( 'sec_meta_inexiff_all' ) ) {
+ 
+  logit ( $row->[0] );
 
-  load_exec ( 'sec_cnt_upd', $row->[1], $row->[0] );
+  # if first and last albums are the same set the last to null
+  $row->[3] eq $row->[4] and $row->[4] = undef;
+
+  load_exec ( 'secm_ins', @{ $row } );
 
  }
 
- logit ( 'updating sec cnt inpos' );
+ logit ( 'inserting secm inpos' );
 
- foreach my $row ( load_exec ( 'sec_cnt_inpos_all' ) ) {
+ foreach my $row ( load_exec ( 'sec_meta_inpos_all' ) ) {
 
-  load_exec ( 'sec_cnt_upd', $row->[1], $row->[0] );
+  logit ( $row->[0] );
+  
+  # if first and last albums are the same set the last to null
+  $row->[3] eq $row->[4] and $row->[4] = undef;
+
+  load_exec ( 'secm_ins', @{ $row } );
 
  }  
 

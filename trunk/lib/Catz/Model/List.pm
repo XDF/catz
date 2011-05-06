@@ -45,16 +45,16 @@ sub list_general {
   
   when ( 'a2z' ) {
  
-   $list = $db->all( qq{select pri,sec,cnt from sec_$lang natural join 
-    pri where pri=? order by sec}, $subject
+   $list = $db->all( qq{select  pri,sec,cntalbum,cntphoto,first,last from sec_$lang natural join 
+    secm natural join pri where pri=? order by sec}, $subject
    );
        
   }
     
   when ( 'top' ) {
   
-   $list = $db->all( qq{select pri,sec,cnt from sec_$lang natural join
-    pri where pri=? order by cnt desc }, $subject
+   $list = $db->all( qq{select pri,sec,cntalbum,cntphoto,first,last from sec_$lang natural join
+    secm natural join pri where pri=? order by cntphoto desc }, $subject
    );
  
   }
@@ -109,7 +109,7 @@ sub list_links {
 
    when ( 'pris' ) {
 
-    $links =  $db->all("select pri,num from pri where pri<>'text' order by disp");
+    $links =  $db->all("select pri,cnt from pri natural join prim where pri<>'text' order by disp");
    
    }
 
