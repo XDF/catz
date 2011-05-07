@@ -24,17 +24,36 @@
 
 package Catz::Ctrl::Result;
 
+use 5.12.2;
 use strict;
 use warnings;
 
-use parent 'Catz::Ctrl::Base';
+use parent 'Exporter';
 
-sub result {
+our @EXPORT = qw ( result_pack result_unpack );
 
- my $self = shift; my $s = $self->{stash};
+use Crypt::Blowfish;
+use Crypt::CBC;
+use MIME::Base64;
+
+use Catz::Data::Conf;
+use Catz::Util::String qw ( enurl );
+
+my $eng = Crypt::CBC->new( 
+ -key => conf ( 'result_key' ),
+ -cipher => 'Blowfish'
+);
+
+sub result_pack {
+
+ enurl ( encode_base64 ( $eng->encrypt ( join '|', @_ ) ) );
  
-
 }
 
+sub result_unpack {
+
+ split '|', $eng->decrypt ( decode_base64 ( deurl $_[0] ) ); 
+
+}
 
 1;

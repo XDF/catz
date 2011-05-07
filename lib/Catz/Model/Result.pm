@@ -34,16 +34,24 @@ use Mojo::UserAgent;
 
 use Catz::Data::Conf;
 use Catz::Data::Result;
-use Catz::Util::String qw ( unpack );
-use Catz::Util::File qw ( fileread );
+use Catz::Util::String qw ( enurl );
 
-my $urls = fileread ( conf ( 'catshow_url') ); 
+my $url_data = conf ( 'result_url_data' ); 
+my $url_count = conf ( 'result_url_count' ); 
 
-my ( $url_count, $url_data ) = split /\n/, $urls; 
+my $key_date = conf ( 'result_param_date' );
+my $key_loc = conf ( 'result_param_loc' );
+my $key_name = conf ( 'result_param_name' );
 
-( defined $url_count and defined $url_data ) or die "catshow url config error";
+my $net = Mojo::UserAgent->new;
 
-my $ua = Mojo::UserAgent->new; # a static object will do fine
+sub url {
+
+  $_[0] . 
+   '?' . $key_date . '=' . enurl ( $_[1] ) . 
+   '&' . $key_loc . '=' . enurl ( $_[2] ) .
+   '&' . $key_name . '=' . enurl ( $_[3] );
+}
 
 sub result_query {
 

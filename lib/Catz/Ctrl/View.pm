@@ -33,10 +33,8 @@ use parent 'Catz::Ctrl::Args';
 sub view {
 
  my $self = shift; my $s = $self->{stash};
-
   
- $self->process_args ( 0 ) or $self->not_found and return;
-
+ $self->process_args or $self->not_found and return;
 
  $self->process_id or $self->not_found and return;
      

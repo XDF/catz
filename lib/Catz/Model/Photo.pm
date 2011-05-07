@@ -27,7 +27,7 @@
 package Catz::Model::Photo;
 
 use parent 'Exporter';
-our @EXPORT = qw ( photo_thumb photo_detail photo_image photo_text );
+our @EXPORT = qw ( photo_thumb photo_detail photo_image photo_resultkey photo_text );
 
 use Catz::Data::DB;
 use Catz::Util::Time qw ( dtexpand );
@@ -65,6 +65,18 @@ sub photo_detail {
   select pri,disp,sec,sort from pri natural join sec_$lang natural join inexiff natural join photo where x=? union all
   select pri,disp,sec,sort from pri natural join sec_$lang natural join inpos natural join photo where pri<>'text' and x=?
  ) order by disp,sort}, $x, $x, $x );
+
+}
+
+sub photo_resultkey {
+
+ my ( $db, $lang, $x ) = @_;
+
+ my $loc = $db->one ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='loc'" );
+ my $date = $db->one ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='loc'" );
+ my $cat = $db->one ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='loc'" );
+
+ return ( $date, $loc, $cat );
 
 }
 
