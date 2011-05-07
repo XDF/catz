@@ -40,13 +40,24 @@ sub result {
 
  my $key = $self->param( 'key' ) // undef;
 
- ( defined $key and length $key < 1000 ) or
-  $self->render( text => $FAILED );
+ ( defined $key and length $key < 2000 ) or
+  $self->render( text => $FAILED ) and return;
 
- my @args = result_unpack ( $key );
+ my @keys = result_unpack ( $key );
+  
+ scalar @keys == 3 or $self->render( text => $FAILED ) and return;
 
- scalar @args == 3 or $self->render( text => $FAILED );
+ my $res = $self->fetch ( 'result_query', @keys );
 
-
+ defined $res and do {
+ 
+  $s->{result} = $res->[0];
+  $s->{attrib} = $res->[1];
+ 
+  $self->render( template => 'prim/result' ) and return;
+ 
+ };
+ 
+ $self->render( text => $FAILED );
 
 }

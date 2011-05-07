@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 #  
 
-package Catz::Ctrl::Result;
+package Catz::Data::Result;
 
 use 5.12.2;
 use strict;
@@ -30,29 +30,96 @@ use warnings;
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( result_pack result_unpack );
+our @EXPORT = qw ( result_prepare result_pack result_unpack result_process );
 
 use Crypt::Blowfish;
 use Crypt::CBC;
-use MIME::Base64;
+use MIME::Base32 qw ( RFC );
 
 use Catz::Data::Conf;
-use Catz::Util::String qw ( enurl );
+use Catz::Util::String qw ( trim );
+use Catz::Util::Time qw ( dtexpand );
 
 my $eng = Crypt::CBC->new( 
  -key => conf ( 'result_key' ),
  -cipher => 'Blowfish'
 );
 
-sub result_pack {
+my $results = conf ( 'results' );
 
- enurl ( encode_base64 ( $eng->encrypt ( join '|', @_ ) ) );
+sub result_prepare {
+
+ my $app = shift; my $s = $app->{stash}; my $keys = shift;
+
+ my $date = dtexpand ( shift @$keys, 'en' );
+ my $loc = shift @$keys;
+
+ my @out = ();
+
+ foreach my $i ( 1 .. scalar @$keys ) {
+
+  my $cat = $keys->[$i-1];
+
+  $cat and push @out, result_pack ( $date, $loc, $cat );
+
+ }
+                 
+ $s->{resultkey} = \@out; 
+
+}
+
+sub result_pack {
+               
+ MIME::Base32::encode ( $eng->encrypt ( join '|', @_ ) );
  
 }
 
-sub result_unpack {
+sub result_unpack { 
 
- split '|', $eng->decrypt ( decode_base64 ( deurl $_[0] ) ); 
+ split /\|/, $eng->decrypt ( MIME::Base32::decode ( $_[0] ) ); 
+
+}
+
+sub result_process {
+
+ my $raw = shift;
+
+ my @items = ();
+
+ my $rgender = undef;
+ my $rclass = undef;
+
+ foreach my $line ( split /\n/, $raw ) {
+
+  my ( $date, $loc, $num, $cat, $class, $gender, $name, $ems, $result )
+   = split /\t/, $line;
+  
+  defined $result and push @items, 
+   grep { $results->{ $_ } } split /\s+/, trim ( $result );
+
+  my $c = int ( $class // 0 );
+
+  ( $c == 11 or $c == 12 ) and $rclass = $c;
+
+  ( $gender eq 'F' or $gender eq 'M' ) and $rgender = $gender;
+
+ }
+
+ my $result = join ' ', @items;
+
+ if ( defined $rgender and defined $rclass ) {
+
+  return [ $result, $rgender.$rclass ];
+
+ } elsif ( defined $rgender ) {
+
+  return [ $result, $rgender ];
+
+ } else {
+
+  return [ $result, undef ];
+
+ }
 
 }
 

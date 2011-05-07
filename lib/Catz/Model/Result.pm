@@ -44,23 +44,34 @@ my $key_loc = conf ( 'result_param_loc' );
 my $key_name = conf ( 'result_param_name' );
 
 my $net = Mojo::UserAgent->new;
+$net->keep_alive_timeout(5);
 
 sub url {
 
-  $_[0] . 
-   '?' . $key_date . '=' . enurl ( $_[1] ) . 
-   '&' . $key_loc . '=' . enurl ( $_[2] ) .
-   '&' . $key_name . '=' . enurl ( $_[3] );
+ my ( $head, $date, $loc, $name ) = @_;
+
+ $head . 
+  '?' . $key_date . '=' . enurl ( $date ) . 
+  '&' . $key_loc . '=' . enurl ( $loc ) .
+  '&' . $key_name . '=' . enurl ( $name );
+
 }
 
 sub result_query {
 
- my ( $db, $lang, $key ) = @_;
+ my ( $db, $lang, $date, $loc, $name ) = @_;
  
- my ( $date, $loc, $cat ) = split /;/, unpack ( $key );
+ my $url = url ( $url_data, $date, $loc, $name );
+
+ #warn "->$url<-";
+
+ my $res = $net->get($url)->res->body;
+
+ #warn $res;
+
+ $res and length ( $res ) > 4 and
+  return ( result_process ( $res ) );
+
+ return undef;
  
- ( defined $date and defined $loc and defined $cat ) or return undef;
-    
-
-
 }

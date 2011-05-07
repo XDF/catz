@@ -1,0 +1,11 @@
+% ( defined $attrib or defined $result ) and do {
+<span class="lean">
+% defined $attrib and do {
+<%= $t->{'RESULT_ATTRIB_'.$attrib} %>
+% };
+% defined $result and do {
+<%= $result %>
+% }; 
+<span class="shrink"><a href="<%== $t->{RESULT_CREDIT_URL} %>"><%= $t->{RESULT_CREDIT_TEXT} %></a>
+</span></span>
+% };

@@ -3,6 +3,7 @@
 % ( $photosize eq 'fit' ) and do {
 <%== include 'prim/js', jsfolder => 'js_site', jsfile => 'fit' %>
 % };
+<%== include 'prim/js', jsfolder => 'js_site', jsfile => 'result' %>
 <% end %>
 <% content_for 'title' => begin %>
 <%== include 'prim/titleview' %>
