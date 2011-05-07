@@ -46,7 +46,7 @@ sub startup {
  my $self = shift;
  
  # initialize the key for cookie signing 
- $self->secret( fileread ( conf ( 'cookie_key' ) ) );
+ $self->secret( conf ( 'cookie_key' ) );
     
  my $r = $self->routes;
  
@@ -79,8 +79,8 @@ sub startup {
  $l->route( '/find' )->to ( "locate#find" );
 
  $l->route( '/sample' )->to ( "locate#sample" );
- #key => qr/[A-Z2-7]{5,}/
- $l->route( '/result',  )->to ( "locate#result" );
+
+ $l->route( '/result',  )->to ( "result#result" );
 
  $l->route('/list/:subject/:mode')->to('list#list');
  
@@ -102,6 +102,9 @@ sub before {
  # default to "index,follow", actions may modify it as needed 
  $s->{meta_index} = 1;
  $s->{meta_follow} = 1;
+
+ # Google Analytics key to stash
+ $s->{googlekey} = conf ( 'google_key' );
  
  # the layout separator character from conf to stash
  $s->{sep} = conf ( 'sep' );

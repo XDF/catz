@@ -33,7 +33,6 @@ our @EXPORT_OK = qw (
  clean decode deurl dna encode enurl enval lcc limit nobreak pack unpack trim ucc ucclcc 
 ); 
 
-use MIME::Base32 qw( RFC ); 
 use Digest::MD5 qw ( md5_base64 );
 use URI::Escape::XS qw ( uri_escape uri_unescape );
 

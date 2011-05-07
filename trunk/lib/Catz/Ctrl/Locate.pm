@@ -24,6 +24,7 @@
 
 package Catz::Ctrl::Locate;
 
+use 5.12.2;
 use strict;
 use warnings;
 
