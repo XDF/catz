@@ -1,3 +1,4 @@
+                                                                                                          //
 //
 // Catz - the world's most advanced cat show photo engine
 // Copyright (c) 2010-2011 Heikki Siltala
@@ -22,12 +23,37 @@
 // THE SOFTWARE.
 //
 
-function setupChange( key, val ) {
- 
- $.ajax ({
-  url: '/set?' + key + '=' + val, 
-  async: false, cache: false,
-  success: function(){ location.reload(); }  
+function resultURL( key ) {
+
+ var head = $(location).attr('pathname').toString().substring ( 0, 3 );
+
+ return head + '/result?key=' + key;
+
+}
+
+function fetchResults() {
+
+ $("span.result").each(function() {
+
+  $(this).html( '...' ); // indicate that the data is being fetched
+
+  $.ajax ({
+    url: resultURL ( $(this).attr('id') ),
+    context: this,
+    success: function( data ){
+      $(this).html( data ); // update the result to DOM   
+    },
+    error: function(){
+      $(this).html( '?' ); // indicate error   
+    }  
+  });
+
  });
 
 }
+
+$(document).ready(function() { 
+
+ fetchResults();
+   
+});

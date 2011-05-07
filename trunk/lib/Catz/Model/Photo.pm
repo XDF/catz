@@ -72,11 +72,22 @@ sub photo_resultkey {
 
  my ( $db, $lang, $x ) = @_;
 
- my $loc = $db->one ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='loc'" );
- my $date = $db->one ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='loc'" );
- my $cat = $db->one ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='loc'" );
+ my $loc = $db->one ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='loc'", $x );
+ my $date = $db->one ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='date'", $x );
 
- return ( $date, $loc, $cat );
+ my $poss = $db->one ( 'select max(p) from photo natural join inpos where x=?', $x );
+
+ my @cats = ();
+
+ foreach my $p ( 1 .. $poss ) {
+
+  my $cat = $db->one ( "select sec from pri natural join sec_$lang natural join inpos natural join photo where x=? and p=? and pri='cat'", $x, $p );
+  
+  push @cats, $cat; # push even undefs
+
+ }
+
+ return [ $date, $loc, @cats ];
 
 }
 

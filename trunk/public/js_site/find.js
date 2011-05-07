@@ -46,7 +46,7 @@ function doFind() {
   
   // extract '/fi' or '/en' from the current URL
   // to make find language sensitive
-  head = $(location).attr('pathname').toString().substring ( 0, 3 );
+  var head = $(location).attr('pathname').toString().substring ( 0, 3 );
   
   if ( what == '' ) { // there is nothing to find
 

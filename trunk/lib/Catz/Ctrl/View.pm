@@ -30,6 +30,8 @@ use warnings;
 
 use parent 'Catz::Ctrl::Args';
 
+use Catz::Data::Result;
+
 sub view {
 
  my $self = shift; my $s = $self->{stash};
@@ -51,6 +53,10 @@ sub view {
  $s->{comment} =  $self->fetch( 'photo_text', $s->{x} );
 
  $s->{image} =  $self->fetch( 'photo_image', $s->{x} );
+
+ my $keys = $self->fetch ( 'photo_resultkey', $s->{x} );
+
+ result_prepare ( $self, $keys );
         
  $self->render( template => 'page/view' );
 
