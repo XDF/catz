@@ -34,12 +34,14 @@ use Catz::Data::Setup;
 use Catz::Data::Cache;
 use Catz::Data::Conf;
 
-#use Catz::Util::Time qw ( sysdate );
+use Catz::Util::Time qw( dtlang );
 use Catz::Util::File qw ( fileread findlatest pathcut );
 
 # last epoch time we checked for the database key file
 my $lastcheck = 0;
-my $lastdt = undef;
+
+# the latest data version we have encountered
+my $version = undef;
 
 sub startup {
 
@@ -71,23 +73,19 @@ sub startup {
  
  # the front page is the root under language
  $l->route( '/' )->to( 'main#front' );
+
+ $l->route( '/result',  )->to ( "main#result" );
   
- $l->route( '/news' )->to ( "main#news" );
- 
- $l->route( '/feed' )->to ( "main#feed" );
+ $l->route( '/news' )->to ( "new#news" );
+ $l->route( '/feed' )->to ( "new#feed" );
 
  $l->route( '/find' )->to ( "locate#find" );
-
  $l->route( '/sample' )->to ( "locate#sample" );
-
- $l->route( '/result',  )->to ( "result#result" );
-
- $l->route('/list/:subject/:mode')->to('list#list');
- 
- $l->route( '/search' )->to ( "search#search" );
+ $l->route( '/search' )->to ( "locate#search" );
+ $l->route('/list/:subject/:mode')->to('locate#list');
     
- $l->route ( '/browse' )->to ( "browse#browse" ); 
- $l->route ( '/view' )->to ( "view#view" ); 
+ $l->route ( '/browse' )->to ( "present#browse" ); 
+ $l->route ( '/view' )->to ( "present#view" ); 
      
  # add hooks to subs that are executed before and after the dispatch
  $self->hook ( before_dispatch => \&before );  
@@ -98,7 +96,7 @@ sub startup {
 sub before {
 
  my $self = shift; my $s = $self->{stash};
-  
+   
  # default to "index,follow", actions may modify it as needed 
  $s->{meta_index} = 1;
  $s->{meta_follow} = 1;
@@ -109,6 +107,7 @@ sub before {
  # the layout separator character from conf to stash
  $s->{sep} = conf ( 'sep' );
  
+ # the url where the images get fetched from
  $s->{photobase} = conf ( 'base_photo' );
  
  # the language detection
@@ -116,72 +115,82 @@ sub before {
  # - store the language to stash
  # - prepare the URL for language change feature
  
- if ( length ( $self->req->url ) < 3 ) {
+ my $url = $self->req->url; 
+ 
+ if ( length ( $url ) < 3 ) {
  
   # too short to detect language
   # default to english
  
   $s->{lang} = 'en';
-  $s->{otherlang} = '/fi/'; 
+  $s->{langother} = '/fi/'; 
  
- } elsif ( substr ( $self->req->url, 0, 3 ) eq '/fi' ) {
+ } elsif ( substr ( $url, 0, 3 ) eq '/fi' ) {
  
   $s->{lang} = 'fi';
 
-  $s->{otherlang} = '/en' . substr ( $self->req->url, 3 );
+  $s->{langother} = '/en' . substr ( $url, 3 );
   
- } elsif( substr ( $self->req->url, 0, 3 ) eq '/en' ) {
+ } elsif( substr ( $url, 0, 3 ) eq '/en' ) {
  
   $s->{lang} = 'en';
  
-  $s->{otherlang} = '/fi' . substr ( $self->req->url, 3 );
+  $s->{langother} = '/fi' . substr ( $url, 3 );
 
  } else {
  
   # default to english
  
   $s->{lang} = 'en';
-  $s->{otherlang} = '/fi' . substr ( $self->req->url, 3 ); 
+  $s->{langother} = '/fi' . substr ( $url, 3 ); 
  
  }
- 
+
  # let the url be in the stash also
- # and there are no query params since they are dropped earlier
- $s->{url} = $self->req->url;
+ $s->{url} = $url;
+ 
+ $s->{now} = dtlang ( $s->{lang} );
  
  # fetch texts for the current language and make them available to all
  # controller and templates as variable t 
  $s->{t} = text ( $s->{lang} // 'en' );
-                                                                                  
- setup_init ( $self );
+
+ # VITAL STEP: reads cookies and processed them to stash                                                                                  
+ setup_init ( $self ); 
  
- $s->{dt} and goto SKIP;
+ $s->{version} or do { # version is not set -> use the latest data 
    
- my $now = time();
+  my $now = time();
 
- if ( $now - $lastcheck > 5 ) { # if the check has expired
+  if ( $now - $lastcheck > 5 ) { # if the check has expired
  
-  # find the latest key file
+   # find the latest key file
 
-  my $file = findlatest ( conf ( 'path_master' ), 'txt' );
+   my $file = findlatest ( conf ( 'path_master' ), 'txt' );
+   
+   if ( defined $file ) {
   
-  defined $file or die "unable to find the latest key file";
+    my $new = substr ( pathcut ( $file ), 0, 14 ); # get the datetime part
   
-  my $new = substr ( pathcut ( $file ), 0, 14 ); # get the datetime part
+    $version = $new; # store it to static variable
   
-  $lastdt = $new; # store it to static variable
-  
-  $s->{dt} = $new; # store it to stash
+    $s->{version} = $new; # store it to stash
 
-  $lastcheck = $now; # update the check time
+    $lastcheck = $now; # update the check time
+   
+   } else { # error in finding the latest file
+   
+    $lastcheck = $now; # try again in next cycle
+   
+   }
   
- } else { # check has not expired
+  } else { # the check has not yet expired
  
-  $s->{dt} = $lastdt; # so we just copy the latest dt to stash
+   $s->{version} = $version; # so we just copy the latest to stash
  
- }
+  }
  
- SKIP:
+ };
  
  # attempt to fetch from cache
  
@@ -241,7 +250,7 @@ sub after {
 sub cachekey {
  
  return ( 
-  $_[0]->{stash}->{dt}, 
+  $_[0]->{stash}->{version}, 
   $_[0]->{stash}->{url}, 
   map { $_[0]->{stash}->{$_} } @{ setup_keys() }
  ); 

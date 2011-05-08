@@ -77,7 +77,7 @@ sub list_links {
   
   given ( $type ) {
   
-   when ( 'news' ) {
+   when ( 'new' ) {
    
     $links = $db->all("select dt,dt,title_$lang from mnews order by dt desc limit 6");
      
@@ -85,7 +85,7 @@ sub list_links {
 
    }
    
-   when ( 'albums' ) {
+   when ( 'album' ) {
    
     # first fetch the latest albums
     my $albums = $db->all("select aid,folder from album order by folder desc limit 5");
@@ -107,7 +107,7 @@ sub list_links {
    
    }
 
-   when ( 'pris' ) {
+   when ( 'pri' ) {
 
     $links =  $db->all("select pri,cnt from pri natural join prim where pri<>'text' order by disp");
    

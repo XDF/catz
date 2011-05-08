@@ -90,11 +90,11 @@ sub fetch {
  # expects model sub name and and argument list
  
  my ( $self, @args ) = @_;
- 
- my $stash = $self->{stash};
 
  # just a minimal passthru to Access module
- return access ( $stash->{dt}, $stash->{lang}, @args ); 
+ return access ( 
+  $self->stash->{version}, $self->stash->{lang}, @args 
+ ); 
   
 }
 

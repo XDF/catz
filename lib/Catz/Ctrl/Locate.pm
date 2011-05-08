@@ -32,6 +32,7 @@ use parent 'Catz::Ctrl::Base';
 
 use Catz::Data::Conf;
 use Catz::Util::Number qw ( round );
+use Catz::Data::Search;
 
 sub process_width {
 
@@ -52,6 +53,7 @@ sub process_width {
 
 }
 
+
 sub find {
 
  my $self = shift; my $s = $self->{stash};
@@ -66,6 +68,22 @@ sub find {
 
  $self->render( template => 'block/find' );
 
+}
+
+
+sub list {
+
+ my $self = shift;
+ 
+ my $stash = $self->{stash};
+ 
+ $stash->{list} = $self->fetch( 'list_general',
+  $stash->{subject},
+  $stash->{mode}
+ );
+ 
+ # Render template "example/welcome.html.ep" with message
+ $self->render(template => 'page/list');
 }
 
 sub sample {
@@ -118,13 +136,42 @@ sub sample {
 
 }
 
-sub result {
+sub search {
 
-  my $self = shift; my $s = $self->{stash};
+ my $self = shift; my $s = $self->{stash};
+   
+ $s->{args_array} = [];
+ $s->{args_count} = 0;
+ $s->{found} = 0;
+ $s->{args_string} = undef;
+ $s->{thumb} = undef;
+ 
+ length ( $self->param('what') ) > 2000 and $self->not_found and return;
+ 
+ $s->{what} = $self->param('what') // undef;
+   
+ if ( defined $s->{what} ) {
+ 
+  ( $s->{what}, $s->{args_array}, $s->{args_string} ) = search2args ( $s->{what} );
   
+  $s->{args_count} = scalar ( @{ $s->{args_array} } );
+        
+  my @set = @{ $self->fetch ( 'vector_array_rand', @{ $s->{args_array} } ) };
   
+  $s->{found} = scalar @set;
+  
+  scalar @set > 12 and @set = @set[ 0 .. 12 ];
+   
+  my $th = $self->fetch ( 'photo_thumb', @set );
+  
+  $s->{thumb} = $th->[0];  
+  $s->{earliest} = $th->[1];
+  $s->{latest} = $th->[2];        
+   
+ }
+ 
+ $self->render ( template => 'page/search' );
 
 }
-
 
 1;

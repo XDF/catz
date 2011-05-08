@@ -19,7 +19,7 @@
 <%== include 'elem/setup', key => 'display' %>
 % }
 <%== include 'elem/setup', key => 'palette' %>
-<a class="aero" href="<%== $otherlang %>"><%= $t->{OTHERLANG} %></a>
+<a class="aero" href="<%== $langother %>"><%= $t->{LANGOTHER} %></a>
 </td></tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine

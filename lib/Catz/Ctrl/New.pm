@@ -22,54 +22,55 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Ctrl::Search;
+package Catz::Ctrl::New;
 
+use 5.12.2;
 use strict;
 use warnings;
 
 use parent 'Catz::Ctrl::Base';
 
-use Catz::Model::Photo;
-use Catz::Data::Search;
-use Catz::Util::String qw ( deurl );
+use XML::RSS;
 
+use Catz::Util::Time qw ( dt );
 
-sub search {
+sub news {
 
- my $self = shift; my $s = $self->{stash};
-   
- $s->{args_array} = [];
- $s->{args_count} = 0;
- $s->{found} = 0;
- $s->{args_string} = undef;
- $s->{thumb} = undef;
+ my $self = shift; my $stash = $self->{stash};
  
- length ( $self->param('what') ) > 2000 and $self->not_found and return;
- 
- $s->{what} = $self->param('what') // undef;
-   
- if ( defined $s->{what} ) {
- 
-  ( $s->{what}, $s->{args_array}, $s->{args_string} ) = search2args ( $s->{what} );
-  
-  $s->{args_count} = scalar ( @{ $s->{args_array} } );
-        
-  my @set = @{ $self->fetch ( 'vector_array_rand', @{ $s->{args_array} } ) };
-  
-  $s->{found} = scalar @set;
-  
-  scalar @set > 12 and @set = @set[ 0 .. 12 ];
-   
-  my $th = $self->fetch ( 'photo_thumb', @set );
-  
-  $s->{thumb} = $th->[0];
-  
-  $s->{earliest} = $th->[1];
-  $s->{latest} = $th->[2];        
-   
- }
- 
- $self->render ( template => 'page/search' );
+ # edit this news is not listed in wiki!!! stash vars...
+ $stash->{news} = $self->fetch ( 'news' );
+     
+ $self->render( template => 'page/news' );
 
 }
+
+sub feed {
+
+ my $self = shift; my $stash = $self->{stash};
+ 
+ my $news = $self->fetch ( 'news' ); # edit this not in wiki stash vars!!!
+   
+ my $rss = XML::RSS->new( version => '2.0' );
+
+ $rss->channel(
+  title => $stash->{t}->{SITE},
+  link => 'http://' . $stash->{t}->{SITE} . '/',
+  lastBuildDate => dt,
+  managingEditor => $stash->{t}->{AUTHOR}
+ );
+  
+ foreach my $item (@$news) {
+  $rss->add_item(
+   title =>  $item->[2],
+   link => 'http://' . $stash->{t}->{SITE} . '/' . $stash->{lang} . '/news/#'.$item->[0],
+   description => $item->[3],
+   pubDate => $item->[1],
+  );
+ }
+ 
+ $self->render ( text => $rss->as_string, format => 'xml' )
+ 
+}
+
 1;

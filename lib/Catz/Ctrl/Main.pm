@@ -24,6 +24,7 @@
 
 package Catz::Ctrl::Main;
 
+use 5.12.2;
 use strict;
 use warnings;
 
@@ -32,12 +33,10 @@ use parent 'Catz::Ctrl::Base';
 use I18N::AcceptLanguage;
 use XML::RSS;
 
-use Catz::Data::Setup;
-use Catz::Util::Time qw ( dt );
-
 use Catz::Data::Conf;
-
-use Data::Dumper;
+use Catz::Data::Setup;
+use Catz::Data::Result;
+use Catz::Util::Time qw ( dt );
 
 my $languages = [ ( 'en', 'fi' ) ];
  
@@ -48,9 +47,7 @@ my $acceptor = I18N::AcceptLanguage->new(
 sub detect {
   
  my $self = shift;
- 
- #warn "url is now at detect ".$self->req->url;
- 
+  
  my $lang = $acceptor->accepts(
   $self->req->headers->accept_language, $languages
  );
@@ -63,7 +60,7 @@ sub front {
 
  my $self = shift; my $s = $self->{stash};
    
- foreach my $key ( qw ( news albums pris ) ) {
+ foreach my $key ( qw ( new album pri ) ) {
  
   $s->{$key} = $self->fetch ( 'list_links', $key );
  
@@ -79,6 +76,7 @@ sub news {
 
  my $self = shift; my $stash = $self->{stash};
  
+ # edit this news is not listed in wiki!!! stash vars...
  $stash->{news} = $self->fetch ( 'news' );
      
  $self->render( template => 'page/news' );
@@ -107,10 +105,7 @@ sub set {
 
  foreach my $key ( @params ) {
 
-  #warn "param $key ";  
-  #warn $self->param($key);
-
-  setup_set ( $self, $key, $self->param( $key ) ) and $i++;
+ setup_set ( $self, $key, $self->param( $key ) ) and $i++;
  
  }
  
@@ -123,7 +118,7 @@ sub feed {
 
  my $self = shift; my $stash = $self->{stash};
  
- my $news = $self->fetch ( 'news' );
+ my $news = $self->fetch ( 'news' ); # edit this not in wiki stash vars!!!
    
  my $rss = XML::RSS->new( version => '2.0' );
 
@@ -145,6 +140,36 @@ sub feed {
  
  $self->render ( text => $rss->as_string, format => 'xml' )
  
+}
 
+use constant FAILED => '?';
+
+sub result {
+
+ my $self = shift; my $s = $self->{stash};
+
+ my $key = $self->param( 'key' ) // undef;
+
+ ( defined $key and length $key < 2000 ) or
+  $self->render( text => FAILED ) and return;
+
+ my @keys = result_unpack ( $key );
+  
+ scalar @keys == 3 or $self->render( text => FAILED ) and return;
+
+ my $res = $self->fetch ( 'result_query', @keys );
+
+ defined $res and do {
+ 
+  $s->{result} = $res->[0];
+  $s->{attrib} = $res->[1];
+ 
+  $self->render( template => 'prim/result' ) and return;
+ 
+ };
+ 
+ $self->render( text => FAILED );
 
 }
+
+1;
