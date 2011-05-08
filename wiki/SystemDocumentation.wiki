@@ -1,7 +1,59 @@
 #summary Catz system documentation
 
-= Controllers =
+= Controllers and controller methods =
 
+Here is a list of all controllers and the descriptions of all methods in controllers.
+
+== Base ==
+
+The base class for all controllers.
+
+|| *Method* || *Purpose* ||
+|| fetch || fetch data from any model (the Model access interface) ||
+|| redirect_perm || issue a permanent HTTP redirect ||
+|| redirect_temp || issue a temporary HTTP redirect ||
+|| not_found || reject the request and generated HTTP not found ||
+
+== Locate ==
+
+The collection of methods for functions to locate the subjects and photos.
+
+|| *Method* || *Purpose* ||
+|| process_width || processes the width GET parameter to stash ||
+|| find || the quick find action (the subjects via AJAX) ||
+|| list || the list action ||
+|| sample || the sample action (sample photos via AJAX) ||
+|| search || the advanced search action ||
+
+== Main ==
+
+The controller to provide front page and misc functions.
+
+|| *Method* || *Purpose* ||
+|| detect || the root action to issue a redirect to the correct langauge branch ||
+|| front || the front page action ||
+|| reset || the reset stylesheet action ||
+|| base || the system stylesheet action ||
+|| set || the system setup change action (AJAX) ||
+|| result || the show result action (AJAX) ||
+
+== New ==
+
+The controller for news.
+
+|| *Method* || *Purpose* ||
+|| news || the news action ||
+|| feed || the RSS news feed providing action ||
+
+== Present ==
+
+The Controller for photo browsing and viewing.
+
+|| *Method* || *Purpose* ||
+|| process_id || processes the GET id parameter and handles situations without the parameter ||
+|| process_args || processes the GET parameters ||
+|| browse || the browse action (photo browsing) ||
+|| view || the view action (photo viewing) ||
 
 = Templates =
 
@@ -34,7 +86,7 @@ Templates are divided to folders by their purpose. The folders have on subfolder
 
 Stash variables are named in such a way that one name is used only in one purpose. Mojolicious' default stash variables are not listed here.
 
-|| *variable || *purpose* || *initial set by* ||
+|| *Variable* || *Purpose* || *Set by* ||
 || album || the data for the front page albums list || Main::front ||
 || args_array || the GET parameters as an arrayref key1, value1, key2, value2, ... || Present::process_args Locate::search ||
 || args_count || the number of GET parameters || Present::process_args Locate::search ||
@@ -88,31 +140,3 @@ Stash variables are named in such a way that one name is used only in one purpos
 || what || the what GET parameter of quick find and advanced search || Locate::find Locate::search ||
 || x || the runtime number of the current photo, is an integer starting from 1 || Present::process_id ||
 || xs || the runtime numbers of the photos on the current page in correct presentation order || Present::browse ||
-
-= Actions =
-
-The actions of the system (action types available via HTTP call) are listed here.
-
-== Root level actions ==
-
-|| *Action* || *Type* || *Purpose* ||
-|| / || redirect || Detects the language and redirects to the correct branch ||
-|| /set || ajax || sets a session parameter ||
-|| /style/reset|| stylesheet ||  The reset stylesheet (Yahoo) ||
-|| /style/base || stylesheet ||  The stylesheet of the system ||
-
-== Language level actions ==
-
-|| / || page || the front page of the service ||
-|| /browse || page || photo browsing (thumbnails) ||
-|| /inspect || page || view photo with full information ||
-|| /news || page || all news ||
-|| /list || page || list subjects of a subject area ||
-|| /search || page || the advanced search form ||
-|| /show || page || view photo with reduced information ||
-|| /feed || RSS XML || news feed ||
-|| /find || ajax || quick find provider ||
-|| /sample || ajax || sample photos provider ||
-
-
-      
