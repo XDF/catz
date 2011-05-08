@@ -1,14 +1,8 @@
 % layout 'base';
-<% content_for 'title' => begin %><%= $t->{NEWS_ALL} %> - <%= $t->{SITE} %><% end %>
-<h1><%= $t->{NEWS_ALL} %></h1>
-% foreach my $row ( @{ $news } ) {
-<div class="unit">
-<a name="<%= $row->[0] %>"><h2><%= $row->[2] %></a></h2>
-<%= $row->[1] %>
-<p>
-<%= $row->[3] %> 
-</p></div>
-% }
+<% content_for 'title' => begin %><%= $one->[0] %>: <%= $one->[1] %> - <%= $t->{SITE} %><% end %>
+%== include 'stripe/top';
+<h1><%= $one->[0] %>: <%= $one->[1] %></h1>
+<div class="unit"><%= $one->[2] %></div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

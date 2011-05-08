@@ -75,10 +75,13 @@ sub startup {
  $l->route( '/' )->to( 'main#front' );
 
  $l->route( '/result',  )->to ( "main#result" );
-  
- $l->route( '/news' )->to ( "new#news" );
- $l->route( '/feed' )->to ( "new#feed" );
 
+ $l->route( 
+  '/news/:date/:time', date => qr/\d{8}/, time => qr/\d{6}/ 
+ )->to ( "news#one" );
+ $l->route( '/news/feed' )->to ( "news#feed" );
+ $l->route( '/news' )->to ( "news#all" );
+ 
  $l->route( '/find' )->to ( "locate#find" );
  $l->route( '/sample' )->to ( "locate#sample" );
  $l->route( '/search' )->to ( "locate#search" );

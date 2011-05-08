@@ -72,17 +72,6 @@ sub front {
 
 }
 
-sub news {
-
- my $self = shift; my $stash = $self->{stash};
- 
- # edit this news is not listed in wiki!!! stash vars...
- $stash->{news} = $self->fetch ( 'news' );
-     
- $self->render( template => 'page/news' );
-
-}
-
 sub reset { $_[0]->render ( template => 'style/reset', format => 'css' ) }
 
 sub base {
@@ -111,34 +100,6 @@ sub set {
  
  if ( $i ) { $self->render( text => 'OK' ) }  else 
   {  $self->render( text => 'FAILED' ) }
- 
-}
-
-sub feed {
-
- my $self = shift; my $stash = $self->{stash};
- 
- my $news = $self->fetch ( 'news' ); # edit this not in wiki stash vars!!!
-   
- my $rss = XML::RSS->new( version => '2.0' );
-
- $rss->channel(
-  title => $stash->{t}->{SITE},
-  link => 'http://' . $stash->{t}->{SITE} . '/',
-  lastBuildDate => dt,
-  managingEditor => $stash->{t}->{AUTHOR}
- );
-  
- foreach my $item (@$news) {
-  $rss->add_item(
-   title =>  $item->[2],
-   link => 'http://' . $stash->{t}->{SITE} . '/' . $stash->{lang} . '/news/#'.$item->[0],
-   description => $item->[3],
-   pubDate => $item->[1],
-  );
- }
- 
- $self->render ( text => $rss->as_string, format => 'xml' )
  
 }
 
