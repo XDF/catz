@@ -1,5 +1,54 @@
 #summary Catz system documentation
 
+= Controllers =
+
+
+= Templates =
+
+
+= Stash variables =
+
+|| *variable || *purpose* || *initial set by* ||
+|| args_array || the GET parameters as an arrayref [ key1, value1, key2, value2, ... ] || Args::process_args ||
+|| args_count || the number of GET parameters || Args::process_args ||
+|| args_string || GET parameters in string format ready to be printed out || Args::process_args || 
+|| cached || internal flag that is set to true when a page comes from the page cache || before_dispatch ||
+|| comment || the comment texts of a current photo as an arrayref || View ||
+|| detail || the set of subjects related to the current photo to be presented in photo viewing || View ||
+|| display || the setup/cookie value to control what data is presented in photo viewing || Setup::setup_init ||
+|| earliest || the date of the earliest photo in the current page || Browse ||
+|| from || the natural photo number of the first photo in the photo set on the current page || Browse ||
+|| googlekey || the site's key of Google Analytics || before_dispatch ||
+|| id || the photo id of the current photo, is of format 999999 where first 999 indicates the album and last 999 the photo number within the album || Args::process_id ||
+|| idparam || set to contain the URL get parameter part for and id to ease the URL generation, can be empty, 'id=<ID>' or '&id=<ID>' || Args::process_id ||
+|| image || the photo to be viewed in photo viewing || View ||
+|| lang || the language of the current request, practically can be 'en' or 'fi' || before_dispatch ||
+|| langother || the url for the same page in the opposite language, makes easy to provide the langauge change link in template || before_dispatch || 
+|| latest || the date of the latest photo in the current page || Browse ||
+|| meta_follow || flag defaulting true that controls the robots meta tag || before_dispatch ||
+|| meta_index || flag defaulting true that controls  the robots meta tag || before_dispatch ||
+|| now || the current date and time in language specific format (ready to be printed out) || before_dispatch ||
+|| origin || the origin of the id of the current photo, set to 'id' if photo id was given in URL, set to 'x' if the id was resolved by the system || Args::process_id ||
+|| pad || set to '' or '?' to ease the URL generation to be used in URL get parameter generation || Args::process_id ||
+|| page || the current page number where we are on in the current set || Browse View ||
+|| pages || the nubmer of pages in the current set || Browse View ||
+|| palette || the setup/cookie value to control the tone palette presented by the system || Setup::setup_init ||
+|| perpage || the setup/cookie value to control how many thumbnails are shown in photo browsing || Setup::setup_init ||
+|| photobase || the beginning of URL for all image presenting IMG tags, this is where all the images come from, allows development to easlily use production server for serving images || before_dispatch ||
+|| photosize || the setup/cookie value to control how the big photo is preseneted in photo viewing || Setup::setup_init ||
+|| pin || an arrayref to contain navigation targets for page or photo navigation as [ first, previous, next, last ] || Browse View ||
+|| pos || the natural photo number the current photo in the current set || View ||
+|| sep || the item separator character or string used in all free-floating lists || before_dispatch ||
+|| t || the text hashref used all over the templates to print out the texts presented to the user, set to contain the texts of the requested language || before_dispatch ||
+|| thumb || the set of thumbnails to be presented || Browse ||
+|| thumbsize || the setup/cookie value to control the thumbnail size in photo browsing || Setup::setup_init ||
+|| to || the natural photo number of the last photo in the photo set on the current page || Browse ||
+|| total || the total number of photos in the current set || Browse View ||
+|| url || the effective URL of the request || before_dispatch ||
+|| version || the data version the system is running on expressed as integer YYYYDDMMHHMMSS, enables the system run on multi-versioned data and maps directly to the SQLite database file name, set to 0 to indicate that running on the latest data version || before_dispatch || 
+|| x || the runtime number of the current photo, is an integer starting from 1 || Args ||
+|| xs || the runtime numbers of the photos on the current page in correct presentation order || Browse ||
+
 = Actions =
 
 The actions of the system (action types available via HTTP call) are listed here.
