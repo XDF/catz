@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Ctrl::New;
+package Catz::Ctrl::News;
 
 use 5.12.2;
 use strict;
@@ -34,18 +34,32 @@ use XML::RSS;
 
 use Catz::Util::Time qw ( dt );
 
-sub news {
+sub all { # the list of all news
 
- my $self = shift; my $stash = $self->{stash};
- 
+ my $self = shift; my $s = $self->{stash};
+  
  # edit this news is not listed in wiki!!! stash vars...
- $stash->{news} = $self->fetch ( 'news' );
+ $s->{news} = $self->fetch ( 'news_all' );
      
- $self->render( template => 'page/news' );
+ $self->render( template => 'page/newsall' );
 
 }
 
-sub feed {
+sub one { # single news item 
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ # edit this news is not listed in wiki!!! stash vars...
+ $s->{one} = $self->fetch ( 'news_one', $s->{date} . $s->{time} );
+ 
+ defined $s->{one}->[0] or $self->not_found and return;
+     
+ $self->render( template => 'page/newsone' );
+
+}
+
+
+sub feed { # RSS feed of news
 
  my $self = shift; my $stash = $self->{stash};
  

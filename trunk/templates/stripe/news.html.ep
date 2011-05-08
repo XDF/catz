@@ -1,26 +1,9 @@
-% layout 'base';
-<% content_for 'js_custom' => begin %>
-<%== include 'prim/js', jsfolder => 'js_site', jsfile => 'find' %>
-<% end %>
-<% content_for 'title' => begin %><%= $t->{SITE} %> - <%= $t->{SLOGAN} %><% end %>
-<div class="box">
-%== include 'stripe/top';
-</div>
-<div class="unit">
-%== include 'stripe/find';
- </div>
-<div class="unit">
-%== include 'stripe/list';
-</div>
-<div class="unit">
-%== include 'stripe/news';
-</div>
-<div class="unit">
-%== include 'stripe/album';
-</div>
-%== include 'stripe/intro';
-%== include 'stripe/bottom';
-<div id="samples"></div>
+<div><h2><%= $t->{NEWS} %></h2><%= $sep %>
+% foreach my $row ( @$new ) {
+<a class="aero" href="/<%= $lang %>/news/<%= $row->[0] %>/"><%= $row->[1] %> <%= $row->[2] %></a> <%= $sep %>
+% }
+<a class="aero" href="/<%= $lang %>/news/"><%= $t->{NEWS_ALL} %></a>
+</div>                                                         
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

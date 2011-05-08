@@ -25,7 +25,7 @@
 package Catz::Model::Misc;
 
 use parent 'Exporter';
-our @EXPORT = qw ( album maxx news find sample search id2x x2id pri x2dt );
+our @EXPORT = qw ( album maxx news_all news_one find sample search id2x x2id pri x2dt );
 
 use 5.12.2;
 use strict;
@@ -46,21 +46,40 @@ sub maxx {
   
 }
 
-sub news {
+sub news_all {
 
-  my ( $db, $lang, $pattern ) = @_;
+ my ( $db, $lang ) = @_;
   
- my $res = $db->all ( "select dt,null,title_$lang,text_$lang from mnews order by dt desc" );
+ my $res = $db->all ( "select dt,null,null,null,title_$lang,text_$lang from mnews order by dt desc" );
    
  foreach my $row ( @$res ) {
  
   $row->[1] = dtexpand ( $row->[0], $lang );
+  $row->[2] = substr ( $row->[0], 0, 8 ); # date part
+  $row->[3] = substr ( $row->[0], 8 ); # time part
    
  }
  
  return $res;
  
 }
+
+sub news_one {
+
+ my ( $db, $lang, $dt ) = @_;
+  
+ my $res = $db->row ( "select dt,title_$lang,text_$lang from mnews where dt=?", $dt );
+ 
+ my $prev = $db->one ( "select max(dt) from mnews where dt<?", $dt );
+
+ my $next = $db->one ( "select min(dt) from mnews where dt>?", $dt );
+
+ $res->[0] = dtexpand ( $res->[0], $lang );
+
+ return [ $res->[0], $res->[1], $res->[2], $prev, $next ]; 
+ 
+}
+
 
 sub find {
 

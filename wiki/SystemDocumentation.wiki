@@ -13,6 +13,7 @@ The base class for all controllers.
 || redirect_perm || issue a permanent HTTP redirect ||
 || redirect_temp || issue a temporary HTTP redirect ||
 || not_found || reject the request and generated HTTP not found ||
+|| vis || render with Xslate (a replacement for the standard renderer) ||
 
 == Locate ==
 
