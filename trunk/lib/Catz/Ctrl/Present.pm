@@ -22,18 +22,18 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Ctrl::Args;
+package Catz::Ctrl::Present;
 
 use 5.12.2;
 use strict;
 use warnings;
 
 use parent 'Catz::Ctrl::Base';
+       
+use List::MoreUtils qw ( any );
 
-use List::MoreUtils qw ( any all );
-
-use Catz::Util::Number qw ( fullnum3 minnum );
-use Catz::Util::String qw ( enurl deurl );
+use Catz::Data::Result;
+use Catz::Util::String qw ( enurl );
 
 sub process_id {
  
@@ -72,20 +72,20 @@ sub process_id {
    
  }
 
- $s->{id_string} = '';
- $s->{pad_string} = '';
+ $s->{idparam} = '';
+ $s->{pad} = '';
  
  if ( $s->{origin} eq 'id' ) {
                 
-   $s->{pad_string} = '?';
+   $s->{pad} = '?';
 
    if ( $s->{args_string} ne '' ) {
 
-    $s->{id_string} = '&id=' . $s->{id};
+    $s->{idparam} = '&id=' . $s->{id};
 
    } else {
 
-    $s->{id_string} = 'id=' . $s->{id};
+    $s->{idparam} = 'id=' . $s->{id};
 
    }
 
@@ -93,13 +93,14 @@ sub process_id {
    
   if ( $s->{args_string} ne '' ) {
 
-    $s->{pad_string}= '?';
+    $s->{pad}= '?';
 
    }
 
  } 
 
  return 1;
+ 
 }
 
 sub process_args {
@@ -143,8 +144,71 @@ sub process_args {
 
 }
 
+sub browse {
 
+ my $self = shift; my $s = $self->{stash};
+  
+ $self->process_args or $self->not_found and return;
+ $self->process_id or $self->not_found and return;
+   
+ my $res = $self->fetch('vector_pager', 
+   $s->{x}, $s->{perpage}, @{ $s->{args_array} }  
+  );
+ 
+ $res == 0 and $self->not_found and return;
 
+ $s->{total} = $res->[0];
+ $s->{page} = $res->[1];
+ $s->{pages} = $res->[2];
+ $s->{from} = $res->[3];
+ $s->{to} = $res->[4];
+ $s->{pin} = $res->[5];
+ $s->{xs} = $res->[6];
+                   
+ $s->{total} == 0 and $self->not_found and return; 
+ # no photos found by search 
+ 
+ scalar @{ $s->{xs} } == 0 and $self->not_found and return; 
+ # no photos in this page
+ 
+ $res = $self->fetch( 'photo_thumb', @{ $s->{xs} } ) ;
+ 
+ $s->{thumb} = $res->[0];
+ $s->{earliest} = $res->[1];
+ $s->{latest} = $res->[2]; 
+             
+ $self->render( template => 'page/browse' );
+    
+}
 
+sub view {
+
+ my $self = shift; my $s = $self->{stash};
+  
+ $self->process_args or $self->not_found and return;
+
+ $self->process_id or $self->not_found and return;
+     
+ my $res = $self->fetch('vector_pointer', $s->{x}, @{ $s->{args_array} } );
+ 
+ $res == 0 and $self->not_found and return;
+  
+ $s->{total} = $res->[0];
+ $s->{pos} = $res->[1];
+ $s->{pin} = $res->[2];
+    
+ $s->{detail} = $self->fetch( 'photo_detail', $s->{x});
+
+ $s->{comment} =  $self->fetch( 'photo_text', $s->{x} );
+
+ $s->{image} =  $self->fetch( 'photo_image', $s->{x} );
+
+ my $keys = $self->fetch ( 'photo_resultkey', $s->{x} );
+
+ result_prepare ( $self, $keys );
+        
+ $self->render( template => 'page/view' );
+
+}
 
 1;

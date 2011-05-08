@@ -161,7 +161,7 @@ body {
 }
              
 h1 {
- font-size: <%== $size_huge %>;
+ font-size: <%== $size_big %>;
  display: inline;
  font-family: <%== $font_default %>;
  letter-spacing: 0.25em;

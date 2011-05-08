@@ -1,6 +1,6 @@
 <div><h2><%= $t->{ALBUMS} %></h2> <%= $sep %>
 % my $mode = 'flip';
-% foreach my $row ( @{ $albums } ) {
+% foreach my $row ( @{ $album } ) {
 <a class="aero" title="<%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%= $lang %>/album/<%= $row->[0] %>/"><%= $row->[1] %></a> <%= $sep %>
 % $mode = $mode eq 'flip' ? '' : 'flip'; 
 % }

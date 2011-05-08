@@ -20,7 +20,8 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-# 
+#
+ 
 package Catz::Data::Setup;
 
 use parent 'Exporter';
@@ -58,8 +59,8 @@ foreach my $key ( @keys ) {
 
 }
 
-my $MAXKEY = 50; # maximum lenght of a setup key
-my $MAXVAL = 50; # maximum lenght of a setup value
+use constant MAXKEY => 50; # maximum lenght of a setup key
+use constant MAXVAL => 50; # maximum lenght of a setup value
 
 sub setup_init {
 
@@ -71,25 +72,34 @@ sub setup_init {
 
   my $val = $app->cookie ( $key );
 
-  if ( $val and ( length ( $val ) < 51 ) and $ok->{$key}->{$val} ) {
+  if ( 
+   $val and ( length ( $val ) < MAXVAL ) and $ok->{$key}->{$val} ) {
 
-   $app->stash->{ $key } = $val; # value from cookie
-
-  #warn ( "-> $key = $val from cookie" ); 
+   $app->stash->{$key} = $val; # value from cookie
 
   } else {
 
    $app->stash->{$key} = $defaults->{ $key }; # default value
 
-   #warn ( "-> setting up $key from defaults" ); 
   } 
 
  }
 
- my $val = $app->cookie ( 'dt' );
+ # reads the version cookie and uses it's value if present
+ # otherwise sets to the default value 0
 
- $val and $val =~ /^d{14}$/ and $app->stash->{ 'dt' } = $val;
+ my $val = $app->cookie ( 'version' );
+
+ if ( $val and length ( $val ) == 14 and $val =~ /^\d{14}$/ ) {
  
+  $app->stash->{version} = int ( $val );
+  
+ } else {
+
+  $app->stash->{version} = 0;
+ 
+ } 
+  
 }
 
 sub setup_exit {
@@ -98,15 +108,16 @@ sub setup_exit {
 
  foreach my $key ( @keys ) {
 
-  if ( $stash->{$key} and ( $stash->{$key} ne $defaults->{key} ) ) {
-   
+  if ( $stash->{$key} ) { 
+  
    $app->cookie ( $key => $val, { path => '/' } );
  
   }
 
  }
 
- $stash->{dt} and $app->cookie ( 'dt' => $stash->{dt} );
+ # also version is sent out 
+ $app->cookie ( 'version' => $stash->{version} );
 
 }
 
@@ -117,8 +128,8 @@ sub setup_set {
  if ( 
   $key and 
   $val and 
-  ( length ( $key ) < $MAXKEY ) and 
-  ( length ( $val ) < $MAXVAL ) and 
+  ( length ( $key ) < MAXKEY ) and 
+  ( length ( $val ) < MAXVAL ) and 
   $ok->{$key}->{$val} 
  ) {
 
@@ -128,21 +139,22 @@ sub setup_set {
 
  }
 
- if ( $key and $key eq 'dt' ) {
+ if ( $key and $key eq 'version' ) {
+ 
+   length ( $val ) < MAXVAL or return 0; # failed
 
    $val eq '0' and do {
-    $app->stash->{ 'dt' } = $val;
+    $app->stash->{version} = 0;
     return 1; # OK
    }; 
 
    $val =~ /^\d{14}$/ and do {
-    $app->stash->{ 'dt' } = $val;
+    $app->stash->{version} = $val;
     return 1; # OK
    }; 
 
   }
   
-  #warn ( "key $key val $val" ); 
   return 0; # FAILED 
 }
 
@@ -162,8 +174,8 @@ sub setup_verify {
 
  ( $_[0] and $_[1] ) or return 0;
 
- length ( $_[0] ) > $MAXKEY and return 0;
- length ( $_[1] ) > $MAXVAL and return 0; 
+ length ( $_[0] ) > MAXKEY and return 0;
+ length ( $_[1] ) > MAXVAL and return 0; 
 
  $ok->{$_[0]}->{$_[1]} 
  
