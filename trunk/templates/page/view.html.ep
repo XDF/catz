@@ -1,6 +1,6 @@
 % layout 'std';
-%== include 'top/view';
 % if ( $display ne 'none' ) {
+%== include 'top/view';
 %== include 'title/view';
 % }
 <div>

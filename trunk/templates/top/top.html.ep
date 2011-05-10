@@ -1,15 +1,21 @@
+% use 5.12.2;
 <table class="full unit box"><tr><td class="left">
-<%= content site => begin %><a href="/<%= $lang %>/"><%= $t->{SITE} %></a><% end %>
+<%= content site => begin %><%== include 'elem/site' %><% end %>
 <%= content path => begin %> <%= $pathsep %> <% end %>
 </td><td class="right">
-% $action eq 'browse' and do {
-<%== include 'elem/setup', key => 'perpage' %>
+% given ( $action ) {
+%  when ( 'browse' ) {
 <%== include 'elem/setup', key => 'thumbsize' %>
-% };
-% $action eq 'view' and do {
+<%== include 'elem/setup', key => 'perpage' %>
+%  }
+%  when ( 'view' ) {
 <%== include 'elem/setup', key => 'photosize' %>
 <%== include 'elem/setup', key => 'display' %>
-% };
+%  }
+%  when ( 'front' ) {
+<%== include 'elem/setup', key => 'thumbsize' %>
+%  }
+% }
 %== include 'elem/setup', key => 'palette';
-<a class="aero" title="<%= $t->{LANGOTHER} %>" href="<%= $langother %>"><%= $t->{LANGOTHER} %></a>
+%== include 'elem/langch';
 </td><tr></table> 

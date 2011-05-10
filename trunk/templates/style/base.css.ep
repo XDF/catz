@@ -62,7 +62,7 @@
   dark => {
    back => '#000000',
    area => '#444444',
-   dim => '#999999',
+   dim => '#a3a3a3',
    text => '#c4c4c4', 
    high => '#ffffff',
    xtra => '#ff3333',
@@ -71,7 +71,7 @@
   neutral => {
    back => '#b5b5b5',
    area => '#d2d2d2',
-   dim => '#999999',
+   dim => '#666666',
    text => '#444444', 
    high => '#000000',
    xtra => '#cc1515', 
@@ -80,7 +80,7 @@
   bright => {
    back => '#ffffff',
    area => '#d8d8d8',
-   dim => '#757575',
+   dim => '#585858',
    text => '#444444', 
    high => '#000000',
    xtra => '#bb0909', 
@@ -133,7 +133,7 @@ div#samples { display: none; }
 .sparse { letter-spacing: 1px; }
 
 /* extra style used in site name presentation on front page */
-.xtra { font-weight: 500; color: <%== $color->{$palette}->{xtra} %>; }
+.xtra { font-weight: 800; color: <%== $color->{$palette}->{xtra} %>; }
 
 /* text size manipulation */
 .shrink { font-size: 88%; }
@@ -145,8 +145,8 @@ div#samples { display: none; }
 .block { display: block; }
 .inline { display: inline; }
 
-/* set the item to the full width */
 .full { width: 100%; }
+.half { width: 50%; }
 
 /* vertical spacing around element */
 .aero { padding-left: 0.5em; padding-right: 0.5em; } /* typical for inline */

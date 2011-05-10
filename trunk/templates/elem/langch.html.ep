@@ -1,0 +1,1 @@
+<a class="aero" title="<%= $t->{LANGOTHER} %>" href="<%= $langother %>"><%= $t->{LANGOTHER} %></a>

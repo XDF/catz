@@ -34,6 +34,7 @@ use Mojo::UserAgent;
 
 use Catz::Data::Conf;
 use Catz::Data::Result;
+use Catz::Data::Text;
 use Catz::Util::String qw ( enurl );
 
 my $url_data = conf ( 'result_url_data' ); 
@@ -44,7 +45,9 @@ my $key_loc = conf ( 'result_param_loc' );
 my $key_name = conf ( 'result_param_name' );
 
 my $net = Mojo::UserAgent->new;
-$net->keep_alive_timeout(5);
+$net->name( text('en')->{SITE} . ' (Mojo::UserAgent)' );
+$net->keep_alive_timeout(0); # hopefully disables keepalive
+$net->max_connections(0); # hopefully disables keepalive
 
 sub url {
 
@@ -63,11 +66,7 @@ sub result_query {
  
  my $url = url ( $url_data, $date, $loc, $name );
 
- #warn "->$url<-";
-
  my $res = $net->get($url)->res->body;
-
- #warn $res;
 
  $res and length ( $res ) > 4 and
   return ( result_process ( $res ) );
