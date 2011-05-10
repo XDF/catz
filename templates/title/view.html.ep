@@ -1,6 +1,6 @@
 <table class="full center"><tr>
-<td><h1><%== include 'elem/argstitle' %> (<%= $t->{PHOTO} %> <%= $pos %> / <%= $total %>)</h1></td>
-<td>
+<td class="half"><h1><%== include 'elem/argstitle' %> (<%= $t->{PHOTO} %> <%= $pos %>/<%= $total %>)</h1></td>
+<td class="half">
 <%= $total %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>
 <%= $sep %> <a href="/<%= $lang %>/search"><%= $t->{SEARCH_REFINE} %></a></td>
 </tr></table>

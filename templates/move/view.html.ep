@@ -1,4 +1,9 @@
+% if ( $display eq 'none' ) {
+<table class="box full"><tr>
+<td class="left"><%== include 'elem/site' %><td><td class="center">
+% } else { 
 <div class="box center">
+% }
 % my $label1 = $t->{PHOTO_FIRST};
 % my $label2 = $t->{PHOTO_PREV};
 % if ( $pos > 1 ) {
@@ -20,7 +25,13 @@
 % } else { 
 <span class="aero"><%= $label1 %></span> <%== $sep %> <span class="aero"><%= $label2 %></span>
 % }
+% if ( $display eq 'none' ) {
+</td><td class="right">
+<a title="<%= $t->{SETUP_display_full} %>" href="javascript:setupChange('display','full')"><%= $t->{SETUP_display_full} %></a>
+</td></tr></table>
+% } else {
 </div>
+% }
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

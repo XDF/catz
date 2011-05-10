@@ -15,9 +15,9 @@
 %== include 'stripe/album';
 </div>
 %== include 'stripe/intro';
-%== include 'stripe/bottom';
 <div id="samples"></div>
 </div>
+%== include 'stripe/bottom';
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
