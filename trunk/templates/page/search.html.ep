@@ -1,7 +1,7 @@
 % use Catz::Util::String qw ( enurl );
 % use Catz::Util::Number qw ( fmt );
-% layout 'base'; 
-%== include 'stripe/top';
+% layout 'std'; 
+%== include 'top/search';
 % if ( length ( $args_string ) == 0 ) {
 <h1 class="block unit"><%= $t->{SEARCH} %></h1>
 % } else {

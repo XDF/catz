@@ -1,15 +1,17 @@
 % use Catz::Util::Time qw ( dtexpand );
-%== include 'prim/titleargs';
-<%= $sep %>
-<%= $t->{PAGE} %> <%= stash('page') %> / <%= stash('pages') %>
-<%= $sep %>
+<table class="full center"><tr>
+<td><h1><%== include 'elem/argstitle' %> (<%= $t->{PAGE} %> <%= stash('page') %> / <%= stash('pages') %>)</h1></td>
+<td>
+<%= $t->{ONTHISPAGE} %>
 <%= dtexpand ( $latest, $lang ) %>
 % $earliest ne $latest and do {
 - <%= dtexpand ( $earliest, $lang ) %>
 % };
 <%= $sep %>
+<%= $t->{TOTAL} %>
 <%= $total %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>
-<%= $sep %> <a href="/<%= $lang %>/search"><%= $t->{SEARCH_REFINE} %></a>
+<%= $sep %> <a href="/<%= $lang %>/search"><%= $t->{SEARCH_REFINE} %></a></td>
+</tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

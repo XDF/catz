@@ -1,8 +1,8 @@
 <div><h2><%= $t->{NEWS} %></h2><%= $sep %>
 % foreach my $row ( @$new ) {
-<a class="aero" href="/<%= $lang %>/news/<%= $row->[0] %>/"><%= $row->[1] %> <%= $row->[2] %></a> <%= $sep %>
+<a href="/<%= $lang %>/news/<%= $row->[2] %>/<%= $row->[3] %>/"><%= $row->[1] %> <%= $row->[4] %></a> <%= $sep %>
 % }
-<a class="aero" href="/<%= $lang %>/news/"><%= $t->{NEWS_ALL} %></a>
+<a href="/<%= $lang %>/news/"><%= $t->{NEWS_ALL} %></a>
 </div>                                                         
 %#
 %# Catz - the world's most advanced cat show photo engine

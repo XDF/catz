@@ -1,8 +1,7 @@
-<form action="/" method="get">
-<h2><%= $t->{FIND} %></h2>
-<input type="text" id="find"></td><td class="center p30">
-<a href="/<%= $lang %>/search/"</a><%= $t->{SEARCH} %></a>
-<div id="found" class="p100"></div>
+<div><h2 class="aero"><%= $t->{FIND} %></h2>
+<input class="aero" type="text" id="find"></td>
+<a class="aero" href="/<%= $lang %>/search/"><%= $t->{SEARCH} %></a></div>
+<div class="aero roomy" id="found"></div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

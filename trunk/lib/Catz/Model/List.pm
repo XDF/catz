@@ -79,9 +79,14 @@ sub list_links {
   
    when ( 'new' ) {
    
-    $links = $db->all("select dt,dt,title_$lang from mnews order by dt desc limit 6");
+    $links = $db->all("select dt,null,null,null,title_$lang from mnews order by dt desc limit 8");
      
-    do { $_->[1] = dtexpand ( substr ( $_->[0], 0, 8 ), $lang ) } foreach @$links;
+    do { 
+     $_->[1] = dtexpand ( substr ( $_->[0], 0, 8 ), $lang );
+     $_->[2] = substr ( $_->[0], 0, 8 ); # YYYYMMDD
+     $_->[3] = substr ( $_->[0], 8, 6 ); # HHMMSS 
+     
+   } foreach @$links;
 
    }
    

@@ -1,7 +1,19 @@
 % use Catz::Util::String qw ( enurl );
 % use Catz::Util::Time qw ( dtexpand );
-<div class="shrink flip">
-% my $i = 1;
+<div class="aero">
+% my $i = 0;
+% $comment and do {
+%  foreach my $comm ( @{ $comment } ) {
+<%= $comm %>
+%   if ( defined $resultkey->[$i] ) {
+<span class="result" id="<%== $resultkey->[$i] %>"></span>
+%   $i++; 
+%   }
+%  }
+<%= $sep %>
+% };
+<span class="shrink">
+% $i = 1;
 % foreach my $detail ( @$detail ) {
 <%= $i++ == 1 ? '' : $sep %>
 <%= $t->{uc($detail->[0])} %>: 

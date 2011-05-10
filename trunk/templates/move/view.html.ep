@@ -1,26 +1,24 @@
-% use Catz::Data::Conf;
-% my $sep = conf ( 'sep' );
-<div class="flop center">
+<div class="box center">
 % my $label1 = $t->{PHOTO_FIRST};
 % my $label2 = $t->{PHOTO_PREV};
 % if ( $pos > 1 ) {
-<a title="<%= $label1 %>" href="<%== include 'link/id', toid => $pin->[0] %>"><%= $label1 %></a>
+<a class="aero" title="<%= $label1 %>" href="<%== include 'link/id', toid => $pin->[0] %>"><%= $label1 %></a>
 <%== $sep %>
-<a title="<%= $label2 %>" href="<%== include 'link/id', toid => $pin->[1] %>"><%= $label2 %></a>
+<a class="aero" title="<%= $label2 %>" href="<%== include 'link/id', toid => $pin->[1] %>"><%= $label2 %></a>
 % } else { 
-<%= $label1 %> <%== $sep %> <%= $label2 %>
+<span class="aero"><%= $label1 %></span> <%== $sep %> <span class="aero"><%= $label2 %></span>
 % }
 <%== $sep %>
-<a href="<%== include 'link/path', topath => 'browse' %>"><%= $t->{THUMBS} %></a>
+<a class="aero" href="<%== include 'link/path', topath => 'browse' %>"><%= $t->{THUMBS} %></a>
 <%== $sep %>
 % $label1 = $t->{PHOTO_NEXT};
 % $label2 = $t->{PHOTO_LAST};
 % if ( $pos < $total ) {
-<a title="<%= $label1 %>" href="<%== include 'link/id', toid => $pin->[2] %>"><%= $label1 %></a>
+<a class="aero" title="<%= $label1 %>" href="<%== include 'link/id', toid => $pin->[2] %>"><%= $label1 %></a>
 <%== $sep %>
-<a title="<%= $label2 %>" href="<%== include 'link/id', toid => $pin->[3] %>"><%= $label2 %></a>
+<a class="aero" title="<%= $label2 %>" href="<%== include 'link/id', toid => $pin->[3] %>"><%= $label2 %></a>
 % } else { 
-<%= $label1 %> <%== $sep %> <%= $label2 %>
+<span class="aero"><%= $label1 %></span> <%== $sep %> <span class="aero"><%= $label2 %></span>
 % }
 </div>
 %#

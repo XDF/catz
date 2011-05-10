@@ -1,9 +1,9 @@
-% layout 'base';
+% layout 'std';
 <% content_for 'title' => begin %><%= $t->{NEWS_ALL} %> - <%= $t->{SITE} %><% end %>
-%== include 'stripe/top';
-<h1><%= $t->{NEWS_ALL} %></h1>
+%== include 'top/newsall';
+%== include 'title/newsall';
 % foreach my $row ( @{ $news } ) {
-<div class="unit">
+<div class="unit aerox">
 <a href="/<%= $lang %>/news/<%= $row->[2] %>/<%= $row->[3] %>/"><%= $row->[1] %> <%= $row->[4] %></a>
 % my $text = $row->[5];
 % length ( $text ) > 30 and $text = substr ( $text, 0, 30 ) . '...';

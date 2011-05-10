@@ -71,7 +71,7 @@ sub news_one {
  my $res = $db->row ( "select dt,title_$lang,text_$lang from mnews where dt=?", $dt );
  
  my $prev = $db->one ( "select max(dt) from mnews where dt<?", $dt );
-
+ 
  my $next = $db->one ( "select min(dt) from mnews where dt>?", $dt );
 
  $res->[0] = dtexpand ( $res->[0], $lang );

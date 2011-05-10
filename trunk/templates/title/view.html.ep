@@ -1,10 +1,9 @@
-% if ( $args_count == 0 ) {
-<%= $t->{ALL} %> <%= $t->{PHOTOS} %>
-% } elsif ( $args_count < 3 ) {
-<h1><%= $args_array->[1] %></h1> 
-% } else {
-<%= $t->{SEARCH_RESULT} %>
-% }
+<table class="full center"><tr>
+<td><h1><%== include 'elem/argstitle' %> (<%= $t->{PHOTO} %> <%= $pos %> / <%= $total %>)</h1></td>
+<td>
+<%= $total %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>
+<%= $sep %> <a href="/<%= $lang %>/search"><%= $t->{SEARCH_REFINE} %></a></td>
+</tr></table>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

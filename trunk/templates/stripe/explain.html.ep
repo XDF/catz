@@ -49,13 +49,13 @@ while ( $i < scalar ( @{ $args_array } ) ) {
 % if ( scalar @and > 0 or scalar @or > 0 or scalar @not > 0 ) {
 <div><h2><%= $t->{SEARCH_EXPLAIN} %></h2>
 % scalar @and > 0 and do {
-%== include 'prim/section', section => 'and', elems => \@and; 
+%== include 'elem/section', section => 'and', elems => \@and; 
 % };
 % scalar @or > 0 and do {
-%== include 'prim/section', section => 'or', elems => \@or;
+%== include 'elem/section', section => 'or', elems => \@or;
 % };
 % scalar @not > 0 and do {
-%== include 'prim/section', section => 'not', elems => \@not;
+%== include 'elem/section', section => 'not', elems => \@not;
 % };
 </div>
 % }  

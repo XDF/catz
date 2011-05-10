@@ -1,5 +1,12 @@
-<%
+/*
 
+ The stylesheet for <%= $t->{SITE} %> by <%= $t->{AUTHOR} %>
+ 
+ palette = <%= $palette %> 
+
+*/
+<%
+ 
  #
  # Catz - the world's most advanced cat show photo engine
  # Copyright (c) 2010-2011 Heikki Siltala
@@ -26,144 +33,155 @@
 
  use Math::Round qw ( round );
  
- my $font_default = 'Verdana, Arial, sans-serif';
- my $font_title = 'Arial Black, Verdana, Arial, sans-serif';
- 
- my $size_normal = 105;
- my $size_tiny = round ( $size_normal * 0.79 ) . '%'; 
- my $size_small = round ( $size_normal * 0.93 ) . '%'; 
- my $size_big = round ( $size_normal * 1.21 ) . '%'; 
- my $size_huge = round ( $size_normal * 1.75 ) . '%';
+ my $font = 'Verdana, Arial, sans-serif';
+  
+ my $size_normal = 98;
+ my $size_tiny = round ( $size_normal * 0.70 ) . '%'; 
+ my $size_small = round ( $size_normal * 0.86 ) . '%'; 
+ my $size_big = round ( $size_normal * 1.20 ) . '%'; 
+ my $size_huge = round ( $size_normal * 1.65 ) . '%';
  $size_normal .= '%';
  
- my $roundness = '5px';
- 
- my $rounding = qq(-moz-border-radius: $roundness;
- -webkit-border-radius: $roundness;
- -khtml-border-radius: $roundness;
- border-radius: $roundness;);  
+ my $lineheight_normal = 145;
+ my $lineheight_large = round ( $lineheight_normal * 1.15 ) . '%';
+ $lineheight_normal .= '%'; 
 
  #
- # The grayscale palettes of the system developed by Heikki Siltala 
- # 
-
+ # The grayscale palettes of the system developed by Heikki Siltala
+ #
+ # back = the background of the screen
+ # area = area separated from the background by color
+ # dim = to dim out a text, dimmer than regular text
+ # text = color of the regular text
+ # high = color of the highlighted text
+ # xtra = the special color 
+ #
  
  my $color = {
-
+ 
   dark => {
-   back => '#000000', # the screen background
-   area1 => '#222222', # separates an area from the background
-   area2 => '#444444', # separates an area from the background
-   dim => '#999999', # dimmed text, dimmer than text
-   text => '#b5b5b5', # color of the regular text 
-   high => '#ffffff', # highlighted text
-   xtra => '#ff3333', # a special color for a special purpose :-D
+   back => '#000000',
+   area => '#444444',
+   dim => '#999999',
+   text => '#c4c4c4', 
+   high => '#ffffff',
+   xtra => '#ff3333',
   },
   
   neutral => {
-   back => '#c5c5c5', # the screen background
-   area1 => '#d5d5d5', # separates an area from the background
-   area2 => '#e5e5e5', # separates an area from the background
-   dim => '#999999', # dimmed text, dimmer than text
-   text => '#444444', # color of the regular text 
-   high => '#000000', # highlighted text
-   xtra => '#cc1515', # a special color for a special purpose :-D 
+   back => '#b5b5b5',
+   area => '#d2d2d2',
+   dim => '#999999',
+   text => '#444444', 
+   high => '#000000',
+   xtra => '#cc1515', 
   },
   
   bright => {
-   back => '#ffffff', # the screen background
-   area1 => '#d8d8d8', # separates an area from the background
-   area2 => '#e8e8e8', # separates an area from the background
-   dim => '#757575', # dimmed text, dimmer than text
-   text => '#444444', # color of the regular text 
-   high => '#000000', # highlighted text
-   xtra => '#bb0909', # a special color for a special purpose :-D 
+   back => '#ffffff',
+   area => '#d8d8d8',
+   dim => '#757575',
+   text => '#444444', 
+   high => '#000000',
+   xtra => '#bb0909', 
   },
   
  };
 
-
 %>
- 
-html { height: 100%; background-color: <%== $color->{$palette}->{back} %>; }
+html { background-color: <%== $color->{$palette}->{back} %>; height: 100%; }
 
 body {
  color: <%== $color->{$palette}->{text} %>;
- margin: 0 0 0 0;
- padding: 0 0 0 0 ;
  background-color: <%== $color->{$palette}->{back} %>;
- font-family: <%== $font_default %>; 
+ margin: 0 0 0 0;
+ padding: 0 0 0 0;
+ font-family: <%== $font %>; 
  font-size: <%== $size_normal %>;
- font-weight: 100;
- text-align: center;
+ line-height: <%== $lineheight_normal %>;
+ text-align: left;
  height: 100%;
 }
 
-#page {
- margin-top: 0 auto;
- text-align: left;
- min-width: 760px;
-%# max-width: 1600px;
-}
+/* 
 
-.fill { height: 100% }
+ the base div of a page
+ it appears that some browsers require 
+ this to make out the correct formatting
+ 
+*/
+div#page {
+ height: 100%;
+} 
 
-.heavy { font-weight: bold; }
+/* by default display all forms inline */
+form { display: inline; }
 
+/* 
+ 
+ by default hide find, found and samples
+ JavaScript should set them visible when needed
+ 
+*/
+div#find { display: none; }
+div#found { display: none; }
+div#samples { display: none; }
+
+/* styles for texts */
+.heavy { font-weight: 600; }
 .lean { font-style: italic; }
-
 .sparse { letter-spacing: 1px; }
 
-.shrink { font-size: 84%; }
+/* extra style used in site name presentation on front page */
+.xtra { font-weight: 500; color: <%== $color->{$palette}->{xtra} %>; }
 
-.enlarge { font-size: 111%; }
+/* text size manipulation */
+.shrink { font-size: 88%; }
+.shrinkx { font-size: 68%; }
+.enlarge { font-size: 114%; }
+.enlargex { font-size: 128%; }
 
+/* ablitity to set block & inline to any element via class */
+.block { display: block; }
 .inline { display: inline; }
 
-.block { display: block; }
+/* set the item to the full width */
+.full { width: 100%; }
 
-.samples { display: none; }
+/* vertical spacing around element */
+.aero { padding-left: 0.5em; padding-right: 0.5em; } /* typical for inline */
+.aerox { padding-left: 1.7em; padding-right: 1.7em; } /* typical for block */
 
-.aero { padding-left: 0.5em; padding-right: 0.5em; }
+/* space on page */
+.unit { padding-top: 0.8em; padding-bottom: 0.8em; }
+.unitx { padding-top: 1.7em; padding-bottom: 1.7em; }
 
-.spacious { padding: 1em; }
-
-.unit { padding-top: 0.6em; padding-bottom: 0.6em;  padding-left: 2em; padding-right: 2em; }
-
+/* highlight the matching part in text */
 .match { border-bottom: 2px dotted <%== $color->{$palette}->{dim} %>;  }
 
-.xtra { font-weight: 600; color: <%== $color->{$palette}->{xtra} %>; }
-
-.left { text-align: left; padding-left: 0.5em; }
+/* alignments */
 .center { text-align: center; }
-.right { text-align: right; padding-right: 0.5em; }
-
-.top { vertical-align: top; }
+.left { text-align: left; }
+.right { text-align: right; }
+.top { vertical-align: top; } /* needed on table's elements */
 
 .box {
- border: 1px;
  background-color: <%== $color->{$palette}->{area} %>;   
 }
 
-.flip { 
- background-color:  <%== $color->{$palette}->{area1} %>; 
- <%== $rounding %>
+.roomy {
+ line-height: <%== $lineheight_large %>;
 }
 
-.flop { 
- background-color:  <%== $color->{$palette}->{area2} %>; 
- <%== $rounding %>
-}
-
-.dropper {
+.boxed {
  color: <%== $color->{$palette}->{text} %>;
- background-color: <%== $color->{$palette}->{area1} %>;
+ background-color: <%== $color->{$palette}->{area} %>;
 }
              
 h1 {
  font-size: <%== $size_big %>;
  display: inline;
- font-family: <%== $font_default %>;
+ font-family: <%== $font %>;
  letter-spacing: 0.25em;
  font-weight: 400;
 }
@@ -171,7 +189,7 @@ h1 {
 h2,h3,h4,h5,h6 {
  font-size: <%== $size_big %>;
  display: inline;
- font-family: <%== $font_default %>;
+ font-family: <%== $font %>;
  letter-spacing: 0.25em;
  font-weight: 400;
 }
@@ -190,13 +208,11 @@ a:hover {
 }
 
 .thumb {
- border: 1px;
+ border: 2px;
  border-style: solid;
- margin-left: 1px;
- margin-right: 1px;
+ margin-left: 2px;
+ margin-right: 2px;
 }
-
-form { display: inline; }
 
 ul { margin-left: 1em; }
 
@@ -205,8 +221,3 @@ li {
  list-style-position: outside; 
  line-height: 1.3em; 
 }
-
-% foreach my $per ( qw ( 20 25 30 33 34 40 50 60 70 75 80 90 100 ) ) {
-.p<%== $per %>  { width: <%== $per %>%; }
-% }
-

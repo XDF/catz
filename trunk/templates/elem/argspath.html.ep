@@ -1,0 +1,7 @@
+% if ( $args_count == 0 ) {
+<%= $pathsep %>
+% } elsif ( $args_count < 3 ) {
+<%= $pathsep %> <a href="/<%= $lang %>/list/<%= $args_array->[0] %>/a2z/"><%= $t->{uc($args_array->[0]).'S'} %></a> <%= $pathsep %>
+% } else {
+<$= $pathsetp %> <a href="/<%= $lang %>/search/"><%= $t->{SEARCH} %></a> <$= $pathsetp %>
+% } 

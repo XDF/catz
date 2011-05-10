@@ -66,10 +66,8 @@ $c += 8 * 3;
 
 $t->get_ok('/en/news')->status_is(200);
 $t->get_ok('/fi/news')->status_is(200);
-$t->get_ok('/en/news/')->status_is(200);
-$t->get_ok('/fi/news/')->status_is(200);
 
-$c += 8;
+$c += 4;
 
 done_testing($c);
       

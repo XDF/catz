@@ -1,0 +1,4 @@
+<table class="full"><tr>
+<td class="center"><h1><%= $one->[0] %>: <%= $one->[1] %></h1></td>
+<td class="center"><%= $one->[3] %> <%= $one->[4] %></td>
+</tr></table>

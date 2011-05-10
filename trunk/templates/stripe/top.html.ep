@@ -6,7 +6,7 @@
 %  $site =~ s/z/<span class=\"xtra\">z<\/span>/g;  
 %  $site = "<h1>$site</h1>";
 % };
-<table class="flip p100"><tr><td class="left">  
+<table class="full area"><tr><td class="left">  
 <span class="aero"><%== $site %></span>
 <span class="aero"><%= $t->{SLOGAN} %></span>
 <td><td class="right">

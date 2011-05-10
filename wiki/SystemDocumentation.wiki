@@ -67,7 +67,9 @@ Templates are divided to folders by their purpose. The folders have on subfolder
 
 == block ==
 
-== elem ==
+|| *Template* || *Purpose* || *Parameters* ||
+
+== elem == 
 
 == frame ==
 
@@ -87,7 +89,7 @@ Templates are divided to folders by their purpose. The folders have on subfolder
 
 Stash variables are named in such a way that one name is used only in one purpose. Mojolicious' default stash variables are not listed here.
 
-|| *Variable* || *Purpose* || *Set by* ||
+|| *Variable* || *Purpose* || *Initially set by* ||
 || album || the data for the front page albums list || Main::front ||
 || args_array || the GET parameters as an arrayref key1, value1, key2, value2, ... || Present::process_args Locate::search ||
 || args_count || the number of GET parameters || Present::process_args Locate::search ||
@@ -123,6 +125,7 @@ Stash variables are named in such a way that one name is used only in one purpos
 || page || the current page number where we are on in the current set || Present::browse Present::view ||
 || pages || the nubmer of pages in the current set || Present::browse Present::view ||
 || palette || the setup/cookie value to control the tone palette presented by the system || Setup::setup_init ||
+|| pathsep || the separator character for paths || before_dispatch ||
 || perpage || the setup/cookie value to control how many thumbnails are shown in photo browsing || Setup::setup_init ||
 || photobase || the beginning of URL for all image presenting IMG tags, this is where all the images come from, allows development to easlily use production server for serving images || before_dispatch ||
 || photosize || the setup/cookie value to control how the big photo is preseneted in photo viewing || Setup::setup_init ||
@@ -141,3 +144,34 @@ Stash variables are named in such a way that one name is used only in one purpos
 || what || the what GET parameter of quick find and advanced search || Locate::find Locate::search ||
 || x || the runtime number of the current photo, is an integer starting from 1 || Present::process_id ||
 || xs || the runtime numbers of the photos on the current page in correct presentation order || Present::browse ||
+
+= Style classes for formatting on templates =
+
+This documents the classes intented to be used generally in templates for formatting. Please see tmpl/style/base.css.ep for complete style.
+
+== Text formatting ==
+
+|| *Class* || *Purpose* || 
+|| heavy || display text in bold || 
+|| lean || display text in italics ||
+|| sparse || display text with extended space between letters ||
+
+|| *Class* || *Purpose* || 
+|| shrinkx || display double-shrunk text || 
+|| shrink || display shrunk text ||
+|| enlarge || display enlarged text ||
+|| enlargex || display double-enlarged text ||
+
+== Spacing ==
+
+|| *Class* || *Purpose* ||
+|| aero || make space left and right, typically used in inline elements ||
+|| aerox || make more space left and right, typically used in block elements ||
+|| unit || make space top and bottom ||
+|| unitx || make more space top and bottom ||
+
+== Alignment ==
+
+|| *Class* || *Purpose* ||
+|| top
+
