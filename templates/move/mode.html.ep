@@ -1,5 +1,5 @@
-<div class="flop center">
-%== include 'prim/mode', tomode =>'a2z';
+<div class="box center">
+%== include 'elem/mode', tomode =>'a2z';
 <%= $sep %> 
-%== include 'prim/mode', tomode =>'top';
+%== include 'elem/mode', tomode =>'top';
 </div>

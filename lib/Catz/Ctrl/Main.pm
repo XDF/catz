@@ -69,7 +69,7 @@ sub front {
  $s->{maxx} = $self->fetch ( 'maxx' );
     
  $self->render( template => 'page/front' );
-
+ 
 }
 
 sub reset { $_[0]->render ( template => 'style/reset', format => 'css' ) }
@@ -125,7 +125,7 @@ sub result {
   $s->{result} = $res->[0];
   $s->{attrib} = $res->[1];
  
-  $self->render( template => 'prim/result' ) and return;
+  $self->render( template => 'elem/result' ) and return;
  
  };
  

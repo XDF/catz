@@ -1,21 +1,30 @@
+% use 5.12.2;
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html lang="<%= $lang %>"><head>
-<title><%== content_for 'title' %></title>
-<link href="/style/reset/" rel="stylesheet" type="text/css" >
-<link href="/style/<%== $palette %>/" rel="stylesheet" type="text/css" >
-<%== include 'prim/js', jsfolder => 'js_lib', jsfile => 'jquery' %>
-<%== include 'prim/js', jsfolder => 'js_lib', jsfile => 'jquery.urlencode' %>
-<%== include 'prim/js', jsfolder => 'js_site', jsfile => 'setup' %>
-<%== content_for 'js_custom' %>
-<meta http-equiv="content-language" content="<%= $lang %>">
+<html lang="<%= $lang %>"><head><title><%== content_for 'htmltitle' %></title>
+<link rel="stylesheet" type="text/css" href="/style/reset">
+<link rel="stylesheet" type="text/css" href="/style/<%= $palette %>/">
+<%== include 'elem/js', jsfolder => 'js_lib', jsfile => 'jquery' %>
+<%== include 'elem/js', jsfolder => 'js_lib', jsfile => 'jquery.urlencode' %>
+<%== include 'elem/js', jsfolder => 'js_site', jsfile => 'setup' %>
+% given ( $action ) {
+%  when ( 'front' ) {
+<%== include 'elem/js', jsfolder => 'js_site', jsfile => 'find' %>
+%  }
+%  when ( 'view' ) {
+%   stash ( 'photosize' ) eq 'fit' and do {
+<%== include 'elem/js', jsfolder => 'js_site', jsfile => 'fit' %>
+%   };
+<%== include 'elem/js', jsfolder => 'js_site', jsfile => 'result' %>
+%  }
+% }
 <meta meta="generator" content="<%= $t->{APPLICATION} %>">
 <meta meta="generatedat" content="<%= $now %>">
 <meta meta="dataversion" content="<%= $version %>">
 <meta meta="author" content="<%= $t->{AUTHOR} %>">
-<meta meta="copyright" content="<%= $t->{COPYRIGHT} %>">
+<meta meta="copyright" content="<%= $t->{COPYRIGHT_SHORT} %>">
 <meta meta="credits" content="<%= $t->{CREDITS} %>">
 <meta meta="robots" content="<%== $meta_index ? 'index' : 'noindex' %>,<%== $meta_follow ? 'follow' : 'nofollow' %>">
-% $^O =~ /^MS/ or do {
+% defined $googlekey and do {
 <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', '<%== $googlekey %>']);
@@ -27,8 +36,7 @@
   })();
 </script>
 % };
-</head>
-<body lang="<%= $lang %>"><div id="page">
+</head><body lang="<%= $lang %>"><div id="page">
 <%= content %>
 </div></html></body>
 %#

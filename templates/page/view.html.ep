@@ -1,21 +1,11 @@
-% layout 'base';
-<% content_for 'js_custom' => begin %>
-% ( $photosize eq 'fit' ) and do {
-<%== include 'prim/js', jsfolder => 'js_site', jsfile => 'fit' %>
-% };
-<%== include 'prim/js', jsfolder => 'js_site', jsfile => 'result' %>
-<% end %>
-<% content_for 'title' => begin %>
-<%== include 'prim/titleview' %>
-<% end %>
-%== include 'stripe/top';
+% layout 'std';
+%== include 'top/view';
 % if ( $display ne 'none' ) {
-<div class="unit"><%== include 'prim/titleview' %></div>
+%== include 'title/view';
 % }
 <div>
 %== include 'move/view';
 </div>
-%== include 'stripe/comment';
 % if ( $display eq 'full' ) {
 %== include 'stripe/detail';
 % }

@@ -1,11 +1,7 @@
-% layout 'base';
-<% content_for 'js_custom' => begin %>
-<%== include 'prim/js', jsfolder => 'js_site', jsfile => 'find' %>
-<% end %>
-<% content_for 'title' => begin %><%= $t->{SITE} %> - <%= $t->{SLOGAN} %><% end %>
-<div class="box">
-%== include 'stripe/top';
-</div>
+% layout 'std';
+<% content_for 'htmltitle' => begin %><%= $t->{SITE} %> - <%= $t->{SLOGAN} %><% end %>
+%== include 'top/front';
+<div class="aerox">
 <div class="unit">
 %== include 'stripe/find';
  </div>
@@ -21,6 +17,7 @@
 %== include 'stripe/intro';
 %== include 'stripe/bottom';
 <div id="samples"></div>
+</div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

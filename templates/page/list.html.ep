@@ -1,6 +1,6 @@
-% layout 'base';
-%== include 'stripe/top';
-<h1 class="aero"><%= $t->{ALL} %> <%= $t->{uc($subject).'S'} %> <%= $t->{'MODE_'.uc($mode)} %></h1>
+% layout 'std';
+%== include 'top/list';
+%== include 'title/list';
 %== include 'move/mode';
 <div class="unit">
 %== include 'block/list';

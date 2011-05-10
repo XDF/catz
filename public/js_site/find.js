@@ -50,8 +50,9 @@ function doFind() {
   
   if ( what == '' ) { // there is nothing to find
 
-   // clear the find results
-   $('div#found').html(''); 
+   // clear the find results and hide the element
+   $('div#found').html('');
+   $('div#found').hide(); 
        
    // load "anonymous" samples
    prevReqSample = $.ajax ({
@@ -60,7 +61,8 @@ function doFind() {
      
       prevReqSample = null; // clear the reference to this request
       $('div#samples').html( data ); // update the result to DOM   
-     
+      $('div#samples').show(); // make them visible
+      
     }  
    });
     
@@ -72,6 +74,7 @@ function doFind() {
      
       prevReqFind = null; // clear the reference to this request
       $('div#found').html( data ); // update the visible results
+      $('div#found').show(); // make them visible 
      
     }  
    });
@@ -82,7 +85,8 @@ function doFind() {
      
       prevReqSample = null; // clear the reference to this request
       $('div#samples').html( data ); // update the result to DOM   
-     
+      $('div#samples').show(); // make them visible
+      
     }  
    });
   
@@ -93,9 +97,14 @@ function doFind() {
 } 
 
 $(document).ready(function() {
- 
- // intial rendering when page loads, important to bring
- // last content back up when returning to a page 
+
+ // make the find and samples visible when JavaScript enabled
+ $('div#find').show(); 
+ $('div#samples').show();
+  
+ // intial rendering when page loads, to bring
+ // last content back up when returning to a page
+ // and to load default samples when no find 
  doFind();
 
  // run every time there is a keyboard action on find field

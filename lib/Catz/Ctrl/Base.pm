@@ -29,17 +29,7 @@ use warnings;
  
 use parent 'Mojolicious::Controller';
 
-use Text::Xslate;
-
-use Catz::Data::Conf;
 use Catz::Model::Access;
-
-my $tx = Text::Xslate->new(
- path => conf ( 'path_template' ),
- cache => conf ( 'cache_template' ),
- cache_dir =>  conf ( 'path_cache' ),
- verbose => conf ( 'template_verbosity' )
-);
 
 # we just add a few methods to Mojolicious::Controller
 
@@ -107,21 +97,6 @@ sub fetch {
  ); 
   
 }
-
-sub vis {
-
- # render with Xslate, "visualize"
- # leaves standard render untouched so it can still be used directly
- # easy to migrate, and plain text rendering may call standard renderer
- 
- my ( $self, $vis ) = @_;
-
-  $self->render ( text => 
-  $tx->render ( $vis . '.tx', $self->stash )
- );
- 
-}
-
 
 1;
 

@@ -1,0 +1,15 @@
+<table class="full unit box"><tr><td class="left">
+<%= content site => begin %><a href="/<%= $lang %>/"><%= $t->{SITE} %></a><% end %>
+<%= content path => begin %> <%= $pathsep %> <% end %>
+</td><td class="right">
+% $action eq 'browse' and do {
+<%== include 'elem/setup', key => 'perpage' %>
+<%== include 'elem/setup', key => 'thumbsize' %>
+% };
+% $action eq 'view' and do {
+<%== include 'elem/setup', key => 'photosize' %>
+<%== include 'elem/setup', key => 'display' %>
+% };
+%== include 'elem/setup', key => 'palette';
+<a class="aero" title="<%= $t->{LANGOTHER} %>" href="<%= $langother %>"><%= $t->{LANGOTHER} %></a>
+</td><tr></table> 

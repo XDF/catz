@@ -1,11 +1,14 @@
-% layout 'base';
-<% content_for 'title' => begin %>
-<%== include 'prim/titlebrowse' %>
+% layout 'std';
+<% content_for 'htmltitle' => begin %>
+%== include 'elem/args';
+(<%= $t->{PAGE} %> <%= $page %>/<%= $pages %>) - <%= $t->{SITE} %>
 <% end %>
-%== include 'stripe/top';
-<div class="unit"><%== include 'prim/titlebrowse' %></div>
+%== include 'top/browse';
+%== include 'title/browse';
 %== include 'move/browse';
+<div class="aero unit">
 %== include 'block/thumb';
+</div>
 %== include 'stripe/related';
 %#
 %# Catz - the world's most advanced cat show photo engine

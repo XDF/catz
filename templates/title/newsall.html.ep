@@ -1,0 +1,1 @@
+<h1 class="aero"><%= $t->{NEWS_ALL} %></h1>

@@ -52,7 +52,7 @@ sub startup {
     
  my $r = $self->routes;
  
- $self->renderer->root ( conf ( 'path_tmpl' ) );
+ $self->renderer->root ( conf ( 'path_template' ) );
  $self->renderer->layout_prefix ( conf ( 'prefix_layout' ) );
  
  # All controllers are in Catz::Ctrl 
@@ -104,12 +104,24 @@ sub before {
  $s->{meta_index} = 1;
  $s->{meta_follow} = 1;
 
- # Google Analytics key to stash
- $s->{googlekey} = conf ( 'google_key' );
+ # Google Analytics key to stash 
+
+ if ( $^O =~ /^MS/ ) {
+ 
+  $s->{googlekey} = undef; # windows = dev = no analytics 
+ 
+ } else {
+ 
+  $s->{googlekey} = conf ( 'google_key' );
+  
+ }
  
  # the layout separator character from conf to stash
  $s->{sep} = conf ( 'sep' );
- 
+
+ # the layout path separator character from conf to stash
+ $s->{pathsep} = conf ( 'sep_path' );
+
  # the url where the images get fetched from
  $s->{photobase} = conf ( 'base_photo' );
  

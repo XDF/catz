@@ -1,0 +1,4 @@
+% extends 'top/top';
+<%= content path => begin %>
+<%== include 'elem/argspath' %>
+<% end %>  

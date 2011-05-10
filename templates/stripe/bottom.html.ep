@@ -1,3 +1,4 @@
+<div class="box center"><%= $t->{COPYRIGHT_FULL} %></div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

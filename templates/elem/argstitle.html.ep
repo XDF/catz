@@ -1,0 +1,7 @@
+% if ( $args_count == 0 ) {
+<%= $t->{ALL} %> <%= $t->{PHOTOS} %>
+% } elsif ( $args_count < 3 ) {
+<%= $args_array->[1] %> 
+% } else {
+<%= $t->{SEARCH_RESULT} %>
+% }
