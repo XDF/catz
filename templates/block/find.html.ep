@@ -8,7 +8,7 @@
 % my $text = $sugg->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOA};
 % my $out = $sugg->[1]; 
 % $out =~ s/($what)/<span class="match">$1<\/span>/ig; # this is a temporary solution -> special chars come to string -> bad
-<a title="<%= $t->{uc($sugg->[0])} %> <%== $sep %> <%= $sugg->[1] %> <%== $sep %> <%= $sugg->[2] %> <%= $text %>" href="/<%= $lang %>/browse?<%= $sugg->[0] %>=<%= enurl($sugg->[1]) %>"><%== $out %></a>
+<a class="tip" title="<%= $t->{uc($sugg->[0])} %> <%== $sep %> <%= $sugg->[1] %> <%== $sep %> <%= $sugg->[2] %> <%= $text %>" href="/<%= $lang %>/browse?<%= $sugg->[0] %>=<%= enurl($sugg->[1]) %>"><%== $out %></a>
 % }
 % ( scalar ( @$find ) == 0 ) and do { 
 <span class="enlarge"><%= $t->{FIND_NOTHING} %></div>

@@ -22,14 +22,15 @@
 # THE SOFTWARE.
 #  
 
-package Catz::Data::Cache;
+package Catz::Core::Cache;
 
 #
 # a simple set/get module over Cache::Memcached::Fast
 #
 # every package in need of caching should use this module
 #
- 
+
+use 5.10.0;
 use strict;
 use warnings;
 
@@ -37,40 +38,27 @@ use parent 'Exporter';
 
 our @EXPORT = qw ( cache_get cache_set );
 
-use DBI;
 use CHI;
+use Cache::Memcached::Fast;
 
 use Catz::Data::Conf;
 use Catz::Util::Time qw ( thisweek thisyear );
 
-# all data in Catz can live in the same CHI namespace since
-# * models use sub name as a key
-# * pages use url name as a key
-# * SQL? ???????????????????????????????
-# and since sub never starts with '/' and urls always
-# start with '/' there will be no key crashes
-
-my %setup = %{ conf ('cache' ) };
-
-$setup{dbh} = DBI->connect (
- conf ( 'dbconn' ) . conf ( 'path_cache' ) . '/' . 
- thisyear . sprintf ( "%02d", thisweek ) . '.db',
- undef, undef, conf( 'dbargs_cache' )
-);
+my $setup = conf ( 'cache' );
 
 # using a static reference to the real cache object
-my $cache = CHI->new( %setup );
+my $cache = CHI->new( %$setup );
 
 # the cache key separator
 use constant SEP => '#';
   
 sub cache_set {
 
- #return; # DEBUGGING / DEV - skip caching
-
  my $val = pop @_; # val is the last argument
  
  my $key = join SEP, @_;
+ 
+ warn $key;
       
  $cache->set( $key, $val );
 
@@ -79,6 +67,8 @@ sub cache_set {
 sub cache_get {
  
  my $key = join SEP, @_;
+ 
+ warn $key;
     
  return $cache->get( $key );
    

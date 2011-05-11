@@ -27,7 +27,7 @@
 % }
 % if ( $display eq 'none' ) {
 </td><td class="right">
-<a title="<%= $t->{SETUP_display_full} %>" href="javascript:setupChange('display','full')"><%= $t->{SETUP_display_full} %></a>
+<%== include 'elem/setup', key => 'display' %>
 </td></tr></table>
 % } else {
 </div>
