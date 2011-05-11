@@ -31,25 +31,21 @@ use warnings;
 use parent 'Catz::Ctrl::Base';
 
 use I18N::AcceptLanguage;
-use XML::RSS;
 
 use Catz::Data::Conf;
 use Catz::Data::Setup;
 use Catz::Data::Result;
-use Catz::Util::Time qw ( dt );
 
-my $languages = [ ( 'en', 'fi' ) ];
+my $langs = [ 'en', 'fi' ];
  
-my $acceptor = I18N::AcceptLanguage->new( 
- defaultLangauge => 'en', strict => 0 
-);
+my $acc = I18N::AcceptLanguage->new( defaultLangauge => 'en', strict => 0 );
 
 sub detect {
   
  my $self = shift;
   
- my $lang = $acceptor->accepts(
-  $self->req->headers->accept_language, $languages
+ my $lang = $acc->accepts(
+  $self->req->headers->accept_language, $langs
  );
   
  $self->redirect_temp( "/$lang/" ); 
@@ -86,24 +82,27 @@ sub base {
 
 sub set {
 
- my $self = shift; my $stash = $self->{stash};
+ my $self = shift;
 
  my @params = $self->param;
 
- my $i = 0;
+ my $i = 0; # counts accepted parameters
 
  foreach my $key ( @params ) {
 
- setup_set ( $self, $key, $self->param( $key ) ) and $i++;
+  # attempt to set the parameter, increase accepted counter if success 
+  setup_set ( $self, $key, $self->param( $key ) ) and $i++;
  
  }
  
- if ( $i ) { $self->render( text => 'OK' ) }  else 
-  {  $self->render( text => 'FAILED' ) }
+ # at least one set was done -> OK
+ $i and $self->render( text => 'OK' ) and return;
+  
+ $self->render( text => 'FAILED' ); 
  
 }
 
-use constant FAILED => '?';
+use constant RESULT_NA => '';
 
 sub result {
 
@@ -111,14 +110,18 @@ sub result {
 
  my $key = $self->param( 'key' ) // undef;
 
- ( defined $key and length $key < 2000 ) or
-  $self->render( text => FAILED ) and return;
+ ( defined $key and length $key < 4000 ) or
+  $self->render( text => RESULT_NA ) and return;
 
  my @keys = result_unpack ( $key );
   
- scalar @keys == 3 or $self->render( text => FAILED ) and return;
+ scalar @keys == 3 or $self->render( text => RESULT_NA ) and return;
+ 
+ my $count = $self->fetch ( 'result_count', $key[0], $key[1] ) // 0;
+ 
+ $count == 0 and $self->render( text => RESULT_NA ) and return;
 
- my $res = $self->fetch ( 'result_query', @keys );
+ my $res = $self->fetch ( 'result_data', @keys );
 
  defined $res and do {
  
@@ -129,7 +132,7 @@ sub result {
  
  };
  
- $self->render( text => FAILED );
+ $self->render( text => RESULT_NA );
 
 }
 

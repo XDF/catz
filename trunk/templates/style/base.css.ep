@@ -147,6 +147,16 @@ div#samples { display: none; }
 
 .full { width: 100%; }
 .half { width: 50%; }
+.tri { width: 33%; }
+.trix { width: 34%; }
+.quint { width: 20%; }
+
+.divid { 
+ width: 70%; 
+ height: 0px;
+ border-bottom: 1px;
+ color: <%== $color->{$palette}->{dim} %>   
+}
 
 /* vertical spacing around element */
 .aero { padding-left: 0.5em; padding-right: 0.5em; } /* typical for inline */

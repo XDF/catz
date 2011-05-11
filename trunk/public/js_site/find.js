@@ -74,7 +74,7 @@ function doFind() {
      
       prevReqFind = null; // clear the reference to this request
       $('div#found').html( data ); // update the visible results
-      $('div#found').show(); // make them visible 
+      $('div#found').show(); // make them visible
      
     }  
    });

@@ -27,7 +27,9 @@
 package Catz::Model::Photo;
 
 use parent 'Exporter';
-our @EXPORT = qw ( photo_thumb photo_detail photo_image photo_resultkey photo_text );
+our @EXPORT = qw ( 
+ photo_thumb photo_detail photo_image photo_resultkey photo_text 
+);
 
 use Catz::Data::DB;
 use Catz::Util::Time qw ( dtexpand );

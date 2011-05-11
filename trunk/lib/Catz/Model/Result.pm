@@ -24,11 +24,12 @@
 
 package Catz::Model::Result;
 
+use 5.12.2;
 use strict;
 use warnings;
 
 use parent 'Exporter';
-our @EXPORT = qw ( result_query );
+our @EXPORT = qw ( result_count result_data );
 
 use Mojo::UserAgent;
 
@@ -37,19 +38,31 @@ use Catz::Data::Result;
 use Catz::Data::Text;
 use Catz::Util::String qw ( enurl );
 
-my $url_data = conf ( 'result_url_data' ); 
 my $url_count = conf ( 'result_url_count' ); 
+my $url_data = conf ( 'result_url_data' ); 
 
 my $key_date = conf ( 'result_param_date' );
 my $key_loc = conf ( 'result_param_loc' );
 my $key_name = conf ( 'result_param_name' );
 
 my $net = Mojo::UserAgent->new;
-$net->name( text('en')->{SITE} . ' (Mojo::UserAgent)' );
-$net->keep_alive_timeout(0); # hopefully disables keepalive
-$net->max_connections(0); # hopefully disables keepalive
 
-sub url {
+$net->name( text('en')->{SITE} . ' (Mojo::UserAgent)' );
+
+# hopefully these disable keepalive
+$net->keep_alive_timeout(0); 
+$net->max_connections(0);
+
+sub urlc {
+
+ my ( $head, $date, $loc ) = @_;
+
+ $head . 
+  '?' . $key_date . '=' . enurl ( $date ) . 
+  '&' . $key_loc . '=' . enurl ( $loc );
+}
+
+sub urld {
 
  my ( $head, $date, $loc, $name ) = @_;
 
@@ -60,17 +73,32 @@ sub url {
 
 }
 
-sub result_query {
+sub result_data {
 
  my ( $db, $lang, $date, $loc, $name ) = @_;
  
- my $url = url ( $url_data, $date, $loc, $name );
+ my $url = urld ( $url_data, $date, $loc, $name );
 
  my $res = $net->get($url)->res->body;
 
- $res and length ( $res ) > 4 and
+ $res and length ( $res ) > 3 and
   return ( result_process ( $res ) );
 
  return undef;
  
+}
+
+sub result_count {
+
+ my ( $db, $lang, $date, $loc ) = @_;
+
+ my $url = urlc ( $url_count, $date, $loc );
+
+ my $res = $net->get($url)->res->body;
+
+ $res and length ( $res ) > 0 and return int ( $res );
+
+ return undef;
+
+
 }

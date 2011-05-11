@@ -24,37 +24,28 @@
 
 package Catz::Model::Vector;
 
+use 5.10.0;
 use strict;
 use warnings;
 
-use feature qw( switch );
-
-use parent 'Exporter';
-our @EXPORT = qw( 
- vector_bit vector_array vector_array_rand vector_first 
- vector_pager vector_pointer vector_count vector_info
-);
+use parent 'Catz::Model::Common';
 
 use Bit::Vector;
 use List::Util qw ( shuffle );
 use POSIX qw( floor ceil );
-
-use Catz::Data::Cache;
-use Catz::Data::DB;
-use Catz::Util::Number qw( fullnum33 );
 
 sub bsearch {
 
   # binary search aka half-interval search
   # http://en.wikipedia.org/wiki/Binary_search_algorithm
  
-  # this Perl code is modified from
+  # this code is a modified version of
   # http://staff.washington.edu/jon/dsa-perl/dsa-perl.html
   # http://staff.washington.edu/jon/dsa-perl/bsearch-copy
     
   my ( $a, $x ) = @_; # search for x in arrayref a
     
-  my ( $l, $u ) = ( 0, scalar(@$a)-1 ); # search interval
+  my ( $l, $u ) = ( 0, scalar(@$a)-1 ); # search interval $l - $u
  
   my $i; # index of probe
       
@@ -71,57 +62,55 @@ sub bsearch {
   }
   
    # not found indicated as -1
-   # this can never happen if a match is found since matches
-   # are array indexes thus 0 or positive
+   # -1 is never found in search since array indexes are always > -1 
+
   return -1;
   
- 
  }
 
-sub vectorize {
+sub _vectorize {
  
- my ( $db, $lang, $pri, $sec ) = @_;
+ my ( $self, $pri, $sec ) = @_; my $lang = $self->{lang};
  
  # creating an empty bit vector one larger than there are photos
  # since 0 index in not used 
- my $maxx = $db->one( "select max(x) from photo" ) + 1;
+ my $size = $self->maxx  + 1;
  
- # create a bit vector of x indexes based on pri + sec pair
  my $res;
  
+ # create a bit vector of x indexes based on pri + sec pair
  # first we ask if this data comes from album, exif or position
- my $orig = $db->one (
-  'select origin from pri where pri=?', 
-  $pri ne 'has' ? $pri : $sec 
- );
+ my $orig = $self->origin ( $pri, $sec );
   
- $orig or return Bit::Vector->new( $maxx ); # unknown pri -> return empty vector
+ # unknown pri -> return empty vector
+ $orig or return Bit::Vector->new( $size ); 
  
- $orig eq 'exif' and $orig .= 'f'; # we use exif view INEXIFF, not INEXIF
+ # we use exif view INEXIFF, not INEXIF
+ $orig eq 'exif' and $orig .= 'f'; 
   
  if ( $pri eq 'has' ) {
     
-  $res = $db->col( "select x from photo natural join in$orig where sid in (select sid from sec natural join pri where pri=? )", $sec )
+  $res = $self->dbcol( "select x from photo natural join in$orig where sid in (select sid from sec natural join pri where pri=? )", $sec )
             
  } else { # no 'has'
  
   if ( ( index ( $sec, '%' ) > -1 ) or ( index ( $sec, '_' ) > -1 ) ) {
   
-   # pattern matching
+   # pattern matching, always from both languages to make site's language change feature work smoothly
 
-   $res = $db->col ( "select x from photo natural join in$orig where sid in ( select sid from sec_$lang natural join pri where pri=? and sec like ? )", $pri, $sec )
+   $res = $self->dbcol ( "select x from photo natural join in$orig where sid in ( select sid from sec natural join pri where pri=? and (sec_en like ? or sec_fi like ?) )", $pri, $sec, $sec )
        
   } else {
 
-   # exact
+   # exact, always from both languages to make site's language change feature work smoothly
  
-   $res = $db->col ( "select x from photo natural join in$orig where sid in ( select sid from sec_$lang natural join pri where pri=? and sec=? )", $pri, $sec )
+   $res = $self->dbcol ( "select x from photo natural join in$orig where sid in ( select sid from sec natural join pri where pri=? and (sec_en=? or sec_fi=?) )", $pri, $sec, $sec )
  
   }  
 
  }
        
- my $bvec = Bit::Vector->new( $maxx );
+ my $bvec = Bit::Vector->new( $size );
    
  $bvec->Index_List_Store ( @$res ); # store the x indexes as bits
   
@@ -129,9 +118,7 @@ sub vectorize {
   
 }   
 
-sub vector_bit { # fetch a bit vector for a set of arguments
-
- my $res;
+sub _bits { # fetch a bit vector for a set of arguments
 
  my ( $db, $lang, @args ) = @_;
  
@@ -182,33 +169,46 @@ sub vector_bit { # fetch a bit vector for a set of arguments
        
 }
 
-sub vector_array { # get vector as array of indexes
-   
- my $bvec = vector_bit( @_ );
+sub _array { # vector as an array of indexes
+
+ my ( $self, @args ) = @_;
+
+ my $bvec = $self->vectorize ( @args ); 
  
- my @arr = $bvec->Index_List_Read;
-   
- return \@arr;
+ [ $bvec->Index_List_Read ];
+ 
+}
+
+sub _array_rand { # vector as array of indexes in random order 
+
+ my ( $self, @args ) = @_;
+
+ [ shuffle ( @{ $self->array ( @args ) } ) ]; 
 
 }
 
-sub vector_array_rand {
+sub _array_rand_n { # vector as array of indexes in random order limited 
 
- my $arr = vector_array ( @_ );
+ my ( $self, @args ) = @_;
  
- my @rand = shuffle ( @{ $arr } );
+ my $n = pop @args // 5;
+
+ my $rand = $self->array_rand ( @args, $n );
  
- return \@rand;
+ scalar @$rand > $n and 
+  return [ @{ $rand } [ 0 .. $n - 1 ] ];
   
+ return $rand; 
+
 }
 
-sub vector_pager {
+sub _pager { # create a vector and process it to usable for browsing
 
  my $res;
 
- my ( $db, $lang, $x, $perpage, @args ) = @_;
+ my ( $self, $db, $lang, $x, $perpage, @args ) = @_;
      
- my $svec = vector_array( $db, $lang, @args ); # get an array of xs
+ my $svec = $self->digg ( $db, $lang, 'array', @args );
    
  my $xfrom = bsearch( $svec, $x ); # search for the x
  
@@ -248,7 +248,7 @@ sub vector_pager {
       
 }
 
-sub vector_pointer {
+sub _pointer {
 
  my $res;
 
@@ -294,30 +294,18 @@ sub vector_pointer {
     
 }
 
-sub vector_first {
+# the index of the first photo in the vector
 
- # return the index of the first photo in the vector
+sub _first { 
 
- my ( $db, $lang, @args ) = @_;
-
- my $svec = vector_array ( $db, $lang, @args );
+ my $svec = vector_array ( @_ );
    
- scalar @{ $svec } == 0 and return undef;
-  
- return $svec->[0];
-  
+ scalar @{ $svec } == 0 ? undef : $svec->[0];
+   
 }
 
-sub vector_count {
+# the count of items in vector
 
- my $res;
-   
- my $bvec = vector_bit( @_ );
-  
- my $total = $bvec->Norm;
-  
- return $total; 
- 
-}
+sub _count { my $bvec = vector_bit( @_ ); $bvec->Norm }
 
 1;

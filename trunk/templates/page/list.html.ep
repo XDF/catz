@@ -5,6 +5,7 @@
 <div class="unit">
 %== include 'block/list';
 </div>
+%== include 'stripe/bottom';
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

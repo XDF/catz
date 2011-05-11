@@ -22,54 +22,64 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Data::DB;
+package Catz::Core::DB;
 
-# extending DBI is generally not recommended
+# extending DBI is not recommended
 # so we need a separate class to act as a database
 
-use 5.12.2;   
+use 5.10.0;   
 use strict;
 use warnings;
 
 use DBI;
 
-use Catz::Data::Cache;
+use Catz::Core::Cache;
 use Catz::Data::Conf;
+
+my $cacheon = conf ( 'cache_db' );
 
 sub new {
 
- my ( $class, $dt ) = @_;
+ my ( $class, $version ) = @_;
    
  my $db = DBI->connect (
-  conf ( 'dbconn' ) . conf ( 'path_master' ) . "/$dt.db",
+  conf ( 'dbconn' ) . conf ( 'path_master' ) . "/$version.db",
   undef, undef, conf( 'dbargs_runtime' )
  ) || die ( $DBI::errstr );   
 
- my $self = { dt => $dt, db => $db };
+ my $self = { version => $version, db => $db };
  
- bless($self, $class);
+ bless ( $self, $class );
 
  return $self;
  
+}
+
+sub DESTROY {
+
+ my $self = shift;
+
+ $self->{db}->disconnect;
+   
 }
 
 sub run {
 
  my ( $self, $comm, $sql, @args ) = @_;
  
- my $dt = $self->{dt}; 
+ my $version = $self->{version}; 
  
  my $res;
  
- if ( conf('cache_db' ) ) {
+ $cacheon and do {
  
   # try to get the requested result from the cache
   
-  $res = cache_get ( $dt, $comm, $sql, @args );
+  $res = cache_get ( $version, $comm, $sql, @args );
  
   $res and return $res; # if cache hit then done
  
- }
+ };
 
  given ( $comm ) {
   
@@ -103,21 +113,12 @@ sub run {
  
  }
 
- if ( conf('cache_db' ) ) {
-  cache_set ( $dt, $comm, $sql, @args, $res );
- }
+ $cacheon and cache_set ( $version, $comm, $sql, @args, $res );
   
  return $res;
 
 }
 
-sub one { my $self = shift; $self->run('one',@_) }
-
-sub row { my $self = shift; $self->run('row',@_) }
-
-sub col { my $self = shift; $self->run('col',@_) }
-
-sub all { my $self = shift; $self->run('all',@_) }
 
 
 1; 

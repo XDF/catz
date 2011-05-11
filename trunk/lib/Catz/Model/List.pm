@@ -24,15 +24,13 @@
 
 package Catz::Model::List;
 
+use 5.12.2;
 use strict;
 use warnings;
 
-use feature qw( switch );
+use parent 'Catz::Model::Common';
 
-use parent 'Exporter';
-our @EXPORT = qw ( list_general list_links );
-
-use Catz::Data::DB;
+use Catz::Core::DB;
 use Catz::Util::Time qw( dtexpand );
 
 sub list_general {

@@ -1,4 +1,4 @@
-#
+
 # Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
 # Licensed under The MIT License
@@ -22,59 +22,54 @@
 # THE SOFTWARE.
 #  
 
-package Catz::Model::Access;
+package Catz::Model::Common;
 
+use parent 'Catz::Model::Base';
+
+use 5.10.0;
 use strict;
 use warnings;
 
-use parent 'Exporter';
+use Catz::Util::Number qw ( fullnum33 minnum33 );
 
-our @EXPORT = qw ( access );
+# adding some general small methods
 
-use Catz::Data::Cache;
-use Catz::Data::Conf;
-use Catz::Data::DB;
+sub _maxx { $_[0]->dbone ( 'select max(x) from photo' ) }
 
-# !!! "static use" of all Model modules here !!!
-# otherwise their subs are not found at runtime
-use Catz::Model::List;
-use Catz::Model::Misc;
-use Catz::Model::Photo;
-use Catz::Model::Result;
-use Catz::Model::Vector;
+sub _id2x {
 
-my $dbs = {}; # static hashref to keep database connections hashed on dt
-
-sub access {
-
- my ( $dt, $lang, $sub, @args ) = @_;
+ my ( $self, $id ) = @_;
  
- my $res;
+ my ( $s, $n ) = minnum33 ( $id );
  
- if ( conf('cache_model' ) ) {
+ $self->dbone( 
+  'select x from album natural join photo where s=? and n=?', $s, $n 
+ );
  
-  # try to get the requested result from the cache
+}
+
+sub _x2id {
+
+ my ( $self, $x ) = @_;
+ 
+ my $res = $self->dbrow(
+  'select s,n from album natural join photo where x=?', $x
+ );
+ 
+ defined $res and defined $res->[0] and defined $res->[1] and
+  return ( fullnum33 ( $res->[0], $res->[1] ) );
   
-  $res = cache_get ( $dt, $lang, $sub, @args );
- 
-  $res and return $res; # if cache hit then done
- 
- }
- 
- $dbs->{$dt} or ( $dbs->{$dt} = Catz::Data::DB->new ( $dt ) );
- 
- { 
-
-  no strict 'refs';
-
-  $res = $sub->( $dbs->{$dt}, $lang, @args );
- 
- }
- 
- if ( conf('cache_model' ) ) {
-  cache_set ( $dt, $lang, $sub, @args, $res );
- }
- 
- return $res; 
+ return undef;
 
 }
+
+sub _origin {
+
+ my ( $self, $pri, $sec ) = @_;
+ 
+ $self->dbone ( 'select origin from pri where pri=?', $pri ne 'has' ? $pri : $sec ); 
+
+}
+
+
+1;

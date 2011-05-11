@@ -24,14 +24,38 @@
 
 package Catz::Ctrl::Base;
 
+use 5.10.0;
 use strict;
 use warnings;
  
 use parent 'Mojolicious::Controller';
 
-use Catz::Model::Access;
+use List::MoreUtils qw ( none );
 
-# we just add a few methods to Mojolicious::Controller
+use Catz::Data::Conf;
+use Catz::Util::File qw ( findfiles );
+
+# automatic static preloading and instantiating of all models
+
+my $mpath =  conf ( 'path_model' );
+
+my @noload = qw ( Base Common List Misc Photo Result ); # skip these models
+
+my $models = {}; # model instances are kept here
+
+foreach my $mfile ( findfiles ( $mpath ) ) {
+
+ my $class = $mfile; $class =~ s|$mpath/||; $class =~ s|\.pm$||;
+  
+ none { $class eq $_ } @noload and do {
+ 
+  require $mfile;
+    
+  $models->{ lc ( $class ) } = "Catz::Model::$class"->new;  
+ 
+ }; 
+ 
+}
 
 sub redirect_perm { # permanent redirect 301
 
@@ -84,18 +108,25 @@ sub not_found {
  
 }
 
-sub fetch { 
+sub fetch {
 
  # fetch data from any Model to any Controller 
- # expects model sub name and and argument list
+ # expects model and sub as 'model#sub' and an argument list
  
- my ( $self, @args ) = @_;
-
- # just a minimal passthru to Access module
- return access ( 
-  $self->stash->{version}, $self->stash->{lang}, @args 
- ); 
+ my ( $self, $target, @args ) = @_; my $s = $self->{stash};
+   
+ $s->{lang} = 'en';
+ 
+ $s->{version} = '20110505234303';
+ 
+ my ( $model, $sub ) = split /#/, $target;
+ 
+ ( $model and $sub ) or die "unable to access target '$target'";
+ 
+ defined $models->{$model} or die "model '$model' is not bind";
   
+ $models->{$model}->fetch( $s->{version}, $s->{lang}, $sub, @args );
+   
 }
 
 1;

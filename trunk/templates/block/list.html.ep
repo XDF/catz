@@ -2,27 +2,34 @@
 % use Catz::Util::Time qw ( dtexpand );
 % my $last = 'XXXXXXXXXXXXXX';
 % my $i = 1;
+<table class="full">
 % foreach my $row ( @$list ) {
-<div class="unit">
-% if ( $mode eq 'a2z' ) {
-%  my $now = substr ( $row->[1], 0, 1 );
-%  if ( $last ne $now ) {
-<h2 class="unit block"><%= $now %></h2>
-%    $last = $now; 
-%  }
- % } else { 
-<h2 class="aero"><%= $i++ %>.</h2>
-% } 
-% my $text = $row->[3] == 1 ? $t->{PHOTO} : $t->{PHOTOA};
-<div class="unit">
-<a href="/<%= $lang %>/browse?<%= $row->[0] %>=<%== enurl( $row->[1] ) %>"><%= $row->[1] %></a>
-<%= $sep %>
-<%= $row->[3] %> <%= $text %> <%= $sep %> <%= dtexpand ( $row->[4], $lang ) %>
-% defined $row->[5] and do {
-- <%= dtexpand ( $row->[5], $lang ) %>
-% };  
-</div></div>
+% if ( scalar @$list > 100 ) { 
+% my $now = substr ( $row->[1], 0 ,1 );
+% $now ne $last and do {
+% $i > 1 and do {
+<tr><td colspan="5"><hr class="divid"></td></tr>
+% };
+<tr><td class="quint"></td><td class="quint aero enlarge"><h2><%= $now %></h2></td><td class="quint"></td><td class="quint"></td><td class="quint"></td></tr>
+% $i == 1 and do {
+<tr><td colspan="5"><hr class="divid"></td></tr>
+% };
+% $last = $now;
+% };
 % }
+% $i++ == 1 or do {
+<tr><td colspan="5"><hr class="divid"></td></tr>
+% };
+% my $t_album = $row->[2] == 1 ? $t->{NAMEX} : $t->{NAMEXS};  
+% my $t_photo = $row->[3] == 1 ? $t->{PHOTO} : $t->{PHOTOA};
+% my $t_fill = $lang eq 'en' ? ' in ' : ' ';
+<tr><td class="quint"></td>
+<td class="quint aero"><a href="/<%= $lang %>/browse?<%= $row->[0] %>=<%== enurl( $row->[1] ) %>"><%= $row->[1] %></a></td>
+<td class="quint aero"><%= $row->[3] %> <%== $t_photo %> <%== $t_fill %> <%= $row->[2] %> <%== $t_album %></td>
+<td class="quint aero"><%= dtexpand ( $row->[4], $lang ) %><%= $row->[5] ? ' - ' . dtexpand ( $row->[5], $lang ) : '' %></td>
+<td class="quint"></td></tr>
+% }
+</table>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
