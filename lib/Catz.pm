@@ -34,7 +34,7 @@ use Catz::Data::Setup;
 use Catz::Core::Cache;
 use Catz::Data::Conf;
 
-use Catz::Util::Time qw( dtlang );
+use Catz::Util::Time qw( dt dtlang );
 use Catz::Util::File qw ( fileread findlatest pathcut );
 
 # last epoch time we checked for the database key file
@@ -59,36 +59,36 @@ sub startup {
  $r->namespace( 'Catz::Ctrl' );
 
  # if the site root is requested then detect the correct language
- $r->route('/')->to( "main#detect" );
+ $r->route('/')->to( "main#detect", hold => 0 );
  
  # stylesheets
- $r->route( '/style/reset' )->to( 'main#reset' );
- $r->route( '/style/:palette' )->to( 'main#base' );
+ $r->route( '/style/reset' )->to( 'main#reset', hold => 60 );
+ $r->route( '/style/:palette' )->to( 'main#base', hold => 60 );
  
  # set user parameters
- $r->route( '/set' )->to( 'main#set' );
+ $r->route( '/set' )->to( 'main#set', hold => 0 );
  
+ # classic lastshow interface
+ $r->route( '/lastshow' )->to( 'main#lastshow', hold => 15 );
+
  # all site content is found under /:lang where lang is 'en' or 'fi'
  my $l = $r->route ('/:lang', lang => qr/en|fi/ );
  
  # the front page is the root under language
- $l->route( '/' )->to( 'main#front' );
+ $l->route( '/' )->to( 'main#front', hold => 15 );
 
- $l->route( '/result',  )->to ( "main#result" );
+ $l->route( '/result',  )->to ( "main#result", hold => 15 );
 
- $l->route( 
-  '/news/:date/:time', date => qr/\d{8}/, time => qr/\d{6}/ 
- )->to ( "news#one" );
- $l->route( '/news/feed' )->to ( "news#feed" );
- $l->route( '/news' )->to ( "news#all" );
+ $l->route( '/news/feed' )->to ( "news#feed", hold => 15  );
+ $l->route( '/news' )->to ( "news#all", hold => 15 );
  
- $l->route( '/find' )->to ( "locate#find" );
- $l->route( '/sample' )->to ( "locate#sample" );
- $l->route( '/search' )->to ( "locate#search" );
- $l->route('/list/:subject/:mode')->to('locate#list');
+ $l->route( '/find' )->to ( "locate#find", hold => 15 );
+ $l->route( '/sample' )->to ( "locate#sample", hold => 15 );
+ $l->route( '/search' )->to ( "locate#search", hold => 15 );
+ $l->route('/list/:subject/:mode')->to('locate#list', hold => 15 );
     
- $l->route ( '/browse' )->to ( "present#browse" ); 
- $l->route ( '/view' )->to ( "present#view" ); 
+ $l->route ( '/browse' )->to ( "present#browse", hold => 15 ); 
+ $l->route ( '/view' )->to ( "present#view", hold => 15 ); 
      
  # add hooks to subs that are executed before and after the dispatch
  $self->hook ( before_dispatch => \&before );  
@@ -239,6 +239,12 @@ sub after {
  $s->{action} eq 'set' and return;
 
  setup_exit ( $self );
+ 
+ my $val = 0;
+ 
+ exists $s->{hold} and $s->{hold} > 0 and $val = $s->{hold}*60;
+    
+ $self->res->headers->header('Cache-Control' => "max-age=$val");
  
  # no recaching: if the result came from the cache don't cache it again
  defined $s->{cached} and return;

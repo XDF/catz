@@ -1,4 +1,0 @@
-% extends 'top/top';
-<%= content path => begin %>
-<%= $pathsep %> <a href="/<%= $lang %>/news/"><%= $t->{NEWS_ALL} %></a> <%= $pathsep %>
-<% end %>  

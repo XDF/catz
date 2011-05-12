@@ -80,7 +80,7 @@ sub fetch { # the API for Controllers to access Models
   $self->{db} = Catz::Core::DB->new ( $version );
   
  };
-    
+     
  $self->{lang} = $lang;
   
  { no strict 'refs'; return $self->$sub( @args ) }

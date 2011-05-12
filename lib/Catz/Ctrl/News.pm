@@ -32,32 +32,21 @@ use parent 'Catz::Ctrl::Base';
 
 use XML::RSS;
 
+use Catz::Data::Conf;
 use Catz::Util::Time qw ( dt );
 
 sub all { # the list of all news
 
  my $self = shift; my $s = $self->{stash};
+ 
+ $s->{fanpage} = conf ( 'url_fanpage' );
   
  # edit this news is not listed in wiki!!! stash vars...
  $s->{news} = $self->fetch ( 'news#all' );
-     
- $self->render( template => 'page/newsall' );
+ 
+ $self->render( template => 'page/news' );
 
 }
-
-sub one { # single news item 
-
- my $self = shift; my $s = $self->{stash};
- 
- # edit this news is not listed in wiki!!! stash vars...
- $s->{one} = $self->fetch ( 'news#one', $s->{date} . $s->{time} );
- 
- defined $s->{one}->[0] or $self->not_found and return;
-     
- $self->render( template => 'page/newsone' );
-
-}
-
 
 sub feed { # RSS feed of news
 

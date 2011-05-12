@@ -33,7 +33,7 @@ use POSIX qw( floor );
 
 use parent 'Exporter';
 
-our @EXPORT_OK = qw( dtexpand dt dtlang thisyear thisweek );
+our @EXPORT_OK = qw( dtexpand dt dtlang dtsplit thisyear );
 
 #
 # expands timestamp from YYYYMMDD or YYYYMMDDHHMMSS into 
@@ -86,10 +86,5 @@ sub thisyear {
  return $y + 1900;
  
 }
-
-#
-# returns the current week number
-#
-sub thisweek { DateTime->now->week_number }
-
+sub dtsplit { substr ( $_[0], 0, 8 ), substr ( $_[0], 8 ) }
 1;

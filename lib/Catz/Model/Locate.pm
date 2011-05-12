@@ -30,6 +30,8 @@ use warnings;
 
 use parent 'Catz::Model::Base';
 
+use Catz::Util::Time qw ( dt dtexpand ); 
+
 sub _full {
 
  my ( $self, $pri, $mode ) = @_; my $lang = $self->{lang};
@@ -80,15 +82,28 @@ sub _pri {
 
 }          
 
-
-sub find {
+sub _find {
 
  my ( $self, $pattern, $count ) = @_; my $lang = $self->{lang};
-
+ 
  $pattern = '%' . $pattern . '%';
 
- $self->dball (qq{select pri,sec,cnt from (select pri,sec,sort,cnt from pri natural join prim natural join sec_$lang where pri<>'text' and sec like ? order by cnt desc limit $count) order by sort,pri,cnt},$pattern);
+ $self->dball (qq{select pri,sec,cntphoto from (select pri,sec,sort,cntphoto from pri natural join secm natural join sec_$lang where pri<>'text' and sec like ? order by cntphoto desc limit $count) order by sort,pri,cntphoto},$pattern);
 
+}
+
+sub _lastshow {
+
+ my $self = shift; my $lang = $self->{lang};
+ 
+ # find latest gallery having at least 10 photos with cat names
+ 
+ my $latest = $self->dbone("select aid from album where folder=(select max(folder) from album where aid in ( select aid from inpos natural join sec natural join pri where pri='cat' group by aid having count(distinct n)>9 ))");
+ 
+ # the get the photos
+ 
+ $self->dball("select s,photo.n,folder,file,sec_en from photo natural join album natural join inpos natural join sec natural join pri where p=1 and pri='cat' and album.aid=? order by photo.n asc",$latest); 
+  
 }
 
 

@@ -6,7 +6,7 @@
 %  foreach my $comm ( @{ $comment } ) {
 <%= $comm %>
 %   if ( defined $resultkey->[$i] ) {
-<span class="result" id="<%== $resultkey->[$i] %>"></span>
+<span class="result lean shrink" id="<%== $resultkey->[$i] %>"></span>
 %   $i++; 
 %   }
 %  }

@@ -114,11 +114,7 @@ sub fetch {
  # expects model and sub as 'model#sub' and an argument list
  
  my ( $self, $target, @args ) = @_; my $s = $self->{stash};
-   
- $s->{lang} = 'en';
- 
- $s->{version} = '20110505234303';
- 
+    
  my ( $model, $sub ) = split /#/, $target;
  
  ( $model and $sub ) or die "unable to access target '$target'";
