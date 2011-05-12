@@ -1,5 +1,5 @@
 <div><h2><%= $t->{NEWS} %></h2><%= $sep %>
-% foreach my $row ( @$new ) {
+% foreach my $row ( @$news ) {
 <a href="/<%= $lang %>/news/<%= $row->[2] %>/<%= $row->[3] %>/"><%= $row->[1] %> <%= $row->[4] %></a> <%= $sep %>
 % }
 <a href="/<%= $lang %>/news/"><%= $t->{NEWS_ALL} %></a>

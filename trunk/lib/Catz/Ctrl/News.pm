@@ -24,7 +24,7 @@
 
 package Catz::Ctrl::News;
 
-use 5.12.2;
+use 5.10.0;
 use strict;
 use warnings;
 
@@ -39,7 +39,7 @@ sub all { # the list of all news
  my $self = shift; my $s = $self->{stash};
   
  # edit this news is not listed in wiki!!! stash vars...
- $s->{news} = $self->fetch ( 'news_all' );
+ $s->{news} = $self->fetch ( 'news#all' );
      
  $self->render( template => 'page/newsall' );
 
@@ -50,7 +50,7 @@ sub one { # single news item
  my $self = shift; my $s = $self->{stash};
  
  # edit this news is not listed in wiki!!! stash vars...
- $s->{one} = $self->fetch ( 'news_one', $s->{date} . $s->{time} );
+ $s->{one} = $self->fetch ( 'news#one', $s->{date} . $s->{time} );
  
  defined $s->{one}->[0] or $self->not_found and return;
      

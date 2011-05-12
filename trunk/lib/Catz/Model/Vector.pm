@@ -36,7 +36,7 @@ use POSIX qw( floor ceil );
 
 sub bsearch {
 
-  # binary search aka half-interval search
+  # static binary search aka half-interval search method
   # http://en.wikipedia.org/wiki/Binary_search_algorithm
  
   # this code is a modified version of
@@ -61,16 +61,15 @@ sub bsearch {
  
   }
   
-   # not found indicated as -1
-   # -1 is never found in search since array indexes are always > -1 
-
-  return -1;
+   # not found is indicated as -1
+   
+   -1;
   
  }
 
 sub _vectorize {
  
- my ( $self, $pri, $sec ) = @_; my $lang = $self->{lang};
+ my ( $self, $pri, $sec ) = @_;
  
  # creating an empty bit vector one larger than there are photos
  # since 0 index in not used 
@@ -120,17 +119,19 @@ sub _vectorize {
 
 sub _bits { # fetch a bit vector for a set of arguments
 
- my ( $db, $lang, @args ) = @_;
+ my ( $self, @args ) = @_;
  
- my $maxx = $db->one( "select max(x) from photo" ) + 1;
+ my $size = $self->maxx + 1;
      
  # OR base vector is a completely empty vector
- my $ors =  Bit::Vector->new( $maxx ); 
+ my $ors =  Bit::Vector->new( $size ); 
 
  # AND base vector is a completely filled vector 
- my $ands = Bit::Vector->new( $maxx );
- $ands->Fill;
- $ands->Bit_Off(0); # 0th bit is unused as xs start from 1
+ my $ands = Bit::Vector->new( $size );
+ 
+ $ands->Fill; # fill the vector
+ 
+ $ands->Bit_Off(0); # 0th bit is unused as x counting start from 1
   
  my $hasor = 0; # flag to detect if any ors were present
  
@@ -143,20 +144,18 @@ sub _bits { # fetch a bit vector for a set of arguments
   
   $rest =~ s/\?/\_/g; # user interface ? -> database interface _
   $rest =~ s/\*/\%/g; # user interface * -> database interface %
-  
-  #warn $rest;
-            
-  my $bvec = vectorize( $db, $lang, $args[$i], $rest );
+              
+  my $bvec = $self->vectorize( $args[$i], $rest ); # make one vector
                 
   given ( $oper ) {
   
-   when ( '+' ) { $ands->And( $ands, $bvec) ; }
+   when ( '+' ) { $ands->And( $ands, $bvec ) ; }
       
    when ( '0' ) { $hasor++; $ors->Or( $ors, $bvec ); }
    
    when ( '-' ) { $ands->AndNot( $ands, $bvec ); }
    
-   default { die "unknow bit vector operation '$oper'"; }
+   default { die "unknow vector operation '$oper'"; }
   
   }
   
@@ -173,7 +172,7 @@ sub _array { # vector as an array of indexes
 
  my ( $self, @args ) = @_;
 
- my $bvec = $self->vectorize ( @args ); 
+ my $bvec = $self->bits ( @args ); 
  
  [ $bvec->Index_List_Read ];
  
@@ -193,7 +192,7 @@ sub _array_rand_n { # vector as array of indexes in random order limited
  
  my $n = pop @args // 5;
 
- my $rand = $self->array_rand ( @args, $n );
+ my $rand = $self->array_rand ( @args );
  
  scalar @$rand > $n and 
   return [ @{ $rand } [ 0 .. $n - 1 ] ];
@@ -204,15 +203,15 @@ sub _array_rand_n { # vector as array of indexes in random order limited
 
 sub _pager { # create a vector and process it to usable for browsing
 
- my $res;
-
- my ( $self, $db, $lang, $x, $perpage, @args ) = @_;
-     
- my $svec = $self->digg ( $db, $lang, 'array', @args );
-   
- my $xfrom = bsearch( $svec, $x ); # search for the x
+ my ( $self, $x, $perpage, @args ) = @_;
  
- $xfrom == -1 and return 0; # total = 0 = nothing found
+ my $res;
+     
+ my $svec = $self->array ( @args );
+    
+ my $xfrom = bsearch( $svec, $x ); # search for the x
+  
+ $xfrom == -1 and return [ 0 ]; # not found -> total = 0
 
  my $total = scalar @{ $svec };
 
@@ -222,7 +221,7 @@ sub _pager { # create a vector and process it to usable for browsing
 
  my $page = floor ( $xfrom / $perpage ) + 1;
  
- # silently roll to the first photo on this page if not yet there
+ # roll to the first photo on this page if not yet there
  $xfrom = ( ( $page - 1 ) * $perpage );  
   
  my $xto = $xfrom + $perpage - 1;
@@ -233,72 +232,56 @@ sub _pager { # create a vector and process it to usable for browsing
  
  my $to = $xto + 1;
  
- my @root = map { $svec->[$_*$perpage] } ( 0 .. $pages - 1  );
- 
- #warn ( scalar @root );
- 
- my @pin = map { fullnum33 ( $_->[0], $_->[1] ) }  
-  @{ $db->all(
-  qq{select s,n from album natural join photo where x in (} . ( join ',', @root ) . ') order by x' 
- ) };
-         
- my @xs = map { $svec->[$_] } ( $xfrom .. $xto );
+ # list of xs pointing to pages
+ my @roots = map { $svec->[$_*$perpage] } ( 0 .. $pages - 1  );
+  
+ # convert xs to id:s
+ my $pins = $self->xs2ids ( @roots );
+
+ # xs on this page         
+ my $xs = [ map { $svec->[$_] } ( $xfrom .. $xto ) ];
    
- return [ ( $total, $page, $pages, $from, $to , \@pin, \@xs ) ];
+ [ ( $total, $page, $pages, $from, $to , $pins, $xs ) ];
       
 }
 
 sub _pointer {
 
- my $res;
-
- my ( $db, $lang, $x, @args ) = @_;
-     
- my $svec = vector_array ( $db, $lang, @args ); # get an array of xs
-    
- my $idx = bsearch( $svec, $x ); # search for the x
+ my ( $self, $x, @args ) = @_;
  
+ my $res;
+    
+ my $svec = $self->array ( @args ); # get an array of xs
+    
+ my $idx = bsearch ( $svec, $x ); # search for the x
   
- $idx == -1 and return 0; # total = 0 = nothing found
+ $idx == -1 and return [ 0 ]; # not found -> total = 0 
  
  my $total = scalar @{ $svec };
  
- my @pin;
- my $sql = 'select s,n from album natural join photo where x=?'; 
+ my @pin = (); 
  
- # first
- push @pin, fullnum33 ( @{ $db->row( 
-  $sql,
-  $svec->[0]
- )});
+ push @pin, $self->x2id ( $svec->[0] ); # first
+  
+ push @pin, $self->x2id ( $svec->[ $idx > 0 ? $idx - 1  : 0 ] ); # next
+  
+ push @pin, $self->x2id ( 
+  $svec->[ $idx < ( $total - 1 ) ? $idx+1 : ( $total - 1 ) ] 
+ ); # prev
  
- # previous
- push @pin, fullnum33 ( @{ $db->row( 
-  $sql,
-  $svec->[ $idx > 0 ? $idx - 1  : 0 ]
- )});
- 
- # next
- push @pin, fullnum33 ( @{ $db->row( 
-  $sql,
-  $svec->[ $idx < ( $total - 1 ) ? $idx+1 : ( $total - 1 ) ]
- )});
- 
- # last
- push @pin, fullnum33 ( @{ $db->row( 
-  $sql,
-  $svec->[$total-1]
- )});
-   
+ push @pin, $self->x2id ( $svec->[$total-1] ); # last 
+    
  return [ ( $total, $idx + 1, \@pin ) ];
     
 }
 
 # the index of the first photo in the vector
 
-sub _first { 
+sub _first {
 
- my $svec = vector_array ( @_ );
+ my $self = shift; 
+
+ my $svec = $self->array ( @_ );
    
  scalar @{ $svec } == 0 ? undef : $svec->[0];
    
@@ -306,6 +289,14 @@ sub _first {
 
 # the count of items in vector
 
-sub _count { my $bvec = vector_bit( @_ ); $bvec->Norm }
+sub _count {
+
+ my $self = shift;
+  
+ my $bvec = $self->bits ( @_ ); 
+ 
+ $bvec->Norm 
+ 
+}
 
 1;

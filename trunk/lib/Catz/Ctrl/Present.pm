@@ -24,7 +24,7 @@
 
 package Catz::Ctrl::Present;
 
-use 5.12.2;
+use 5.10.0;
 use strict;
 use warnings;
 
@@ -54,7 +54,7 @@ sub process_id {
  
   $s->{id} = $id;
   
-  $s->{x} = $self->fetch( 'id2x', $id );
+  $s->{x} = $self->fetch( 'common#id2x', $id );
     
   $s->{x} or return 0;
           
@@ -62,11 +62,11 @@ sub process_id {
  
   $s->{origin} = 'x'; # mark that the id was resolved
  
-  $s->{x} = $self->fetch ( 'vector_first', @{ $s->{args_array} } );
-      
+  $s->{x} = $self->fetch ( 'vector#first', @{ $s->{args_array} } );
+        
   $s->{x} or return 0;
   
-  $s->{id} = $self->fetch ( 'x2id', $s->{x} );
+  $s->{id} = $self->fetch ( 'common#x2id', $s->{x} );
   
   $s->{id} or return 0; 
    
@@ -113,7 +113,7 @@ sub process_args {
  my @args = ();
  my $str = '';
 
- my $pri = $self->fetch ( 'pri' );
+ my $pri = $self->fetch ( 'common#pri' );
 
  push @{ $pri }, 'has';
 
@@ -147,15 +147,15 @@ sub process_args {
 sub browse {
 
  my $self = shift; my $s = $self->{stash};
-  
+   
  $self->process_args or $self->not_found and return;
  $self->process_id or $self->not_found and return;
    
- my $res = $self->fetch('vector_pager', 
+ my $res = $self->fetch('vector#pager', 
    $s->{x}, $s->{perpage}, @{ $s->{args_array} }  
   );
- 
- $res == 0 and $self->not_found and return;
+    
+ $res->[0] == 0 and $self->not_found and return;
 
  $s->{total} = $res->[0];
  $s->{page} = $res->[1];
@@ -171,7 +171,7 @@ sub browse {
  scalar @{ $s->{xs} } == 0 and $self->not_found and return; 
  # no photos in this page
  
- $res = $self->fetch( 'photo_thumb', @{ $s->{xs} } ) ;
+ $res = $self->fetch( 'photo#thumb', @{ $s->{xs} } ) ;
  
  $s->{thumb} = $res->[0];
  $s->{earliest} = $res->[1];
@@ -189,21 +189,21 @@ sub view {
 
  $self->process_id or $self->not_found and return;
      
- my $res = $self->fetch('vector_pointer', $s->{x}, @{ $s->{args_array} } );
+ my $res = $self->fetch('vector#pointer', $s->{x}, @{ $s->{args_array} } );
  
- $res == 0 and $self->not_found and return;
+ $res->[0] == 0 and $self->not_found and return;
   
  $s->{total} = $res->[0];
  $s->{pos} = $res->[1];
  $s->{pin} = $res->[2];
     
- $s->{detail} = $self->fetch( 'photo_detail', $s->{x});
+ $s->{detail} = $self->fetch( 'photo#detail', $s->{x});
 
- $s->{comment} =  $self->fetch( 'photo_text', $s->{x} );
+ $s->{comment} =  $self->fetch( 'photo#text', $s->{x} );
 
- $s->{image} =  $self->fetch( 'photo_image', $s->{x} );
+ $s->{image} =  $self->fetch( 'photo#image', $s->{x} );
 
- my $keys = $self->fetch ( 'photo_resultkey', $s->{x} );
+ my $keys = $self->fetch ( 'photo#resultkey', $s->{x} );
 
  result_prepare ( $self, $keys );
         

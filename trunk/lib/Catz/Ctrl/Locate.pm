@@ -64,26 +64,20 @@ sub find {
 
  $s->{what} or ( $self->not_found and return );
  
- $s->{find} = $self->fetch ( 'find', $s->{what}, $s->{count_find} );
+ $s->{find} = $self->fetch ( 'locate#find', $s->{what}, $s->{count_find} );
 
  $self->render( template => 'block/find' );
 
 }
 
-
 sub list {
 
- my $self = shift;
+ my $self = shift; my $s = $self->{stash};
  
- my $stash = $self->{stash};
+ $s->{list} = $self->fetch( 'locate#full', $s->{subject}, $s->{mode} );
  
- $stash->{list} = $self->fetch( 'list_general',
-  $stash->{subject},
-  $stash->{mode}
- );
- 
- # Render template "example/welcome.html.ep" with message
  $self->render(template => 'page/list');
+ 
 }
 
 sub sample {
@@ -98,7 +92,7 @@ sub sample {
 
  if ( $s->{what} ) {
  
-  my $res = $self->fetch ( 'find', $s->{what}, $s->{count_find} );
+  my $res = $self->fetch ( 'locate#find', $s->{what}, $s->{count_find} );
   
   scalar @$res > 0 and do {
 
@@ -107,7 +101,7 @@ sub sample {
     if ( scalar @set < $s->{count_thumb} ) {
 
      push @set, @{ 
-      $self->fetch ( 'vector_array_rand', $res->[$i]->[0], $res->[$i]->[1] )
+      $self->fetch ( 'vector#array_rand', $res->[$i]->[0], $res->[$i]->[1] )
      };
 
     }   
@@ -118,7 +112,7 @@ sub sample {
   
  } else {
 
-  @set = @{ $self->fetch ( 'vector_array_rand' ) };
+  @set = @{ $self->fetch ( 'vector#array_rand' ) };
      
  }
 
@@ -128,7 +122,7 @@ sub sample {
 
  }
  
- my $th = $self->fetch ( 'photo_thumb', @set );
+ my $th = $self->fetch ( 'photo#thumb', @set );
 
  $s->{thumb} = $th->[0];
 
@@ -156,13 +150,13 @@ sub search {
   
   $s->{args_count} = scalar ( @{ $s->{args_array} } );
         
-  my @set = @{ $self->fetch ( 'vector_array_rand', @{ $s->{args_array} } ) };
+  my @set = @{ $self->fetch ( 'vector#array_rand', @{ $s->{args_array} } ) };
   
   $s->{found} = scalar @set;
   
   scalar @set > 12 and @set = @set[ 0 .. 12 ];
    
-  my $th = $self->fetch ( 'photo_thumb', @set );
+  my $th = $self->fetch ( 'photo#thumb', @set );
   
   $s->{thumb} = $th->[0];  
   $s->{earliest} = $th->[1];

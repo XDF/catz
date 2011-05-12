@@ -37,20 +37,40 @@ my $cacheon = conf ( 'cache_model' );
 sub new {
 
  my $class = shift;
+ 
+ $class =~ /::(\w+)$/;
 
- my $self = { name => $class, db => undef, lang => undef, cache => undef };
+ my $self = { name => $1, db => undef, lang => undef };
  
  bless ( $self, $class );
-  
+ 
+ $self->{cache} = $self->cachet;
+ 
  return $self;
  
 }
 
+sub cachetime {
+
+ my ( $self, $sub ) = @_;
+ 
+ $self->{cache}->{$sub} and return $self->{cache}->{$sub};
+
+ return -1;
+
+}
+
+sub cachet {
+
+ my $self = shift;
+
+ {}
+
+}
+
 sub fetch { # the API for Controllers to access Models
 
-
  my ( $self, $version, $lang, $sub, @args ) = @_;
- 
  
  # check that DB is initialized and for this data version
  ( $self->{db} and $self->{db}->{version} eq $version ) or do {
@@ -96,7 +116,8 @@ sub AUTOLOAD {
  { no strict 'refs'; $res = $self->$target( @args ) }
   
  $cacheon and cache_set ( 
-  $self->{name}, $self->{db}->{version}, $self->{lang}, $sub, @args, $res 
+  $self->{name}, $self->{db}->{version}, $self->{lang}, $sub, 
+  @args, $res, $self->cachetime ( $sub ) 
  );
  
  return $res;

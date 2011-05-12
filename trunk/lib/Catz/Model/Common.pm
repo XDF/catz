@@ -63,11 +63,32 @@ sub _x2id {
 
 }
 
+sub _xs2ids {
+
+ my ( $self, @xs ) = @_;
+
+ [ 
+  map { fullnum33 ( $_->[0], $_->[1] ) }  
+  @{ $self->dball(
+   'select s,n from album natural join photo where x in (' . ( join ',', @xs ) . ') order by x' 
+   )} 
+ ];
+
+}
+
 sub _origin {
 
  my ( $self, $pri, $sec ) = @_;
  
  $self->dbone ( 'select origin from pri where pri=?', $pri ne 'has' ? $pri : $sec ); 
+
+}
+
+sub _pri {
+
+ my $self = shift;
+
+ $self->dbcol('select pri from pri order by disp');
 
 }
 
