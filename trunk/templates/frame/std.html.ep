@@ -1,6 +1,6 @@
 % use 5.12.2;
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html lang="<%= $lang %>"><head><title><%== content_for 'htmltitle' %></title>
+<html lang="<%= $lang %>"><head><title><%== content_for 'title' %></title>
 <link rel="stylesheet" type="text/css" href="/style/reset">
 <link rel="stylesheet" type="text/css" href="/style/<%= $palette %>/">
 <%== include 'elem/js', jsfolder => 'js_lib', jsfile => 'jquery' %>

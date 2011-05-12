@@ -1,0 +1,6 @@
+% extends 'top/top';
+<%= content path => begin %> <%= $pathsep %> <h1><%= $t->{NEWS_ALL} %></h1><% end %>
+<%= content misc => begin %>
+<a class="aero" href="/<%= $lang %>/feed/"><%= $t->{FEED} %></a>
+<a class="aero" href="<%== $fanpage %>"><%= $t->{FANPAGE} %></a>
+<% end %>

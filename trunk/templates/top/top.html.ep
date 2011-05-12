@@ -1,21 +1,9 @@
-% use 5.12.2;
+% use 5.10.0;
 <table class="full unit box"><tr><td class="left">
 <%= content site => begin %><%== include 'elem/site' %><% end %>
 <%= content path => begin %> <%= $pathsep %> <% end %>
 </td><td class="right">
-% given ( $action ) {
-%  when ( 'browse' ) {
-<%== include 'elem/setup', key => 'thumbsize' %>
-<%== include 'elem/setup', key => 'perpage' %>
-%  }
-%  when ( 'view' ) {
-<%== include 'elem/setup', key => 'photosize' %>
-<%== include 'elem/setup', key => 'display' %>
-%  }
-%  when ( 'front' ) {
-<%== include 'elem/setup', key => 'thumbsize' %>
-%  }
-% }
-%== include 'elem/setup', key => 'palette';
-%== include 'elem/langch';
+<%= content misc => begin %><% end %>
+<%= content setup => begin %><%== include 'elem/setup', key => 'palette' %><% end %>
+<%= content langch => begin %><%== include 'elem/langch' %><% end %>
 </td><tr></table> 

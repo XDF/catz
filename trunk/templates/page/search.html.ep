@@ -2,15 +2,6 @@
 % use Catz::Util::Number qw ( fmt );
 % layout 'std'; 
 %== include 'top/search';
-% if ( length ( $args_string ) == 0 ) {
-<h1 class="block unit"><%= $t->{SEARCH} %></h1>
-% } else {
-%  if ( $found == 0 ) {
-<h1 class="block unit"><%= $t->{SEARCH_NOTHING} %></h1>
-%  } else {
-<h1 class="block unit"><%= fmt ( $found, $lang ) %> <%= $found == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> <%= $t->{SEARCH_FOUND} %></h1>
-%  }
-% }
 % if ( $found > 0 ) {
 <div class="unit">
 <a class="aero" href="/<%= $lang %>/browse?<%== $args_string %>"><%= $t->{SEARCH_THUMB} %></a>

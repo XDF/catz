@@ -1,6 +1,7 @@
+% use Catz::Util::Time qw ( dtexpand );
 <div><h2><%= $t->{NEWS} %></h2><%= $sep %>
-% foreach my $row ( @$news ) {
-<a href="/<%= $lang %>/news/<%= $row->[2] %>/<%= $row->[3] %>/"><%= $row->[1] %> <%= $row->[4] %></a> <%= $sep %>
+% foreach my $row ( @$news ) { 
+<a href="/<%= $lang %>/news/#<%= $row->[0] %>"><%= dtexpand ( substr( $row->[0], 0, 8 ), $lang ) %> <%= $row->[1] %></a> <%= $sep %>
 % }
 <a href="/<%= $lang %>/news/"><%= $t->{NEWS_ALL} %></a>
 </div>                                                         

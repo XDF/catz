@@ -56,7 +56,7 @@ sub front {
 
  my $self = shift; my $s = $self->{stash};
  
- $s->{news} = $self->fetch ( 'news#latest' );
+ $s->{news} = $self->fetch ( 'news#latest', 8 );
  
  $s->{album} = $self->fetch ( 'locate#album' );
  
@@ -117,11 +117,11 @@ sub result {
   
  scalar @keys == 3 or $self->render( text => RESULT_NA ) and return;
  
- my $count = $self->fetch ( 'result_count', $keys[0], $keys[1] ) // 0;
+ my $count = $self->fetch ( 'result#count', $keys[0], $keys[1] ) // 0;
  
  $count == 0 and $self->render( text => RESULT_NA ) and return;
 
- my $res = $self->fetch ( 'result_data', @keys );
+ my $res = $self->fetch ( 'result#data', @keys );
 
  defined $res and do {
  
@@ -134,6 +134,20 @@ sub result {
  
  $self->render( text => RESULT_NA );
 
+}
+
+sub lastshow {
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ my $cont = $self->fetch ( 'locate#lastshow' );
+ 
+ $s->{list} = $cont;
+ 
+ $s->{site} = conf ( 'url_site' );
+ 
+ $self->render( template => 'block/lastshow', format => 'txt' );
+ 
 }
 
 1;

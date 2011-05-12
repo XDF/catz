@@ -33,17 +33,15 @@ use warnings;
 sub _all {
 
  my $self = shift; my $lang = $self->{lang};
-     
- $self->dball( "select dt,title_$lang from mnews order by dt desc" );
+      
+ $self->dball( "select dt,title_$lang,text_$lang from mnews order by dt desc" );
  
 }
 
 sub _latest {
 
  my ( $self, $limit ) = @_;
-   
- $limit or $limit = 5; # default is this
-   
+      
  my $res = $self->all;
  
  scalar @$res == 0 and return $res;
@@ -52,22 +50,6 @@ sub _latest {
  scalar @$res < $limit and $limit = scalar @$res;
   
  [ @{ $res } [ 0 .. $limit - 1 ] ];
- 
-}
-
-sub _one {
-
- my ( $self, $dt ) = @_; my $lang = $self->{lang};
-  
- my $res = $self->dbrow ( "select dt,title_$lang,text_$lang from mnews where dt=?", $dt );
- 
- my $prev = $self->dbone ( "select max(dt) from mnews where dt<?", $dt );
- 
- my $next = $self->dbone ( "select min(dt) from mnews where dt>?", $dt );
-
- # returning dt, title, text, dt to prev (if any), dt to next (if any)
-
- [ $res->[0], $res->[1], $res->[2], $prev, $next ]; 
  
 }
 
