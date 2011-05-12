@@ -39,7 +39,7 @@ use Catz::Util::File qw ( findfiles );
 
 my $mpath =  conf ( 'path_model' );
 
-my @noload = qw ( Base Common List Misc Photo Result ); # skip these models
+my @noload = qw ( Base Misc ); # skip these models
 
 my $models = {}; # model instances are kept here
 

@@ -31,7 +31,7 @@ use parent 'Mojolicious';
 
 use Catz::Data::Text;
 use Catz::Data::Setup;
-use Catz::Data::Cache;
+use Catz::Core::Cache;
 use Catz::Data::Conf;
 
 use Catz::Util::Time qw( dtlang );

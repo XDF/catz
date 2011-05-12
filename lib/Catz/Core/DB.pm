@@ -47,7 +47,7 @@ sub new {
   undef, undef, conf( 'dbargs_runtime' )
  ) || die ( $DBI::errstr );   
 
- my $self = { version => $version, db => $db };
+ my $self = { version => $version, db => $db, cache => -1 };
  
  bless ( $self, $class );
 
@@ -59,7 +59,7 @@ sub DESTROY {
 
  my $self = shift;
 
- $self->{db}->disconnect;
+ $self->{db} and $self->{db}->disconnect;
    
 }
 
@@ -113,7 +113,7 @@ sub run {
  
  }
 
- $cacheon and cache_set ( $version, $comm, $sql, @args, $res );
+ $cacheon and cache_set ( $version, $comm, $sql, @args, $res, $self->{cache} );
   
  return $res;
 

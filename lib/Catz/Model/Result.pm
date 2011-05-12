@@ -24,12 +24,11 @@
 
 package Catz::Model::Result;
 
-use 5.12.2;
+use 5.10.0;
 use strict;
 use warnings;
 
-use parent 'Exporter';
-our @EXPORT = qw ( result_count result_data );
+use parent 'Catz::Model::Base';
 
 use Mojo::UserAgent;
 
@@ -53,6 +52,9 @@ $net->name( text('en')->{SITE} . ' (Mojo::UserAgent)' );
 $net->keep_alive_timeout(0); 
 $net->max_connections(0);
 
+# set 15 minutes caching
+sub cachet { { count => 15*60, data => 15*60 } }
+
 sub urlc {
 
  my ( $head, $date, $loc ) = @_;
@@ -73,9 +75,9 @@ sub urld {
 
 }
 
-sub result_data {
+sub _data {
 
- my ( $db, $lang, $date, $loc, $name ) = @_;
+ my ( $self, $date, $loc, $name ) = @_;
  
  my $url = urld ( $url_data, $date, $loc, $name );
 
@@ -88,9 +90,9 @@ sub result_data {
  
 }
 
-sub result_count {
+sub _count {
 
- my ( $db, $lang, $date, $loc ) = @_;
+ my ( $self, $date, $loc ) = @_;
 
  my $url = urlc ( $url_count, $date, $loc );
 
@@ -99,6 +101,5 @@ sub result_count {
  $res and length ( $res ) > 0 and return int ( $res );
 
  return undef;
-
 
 }

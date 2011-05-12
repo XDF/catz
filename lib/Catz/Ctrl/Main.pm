@@ -55,14 +55,14 @@ sub detect {
 sub front {
 
  my $self = shift; my $s = $self->{stash};
-   
- foreach my $key ( qw ( new album pri ) ) {
  
-  $s->{$key} = $self->fetch ( 'list_links', $key );
+ $s->{news} = $self->fetch ( 'news#latest' );
  
- }
+ $s->{album} = $self->fetch ( 'locate#album' );
+ 
+ $s->{pri} =  $self->fetch ( 'locate#pri' ); 
 
- $s->{maxx} = $self->fetch ( 'maxx' );
+ $s->{maxx} = $self->fetch ( 'common#maxx' );
     
  $self->render( template => 'page/front' );
  
@@ -117,7 +117,7 @@ sub result {
   
  scalar @keys == 3 or $self->render( text => RESULT_NA ) and return;
  
- my $count = $self->fetch ( 'result_count', $key[0], $key[1] ) // 0;
+ my $count = $self->fetch ( 'result_count', $keys[0], $keys[1] ) // 0;
  
  $count == 0 and $self->render( text => RESULT_NA ) and return;
 

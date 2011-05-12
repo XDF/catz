@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Model::Misc;
+package Catz::Model::Find;
 
 use parent 'Exporter';
 our @EXPORT = qw ( album maxx news_all news_one find sample search id2x x2id pri x2dt );
@@ -37,30 +37,6 @@ use warnings;
 use Catz::Data::DB;
 use Catz::Util::Number qw ( fullnum33 minnum33 );
 use Catz::Util::Time qw ( dtexpand );
-
-
-
-sub find {
-
- my ( $db, $lang, $pattern, $count ) = @_;
-
- $pattern = '%' . $pattern . '%';
-
- return $db->all (qq{select pri,sec,cnt from (select pri,sec,sort,cnt from pri natural join prim natural join sec_$lang where pri<>'text' and sec like ? order by cnt desc limit $count) order by sort,pri,cnt},$pattern);
-
-}
-
-
-
-
-
-sub pri {
-
- my ( $db, $lang ) = @_;
-
- return $db->col('select pri from pri order by disp');
-
-}
 
 sub x2dt {
 

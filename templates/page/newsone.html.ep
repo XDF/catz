@@ -1,5 +1,6 @@
+% use Catz::Util::Time qw ( dtexpand );
 % layout 'std';
-<% content_for 'title' => begin %><%= $one->[0] %>: <%= $one->[1] %> - <%= $t->{SITE} %><% end %>
+<% content_for 'title' => begin %><%= dtexpand ( substr ( $one->[0], 0, 8 ), $lang ) %>: <%= $one->[1] %> - <%= $t->{SITE} %><% end %>
 %== include 'top/newsone';
 %== include 'title/newsone';
 <div class="unit aerox"><%= $one->[2] %></div>

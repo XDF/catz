@@ -4,7 +4,7 @@
 %== include 'title/newsall';
 % foreach my $row ( @{ $news } ) {
 <div class="unit aerox">
-<a href="/<%= $lang %>/news/<%= $row->[2] %>/<%= $row->[3] %>/"><%= $row->[1] %> <%= $row->[4] %></a>
+<a href="/<%= $lang %>/news/<%= substr( $row->[0], 0, 8 ) %>/<%= substr ( $row->[0], 8 ) %>/"><%= $row->[1] %> <%= $row->[4] %></a>
 % my $text = $row->[5];
 % length ( $text ) > 30 and $text = substr ( $text, 0, 30 ) . '...';
 <%= $text %>

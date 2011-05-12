@@ -25,9 +25,9 @@
 package Catz::Core::Cache;
 
 #
-# a simple set/get module over Cache::Memcached::Fast
+# a simple prodedural set/get module over Cache::Memcached::Fast
 #
-# every package in need of caching should use this module
+# every other module in a need of caching should use this module
 #
 
 use 5.10.0;
@@ -38,37 +38,56 @@ use parent 'Exporter';
 
 our @EXPORT = qw ( cache_get cache_set );
 
-use CHI;
 use Cache::Memcached::Fast;
+use Digest::MD5 qw ( md5_base64 );
 
 use Catz::Data::Conf;
-use Catz::Util::Time qw ( thisweek thisyear );
+use Catz::Util::String qw ( enurl );
 
 my $setup = conf ( 'cache' );
 
-# using a static reference to the real cache object
-my $cache = CHI->new( %$setup );
+# using a static reference to the cache object
+my $cache = Cache::Memcached::Fast->new( $setup );
 
 # the cache key separator
 use constant SEP => '#';
+
+# force the cache key to be 250 characters or less (Memcached limit)
+# all characters after 228 are hashed to md5 hash in base64 encoding
+# so the key is then 228 + 22 = 250 characters
+sub shrink { substr ( $_[0], 0 , 228 ) . md5_base64 ( substr ( $_[0], 228 ) ) }
   
 sub cache_set {
 
- my $val = pop @_; # val is the last argument
- 
- my $key = join SEP, @_;
- 
- warn $key;
-      
- $cache->set( $key, $val );
+ my $time = pop @_; # time is the last argument
 
+ my $val = pop @_; # val is the last argument
+  
+ my $key = enurl ( join SEP, @_ ); # urlencode to handle spaces
+ 
+ length ( $key ) > 250 and $key = shrink ( $key );
+ 
+ #warn "SET $key";
+ 
+ if ( $time == -1 ) { # -1 is infinite
+
+  $cache->set( $key, $val );
+  
+ } else {
+ 
+  $cache->set( $key, $val, $time );
+
+ } 
+        
 }
 
 sub cache_get {
  
- my $key = join SEP, @_;
+ my $key = enurl ( join SEP, @_ ); # urlencode to handle spaces
  
- warn $key;
+ length ( $key ) > 250 and $key = shrink ( $key );
+ 
+ #warn "GET $key";
     
  return $cache->get( $key );
    
