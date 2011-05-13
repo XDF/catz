@@ -24,7 +24,7 @@
 
 package Catz::Data::Load;
 
-use 5.12.2;
+use 5.10.0;
 use strict;
 use warnings;
 
@@ -44,7 +44,7 @@ use Catz::Util::Data qw ( exifsort fixgap lens tolines topiles );
 use Catz::Util::Time qw ( dtexpand );
 use Catz::Util::File qw ( filehead filesize filethumb findphotos pathcut );
 use Catz::Util::Image qw ( exif widthheight );
-use Catz::Util::Log qw ( logit );
+use Catz::Util::Log qw ( logit logadd logdone );
 use Catz::Util::Number qw ( fullnum33 );
 use Catz::Util::String qw ( trim );
 
@@ -92,29 +92,56 @@ my $sql = {
  sec_ind => 'insert into sec (pid,sec_en,sort_en,sec_fi,sort_fi) values (?,?,?,?,?)',
  
  pid_one => 'select pid from pri where pri=?',
-
- album_col => 'select aid from album order by folder',
- album_s_null_upd => 'update album set s=null',
- album_s_upd => 'update album set s=? where aid=?'
-,
- photo_all => 'select aid,n from photo natural join album order by folder desc, n asc',
- photo_x_null_upd => 'update photo set x=null',
- photo_x_upd => 'update photo set x=? where aid=? and n=?',
-
- prim_del => 'delete from prim',
- secm_del => 'delete from secm',
- pri_meta_all => 'select pid,count(*) from pri natural join sec group by pid',
- sec_meta_inalbum_all => "select sec.sid,count(distinct album.aid),count(distinct x),min(substr(folder,1,8)),max(substr(folder,1,8)) from inalbum natural join photo natural join sec natural join pri natural join album where origin='album' group by sec.sid",
- sec_meta_inexiff_all => "select inexiff.sid,count(distinct album.aid),count(distinct x),min(substr(folder,1,8)),max(substr(folder,1,8)) from photo natural join inexiff natural join album where sid in ( select sid from inexiff ) group by sid",
- sec_meta_inpos_all => "select sec.sid,count(distinct album.aid),count(distinct x),min(substr(folder,1,8)),max(substr(folder,1,8)) from inpos natural join photo natural join sec natural join pri natural join album where origin='pos' group by sec.sid",
- prim_ins => 'insert into prim (pid,cnt) values (?,?)',
- secm_ins => 'insert into secm (sid,cntalbum,cntphoto,first,last) values (?,?,?,?,?)',
  
- album_trn => 'delete from album where aid not in ( select aid from inalbum union select aid from inexif union select aid from inpos union select aid from photo )',
- inexif_trn => 'delete from inexif where sid_meta is null and sid_data is null and sid_file is null',
- sec_trn => 'delete from sec where sid not in ( select sid from inalbum union select sid_meta from inexif union select sid_data from inexif union select sid_file from inexif union select sid from inpos )' 
-   
 };
+
+# these are the secondary SQL run at the end of the load
+
+my $run = [
+
+ qq{delete from album where aid not in ( select aid from inalbum union select aid from inexif union select aid from inpos union select aid from photo )},
+ qq{delete from inexif where sid_meta is null and sid_data is null and sid_file is null},
+ qq{delete from sec where sid not in ( select sid from inalbum union select sid_meta from inexif union select sid_data from inexif union select sid_file from inexif union select sid from inpos )},
+ 
+ qq{select seq_init(1)},
+ qq{update album set s=seq_incr() where rowid in ( select rowid from album order by folder)},
+ 
+ qq{select seq_init(1)},
+ qq{update photo set x=seq_incr() where rowid in ( select photo.rowid from photo natural join album order by s desc,n asc)},
+
+ qq{drop table if exists _prim},
+ qq{create table _prim (pid integer primary key not null,cntpri integer not null)},
+ qq{insert into _prim select pid,count(*) from pri natural join sec group by pid},
+
+ qq{drop table if exists _secm},
+ qq{create table _secm (sid integer primary key not null,cntalbum integer not null,cntphoto integer not null, first integer not null, last integer not null)},
+ qq{insert into _secm select sec.sid,count(distinct album.aid),count(distinct x),min(substr(folder,1,8)),max(substr(folder,1,8)) from inalbum natural join photo natural join sec natural join pri natural join album where origin='album' group by sec.sid},
+ qq{insert into _secm select inexiff.sid,count(distinct album.aid),count(distinct x),min(substr(folder,1,8)),max(substr(folder,1,8)) from photo natural join inexiff natural join album where sid in ( select sid from inexiff ) group by sid},
+ qq{insert into _secm select sec.sid,count(distinct album.aid),count(distinct x),min(substr(folder,1,8)),max(substr(folder,1,8)) from inpos natural join photo natural join sec natural join pri natural join album where origin='pos' group by sec.sid},
+
+ qq{drop table if exists _find_en},
+ qq{drop table if exists _find_fi},
+ qq{create table _find_en (sid integer not null, sec text not null)},
+ qq{create table _find_fi (sid integer not null, sec text not null)},
+ qq{insert into _find_en select sid,sec from pri natural join _secm natural join sec_en where pri not in ( 'text' ) order by cntphoto desc, sort asc},
+ qq{insert into _find_fi select sid,sec from pri natural join _secm natural join sec_fi where pri not in ( 'text' ) order by cntphoto desc, sort asc},
+
+ qq{drop table if exists _search_pos},
+ qq{create table _search_pos (x integer not null, pri text not null, sec text not null)},
+ qq{insert into _search_pos select x,pri,sec from photo natural join inpos natural join sec_en natural join pri union select x,pri,sec from photo natural join inpos natural join sec_fi natural join pri},
+ qq{create index _search_pos1 on _search_pos(pri,sec)},
+
+ qq{drop table if exists _search_exif},
+ qq{create table _search_exif (x integer not null, pri text not null, sec text not null)},
+ qq{insert into _search_exif select x,pri,sec from photo natural join inexiff natural join sec_en natural join pri union select x,pri,sec from photo natural join inexiff natural join sec_fi natural join pri},
+ qq{create index _search_exif1 on _search_exif(pri,sec)},
+ 
+ qq{drop table if exists _search_album},
+ qq{create table _search_album (x integer not null, pri text not null, sec text not null)}, 
+ qq{insert into _search_album select x,pri,sec from photo natural join inalbum natural join sec_en natural join pri union select x,pri,sec from photo natural join inalbum natural join sec_fi natural join pri},
+ qq{create index _search_album1 on _search_album(pri,sec)},
+
+]; 
 
 # defined the correct table truncation order
 # only tables defined here will be trunacated
@@ -126,6 +153,12 @@ my $stm = {}; # variable to hold prepared SQL statements
 # static database connection initialized at 
 # the beginning and closed at the end
 my $dbc;
+
+my $seq = undef;
+
+sub seq_init { $seq = $_[0] // 1 }
+
+sub seq_incr { $seq++ }
 
 sub load_begin {
 
@@ -143,8 +176,12 @@ sub load_begin {
  
  logit ( 'registering functions' );
  
- # registers int s, n to string id converting functions
- $dbc->func( 'makeid', 2, \&fullnum33, 'create_function' );
+ ## registers int s, n to string id converting functions
+ #$dbc->func( 'makeid', 2, \&fullnum33, 'create_function' );
+ 
+ # sequence
+ $dbc->func( 'seq_init', 1, \&seq_init, 'create_function' );
+ $dbc->func( 'seq_incr', 0, \&seq_incr, 'create_function' );
    
  logit ( "storing run dt '$dt'" );
   
@@ -407,7 +444,7 @@ sub load_folder {
 sub load_simple {
 
  my ( $table, $data ) = @_;
- 
+  
  # delete all previously loaded rows
   $dbc->do ( "delete from $table" );
  
@@ -453,7 +490,7 @@ sub load_simple {
 sub load_exif {
 
  my ( $table, $data ) = @_;
- 
+  
  # clear all previously loaded meta exifs from all photos
  $dbc->do ( 'update inexif set sid_meta=null' );
   
@@ -496,14 +533,14 @@ sub load_complex {
  load_exec ( 'inalbum_del', $aid );
 
  # loading album level elements
-  
+   
  my $date = substr ( $album, 0, 8 );
  
  my $sid = get_sid ( 'date', $date, $date, $date, $date );
  
- load_exec ( 'inalbum_ins', $aid, $sid );
+ load_exec ( 'inalbum_ins', $aid, $sid ); 
 
- foreach my $key ( qw ( name loc org umb ) ) {
+ foreach my $key ( qw ( folder album loc org umb ) ) {
 
   $sid = get_sid ( $key, 
    $d->{$key.'_en'}, $d->{$key.'_en'},
@@ -593,90 +630,23 @@ sub load_complex {
 
 sub load_post {
 
- logit ( 
-  'truncating orphan values from ' . scalar ( @trnorder ) . ' tables' 
- );
+ logit ( 'processing secondaries' );
+
+ my $i = 0;
+
+ foreach my $do ( @$run ) {
  
- foreach my $trn ( @trnorder ) {
- 
-  $dbc->do ( $sql->{ $trn . '_trn' } );
- 
- }
- 
- logit ( 'updating album s' ); 
-
- load_exec ( 'album_s_null_upd' );
-
- my $i = 1;
- 
- foreach my $aid ( load_exec ( 'album_col' ) ) {
- 
-  load_exec ( 'album_s_upd', $i++, $aid ); 
- 
- }
-
- logit ( 'updating photo x' );
-
- load_exec ( 'photo_x_null_upd' );
-
- $i = 1;
-
- foreach my $row ( load_exec ( 'photo_all' ) ) {
- 
-  load_exec ( 'photo_x_upd', $i++, $row->[0], $row->[1] ); 
- 
- }
-
- logit ( 'inserting prim' );
-
- load_exec ( 'prim_del' ); # delete all previous counts on pri
-                                                           
- foreach my $row ( load_exec ( 'pri_meta_all' ) ) {
-
-  load_exec ( 'prim_ins',  @{ $row } );
-
- } 
-
- load_exec ( 'secm_del' ); # delete all previous counts on sec
-
- logit ( 'inserting secm inalbum' );
-
- foreach my $row ( load_exec ( 'sec_meta_inalbum_all' ) ) {
-
-  logit ( $row->[0] );
-
-  # if first and last albums are the same set the last to null
-  $row->[3] eq $row->[4] and $row->[4] = undef;
-
-  load_exec ( 'secm_ins', @{ $row } );
-
- }
-
- logit ( 'inserting secm inexiff' );
- 
- foreach my $row ( load_exec ( 'sec_meta_inexiff_all' ) ) {
- 
-  logit ( $row->[0] );
-
-  # if first and last albums are the same set the last to null
-  $row->[3] eq $row->[4] and $row->[4] = undef;
-
-  load_exec ( 'secm_ins', @{ $row } );
-
- }
-
- logit ( 'inserting secm inpos' );
-
- foreach my $row ( load_exec ( 'sec_meta_inpos_all' ) ) {
-
-  logit ( $row->[0] );
+  $dbc->do ( $do );
   
-  # if first and last albums are the same set the last to null
-  $row->[3] eq $row->[4] and $row->[4] = undef;
+  logadd ( '.' );
+  
+  $i++; 
+ 
+ }
+ 
+ logdone;
 
-  load_exec ( 'secm_ins', @{ $row } );
-
- }  
+ logit ( "$i secondaries processed" ); 
 
 }
 
