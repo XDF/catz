@@ -24,10 +24,9 @@
 
 package Catz::Data::Parse;
 
+use 5.10.0;
 use strict;
 use warnings;
-
-use feature qw ( switch );
 
 use parent 'Exporter';
 
@@ -97,8 +96,8 @@ sub cat {
   
  my @titles = ();
  
- # collect pre-titles and remove them
- 
+ # collect pre-titles and remove them from data
+  
  if ( $data =~ /^(([A-Z0-9 ]|,| )+) (.*)$/ ) {
   
   $data = $3;           
@@ -106,10 +105,12 @@ sub cat {
   push @titles, map {
    
    trim $_;
-    
+      
    s/^(CFA|FIFE|TICA)\s+//; # remove umbrellas from titles
    
    s/\d\d\d\d//; # remove years from WW, SW etc.
+   
+   $_;
   
   } split /,/, $1;
   
@@ -127,8 +128,8 @@ sub cat {
   
  }
  
- scalar ( @titles ) > 0 and $d->{title} = \@titles;    
- 
+ scalar ( @titles ) > 0 and $d->{title} = \@titles;
+  
  # store the cat itself, if any
  
  $data = trim ( $data );
@@ -239,9 +240,12 @@ sub parse_pile {
  substr ( $lines[0], 0, 1 ) eq '!' and shift @lines;
  
  my $album = shift @lines;
- 
+  
  $album =~ /^(20\d{6})([a-z]+)(\d{0,1})$/ or
   die "invalid album name '$album'";
+  
+ $d->{folder_en} = $album;
+ $d->{folder_fi} = $album;
       
  $d->{origined} = $1; # albumn name starts with YYYYDDMM
  ( $d->{loc_en}, $d->{loc_fi} ) = loc ( $2 ); # location part follows
@@ -251,13 +255,13 @@ sub parse_pile {
  
  ( $d->{created}, $d->{modified} ) = split /\//, shift @lines; 
 
- $d->{name_en} = shift @lines;
+ $d->{album_en} = shift @lines;
  
- $d->{name_fi} = shift @lines;
+ $d->{album_fi} = shift @lines;
  
  # currently the model and the scripts support only one organization per album
  # the database is build proactively so that it could store multiples
- ( $d->{org_en}, $d->{org_fi} ) = org ( $d->{name_en} );
+ ( $d->{org_en}, $d->{org_fi} ) = org ( $d->{album_en} );
  
  defined $d->{org_en} and 
   ( $d->{umb_en}, $d->{umb_fi} ) = umb ( $d->{org_en}, $album );

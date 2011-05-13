@@ -24,10 +24,9 @@
 
 package Catz::Util::Data;
 
+use 5.10.0;
 use strict;
 use warnings;
-
-use feature qw ( switch );
 
 use base 'Exporter';
 

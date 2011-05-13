@@ -88,7 +88,7 @@ sub _find {
  
  $pattern = '%' . $pattern . '%';
 
- $self->dball (qq{select pri,sec,cntphoto from (select pri,sec,sort,cntphoto from pri natural join secm natural join sec_$lang where pri<>'text' and sec like ? order by cntphoto desc limit $count) order by sort,pri,cntphoto},$pattern);
+ $self->dball(qq{select pri,sec,cntphoto from (select pri,sec,sort,cntphoto from find_$lang where sec like ? order by rowid limit $count ) order by sort,cntphoto},$pattern);
 
 }
 

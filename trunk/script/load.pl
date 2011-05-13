@@ -22,12 +22,12 @@
 # THE SOFTWARE.
 #
 
+use 5.10.0;
 use strict;
 use warnings;
 
 use lib '../lib';
-
-use feature qw ( say );
+use lib '../xlib';
 
 use Catz::Data::Conf;
 use Catz::Data::Load;
@@ -39,6 +39,8 @@ use Catz::Util::File qw (
 use Catz::Util::Log qw ( logclose logopen logit );
 use Catz::Util::String qw ( dna );
 use Catz::Util::Time qw ( dt dtexpand dtlang );
+
+$| = 1; # unbuffered printing
 
 # store the beginning timestamp to be able to 
 # calculate  total exectution time in secods

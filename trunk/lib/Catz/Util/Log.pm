@@ -24,23 +24,35 @@
 
 package Catz::Util::Log;
 
+use 5.10.0;
 use strict;
 use warnings;
 
-use feature qw ( say );
-
 use parent 'Exporter';
 
-our @EXPORT_OK = qw ( logclose logit logopen );
+our @EXPORT_OK = qw ( logclose logit logadd logdone logopen );
 
 sub logit {
 
  say LOG $_[0];
- 
- # at development phase also print it out
- say $_[0]; 
+ say $_[0]; # also print it out 
 
 }
+
+sub logadd {
+
+ print LOG $_[0];
+ print $_[0]; # also print it out 
+
+}
+
+sub logdone {
+
+ print LOG "\n";
+ print "\n"; # also print it out 
+
+}
+
 
 sub logclose {
 
