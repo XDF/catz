@@ -22,11 +22,9 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Util::Data;
+package Catz::Load::Data;
 
-use 5.10.0;
-use strict;
-use warnings;
+use 5.10.0; use strict; use warnings;
 
 use base 'Exporter';
 
@@ -37,9 +35,8 @@ our @EXPORT_OK = qw(
 
 use Memoize;
 
-use Catz::Data::Conf;
+use Catz::Core::Conf;
 use Catz::Util::File qw ( filenum );
-#use Catz::Util::Log qw ( logit ); #debugging use
 use Catz::Util::Number qw ( round );
 use Catz::Util::String qw ( clean trim ucclcc );
 use Catz::Util::Time qw ( dtexpand );

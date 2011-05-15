@@ -22,7 +22,9 @@
 # THE SOFTWARE.
 #  
 
-package Catz::Ctrl::Base;
+package Catz::Core::Ctrl;
+
+# the base class for all Controllers
 
 use 5.10.0;
 use strict;
@@ -32,7 +34,7 @@ use parent 'Mojolicious::Controller';
 
 use List::MoreUtils qw ( none );
 
-use Catz::Data::Conf;
+use Catz::Core::Conf;
 use Catz::Util::File qw ( findfiles );
 
 # automatic static preloading and instantiating of all models

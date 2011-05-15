@@ -24,17 +24,15 @@
 
 package Catz::Model::Result;
 
-use 5.10.0;
-use strict;
-use warnings;
+use 5.10.0; use strict; use warnings;
 
-use parent 'Catz::Model::Base';
+use parent 'Catz::Core::Model';
 
 use Mojo::UserAgent;
 
-use Catz::Data::Conf;
+use Catz::Core::Conf;
+use Catz::Core::Text;
 use Catz::Data::Result;
-use Catz::Data::Text;
 use Catz::Util::String qw ( enurl );
 
 my $url_count = conf ( 'result_url_count' ); 

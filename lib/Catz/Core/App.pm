@@ -22,17 +22,16 @@
 # THE SOFTWARE.
 # 
 
-package Catz;
+package Catz::Core::App;
 
-use strict;
-use warnings;
+use 5.10.0; use strict; use warnings;
 
 use parent 'Mojolicious';
 
-use Catz::Data::Text;
-use Catz::Data::Setup;
 use Catz::Core::Cache;
-use Catz::Data::Conf;
+use Catz::Data::Setup;
+use Catz::Core::Conf;
+use Catz::Core::Text;
 
 use Catz::Util::Time qw( dt dtlang );
 use Catz::Util::File qw ( fileread findlatest pathcut );
@@ -181,8 +180,8 @@ sub before {
  
    # find the latest key file
 
-   my $file = findlatest ( conf ( 'path_master' ), 'txt' );
-   
+   my $file = findlatest ( conf ( 'path_db' ), 'txt' );
+         
    if ( defined $file ) {
   
     my $new = substr ( pathcut ( $file ), 0, 14 ); # get the datetime part
@@ -195,7 +194,7 @@ sub before {
    
    } else { # error in finding the latest file
    
-    $lastcheck = $now; # try again in next cycle
+    $lastcheck = $now; # try again in next cycle, maybe should die?
    
    }
   

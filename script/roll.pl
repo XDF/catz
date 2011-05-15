@@ -22,42 +22,53 @@
 # THE SOFTWARE.
 #
 
-use strict;
-use warnings;
+use 5.10.0; use strict; use warnings;
 
-use lib '../lib';
+use lib '../lib'; use lib '../libi';
 
-use feature qw ( say );
-
-use Catz::Data::Conf;
+use Catz::Core::Conf;
 use Catz::Util::File qw ( fileread filewrite fileremove findlatest pathcut );
+
+my $path = conf ( 'path_db' );
 
 # rolls to the latest database by updating the key file
 
 # latest key file
-my $keyold = findlatest ( conf ( 'path_master' ), 'txt' );
+my $keyold = findlatest ( $path, 'txt' );
 
 # current dt
-my $dtold = substr ( pathcut ( $keyold ), 0, 14 );
+my $dtold = defined $keyold ? substr ( pathcut ( $keyold ), 0, 14 ) : undef;
 
 # latest database file
-my $dbnew = findlatest ( conf ( 'path_master' ), 'db' );
+my $dbnew = findlatest ( $path, 'db' );
 
 # new dt
-my $dtnew = substr ( pathcut ( $dbnew ), 0, 14 );
+my $dtnew = defined $dbnew ? substr ( pathcut ( $dbnew ), 0, 14 ) : undef;
 
-$dtold eq $dtnew and do { 
+if ( not defined $dtold ) {
 
- say "already at the latest dt '$dtold', no need to roll";
+ # no old db, just make a key file
+ filewrite ( "$path/$dtnew.txt", "Catz database key file" );
  
- exit;
+ say "rolled initially to '$dtnew'"; 
  
-};
+} else {
 
-# create the new key file
-filewrite ( conf ( 'path_master' ) . "/$dtnew.txt", "Catz database key file" );
+ if ( $dtold eq $dtnew ) { 
 
-# remove the old key file
-fileremove ( $keyold );
+  say "already at the latest dt '$dtold', no need to roll";
+  
+ } else {
+ 
+  filewrite ( "$path/$dtnew.txt", "Catz database key file" );
 
-say "rolled from '$dtold' to '$dtnew'";
+  # remove the old key file
+  fileremove ( $keyold );
+
+  say "rolled from '$dtold' to '$dtnew'"; 
+ 
+ }
+ 
+}
+
+

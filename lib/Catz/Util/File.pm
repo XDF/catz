@@ -153,9 +153,9 @@ sub finddirs { sort grep { -d } glob ( $_[0] . '/*' ) }
 #
 sub findlatest {
    
- my @dbs = grep { -f } glob ( $_[0] . '/*.' . $_[1] );
-  
- @dbs = reverse @dbs; return shift @dbs;
+ my @dbs = reverse grep { -f } glob ( $_[0] . '/*.' . $_[1] );
+    
+ defined $dbs[0] ? $dbs[0] : undef;
   
 }
 

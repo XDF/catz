@@ -24,15 +24,12 @@
 
 package Catz::Util::Image;
 
-use strict;
-use warnings;
-
-use feature qw ( switch );
+use 5.10.0; use strict; use warnings;
 
 use Image::Size;
 use Image::ExifTool qw( :Public );
 
-use Catz::Util::Data qw ( body lens );
+use Catz::Load::Data qw ( body lens ); # Utils shouldn't call Load modules! 
 use Catz::Util::Number qw ( round );
 
 use base 'Exporter';

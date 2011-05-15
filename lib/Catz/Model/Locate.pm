@@ -24,11 +24,9 @@
 
 package Catz::Model::Locate;
 
-use 5.10.0;
-use strict;
-use warnings;
+use 5.10.0; use strict; use warnings;
 
-use parent 'Catz::Model::Base';
+use parent 'Catz::Core::Model';
 
 use Catz::Util::Time qw ( dt dtexpand ); 
 
@@ -41,10 +39,10 @@ sub _full {
  my $cols = "pri,sec,cntalbum,cntphoto,first,last";
  
  $mode eq 'a2z' and 
-  return $self->dball( qq{select $cols from sec_$lang natural join secm natural join pri where pri=? order by sec}, $pri );
+  return $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by sec}, $pri );
 
  $mode eq 'top' and 
-  return $self->dball( qq{select $cols from sec_$lang natural join secm natural join pri where pri=? order by cntphoto desc }, $pri );
+  return $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by cntphoto desc }, $pri );
  
  die "unknown mode '$mode' in list creation"
  
@@ -62,7 +60,7 @@ sub _album {
     
  foreach my $row ( @{ $albums } ) {
     
-  my $name = $self->dbone("select sec from inalbum natural join sec_$lang natural join pri where pri='name' and aid=?",$row->[0]);
+  my $name = $self->dbone("select sec from inalbum natural join sec_$lang natural join pri where pri='album' and aid=?",$row->[0]);
      
   my $n = $self->dbone('select max(n) from photo where aid=?', $row->[0] );
      
@@ -78,7 +76,7 @@ sub _pri {
 
  my $self = shift;
  
- $self->dball("select pri,cnt from pri natural join prim where pri<>'text' order by disp");
+ $self->dball("select pri,cntpri from pri natural join _prim where pri<>'text' order by disp");
 
 }          
 
@@ -88,7 +86,7 @@ sub _find {
  
  $pattern = '%' . $pattern . '%';
 
- $self->dball(qq{select pri,sec,cntphoto from (select pri,sec,sort,cntphoto from find_$lang where sec like ? order by rowid limit $count ) order by sort,cntphoto},$pattern);
+ $self->dball(qq{select pri,sec,cntphoto from sec_$lang natural join _secm natural join pri where sid in (select sid from _find_$lang where sec like ? order by rowid limit $count) order by sort,cntphoto},$pattern);
 
 }
 

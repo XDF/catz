@@ -22,11 +22,9 @@
 # THE SOFTWARE.
 #
 
-package Catz::Data::Load;
+package Catz::Load::Loader;
 
-use 5.10.0;
-use strict;
-use warnings;
+use 5.10.0; use strict; use warnings;
 
 use parent 'Exporter';
 
@@ -38,9 +36,9 @@ our @EXPORT = qw (
 use Data::Dumper;
 use DBI;
 
-use Catz::Data::Conf;
-use Catz::Data::Parse;
-use Catz::Util::Data qw ( exifsort fixgap lens tolines topiles );
+use Catz::Core::Conf;
+use Catz::Load::Data qw ( exifsort fixgap lens tolines topiles );
+use Catz::Load::Parse;
 use Catz::Util::Time qw ( dtexpand );
 use Catz::Util::File qw ( filehead filesize filethumb findphotos pathcut );
 use Catz::Util::Image qw ( exif widthheight );
@@ -99,15 +97,25 @@ my $sql = {
 
 my $run = [
 
+ # delete leftover rows
  qq{delete from album where aid not in ( select aid from inalbum union select aid from inexif union select aid from inpos union select aid from photo )},
  qq{delete from inexif where sid_meta is null and sid_data is null and sid_file is null},
  qq{delete from sec where sid not in ( select sid from inalbum union select sid_meta from inexif union select sid_data from inexif union select sid_file from inexif union select sid from inpos )},
  
+ # recreate album s
  qq{select seq_init(1)},
- qq{update album set s=seq_incr() where rowid in ( select rowid from album order by folder)},
+ qq{update album set s=seq_incr() where rowid in (select rowid from album order by folder)},
  
+ # recreate photo x
  qq{select seq_init(1)},
- qq{update photo set x=seq_incr() where rowid in ( select photo.rowid from photo natural join album order by s desc,n asc)},
+ qq{update photo set x=seq_incr() where rowid in (select photo.rowid from photo natural join album order by s desc,n)},
+
+ # deleting + inserting breeds according to ems3 
+ qq{delete from inpos where rowid in (select inpos.rowid from inpos natural join sec where pid=(select pid from pri where pri='breed'))},
+ qq{delete from sec where pid=(select pid from pri where pri='breed')},
+ qq{insert into sec (pid,sec_en) select (select pid from pri where pri='breed'),breed_en from sec inner join mbreed on (sec_en=ems3) where pid=(select pid from pri where pri='ems3') and breed_en=breed_fi},
+ qq{insert into sec (pid,sec_en,sec_fi) select (select pid from pri where pri='breed'),breed_en,breed_fi from sec inner join mbreed on (sec_en=ems3) where pid=(select pid from pri where pri='ems3') and breed_en<>breed_fi},
+ qq{insert into inpos select aid,n,p,s2.sid from inpos i,sec s1,mbreed m,sec s2 where i.sid=s1.sid and s1.sec_en=m.ems3 and m.breed_en=s2.sec_en and s1.pid=(select pid from pri where pri='ems3') and s2.pid=(select pid from pri where pri='breed')},
 
  qq{drop table if exists _prim},
  qq{create table _prim (pid integer primary key not null,cntpri integer not null)},
@@ -522,7 +530,7 @@ sub load_exif {
 sub load_complex {
 
  my ( $album, $data ) = @_;
- 
+  
  my $d = parse_pile ( $data );
   
  # $d should now contain completely parsed and processed album data

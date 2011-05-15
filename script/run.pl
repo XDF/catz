@@ -11,9 +11,9 @@ use File::Basename 'dirname';
 use File::Spec;
 
 use lib join '/', File::Spec->splitdir(dirname(__FILE__)), 'lib';
-use lib join '/', File::Spec->splitdir(dirname(__FILE__)), 'xlib';
+use lib join '/', File::Spec->splitdir(dirname(__FILE__)), 'libi';
 use lib join '/', File::Spec->splitdir(dirname(__FILE__)), '..', 'lib';
-use lib join '/', File::Spec->splitdir(dirname(__FILE__)), '..', 'xlib';
+use lib join '/', File::Spec->splitdir(dirname(__FILE__)), '..', 'libi';
 
 # Check if Mojo is installed
 eval 'use Mojolicious::Commands';
@@ -24,7 +24,7 @@ Please visit http://mojolicio.us for detailed installation instructions.
 EOF
 
 # Application
-$ENV{MOJO_APP} ||= 'Catz';
+$ENV{MOJO_APP} ||= 'Catz::Core::App';
 
 # Start commands
 Mojolicious::Commands->start;

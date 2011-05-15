@@ -22,11 +22,9 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Data::Parse;
+package Catz::Load::Parse;
 
-use 5.10.0;
-use strict;
-use warnings;
+use 5.10.0; use strict; use warnings;
 
 use parent 'Exporter';
 
@@ -34,7 +32,7 @@ our @EXPORT = qw ( parse_pile );
 
 use Data::Dumper;
 
-use Catz::Util::Data qw ( 
+use Catz::Load::Data qw ( 
  exid explink expmacro exptext loc nat org plaincat tolines umb 
 );
 use Catz::Util::Log qw ( logit );

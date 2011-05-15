@@ -22,15 +22,17 @@
 # THE SOFTWARE.
 #  
 
-package Catz::Model::Base;
+package Catz::Core::Model;
 
-#use 5.12.2;
+# the base class for all Models
+
+use 5.10.0;
 use strict;
 use warnings;
 
-use Catz::Data::Conf;
-use Catz::Core::DB;
 use Catz::Core::Cache;
+use Catz::Core::Conf;
+use Catz::Core::DB;
 
 my $cacheon = conf ( 'cache_model' );
 

@@ -25,9 +25,7 @@
 
 package Catz::Data::Search;
 
-use 5.12.2;
-use strict;
-use warnings;
+use 5.10.0; use strict; use warnings;
 
 use parent 'Exporter';
 

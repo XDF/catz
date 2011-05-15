@@ -24,11 +24,9 @@
 
 package Catz::Model::News;
 
-use parent 'Catz::Model::Base';
+use parent 'Catz::Core::Model';
 
-use 5.10.0;
-use strict;
-use warnings;
+use 5.10.0; use strict; use warnings;
 
 sub _all {
 
