@@ -26,6 +26,8 @@
 
 package Catz::Model::Photo;
 
+use 5.10.0; use strict; use warnings;
+
 use parent 'Catz::Model::Common';
 
 my $HR = '.JPG';

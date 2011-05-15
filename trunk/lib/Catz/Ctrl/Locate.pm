@@ -24,15 +24,15 @@
 
 package Catz::Ctrl::Locate;
 
-use 5.12.2;
+use 5.10.0;
 use strict;
 use warnings;
 
-use parent 'Catz::Ctrl::Base';
+use parent 'Catz::Core::Ctrl';
 
-use Catz::Data::Conf;
-use Catz::Util::Number qw ( round );
+use Catz::Core::Conf;
 use Catz::Data::Search;
+use Catz::Util::Number qw ( round );
 
 sub process_width {
 

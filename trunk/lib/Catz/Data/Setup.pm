@@ -24,10 +24,11 @@
  
 package Catz::Data::Setup;
 
+use 5.10.0; use strict; use warnings;
+
 use parent 'Exporter';
 
 our @EXPORT = qw ( setup_init setup_exit setup_set setup_values setup_keys setup_verify );
-
 
 my $defaults = {
  display => 'full',
@@ -104,20 +105,20 @@ sub setup_init {
 
 sub setup_exit {
 
- my $app = shift;
+ my $app = shift; my $s = $app->{stash};
 
  foreach my $key ( @keys ) {
 
-  if ( $stash->{$key} ) { 
+  if ( $s->{$key} ) { 
   
-   $app->cookie ( $key => $val, { path => '/' } );
+   $app->cookie ( $key =>  $s->{$key}, { path => '/' } );
  
   }
 
  }
 
  # also version is sent out 
- $app->cookie ( 'version' => $stash->{version} );
+ $app->cookie ( 'version' => $s->{version} );
 
 }
 

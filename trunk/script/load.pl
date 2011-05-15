@@ -22,17 +22,14 @@
 # THE SOFTWARE.
 #
 
-use 5.10.0;
-use strict;
-use warnings;
+use 5.10.0; use strict; use warnings;
 
-use lib '../lib';
-use lib '../xlib';
+use lib '../lib'; use lib '../libi';
 
-use Catz::Data::Conf;
-use Catz::Data::Load;
-use Catz::Data::Parse;
-use Catz::Util::Data qw ( topiles );
+use Catz::Core::Conf;
+use Catz::Load::Loader;
+use Catz::Load::Parse;
+use Catz::Load::Data qw ( topiles );
 use Catz::Util::File qw ( 
  dnafolder filecopy fileread finddirs filewrite findlatest pathcut 
 );
@@ -54,11 +51,11 @@ logit ( 'catz loader started at ' . dtexpand ( $dt ).' (dt '.$dt.')' );
 
 my $loaded = {}; # to store names of loaded folders and albums 
 
-my $olddb = findlatest ( conf ( 'path_master' ) , 'db' );
+my $olddb = findlatest ( conf ( 'path_db' ) , 'db' );
 
 defined $olddb or die "old database lookup failed";
 
-my $newdb = conf ( 'path_master' ) . "/$dt.db";
+my $newdb = conf ( 'path_db' ) . "/$dt.db";
 
 logit ( "copying database '$olddb' to '$newdb'" );
 

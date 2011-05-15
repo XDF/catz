@@ -24,15 +24,10 @@
 
 package Catz::Core::Cache;
 
-#
 # a simple prodedural set/get module over Cache::Memcached::Fast
-#
-# every other module in a need of caching should use this module
-#
+# every module in a need of caching should use this module
 
-use 5.10.0;
-use strict;
-use warnings;
+use 5.10.0; use strict; use warnings;
 
 use parent 'Exporter';
 
@@ -41,7 +36,7 @@ our @EXPORT = qw ( cache_get cache_set );
 use Cache::Memcached::Fast;
 use Digest::MD5 qw ( md5_base64 );
 
-use Catz::Data::Conf;
+use Catz::Core::Conf;
 use Catz::Util::String qw ( enurl );
 
 my $setup = conf ( 'cache' );

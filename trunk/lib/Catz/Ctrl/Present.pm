@@ -28,7 +28,7 @@ use 5.10.0;
 use strict;
 use warnings;
 
-use parent 'Catz::Ctrl::Base';
+use parent 'Catz::Core::Ctrl';
        
 use List::MoreUtils qw ( any );
 

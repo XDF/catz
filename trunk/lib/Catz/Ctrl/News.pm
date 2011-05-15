@@ -28,11 +28,11 @@ use 5.10.0;
 use strict;
 use warnings;
 
-use parent 'Catz::Ctrl::Base';
+use parent 'Catz::Core::Ctrl';
 
 use XML::RSS;
 
-use Catz::Data::Conf;
+use Catz::Core::Conf;
 use Catz::Util::Time qw ( dt );
 
 sub all { # the list of all news

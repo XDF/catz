@@ -27,14 +27,12 @@ package Catz::Core::DB;
 # extending DBI is not recommended
 # so we need a separate class to act as a database
 
-use 5.10.0;   
-use strict;
-use warnings;
+use 5.10.0; use strict; use warnings;
 
 use DBI;
 
 use Catz::Core::Cache;
-use Catz::Data::Conf;
+use Catz::Core::Conf;
 
 my $cacheon = conf ( 'cache_db' );
 
@@ -43,7 +41,7 @@ sub new {
  my ( $class, $version ) = @_;
    
  my $db = DBI->connect (
-  conf ( 'dbconn' ) . conf ( 'path_master' ) . "/$version.db",
+  conf ( 'dbconn' ) . conf ( 'path_db' ) . "/$version.db",
   undef, undef, conf( 'dbargs_runtime' )
  ) || die ( $DBI::errstr );   
 
