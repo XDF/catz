@@ -3,7 +3,7 @@ use Test::Mojo;
 
 use Catz::Util::String qw ( enurl );
     
-my $t = Test::Mojo->new(app => 'Catz');
+my $t = Test::Mojo->new(app => 'Catz::Core::App');
 
 my $c = 0;
 

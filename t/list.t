@@ -1,7 +1,7 @@
 use Test::More;
 use Test::Mojo;
     
-my $t = Test::Mojo->new(app => 'Catz');
+my $t = Test::Mojo->new(app => 'Catz::Core::App');
 
 my $c = 0;
 

@@ -35,10 +35,11 @@ use Text::ParseWords;
 
 use Catz::Util::String qw ( enurl );
 
-sub search2args {
- 
- # parses a search pattern string into key-value -pairs
- 
+# the pri key for photo comments
+use constant PRITEXT => 'text';
+
+sub search2args { # covert a search parameter to argument list 
+  
  my $str = shift;
  
  $str =~ s/\s+/ /; # convert all multiple white spaces to one space
@@ -60,7 +61,7 @@ sub search2args {
      
    length $2 > 0 and do { $key = $1; $val = $2 }; 
  
-  } else { $key = 'out'; $val = $arg; }
+  } else { $key = PRITEXT; $val = $arg; }
   
   defined $key and defined $val and do {
  
@@ -91,7 +92,7 @@ sub search2args {
 
 }
 
-sub args2search {
+sub args2search { # convert argument list to a search parameter
 
  my $args = shift;
  

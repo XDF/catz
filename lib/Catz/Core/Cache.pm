@@ -55,6 +55,8 @@ sub shrink { substr ( $_[0], 0 , 228 ) . md5_base64 ( substr ( $_[0], 228 ) ) }
 sub cache_set {
 
  my $time = pop @_; # time is the last argument
+ 
+ $time == 0 and return; # time is 0 = no caching
 
  my $val = pop @_; # val is the last argument
   
@@ -82,7 +84,7 @@ sub cache_get {
  
  length ( $key ) > 250 and $key = shrink ( $key );
  
- #warn "GET $key";
+ warn "GET $key";
     
  return $cache->get( $key );
    
