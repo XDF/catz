@@ -39,10 +39,10 @@ sub _full {
  my $cols = "pri,sec,cntalbum,cntphoto,first,last";
  
  $mode eq 'a2z' and 
-  return $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by sec}, $pri );
+  return $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by sort}, $pri );
 
  $mode eq 'top' and 
-  return $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by cntphoto desc }, $pri );
+  return $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by cntphoto desc, sort asc}, $pri );
  
  die "unknown mode '$mode' in list creation"
  
@@ -84,9 +84,11 @@ sub _find {
 
  my ( $self, $pattern, $count ) = @_; my $lang = $self->{lang};
  
+ $pattern =~ tr/?/_/;
+ 
  $pattern = '%' . $pattern . '%';
-
- $self->dball(qq{select pri,sec,cntphoto from sec_$lang natural join _secm natural join pri where sid in (select sid from _find_$lang where sec like ? order by rowid limit $count) order by sort,cntphoto},$pattern);
+ 
+ $self->dball(qq{select pri,sec,cntphoto from sec_$lang natural join _secm natural join pri where sid in (select sid from _find_$lang where sec like ? collate nocase order by rowid limit $count) order by sort,cntphoto},$pattern);
 
 }
 

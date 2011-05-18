@@ -54,16 +54,30 @@ sub process_width {
 }
 
 
+sub process_what {
+
+ my $self = shift;
+ 
+ my $what = $self->param( 'what' ) // undef;
+
+ $what or return 0;
+ 
+ length $what > 2000 and return 0;
+ 
+ $self->{stash}->{what} = $what;
+ 
+ return 1;
+
+}
+
 sub find {
 
  my $self = shift; my $s = $self->{stash};
 
  $self->process_width;
-
- $s->{what} = $self->param( 'what' ) // undef;
-
- $s->{what} or ( $self->not_found and return );
  
+ $self->process_what or return $self->not_found;
+  
  $s->{find} = $self->fetch ( 'locate#find', $s->{what}, $s->{count_find} );
 
  $self->render( template => 'block/find' );
@@ -86,7 +100,7 @@ sub sample {
 
  $self->process_width;
 
- $s->{what} = $self->param( 'what' ) // undef;
+ $self->process_width or $s->{what} = undef;
 
  my @set = ();
 
@@ -140,11 +154,9 @@ sub search {
  $s->{args_string} = undef;
  $s->{thumb} = undef;
  
- length ( $self->param('what') ) > 2000 and $self->not_found and return;
- 
- $s->{what} = $self->param('what') // undef;
-   
- if ( defined $s->{what} ) {
+ $self->process_what or $s->{what} = undef;
+     
+ if ( $s->{what} ) {
  
   ( $s->{what}, $s->{args_array}, $s->{args_string} ) = search2args ( $s->{what} );
   

@@ -33,8 +33,8 @@ use Catz::Data::Setup;
 use Catz::Core::Conf;
 use Catz::Core::Text;
 
-use Catz::Util::Time qw( dt dtlang );
 use Catz::Util::File qw ( fileread findlatest pathcut );
+use Catz::Util::Time qw( dt dtlang );
 
 # last epoch time we checked for the database key file
 my $lastcheck = 0;
@@ -76,7 +76,7 @@ sub startup {
  # the front page is the root under language
  $l->route( '/' )->to( 'main#front', hold => 15 );
 
- $l->route( '/result',  )->to ( "main#result", hold => 15 );
+ $l->route( '/result',  )->to ( "main#result", hold => 5 );
 
  $l->route( '/news/feed' )->to ( "news#feed", hold => 15  );
  $l->route( '/news' )->to ( "news#all", hold => 15 );

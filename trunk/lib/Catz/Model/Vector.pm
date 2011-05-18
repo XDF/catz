@@ -81,13 +81,10 @@ sub _vectorize {
   
  # unknown pri -> return empty vector
  $orig or return Bit::Vector->new( $size ); 
- 
- # we use exif view INEXIFF, not INEXIF
- $orig eq 'exif' and $orig .= 'f'; 
-  
+   
  if ( $pri eq 'has' ) {
     
-  $res = $self->dbcol( "select x from photo natural join in$orig where sid in (select sid from sec natural join pri where pri=? )", $sec )
+  $res = $self->dbcol( "select x from _search_$orig where pri=? collate nocase", $sec )
             
  } else { # no 'has'
  
@@ -95,13 +92,13 @@ sub _vectorize {
   
    # pattern matching, always from both languages to make site's language change feature work smoothly
 
-   $res = $self->dbcol ( "select x from photo natural join in$orig where sid in ( select sid from sec natural join pri where pri=? and (sec_en like ? or sec_fi like ?) )", $pri, $sec, $sec )
+   $res = $self->dbcol ( "select x from _search_$orig where pri=? collate nocase and sec like ? collate nocase", $pri, $sec )
        
   } else {
 
    # exact, always from both languages to make site's language change feature work smoothly
- 
-   $res = $self->dbcol ( "select x from photo natural join in$orig where sid in ( select sid from sec natural join pri where pri=? and (sec_en=? or sec_fi=?) )", $pri, $sec, $sec )
+      
+   $res = $self->dbcol ( "select x from _search_$orig where pri=? collate nocase and sec=? collate nocase", $pri, $sec )
  
   }  
 

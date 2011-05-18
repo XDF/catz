@@ -50,10 +50,11 @@ my $sql = {
 
  # this hash ref has all SQL statements used by the loader
  # _ins = insert statement
- # _ind = insert statement with automatic primary key generation
+ # _ind = insert statement and return the latest primary key
  # _upd = update statement
  # _del = delete statement
- # _trn = truncate statement executed automatically at the end of the loading
+ # _col = select column
+ # _all = select more than one column 
 
  run_ins => 'insert into run values (?)',
  run_one => 'select max(dt) from run',
@@ -91,6 +92,16 @@ my $sql = {
  
  pid_one => 'select pid from pri where pri=?',
  
+ seq_one => 'select seq_init(1)', # initialize sequence to 1
+ 
+ album_null_upd => 'update album set s=null',
+ album_col => 'select rowid from album order by folder',
+ album_upd => 'update album set s=seq_incr() where rowid=?',
+ 
+ photo_null_upd => 'update photo set x=null',
+ photo_col => 'select photo.rowid from photo natural join album order by folder desc,n asc',
+ photo_upd => 'update photo set x=seq_incr() where rowid=?',
+  
 };
 
 # these are the secondary SQL run at the end of the load
@@ -102,14 +113,6 @@ my $run = [
  qq{delete from inexif where sid_meta is null and sid_data is null and sid_file is null},
  qq{delete from sec where sid not in ( select sid from inalbum union select sid_meta from inexif union select sid_data from inexif union select sid_file from inexif union select sid from inpos )},
  
- # recreate album s
- qq{select seq_init(1)},
- qq{update album set s=seq_incr() where rowid in (select rowid from album order by folder)},
- 
- # recreate photo x
- qq{select seq_init(1)},
- qq{update photo set x=seq_incr() where rowid in (select photo.rowid from photo natural join album order by s desc,n)},
-
  # deleting + inserting breeds according to ems3 
  qq{delete from inpos where rowid in (select inpos.rowid from inpos natural join sec where pid=(select pid from pri where pri='breed'))},
  qq{delete from sec where pid=(select pid from pri where pri='breed')},
@@ -178,19 +181,17 @@ sub load_begin {
   conf ( 'dbconn' ) . $dbfile , '', '', conf ( 'dbargs_load' ) 
  )  or die "unable to connect to database $dbfile: $DBI::errstr";
 
- logit ( 'preparing ' . scalar ( keys %{ $sql } ). ' SQL statements' );
- 
- foreach ( keys %{ $sql } ) { $stm->{$_} = $dbc->prepare ( $sql->{$_} ) }
- 
  logit ( 'registering functions' );
- 
- ## registers int s, n to string id converting functions
- #$dbc->func( 'makeid', 2, \&fullnum33, 'create_function' );
- 
+  
  # sequence
  $dbc->func( 'seq_init', 1, \&seq_init, 'create_function' );
  $dbc->func( 'seq_incr', 0, \&seq_incr, 'create_function' );
-   
+
+ logit ( 'preparing ' . scalar ( keys %{ $sql } ). ' SQL statements' );
+ 
+ do { $stm->{$_} = $dbc->prepare ( $sql->{$_} ) }
+  foreach ( keys %{ $sql } );
+    
  logit ( "storing run dt '$dt'" );
   
  load_exec ( 'run_ins', $dt ); 
@@ -641,15 +642,26 @@ sub load_post {
  logit ( 'processing secondaries' );
 
  my $i = 0;
+ 
+ foreach my $tbl ( qw ( album photo ) ) {
+ 
+  load_exec ( $tbl . '_null_upd' ); # clear old s
+ 
+  load_exec ( 'seq_one' ); # initialize sequence to 1 
 
+  do { load_exec ( $tbl . '_upd', $_ ) }
+   foreach load_exec ( $tbl . '_col' );
+
+  $i++; logadd ( '.' );
+ 
+ }
+  
  foreach my $do ( @$run ) {
  
   $dbc->do ( $do );
   
-  logadd ( '.' );
+  $i++; logadd ( '.' );
   
-  $i++; 
- 
  }
  
  logdone;

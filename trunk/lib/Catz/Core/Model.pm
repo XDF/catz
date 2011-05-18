@@ -58,7 +58,7 @@ sub cachetime {
  
  $self->{cache}->{$sub} and return $self->{cache}->{$sub};
 
- return -1;
+ return -1; # infinite
 
 }
 

@@ -1,12 +1,9 @@
+% use Catz::Util::String qw ( limit );
 % extends 'top/top';
 <%= content path => begin %> <%= $pathsep %> 
 % if ( length ( $args_string ) == 0 ) {
 <h1><%= $t->{SEARCH} %></h1>
 % } else {
-%  if ( $found == 0 ) {
-<h1><%= $t->{SEARCH_NOTHING} %></h1>
-%  } else {
-<h1><%= fmt ( $found, $lang ) %> <%= $found == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> <%= $t->{SEARCH_FOUND} %></h1>
-%  }
+<h1><%= $t->{SEARCH_RESULT} %> <%= limit ( $what, 30 ) %></h1>
 % }
 <% end %>  

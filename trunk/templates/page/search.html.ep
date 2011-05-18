@@ -4,9 +4,14 @@
 %== include 'top/search';
 % if ( $found > 0 ) {
 <div class="unit">
+<%= fmt ( $found, $lang ) %> <%= $found == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> <%= $t->{SEARCH_FOUND} %>
 <a class="aero" href="/<%= $lang %>/browse?<%== $args_string %>"><%= $t->{SEARCH_THUMB} %></a>
 <a class="aero" href="/<%= $lang %>/view?<%== $args_string %>"><%= $t->{SEARCH_VIEW} %></a>
 </div>
+% } else {
+%  if ( $what ) {
+<div class="unit"><%= $t->{SEARCH_NOTHING} %></div>
+%  }
 % }
 <form name="search_guided" action="/<%= $lang %>/search" method="get">
 <input type"=text" name="what" size="80" value="<%= $what ? $what : '' %>">

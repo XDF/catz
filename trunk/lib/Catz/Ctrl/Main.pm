@@ -110,7 +110,7 @@ sub result {
 
  my $key = $self->param( 'key' ) // undef;
 
- ( defined $key and length $key < 4000 ) or
+ ( defined $key and length $key < 2000 and $key =~ /^[A-Z2-7]+$/ ) or
   $self->render( text => RESULT_NA ) and return;
 
  my @keys = result_unpack ( $key );

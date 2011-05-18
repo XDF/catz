@@ -50,8 +50,8 @@ $net->name( text('en')->{SITE} . ' (Mojo::UserAgent)' );
 $net->keep_alive_timeout(0); 
 $net->max_connections(0);
 
-# set 15 minutes caching
-sub cachet { { count => 15*60, data => 15*60 } }
+# use 5 minutes caching 
+sub cachet { { count => 5*60, data => 5*60 } }
 
 sub urlc {
 
