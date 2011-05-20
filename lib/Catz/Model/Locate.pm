@@ -28,6 +28,7 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Catz::Model::Common';
 
+use Catz::Util::Number qw ( fmt );
 use Catz::Util::Time qw ( dt dtexpand );
 
 use List::MoreUtils qw ( any ); 
@@ -78,10 +79,14 @@ sub _album {
 
 sub _pris { 
 
- my $self = shift;
+ my $self = shift; my $lang = $self->{lang};
  
  # exclude photo texts and technical folder names
- $self->dball("select pri,cntpri from pri natural join _prim where pri not in ('text','folder') order by disp");
+ my $res = $self->dball("select pri,upper(pri),cntpri from pri natural join _prim where pri not in ('text','folder') order by disp");
+ 
+ do { $_->[2] = fmt ( $_->[2], $lang ) } foreach @{ $res }; # format numbers
+ 
+ return $res; 
 
 }          
 

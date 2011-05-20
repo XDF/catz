@@ -2,14 +2,14 @@
 # Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
 # Licensed under The MIT License
-#
+# 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-#          
+# 
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
 # 
@@ -20,46 +20,54 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-#  
+# 
 
-package Catz::Model::News;
+#
+# This module is inspired by MojoX::Renderer::Xslate
+# http://search.cpan.org/~gray/MojoX-Renderer-Xslate/ by gray
+#
+
+package Catz::Core::Renderer;
 
 use 5.10.0; use strict; use warnings;
 
-use parent 'Catz::Core::Model';
+use parent 'Exporter';
 
-use Catz::Util::Time qw ( dtexpand );
+our @EXPORT = qw ( render );
 
-sub _all {
+use Text::Xslate;
 
- my $self = shift; my $lang = $self->{lang};
-      
- my $res = $self->dball( "select dt,null,substr(dt,1,8),null,title_$lang,text_$lang from mnews order by dt desc" );
+use Catz::Core::Conf;
+
+my $tx = Text::Xslate->new(
+ cache => conf ( 'cache_renderer' ),
+ path => conf ( 'path_renderer' ),
+ cache_dir => conf ( 'path_tmp' ) 
+);
+
+sub render {
  
- do {
+ #warn join "\n", @_;
+ 
+ my ( $renderer, $c, $output, $opts ) = @_;
+             
+ eval {
+  $$output = $tx->render( $renderer->template_name( $opts ), $c->stash );
+ };
+   
+ if ( $@ ) {
+ 
+  $c->render_exception( $@ );
+  $output = '';
+  0;
+ 
+ } else {
+ 
+  1;
   
-  $_->[1] = dtexpand ( $_->[0], $lang ); 
-  $_->[3] = dtexpand ( $_->[2], $lang );
- 
- } foreach @{ $res };
- 
- return $res;
- 
+ }
+  
 }
 
-sub _latest {
-
- my ( $self, $limit ) = @_;
-      
- my $res = $self->all;
- 
- scalar @$res == 0 and return $res;
-  
- # if less news than requested then downsize the request
- scalar @$res < $limit and $limit = scalar @$res;
-  
- [ @{ $res } [ 0 .. $limit - 1 ] ];
- 
-}
 
 1;

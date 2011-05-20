@@ -1,5 +1,0 @@
-% extends 'top/top';
-% my $site = $t->{SITE};
-% $site =~ s/z/<span class=\"xtra\">z<\/span>/g;  
-<%= content site => begin %><h1 class="aero"><%== $site %></h1><% end %>
-<%= content path => begin %><%= $t->{SLOGAN} %><% end %>

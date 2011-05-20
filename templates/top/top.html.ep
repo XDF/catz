@@ -1,9 +1,0 @@
-% use 5.10.0;
-<table class="full unit box"><tr><td class="left">
-<%= content site => begin %><%== include 'elem/site' %><% end %>
-<%= content path => begin %> <%= $pathsep %> <% end %>
-</td><td class="right">
-<%= content misc => begin %><% end %>
-<%= content setup => begin %><%== include 'elem/setup', key => 'palette' %><% end %>
-<%= content langch => begin %><%== include 'elem/langch' %><% end %>
-</td><tr></table> 

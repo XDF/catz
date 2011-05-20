@@ -31,3 +31,10 @@ function setupChange( key, val ) {
  });
 
 }
+
+$(document).ready(function() {
+
+ // make the setup changing elements visible
+ $('.setup').show(); 
+
+});
