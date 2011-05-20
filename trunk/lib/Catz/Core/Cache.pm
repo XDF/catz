@@ -84,7 +84,7 @@ sub cache_get {
  
  length ( $key ) > 250 and $key = shrink ( $key );
  
- warn "GET $key";
+ #warn "GET $key";
     
  return $cache->get( $key );
    

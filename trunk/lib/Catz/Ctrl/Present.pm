@@ -113,7 +113,7 @@ sub process_args {
  my @args = ();
  my $str = '';
 
- my $pri = $self->fetch ( 'common#pri' );
+ my $pri = $self->fetch ( 'photo#pri_all' );
 
  push @{ $pri }, 'has';
 

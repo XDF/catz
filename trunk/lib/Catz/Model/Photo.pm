@@ -60,7 +60,7 @@ sub _detail {
 
  return $self->dball( 
   qq{select pri,sec from (
-   select pri,disp,sec,sort from pri natural join sec_$lang natural join inalbum natural join photo where x=? union all
+   select pri,disp,sec,sort from pri natural join sec_$lang natural join inalbum natural join photo where pri<>'folder' and x=? union all
    select pri,disp,sec,sort from pri natural join sec_$lang natural join inexiff natural join photo where x=? union all
    select pri,disp,sec,sort from pri natural join sec_$lang natural join inpos natural join photo where pri<>'text' and x=?
   ) order by disp,sort}, $x, $x, $x 

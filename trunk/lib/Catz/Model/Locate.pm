@@ -26,14 +26,18 @@ package Catz::Model::Locate;
 
 use 5.10.0; use strict; use warnings;
 
-use parent 'Catz::Core::Model';
+use parent 'Catz::Model::Common';
 
-use Catz::Util::Time qw ( dt dtexpand ); 
+use Catz::Util::Time qw ( dt dtexpand );
+
+use List::MoreUtils qw ( any ); 
 
 sub _full {
 
  my ( $self, $pri, $mode ) = @_; my $lang = $self->{lang};
- 
+    
+ ( any { $pri eq $_ } @{ $self->pri_relev } ) or return [];
+  
  my $res;
  
  my $cols = "pri,sec,cntalbum,cntphoto,first,last";
@@ -44,7 +48,7 @@ sub _full {
  $mode eq 'top' and 
   return $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by cntphoto desc, sort asc}, $pri );
  
- die "unknown mode '$mode' in list creation"
+ return [];
  
 }
 
@@ -55,7 +59,7 @@ sub _album {
  my $res;
 
  my $albums = $self->dball('select aid,folder from album order by folder desc limit 8');
-    
+          
  my @coll = ();
     
  foreach my $row ( @{ $albums } ) {
@@ -72,11 +76,12 @@ sub _album {
 
 }
 
-sub _pri { 
+sub _pris { 
 
  my $self = shift;
  
- $self->dball("select pri,cntpri from pri natural join _prim where pri<>'text' order by disp");
+ # exclude photo texts and technical folder names
+ $self->dball("select pri,cntpri from pri natural join _prim where pri not in ('text','folder') order by disp");
 
 }          
 

@@ -82,7 +82,7 @@ sub _origin {
 
 }
 
-sub _pri {
+sub _pri_all { # list all pris in the system
 
  my $self = shift;
 
@@ -90,5 +90,12 @@ sub _pri {
 
 }
 
+sub _pri_relev { # list the relevant subset of pris in the system
+
+ my $self = shift;
+
+ $self->dbcol("select pri from pri where pri not in ('text','folder') order by disp");
+
+}
 
 1;

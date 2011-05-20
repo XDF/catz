@@ -18,14 +18,11 @@
 % foreach my $detail ( @$detail ) {
 % if ( $detail->[0] ne $pdet ) {
 <%= $i++ == 1 ? '' : $sep %>
-<%= $t->{uc($detail->[0])} %>:
+<%= $t->{uc($detail->[0])} %>
 % $pdet =  $detail->[0];
-% } else {
-<%= $sep %>
 % }
 <a href="/<%= $lang %>/browse?<%= $detail->[0] %>=<%= enurl ( $detail->[1] ) %><%= $id ? '&id='.$id : '' %>">
-<%= $detail->[0] ne 'dt' ? $detail->[1] : dtexpand ( $detail->[1], $lang ) %>
-</a>
+<%= $detail->[0] ne 'dt' ? $detail->[1] : dtexpand ( $detail->[1], $lang ) %></a>
 % }
 <span></div>
 %#

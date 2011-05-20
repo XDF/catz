@@ -76,7 +76,7 @@ sub find {
 
  $self->process_width;
  
- $self->process_what or return $self->not_found;
+ $self->process_what or ( $self->not_found and return );
   
  $s->{find} = $self->fetch ( 'locate#find', $s->{what}, $s->{count_find} );
 
@@ -87,8 +87,10 @@ sub find {
 sub list {
 
  my $self = shift; my $s = $self->{stash};
- 
+  
  $s->{list} = $self->fetch( 'locate#full', $s->{subject}, $s->{mode} );
+ 
+ scalar @{ $s->{list} } > 0 or ( $self->not_found and return );
  
  $self->render(template => 'page/list');
  

@@ -28,7 +28,9 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( setup_init setup_exit setup_set setup_values setup_keys setup_verify );
+our @EXPORT = qw ( 
+ setup_init setup_exit setup_set setup_values setup_keys setup_verify 
+);
 
 my $defaults = {
  display => 'full',

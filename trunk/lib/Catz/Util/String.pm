@@ -30,13 +30,12 @@ use warnings;
 use base 'Exporter';
 
 our @EXPORT_OK = qw ( 
- clean decode deurl dna encode enurl enval lcc limit nobreak raw trim ucc ucclcc 
+ clean decode deurl dna encode enurl 
+ lcc limit nobreak trim ucc ucclcc 
 ); 
 
 use Digest::MD5 qw ( md5_base64 );
-use Text::Xslate qw ( mark_raw unmark_raw );
 use URI::Escape::XS qw ( uri_escape uri_unescape );
-
 
 #
 # an internal utility function called by encode sub
@@ -137,11 +136,6 @@ sub lcc { $_ = $_[0]; tr|ÜÅÄÖ|üåäö|; lc }
 sub nobreak { $_ = $_[0]; s/ /\&nbsp;/g; $_; }
 
 #
-# marks a string "Xslate raw"
-#
-sub raw { mark_raw ( $_[0] ) }
-
-#
 # trims all whitespace chars from the beginning and from the end
 #
 sub trim { $_ = $_[0]; s/^\s+//; s/\s+$//; $_; }
@@ -155,11 +149,5 @@ sub ucc { $_ = $_[0]; tr|üåäö|ÜÅÄÖ|; uc }
 # converts "string" to "String", manages also some umlaut chars
 #
 sub ucclcc { ucc ( substr ( $_[0], 0, 1 ) ) . lcc ( substr ( $_[0], 1 ) ) }
-
-#
-# marks a string "Xslate unraw"
-#
-sub unraw { unmark_raw ( $_[0] ) }
-
 
 1;

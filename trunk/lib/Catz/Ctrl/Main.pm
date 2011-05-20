@@ -60,7 +60,7 @@ sub front {
  
  $s->{album} = $self->fetch ( 'locate#album' );
  
- $s->{pri} =  $self->fetch ( 'locate#pri' ); 
+ $s->{pris} =  $self->fetch ( 'locate#pris' ); 
 
  $s->{maxx} = $self->fetch ( 'common#maxx' );
     
