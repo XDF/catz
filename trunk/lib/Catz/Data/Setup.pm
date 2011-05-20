@@ -161,17 +161,9 @@ sub setup_set {
   return 0; # FAILED 
 }
 
-sub setup_keys { \@keys }
+sub setup_keys { \@keys } # return all key names as arrayref
 
-sub setup_values {
-
- # return a values list as arrayref for one setup key 
-
- defined $values->{ $_[0] } and return $values->{ $_[0] };
- 
- return undef;  
- 
-}
+sub setup_values { $values } # return hashref having all keys with all values 
 
 sub setup_verify {
 

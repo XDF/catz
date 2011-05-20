@@ -1,0 +1,189 @@
+/*
+The stylesheet for <: $t.SITE :> by <: $t.AUTHOR :>
+palette = <: $palette :> 
+*/
+<:
+ #
+ # Catz - the world's most advanced cat show photo engine
+ # Copyright (c) 2010-2011 Heikki Siltala
+ # Licensed under The MIT License
+ #   
+ # Permission is hereby granted, free of charge, to any person obtaining a copy
+ # of this software and associated documentation files (the "Software"), to deal
+ # in the Software without restriction, including without limitation the rights
+ # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ # copies of the Software, and to permit persons to whom the Software is
+ # furnished to do so, subject to the following conditions:
+ # 
+ # The above copyright notice and this permission notice shall be included in
+ # all copies or substantial portions of the Software.
+ # 
+ # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ # THE SOFTWARE.
+ #
+:> 
+html { background-color: <: $st.color[$palette].back :>; height: 100%; }
+
+body {
+ color: <: $st.color[$palette].text :>;
+ background-color: <: $st.color[$palette].back :>;
+ margin: 0 0 0 0;
+ padding: 0 0 0 0;
+ font-family: <: $st.font :>; 
+ font-size: <: $st.size.normal :>;
+ line-height: <: $st.lineh.normal :>;
+ text-align: left;
+ height: 100%;
+}
+
+/* 
+the base div of a page - it appears that some browsers and some 
+settings require this div to exist to render the correct formatting
+*/
+div#page {
+ height: 100%;
+} 
+
+/* 
+the default is to display all forms inline 
+*/
+form { display: inline; }
+
+/* 
+by default hide find, found, samples and setup - JavaScript
+should set them visible for JavaScript enabled browsers
+*/
+#find { display: none; }
+#found { display: none; }
+#samples { display: none; }
+.setup { display: none; }
+
+/*
+text size
+*/
+.shrink { font-size: 88%; }
+.shrinkplus { font-size: 68%; }
+.enlarge { font-size: 118%; }
+.enlargeplus { font-size: 133%; }
+.roomy { line-height: <: $st.lineh.large :>; }
+
+/*
+text styling
+*/
+.heavy { font-weight: 600; }
+.lean { font-style: italic; }
+.sparse { letter-spacing: 1px; }
+
+/*
+extra style used in site name presentation on front page
+*/
+.xtra { font-weight: 800; color: <: $st.color[$palette].xtra :>; }
+
+/*
+the ablitity to set block & inline to any element via setting its class
+*/
+.block { display: block; }
+.inline { display: inline; }
+
+/*
+the system's alignments
+*/
+.center { text-align: center; }
+.left { text-align: left; }
+.right { text-align: right; }
+.top { vertical-align: top; }
+
+/* 
+general horizontal and vertical paddings
+*/
+.aero { padding-left: 0.6em; padding-right: 0.6em; }
+.aeroplus { padding-left: 1.7em; padding-right: 1.7em; }
+.unit { padding-top: 0.8em;}
+.unitplus { padding-top: 1.7em; }
+
+
+/*
+the system's widths
+*/
+.full { width: 100%; }
+.half { width: 50%; }
+.tri { width: 33%; }
+.trix { width: 34%; }
+.quint { width: 20%; }
+
+/*
+list row dividing hr formatting
+*/
+.divid { 
+ width: 70%; 
+ height: 0px;
+ border-bottom: 1px;
+ color: <: $st.color[$palette].dim :>;   
+}
+
+/* 
+search pattern highlighting in the found text 
+*/
+.match { border-bottom: 2px dotted <: $st.color[$palette].dim :>;  }
+
+.flip {
+ color: <: $st.color[$palette].text :>;
+ background-color: <: $st.color[$palette].area1 :>;   
+}
+
+.flop {
+ color: <: $st.color[$palette].text :>;
+ background-color: <: $st.color[$palette].area2 :>;   
+}
+
+/*
+level 1 heading
+*/
+h1 {
+ font-size: <: $st.size.huge :>;
+ display: inline;
+ font-family: <: $st.font :>;
+ letter-spacing: 0.25em;
+ font-weight: 400;
+}
+
+/*
+level n headings
+*/
+h2,h3,h4,h5,h6 {
+ font-size: <: $st.size.big :>;
+ display: inline;
+ font-family: <: $st.font :>;
+ letter-spacing: 0.25em;
+ font-weight: 400;
+}
+
+/*
+links
+*/
+a:link, a:visited, a:active {
+ color: <: $st.color[$palette].high :>;
+ font-weight: 600; 
+ text-decoration: none;
+} 
+
+a:hover {
+ background-color: <: $st.color[$palette].high :>;
+ color: <: $st.color[$palette].back :>;
+ text-decoration: none;   
+}
+
+/*
+photo thumbnails
+*/
+.thumb {
+ border: 2px;
+ border-style: solid;
+ margin-left: 2px;
+ margin-right: 2px;
+}

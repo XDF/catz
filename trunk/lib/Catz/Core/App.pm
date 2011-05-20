@@ -29,10 +29,10 @@ use 5.10.0; use strict; use warnings;
 use parent 'Mojolicious';
 
 use Catz::Core::Cache;
-use Catz::Data::Setup;
 use Catz::Core::Conf;
+use Catz::Core::Renderer;
 use Catz::Core::Text;
-
+use Catz::Data::Setup;
 use Catz::Util::File qw ( fileread findlatest pathcut );
 use Catz::Util::Time qw( dt dtlang );
 
@@ -46,14 +46,16 @@ sub startup {
 
  my $self = shift;
  
+ $self->renderer->root ( conf ( 'path_template' ) );
+ $self->renderer->layout_prefix ( conf ( 'prefix_layout' ) );
+ 
+ $self->renderer->add_handler( tx => sub { render ( @_ ) } );
+ 
  # initialize the key for cookie signing 
  $self->secret( conf ( 'cookie_key' ) );
     
  my $r = $self->routes;
- 
- $self->renderer->root ( conf ( 'path_template' ) );
- $self->renderer->layout_prefix ( conf ( 'prefix_layout' ) );
- 
+  
  # All controllers are in Catz::Ctrl 
  $r->namespace( 'Catz::Ctrl' );
 
@@ -114,6 +116,9 @@ sub before {
   $s->{googlekey} = conf ( 'google_key' );
   
  }
+ 
+ $s->{setup_keys} = setup_keys;
+ $s->{setup_values} = setup_values;
  
  # the layout separator character from conf to stash
  $s->{sep} = conf ( 'sep' );
