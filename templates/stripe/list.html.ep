@@ -1,6 +1,6 @@
 % use Catz::Util::Number qw ( fmt );
 <div><a href="/<%= $lang %>/browse/"><%= fmt ( $maxx // 0, $lang ) %> <%= $t->{PHOTOA_CATSHOW} %></a>
-% foreach my $row ( @{ $pri } ) {
+% foreach my $row ( @{ $pris } ) {
 <%= $sep %> <a href="/<%= $lang %>/list/<%== $row->[0] %>/a2z/">
 <%= fmt ( $row->[1], $lang ) %>
 <%= $t->{uc($row->[0]).'A'} %></a>
