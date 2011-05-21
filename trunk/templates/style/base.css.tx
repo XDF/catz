@@ -58,10 +58,10 @@ form { display: inline; }
 by default hide find, found, samples and setup - JavaScript
 should set them visible for JavaScript enabled browsers
 */
-#find { display: none; }
-#found { display: none; }
-#samples { display: none; }
-.setup { display: none; }
+div#found { display: none; }
+div#samples { display: none; }
+div.find { display: inline; }
+option.setup { display: none; }
 
 /*
 text size
@@ -125,6 +125,24 @@ list row dividing hr formatting
  border-bottom: 1px;
  color: <: $st.color[$palette].dim :>;   
 }
+
+.outer {
+ margin-left: 15%;
+ margin-right: 15%;
+}
+
+.inner {
+ margin-left: 20%;
+ margin-right: 20%;
+}
+
+.flag {
+ height: 40px;
+ margin: 2px;
+ vertical-align: right;
+ 
+}
+
 
 /* 
 search pattern highlighting in the found text 

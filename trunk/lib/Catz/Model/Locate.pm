@@ -31,25 +31,158 @@ use parent 'Catz::Model::Common';
 use Catz::Util::Number qw ( fmt );
 use Catz::Util::Time qw ( dt dtexpand );
 
-use List::MoreUtils qw ( any ); 
+use List::MoreUtils qw ( any );
 
 sub _full {
 
  my ( $self, $pri, $mode ) = @_; my $lang = $self->{lang};
     
- ( any { $pri eq $_ } @{ $self->pri_relev } ) or return [];
+ ( any { $pri eq $_ } @{ $self->pri_relev } ) or return [ 0, undef, undef ];
+   
+ my $cols = "pri,sec,cntalbum,cntphoto,first,last,null"; 
+ 
+ given ( $mode ) {
+ 
+  when ( 'a2z' ) {
+    
+   my $res = $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by sort}, $pri );
+   
+   my @idx = ();
+   my @sets = ();
+   my @set = ();
+   my $prev = '';
+   
+   my $i = 1;
+   
+   foreach my $row ( @$res ) {
+   
+    $row->[4] = dtexpand ( $row->[4], $lang );
+    $row->[5] = dtexpand ( $row->[5], $lang );
+    $row->[6] = $i++;
+    
+    my $first = substr( $row->[1], 0, 1 ); 
+    
+    if ( $prev ne $first ) {
+    
+     push @idx, $first;
+     
+     scalar @set > 0 and push @sets, [ $prev, [ @set ] ];
+     
+     @set = ();
+     
+     push @set, $row;
+ 
+     $prev = $first;
+    
+    } else {
+    
+     push @set, $row;
+    
+    }
+   
+   }
+     
+   scalar @set > 0 and push @sets, [ $prev, [ @set ] ];
+   
+   return [ scalar @$res, \@idx, \@sets ];
+        
+  }
   
- my $res;
- 
- my $cols = "pri,sec,cntalbum,cntphoto,first,last";
- 
- $mode eq 'a2z' and 
-  return $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by sort}, $pri );
+  when ( 'top' ) {
+    
+   my $res = $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by cntphoto desc, cntalbum desc, sort asc}, $pri );
+       
+   my @idx = ();
+   my @sets = ();
+   my @set = ();
+   my $prev = '';
+   
+   my @break = qw ( 1 11 51 101 201 501 1001 2001 3001 4001 5001 6001 7001 8001 9001 );
+   
+   my $i = 0;
+   
+   foreach my $row ( @$res ) {
 
- $mode eq 'top' and 
-  return $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by cntphoto desc, sort asc}, $pri );
+    $row->[4] = dtexpand ( $row->[4], $lang );
+    $row->[5] = dtexpand ( $row->[5], $lang );
+    $row->[6] = ++$i;
+   
+    if ( $i == $break[0] ) {
+    
+     shift @break;
+
+     push @idx, $i;
+     
+     scalar @set > 0 and push @sets, [ $prev, [ @set ] ];
+
+     @set = ();
+     
+     push @set, $row;
+     
+     $prev = $i;
+        
+    } else {
+    
+     push @set, $row;
+    
+    }
+   
+   }
+     
+   scalar @set > 0 and push @sets, [ $prev, [ @set ] ];
+   
+   return [ scalar @$res, \@idx, \@sets ];
+  
+  }
+  
+  when ( 'nat' ) {
+  
+   $pri ne 'breeder' and return [ 0, undef, undef ];
+   
+   my $res = $self->dball( qq{select $cols,nat,nat_$lang from sec_$lang natural join _secm natural join pri inner join mbreeder on (sec=breeder) natural join mnat where pri=? order by nat_$lang,sort}, $pri );
+   
+   my @idx = ();
+   my @sets = ();
+   my @set = ();
+   my $prev = '';
+   
+   my $i = 1;
+   
+   foreach my $row ( @$res ) {
+   
+    $row->[4] = dtexpand ( $row->[4], $lang );
+    $row->[5] = dtexpand ( $row->[5], $lang );
+    $row->[6] = $i++;
+    
+    if ( $prev ne $row->[8] ) {
+    
+     push @idx, $row->[8];
+     
+     scalar @set > 0 and push @sets, [ $prev, [ @set ] ];
+     
+     @set = ();
+     
+     push @set, $row;
+     
+     $prev = $row->[8];
+    
+    } else {
+    
+     push @set, $row;
+    
+    }
+   
+   }
+     
+   scalar @set > 0 and push @sets, [ $prev, [ @set ] ];
+   
+   return [ scalar @$res, \@idx, \@sets ];
+        
+  } 
  
- return [];
+  default { return [ 0, undef, undef ]; } # unknown mode
+ 
+ }
  
 }
 

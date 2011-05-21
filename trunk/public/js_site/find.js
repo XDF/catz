@@ -99,8 +99,8 @@ function doFind() {
 $(document).ready(function() {
 
  // make the find and samples visible when JavaScript enabled
- $('div#find').show(); 
- $('div#samples').show();
+ $('.find').show(); 
+ $('#samples').show();
   
  // intial rendering when page loads, to bring
  // last content back up when returning to a page

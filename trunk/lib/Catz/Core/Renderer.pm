@@ -36,38 +36,43 @@ use parent 'Exporter';
 our @EXPORT = qw ( render );
 
 use Text::Xslate;
+use Try::Tiny;
 
 use Catz::Core::Conf;
+use Catz::Util::String qw ( ucc lcc );
+use Catz::Util::Number qw ( fmt );
 
 my $tx = Text::Xslate->new(
  cache => conf ( 'cache_renderer' ),
  path => conf ( 'path_renderer' ),
- cache_dir => conf ( 'path_tmp' ) 
+ cache_dir => conf ( 'path_tmp' ),
+ function => {
+  ucc => \&ucc,
+  lcc => \&lcc,
+  fmt => \&fmt
+ } 
 );
 
 sub render {
  
- #warn join "\n", @_;
- 
  my ( $renderer, $c, $output, $opts ) = @_;
              
- eval {
+ try {
+ 
   $$output = $tx->render( $renderer->template_name( $opts ), $c->stash );
+  
+ } catch {
+ 
+  $c->render_exception( $_ );
+  
+  $$output = '';
+  
+  return 0;
+   
  };
    
- if ( $@ ) {
- 
-  $c->render_exception( $@ );
-  $output = '';
-  0;
- 
- } else {
- 
-  1;
-  
- }
+ return 1;
   
 }
-
 
 1;

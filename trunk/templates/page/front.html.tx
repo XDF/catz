@@ -5,20 +5,17 @@
 : after script -> {
 : js_site ( 'find' )
 : }
-: override body -> {
-: include 'top/front.html.tx' { box => 'flip' }
+: override path -> {
+<span class="aero"><: $t.SLOGAN :></span>
+: }
+: override btitle -> {
+<h1 class="aeroplus"><: $t.SITE :></h1>
+: }
+: override content -> {
+: include 'front/find.html.tx'
 : include 'front/subject.html.tx'
 : include 'front/news.html.tx'
-<div class="unit">
-
-</div>
-<div class="unit">
-
-</div>
-%== include 'stripe/intro';
-<div id="samples"></div>
-</div>
-%== include 'stripe/bottom';
+: include 'front/album.html.tx'
 : }
 :#
 :# Catz - the world's most advanced cat show photo engine
