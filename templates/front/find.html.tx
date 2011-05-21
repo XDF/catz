@@ -1,8 +1,7 @@
-<select id="setup_<: $key :>" class="setup flip center" onchange="setupChange('<: $key :>'),$('#setup_<: $key :>').val())">
-: for $setup_values[$key] -> $val {
-<option value="<: $val :>"><: $t['SETUP_' ~ $key ~ '_' ~ $val] :></option>
-: }
-</select> 
+<div class="aeroplus unitplus find"><h2><: $t.FIND :></h2>
+<input class="aero" type="text" id="find">
+<a class="aero" href="/<: $lang :>/search/"><: $t.SEARCH :></a></div>
+<div class="roomy" id="found"></div>
 :#
 :# Catz - the world's most advanced cat show photo engine
 :# Copyright (c) 2010-2011 Heikki Siltala
@@ -25,4 +24,4 @@
 :# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 :# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 :# THE SOFTWARE.
-:#
+:# 

@@ -1,13 +1,47 @@
-: cascade 'frame/base.html.tx'
-: override page -> {
+:#
+:# The base Xslate template for all HTML pages
+:#
+:#
+:# First some macros to go...
+:#
+: macro style -> $file {
+<link rel="stylesheet" type="text/css" href="/style/<: $file :>">
+: }
+: macro meta -> $key, $val {
+<meta meta="<: $key :>" content="<: $val :>">
+: }
+: macro js -> $folder, $file {
+<script type="text/javascript" src="/<: $folder :>/<: $file :>.js"></script>
+: }
+: macro js_lib -> $file {
+: js ( 'js_lib', $file )
+: }
+: macro js_site -> $file {
+: js ( 'js_site', $file )
+: }
+: macro setup -> $key {
+: include 'elem/setup.html.tx' { key => $key }
+: }
+:#
+:# End of macros
+:#
+:#
+:# The HTML document is imminent including block definitions
+:#
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="<: $lang :>"><head><title>
+:#
+:# BLOCK ptitle = page title of the page
+:#
 : block ptitle -> {
-### BLOCK PTITLE ###
+ - <: $t.SITE :>
 : }
 </title>
 : style ( 'reset' )
 : style ( $palette )
+:#
+:# BLOCK script = load JavaScript files
+:#
 : block script -> {
 : js_lib ( 'jquery' )
 : js_lib ( 'jquery.urlencode' )
@@ -23,14 +57,49 @@
 : meta ( 'credits', $t.CREDITS )
 : meta ( 'robots', ( $meta_index > 0 ? 'index' : 'noindex' ) ~ ',' ~ ( $meta_follow > 0 ? 'follow' : 'nofollow' ) )
 :# if defined ( $googlekey ) {
-:# analytics ( $googlekey )
+: include 'elem/analytics.html.tx' { key => $googlekey }
 :# }
 </head><body lang="<: $lang :>"><div id="page">
-: block body -> {
-### BLOCK BODY ###
+:#
+:# BLOCK top = the top bar
+:#
+: block top -> {
+<table class="full unit flip"><tr><td class="left">
+:#
+:# BLOCK path = the navigation path of the page
+:#
+: block path -> {
+<a class="aero" href="/<: $lang :>/"><: $t.SITE :></a> <: $pathsep :>
+: }
+</td><td class="right">
+:#
+:# BLOCK setup = the setup elements available of the page
+:#
+: block setups -> {
+: setup ( 'palette' )
+: }
+<a class="aero" title="<: $t.LANGOTHER :>" href="<: uri ( $langother ) :>"><: $t.LANGOTHER :></a>
+</td><tr>
+<tr><td class="left" colspan="2">
+:#
+:# BLOCK btitle = the main title of the page (part of the page content)
+:#
+: block btitle -> {
+<: $t.SITE :>
+: }
+</td></tr></table>
+: }
+:#
+:# BLOCK content = the page content
+:#
+: block content -> {}
+:#
+:# BLOCK bottom = the bottom bar
+:#
+: block bottom -> {
+<div class="unit center flip"><: $t.COPYRIGHT_FULL :></div>
 : }
 </div></html></body>
-: }
 :#
 :# Catz - the world's most advanced cat show photo engine
 :# Copyright (c) 2010-2011 Heikki Siltala

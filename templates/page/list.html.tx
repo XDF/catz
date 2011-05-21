@@ -1,0 +1,71 @@
+: cascade 'frame/page.html.tx'
+: macro ttitle -> $total, $subject, $mode {
+<: $total :> <:  $total == 1 ? $t[ ucc($subject) ] : $t[ ucc($subject) ~ 'A' ] :> <: $t[ 'MODE_' ~ ucc ( $mode ) ] :>
+: }
+: before ptitle -> {
+<: ttitle ( $total, $subject, $mode ) :> 
+: }
+: override btitle -> {
+<h1><: ttitle ( $total, $subject, $mode ) :></h1>
+: }
+: override content -> {
+<div class="flop center unit">
+: for $modes -> $md {
+: if $~md > 0 {
+<: $sep :>
+: }
+: if $mode == $md {
+<: $t[ 'MODE_' ~ ucc ( $md ) ] :>
+: } else {
+<a href="/<: $lang :>/list/<: $subject :>/<: $md :>/"><: $t[ 'MODE_' ~ ucc ( $md ) ] :></a>
+: }
+: }
+</div>
+<div class="flip center unit">
+: for $idx -> $tab {
+<a href="#idx<: $tab :>"><: $tab :></a> <: $sep :>
+: }
+</div>
+: for $sets -> $set {
+<div class="aeroplus unitplus outer">
+<table class="full"><tr><td class="left">
+<h2 class="aero" id="idx<: $set.0 :>"><: $set.0 :></h2>
+</td><td class="right">
+<: $set.1.size() :> <: $set.1.size() == 1 ? $t[ ucc($subject) ] : $t[ ucc($subject) ~ 'A' ] :>
+</td></tr></table></div>
+<hr class="divid">
+: for $set.1 -> $row {
+<div class="list unit inner">
+: if $~row == 0 && $mode == 'nat' {
+<img class="flag" src="http://www.heikkisiltala.com/g/flags/<: lcc ( $row.7 ) :>.gif">
+: }
+<: $mode == 'top' ? ( $lang == 'en' ? '#' ~ $row.6 ~ ' ' : $row.6 ~ '. ' ) : '' :><a title="<: $t[ ucc ( $subject ) ] :>: <: $row.1 :>" href="/<: $lang :>/browse?cat=<: uri ( $row.1 ) :>"><: $row.1 :></a> <: $sep :>
+<: $row.3 :> <: $row.3 == 1 ? $t.PHOTO : $t.PHOTOA :> <: $lang == 'en' ? ' in ' : '' :> <: $row.2 :> <: $row.2 == 1 ? $t.ALBUMX : $t.ALBUMSX :> <: $sep :>
+<: $row.4 :><: $row.4 == $row.5 ? '' : ' - ' ~ $row.5 :>
+</div>
+: }
+: }
+: }
+:#
+:# Catz - the world's most advanced cat show photo engine
+:# Copyright (c) 2010-2011 Heikki Siltala
+:# Licensed under The MIT License
+:# 
+:# Permission is hereby granted, free of charge, to any person obtaining a copy
+:# of this software and associated documentation files (the "Software"), to deal
+:# in the Software without restriction, including without limitation the rights
+:# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+:# copies of the Software, and to permit persons to whom the Software is
+:# furnished to do so, subject to the following conditions:
+:# 
+:# The above copyright notice and this permission notice shall be included in
+:# all copies or substantial portions of the Software.
+:# 
+:# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+:# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+:# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+:# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+:# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+:# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+:# THE SOFTWARE.
+:# 

@@ -87,10 +87,24 @@ sub find {
 sub list {
 
  my $self = shift; my $s = $self->{stash};
-  
- $s->{list} = $self->fetch( 'locate#full', $s->{subject}, $s->{mode} );
+   
+ my $res = $self->fetch( 'locate#full', $s->{subject}, $s->{mode} );
  
- scalar @{ $s->{list} } > 0 or ( $self->not_found and return );
+ $s->{total} = $res->[0];
+ $s->{idx} = $res->[1];
+ $s->{sets} = $res->[2];
+ 
+ if ( $s->{subject} eq 'breeder' ) {
+ 
+  $s->{modes} = [ qw ( a2z top nat ) ];
+ 
+ } else {
+ 
+  $s->{modes} = [ qw ( a2z top ) ];
+ 
+ } 
+ 
+ $s->{total} > 0 or ( $self->not_found and return );
  
  $self->render(template => 'page/list');
  

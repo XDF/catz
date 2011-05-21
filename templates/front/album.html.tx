@@ -1,4 +1,4 @@
-<div><h2><: $t.ALBUMS :></h2> <: $sep :> 
+<div class="aeroplus unitplus"><h2><: $t.ALBUMS :></h2> <: $sep :> 
 : for $album -> $row {
 <a title="<: $row.2 :> <: $row.2== 1 ? $t.PHOTO : $t.PHOTOA :>" href="/<: $lang :>/album/<: $row.0 :>/"><: $row.1 :></a> <: $sep :>
 : }
