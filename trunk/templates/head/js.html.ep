@@ -1,6 +1,4 @@
-% use Catz::Util::String qw ( enurl );
-% use Catz::Util::Time qw ( dtexpand );
-
+<script type="text/javascript" src="/<%== $jsfolder %>/<%== $jsfile %>.js"></script>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

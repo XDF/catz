@@ -30,11 +30,12 @@ use parent 'Mojolicious';
 
 use Catz::Core::Cache;
 use Catz::Core::Conf;
-use Catz::Core::Renderer;
 use Catz::Core::Text;
 use Catz::Data::Setup;
 use Catz::Util::File qw ( fileread findlatest pathcut );
-use Catz::Util::Time qw( dt dtlang );
+use Catz::Util::Time qw( dt dtdate dtexpand dtlang );
+use Catz::Util::Number qw ( fmt fullnum33 );
+use Catz::Util::String qw ( enurl );
 
 # last epoch time we checked for the database key file
 my $lastcheck = 0;
@@ -48,12 +49,16 @@ sub startup {
  
  $self->renderer->root ( conf ( 'path_template' ) );
  $self->renderer->layout_prefix ( conf ( 'prefix_layout' ) );
- 
- $self->renderer->add_handler( tx => sub { render ( @_ ) } );
- 
+  
  # initialize the key for cookie signing 
  $self->secret( conf ( 'cookie_key' ) );
-    
+ 
+ $self->helper ( dtdate => sub { shift; dtdate $_[0] } );
+ $self->helper ( dtexpand => sub { shift; dtexpand $_[0], $_[1] } ); 
+ $self->helper ( fmt => sub { shift; fmt $_[0], $_[1] } );
+ $self->helper ( enurl => sub { shift; enurl $_[0] } );
+ $self->helper ( fullnum33 => sub { shift; fullnum33 $_[0], $_[1] } );
+      
  my $r = $self->routes;
   
  # All controllers are in Catz::Ctrl 

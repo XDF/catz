@@ -28,12 +28,13 @@ use strict;
 use warnings;
 
 use DateTime;
+use Memoize;
 use Time::localtime; 
 use POSIX qw( floor );
 
 use parent 'Exporter';
 
-our @EXPORT_OK = qw( dtexpand dt dtlang dtsplit thisyear );
+our @EXPORT_OK = qw( dtdate dtexpand dt dtlang dtsplit thisyear );
 
 #
 # expands timestamp from YYYYMMDD or YYYYMMDDHHMMSS into 
@@ -42,6 +43,10 @@ our @EXPORT_OK = qw( dtexpand dt dtlang dtsplit thisyear );
 # in: timestamp, language
 # out: timestamp converted to a human-readable form
 #
+
+# used a lot with limited set of values -> memoizing
+memoize ( 'dtexpand' ); 
+
 sub dtexpand {
  
  # HHMMSS are optional 
@@ -70,6 +75,8 @@ sub dt {
  return sprintf( "%04d%02d%02d%02d%02d%02d", $y, $mo, $d, $h, $mi, $s );
   
 }
+
+sub dtdate { substr $_[0], 0, 8 }
 
 #
 # returns the systep time in a human-readable form

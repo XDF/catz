@@ -1,19 +1,10 @@
-%#
-%# The setup value changing element
-%#
-%# assumes that key gets passed as a stash value -> $key is then set
-%#
-% use Catz::Data::Setup;
-% use Catz::Util::String qw ( ucclcc );
 % my $func = 'setupChange'; # the default JavaScript function to be called
-% my $arg1 = qq{'$key'}; 
-<select id="setup_<%= $key %>" class="boxed" onchange="<%= $func %>(<%== $arg1 %>,$('#setup_<%= $key %>').val())">
-% my $values = setup_values ( $key );
-% my $now = stash ( $key );
-% foreach my $val ( @{ $values } ) {
+% my $arg1 = qq{'$setupkey'}; 
+<select id="setup_<%= $setupkey %>" class="flip" onchange="<%= $func %>(<%== $arg1 %>,$('#setup_<%== $setupkey %>').val())">
+% foreach my $val ( @{ $setup_values->{$setupkey} } ) {
 % my $selected = ' ';
-% $val eq $now and $selected = ' selected ';
-<option<%= $selected %>value="<%== $val %>"><%= $t->{'SETUP_'.$key.'_'.$val} %></option>
+% $val eq stash ( $setupkey ) and $selected = ' selected ';
+<option<%= $selected %>value="<%== $val %>"><%= $t->{'SETUP_'.$setupkey.'_'.$val} %></option>
 % }
 </select> 
 %#

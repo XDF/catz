@@ -1,8 +1,8 @@
 /*
-The stylesheet for <: $t.SITE :> by <: $t.AUTHOR :>
-palette = <: $palette :> 
+The stylesheet for <%== $t->{SITE} %> by <%== $t->{AUTHOR} %>
+palette = <%== $palette %> 
 */
-<:
+<%
  #
  # Catz - the world's most advanced cat show photo engine
  # Copyright (c) 2010-2011 Heikki Siltala
@@ -26,17 +26,17 @@ palette = <: $palette :>
  # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  # THE SOFTWARE.
  #
-:> 
-html { background-color: <: $st.color[$palette].back :>; height: 100%; }
+%> 
+html { background-color: <%== $st->{color}->{$palette}->{back} %>; height: 100%; }
 
 body {
- color: <: $st.color[$palette].text :>;
- background-color: <: $st.color[$palette].back :>;
+ color: <%== $st->{color}->{$palette}->{text} %>;
+ background-color: <%== $st->{color}->{$palette}->{back} %>;
  margin: 0 0 0 0;
  padding: 0 0 0 0;
- font-family: <: $st.font :>; 
- font-size: <: $st.size.normal :>;
- line-height: <: $st.lineh.normal :>;
+ font-family: <%== $st->{font} %>; 
+ font-size: <%== $st->{size}->{normal} %>;
+ line-height: <%== $st->{lineh}->{normal} %>;
  text-align: left;
  height: 100%;
 }
@@ -70,7 +70,7 @@ text size
 .shrinkplus { font-size: 68%; }
 .enlarge { font-size: 118%; }
 .enlargeplus { font-size: 133%; }
-.roomy { line-height: <: $st.lineh.large :>; }
+.roomy { line-height: <%== $st->{lineh}->{large} %>; }
 
 /*
 text styling
@@ -82,7 +82,7 @@ text styling
 /*
 extra style used in site name presentation on front page
 */
-.xtra { font-weight: 800; color: <: $st.color[$palette].xtra :>; }
+.xtra { font-weight: 800; color: <%== $st->{color}->{$palette}->{xtra} %>; }
 
 /*
 the ablitity to set block & inline to any element via setting its class
@@ -103,8 +103,13 @@ general horizontal and vertical paddings
 */
 .aero { padding-left: 0.6em; padding-right: 0.6em; }
 .aeroplus { padding-left: 1.7em; padding-right: 1.7em; }
-.unit { padding-top: 0.8em;}
+.unit { padding-top: 1em;}
 .unitplus { padding-top: 1.7em; }
+
+#top { padding: 1em; }
+#main { padding: 0em; }
+#bottom { padding: 1em; }
+.bar { padding: 0.5em; }
 
 
 /*
@@ -123,7 +128,7 @@ list row dividing hr formatting
  width: 70%; 
  height: 0px;
  border-bottom: 1px;
- color: <: $st.color[$palette].dim :>;   
+ color: <%== $st->{color}->{$palette}->{dim} %>;   
 }
 
 .outer {
@@ -137,9 +142,12 @@ list row dividing hr formatting
 }
 
 .flag {
+ border-style: solid;
+ border-width: 2px;
+ border-color: <%== $st->{color}->{$palette}->{dim} %>; 
  height: 40px;
  margin: 2px;
- vertical-align: right;
+ float: right;
  
 }
 
@@ -147,52 +155,54 @@ list row dividing hr formatting
 /* 
 search pattern highlighting in the found text 
 */
-.match { border-bottom: 2px dotted <: $st.color[$palette].dim :>;  }
+.match { border-bottom: 2px dotted <%== $st->{color}->{$palette}->{dim} %>;  }
 
 .flip {
- color: <: $st.color[$palette].text :>;
- background-color: <: $st.color[$palette].area1 :>;   
+ color: <%== $st->{color}->{$palette}->{text} %>;
+ background-color: <%== $st->{color}->{$palette}->{area1} %>;   
 }
 
 .flop {
- color: <: $st.color[$palette].text :>;
- background-color: <: $st.color[$palette].area2 :>;   
+ color: <%== $st->{color}->{$palette}->{text} %>;
+ background-color: <%== $st->{color}->{$palette}->{area2} %>;   
 }
 
 /*
 level 1 heading
 */
 h1 {
- font-size: <: $st.size.huge :>;
+ font-size: <%== $st->{size}->{huge} %>;
  display: inline;
- font-family: <: $st.font :>;
+ font-family: <%== $st->{font} %>;
  letter-spacing: 0.25em;
- font-weight: 400;
+ font-weight: 500;
 }
+
+h1.giga { font-weight: 700; }
 
 /*
 level n headings
 */
 h2,h3,h4,h5,h6 {
- font-size: <: $st.size.big :>;
+ font-size: <%== $st->{size}->{big} %>;
  display: inline;
- font-family: <: $st.font :>;
+ font-family: <%== $st->{font} %>;
  letter-spacing: 0.25em;
- font-weight: 400;
+ font-weight: 500;
 }
 
 /*
 links
 */
 a:link, a:visited, a:active {
- color: <: $st.color[$palette].high :>;
+ color: <%== $st->{color}->{$palette}->{high} %>;
  font-weight: 600; 
  text-decoration: none;
 } 
 
 a:hover {
- background-color: <: $st.color[$palette].high :>;
- color: <: $st.color[$palette].back :>;
+ background-color: <%== $st->{color}->{$palette}->{high} %>;
+ color: <%== $st->{color}->{$palette}->{back} %>;
  text-decoration: none;   
 }
 

@@ -37,6 +37,7 @@ use Data::Dumper;
 use DBI;
 
 use Catz::Core::Conf;
+use Catz::Data::List qw ( list_matrix );
 use Catz::Load::Data qw ( exifsort fixgap lens tolines topiles );
 use Catz::Load::Parse;
 use Catz::Util::Time qw ( dtexpand );
@@ -101,6 +102,8 @@ my $sql = {
  photo_null_upd => 'update photo set x=null',
  photo_col => 'select photo.rowid from photo natural join album order by folder desc,n asc',
  photo_upd => 'update photo set x=seq_incr() where rowid=?',
+ 
+ origin_one => 'select origin from pri where pri=?',
   
 };
 
@@ -151,7 +154,11 @@ my $run = [
  qq{create table _search_album (x integer not null, pri text not null, sec text not null)}, 
  qq{insert into _search_album select x,pri,sec from photo natural join inalbum natural join sec_en natural join pri union select x,pri,sec from photo natural join inalbum natural join sec_fi natural join pri},
  qq{create index _search_album1 on _search_album(pri,sec)},
-
+ 
+ qq{drop table if exists _related},
+ qq{create table _related (source integer not null,target integer not null)},
+ qq{create index _related1 on _related(source)},
+ 
 ]; 
 
 # defined the correct table truncation order
@@ -662,6 +669,59 @@ sub load_post {
   
   $i++; logadd ( '.' );
   
+ }
+ 
+ my $matrix = list_matrix;
+ 
+ foreach my $src ( keys %{ $matrix } ) {
+ 
+  foreach my $tgt ( @{ $matrix->{$src}->{related} } ) {
+  
+   my $osrc = load_exec ( 'origin_one', $src );
+   my $otgt = load_exec ( 'origin_one', $tgt );
+  
+   my $joins = undef;
+  
+   given ( $osrc ) {
+   
+    when ( 'album' ) { $joins = 'j1.aid=j2.aid' }
+    
+    when ( 'exif' ) {
+
+     if ( $otgt eq 'album ') { 
+      $joins = 'j1.aid=j2.aid' 
+     } else {
+      $joins = 'j1.aid=j2.aid and j1.n=j2.n'
+     }  
+    }
+
+    when ( 'pos' ) {
+        
+     if ( $otgt eq 'album' ) {
+       $joins = 'j1.aid=j2.aid'     
+     } elsif ( $otgt eq 'exif' ) {
+       $joins = 'j1.aid=j2.aid and j1.n=j2.n'
+     } elsif ( $otgt eq 'pos' ) {
+       $joins = 'j1.aid=j2.aid and j1.n=j2.n and j1.p=j2.p'
+     }
+    
+    }
+    
+   }
+   
+   $joins or die "joins not set with $src/$osrc $tgt/$otgt"; 
+   
+   $osrc eq 'exif' and $osrc = 'exiff';
+   $otgt eq 'exif' and $otgt = 'exiff'; 
+  
+   my $sql = qq{insert into _related select s1.sid,s2.sid from pri p1,sec s1,in$osrc j1,pri p2,sec s2,in$otgt j2 where p1.pri=? and p2.pri=? and $joins and p1.pid=s1.pid and s1.sid=j1.sid and p2.pid=s2.pid and s2.sid=j2.sid and s1.sid<>s2.sid group by s1.sid,s2.sid};
+   
+   $dbc->do ( $sql, undef, $src, $tgt );
+   
+   $i++; logadd ( '.' );
+  
+  }
+ 
  }
  
  logdone;

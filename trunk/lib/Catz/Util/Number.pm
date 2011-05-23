@@ -28,6 +28,7 @@ use strict;
 use warnings;
 
 use Number::Format;
+use Memoize;
 
 use base 'Exporter';
 
@@ -60,6 +61,10 @@ sub float {
 # in: number, language code
 # out: formatted number (string)
 #
+
+# used a lot with limited set of values -> memoizing
+memoize ( 'fmt' ); 
+
 sub fmt {
   
  $_[1] eq 'fi' and return $fmt_fi->format_number ( $_[0] );

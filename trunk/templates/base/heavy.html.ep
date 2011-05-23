@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="<%== $lang %>"><head>
+<title><%= content 'ptitle' => begin %>
+ <%= content 'ptitleadd' %> - <%= $t->{SITE} %>
+<% end %></title>
+<link rel="stylesheet" type="text/css" href="/style/reset/">
+<link rel="stylesheet" type="text/css" href="/style/<%== $palette %>/">
+%== include 'elem/js', jstype => 'lib', jsfile => 'jquery';
+%== include 'elem/js', jstype => 'lib', jsfile => 'jquery.urlencode';
+%== include 'elem/js', jstype => 'site', jsfile => 'setup'; 
+<%= content 'jsadd' %>
+% $action eq 'view' and do {
+<script type="text/javascript" src="/js_site/result.js"></script>
+%  $photosize eq 'fit' and do {
+<script type="text/javascript" src="/js_site/fit.js"></script> 
+%  };
+% }; 
+<meta meta="generator" content="<%== $t->{APPLICATION} %>">
+<meta meta="generated_at" content="<%== $now %>"> 
+<meta meta="data_version" content="<%== $version %>"> 
+<meta meta="author" content="<%== $t->{AUTHOR} %>"> 
+<meta meta="copyright" content="<%== $t->{COPYRIGHT} %>"> 
+<meta meta="credits" content="<%== $t->{CREDITS} %>"> 
+<meta meta="robots" content="<%==  ( $meta_index ? 'index' : 'noindex' ) . ',' . ( $meta_follow ? 'follow' : 'nofollow' ) %>">
+% $googlekey and do {
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', '<%== $googlekey %>']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+% };
+</head><body lang="<%== $lang %>"><div id="page">
+<div id="top" class="flip <%= content 'classtop' => begin %>bar<% end %>">
+<table class="full"><tr><td class="left">
+ <%= content 'path' => begin %>
+  <a href="/<%== $lang %>/"><%= $t->{SITE} %></a> <%== $pathsep %>
+  <%= content 'pathadd' %>
+ <% end %></td><td class="right">
+ <%= content 'setup' => begin %>
+  <%= content 'setupadd' %>
+  <%== include 'elem/setup', setupkey => 'palette' %>
+ <% end %>
+ <a class="aero" title="<%= $t->{LANGOTHER} %>" href="<%== $langother %>"><%= $t->{LANGOTHER} %></a>
+ </td></tr><tr><td class="left" colspan="2">
+  <%= content 'btitle' %>
+ </td></tr></table></div>
+ <div id="main"><%= content 'main' %></div>
+ <div id="bottom" class="unit center flip"><%= $t->{COPYRIGHT_FULL} %></div>
+</div></body></html>
+%#
+%# Catz - the world's most advanced cat show photo engine
+%# Copyright (c) 2010-2011 Heikki Siltala
+%# Licensed under The MIT License
+%# 
+%# Permission is hereby granted, free of charge, to any person obtaining a copy
+%# of this software and associated documentation files (the "Software"), to deal
+%# in the Software without restriction, including without limitation the rights
+%# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+%# copies of the Software, and to permit persons to whom the Software is
+%# furnished to do so, subject to the following conditions:
+%# 
+%# The above copyright notice and this permission notice shall be included in
+%# all copies or substantial portions of the Software.
+%# 
+%# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+%# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+%# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+%# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+%# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+%# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+%# THE SOFTWARE.
+%#

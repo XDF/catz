@@ -28,39 +28,34 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Catz::Model::Common';
 
-use Catz::Util::Number qw ( fmt );
+use List::MoreUtils qw ( any );
+
+use Catz::Data::List qw ( list_matrix );
 use Catz::Util::Time qw ( dt dtexpand );
 
-use List::MoreUtils qw ( any );
+my $matrix = list_matrix;
 
 sub _full {
 
  my ( $self, $pri, $mode ) = @_; my $lang = $self->{lang};
-    
- ( any { $pri eq $_ } @{ $self->pri_relev } ) or return [ 0, undef, undef ];
-   
+ 
+ exists $matrix->{$pri} or return [ 0, undef, undef ];  
+       
  my $cols = "pri,sec,cntalbum,cntphoto,first,last,null"; 
  
  given ( $mode ) {
  
   when ( 'a2z' ) {
     
-   my $res = $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by sort}, $pri );
+   my $res = $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by upper(sort)}, $pri );
    
-   my @idx = ();
-   my @sets = ();
-   my @set = ();
-   my $prev = '';
-   
-   my $i = 1;
+   my @idx = (); my @sets = (); my @set = (); my $prev = ''; my $i = 1;
    
    foreach my $row ( @$res ) {
    
-    $row->[4] = dtexpand ( $row->[4], $lang );
-    $row->[5] = dtexpand ( $row->[5], $lang );
     $row->[6] = $i++;
     
-    my $first = substr( $row->[1], 0, 1 ); 
+    my $first = uc(substr( $row->[1], 0, 1 )); 
     
     if ( $prev ne $first ) {
     
@@ -74,11 +69,7 @@ sub _full {
  
      $prev = $first;
     
-    } else {
-    
-     push @set, $row;
-    
-    }
+    } else { push @set, $row }
    
    }
      
@@ -88,23 +79,85 @@ sub _full {
         
   }
   
+  when ( 'date' ) {
+    
+   my $res = $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by first desc}, $pri );
+   
+   my @idx = (); my @sets = (); my @set = (); my $prev = ''; my $i = 1;
+   
+   foreach my $row ( @$res ) {
+   
+    $row->[6] = $i++;
+    
+    my $first = substr( $row->[4], 0, 4 ); 
+    
+    if ( $prev ne $first ) {
+    
+     push @idx, $first;
+     
+     scalar @set > 0 and push @sets, [ $prev, [ @set ] ];
+     
+     @set = ();
+     
+     push @set, $row;
+ 
+     $prev = $first;
+    
+    } else { push @set, $row }
+   
+   }
+     
+   scalar @set > 0 and push @sets, [ $prev, [ @set ] ];
+   
+   return [ scalar @$res, \@idx, \@sets ];
+        
+  }  
+    
+  when ( 'first' ) {
+  
+   my $res = $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by first,sort}, $pri );
+   
+   my @idx = (); my @sets = (); my @set = (); my $prev = ''; my $i = 1;
+   
+   foreach my $row ( @$res ) {
+   
+    $row->[6] = $i++;
+    
+    my $first = substr( $row->[4], 0, 4 ); 
+    
+    if ( $prev ne $first ) {
+    
+     push @idx, $first;
+     
+     scalar @set > 0 and push @sets, [ $prev, [ @set ] ];
+     
+     @set = ();
+     
+     push @set, $row;
+ 
+     $prev = $first;
+    
+    } else { push @set, $row }
+   
+   }
+     
+   scalar @set > 0 and push @sets, [ $prev, [ @set ] ];
+   
+   return [ scalar @$res, \@idx, \@sets ];  
+  
+  
+  }
+  
   when ( 'top' ) {
     
    my $res = $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by cntphoto desc, cntalbum desc, sort asc}, $pri );
        
-   my @idx = ();
-   my @sets = ();
-   my @set = ();
-   my $prev = '';
+   my @idx = (); my @sets = (); my @set = (); my $prev = ''; my $i = 0;
    
-   my @break = qw ( 1 11 51 101 201 501 1001 2001 3001 4001 5001 6001 7001 8001 9001 );
-   
-   my $i = 0;
+   my @break = qw ( 1 20 50 100 200 500 1000 2000 5000 );
    
    foreach my $row ( @$res ) {
 
-    $row->[4] = dtexpand ( $row->[4], $lang );
-    $row->[5] = dtexpand ( $row->[5], $lang );
     $row->[6] = ++$i;
    
     if ( $i == $break[0] ) {
@@ -121,16 +174,12 @@ sub _full {
      
      $prev = $i;
         
-    } else {
-    
-     push @set, $row;
-    
-    }
+    } else { push @set, $row }
    
    }
      
    scalar @set > 0 and push @sets, [ $prev, [ @set ] ];
-   
+      
    return [ scalar @$res, \@idx, \@sets ];
   
   }
@@ -141,17 +190,10 @@ sub _full {
    
    my $res = $self->dball( qq{select $cols,nat,nat_$lang from sec_$lang natural join _secm natural join pri inner join mbreeder on (sec=breeder) natural join mnat where pri=? order by nat_$lang,sort}, $pri );
    
-   my @idx = ();
-   my @sets = ();
-   my @set = ();
-   my $prev = '';
-   
-   my $i = 1;
+   my @idx = (); my @sets = (); my @set = (); my $prev = ''; my $i = 1;
    
    foreach my $row ( @$res ) {
    
-    $row->[4] = dtexpand ( $row->[4], $lang );
-    $row->[5] = dtexpand ( $row->[5], $lang );
     $row->[6] = $i++;
     
     if ( $prev ne $row->[8] ) {
@@ -166,11 +208,7 @@ sub _full {
      
      $prev = $row->[8];
     
-    } else {
-    
-     push @set, $row;
-    
-    }
+    } else { push @set, $row }
    
    }
      
@@ -217,8 +255,6 @@ sub _pris {
  # exclude photo texts and technical folder names
  my $res = $self->dball("select pri,upper(pri),cntpri from pri natural join _prim where pri not in ('text','folder') order by disp");
  
- do { $_->[2] = fmt ( $_->[2], $lang ) } foreach @{ $res }; # format numbers
- 
  return $res; 
 
 }          
@@ -247,6 +283,38 @@ sub _lastshow {
  
  $self->dball("select s,photo.n,folder,file,sec_en from photo natural join album natural join inpos natural join sec natural join pri where p=1 and pri='cat' and album.aid=? order by photo.n asc",$latest); 
   
+}
+
+sub _related {
+
+ my ( $self, $pri, $sec ) = @_; my $lang = $self->{lang};
+ 
+ my $res = $self->dball('select pri,sec from sec_fi natural join pri where sid in (select target from _related where source=(select sid from sec_fi natural join pri where pri=? and sec=?)) order by disp,sort',$pri,$sec);
+  
+ my @sets = (); my @set = (); my $prev = ''; my $i = 0;
+ 
+ foreach my $row ( @$res ) {
+ 
+  if ( $prev ne $row->[0] ) {
+         
+   scalar @set > 0 and push @sets, [ $prev, [ @set ] ];
+     
+   @set = ();
+     
+   push @set, $row->[1];
+     
+   $prev = $row->[0];
+    
+  } else { push @set, $row->[1] }
+  
+ } 
+     
+ scalar @set > 0 and push @sets, [ $prev, [ @set ] ];
+   
+
+ use Data::Dumper;
+ warn Dumper \@sets;
+return \@sets ; 
 }
 
 

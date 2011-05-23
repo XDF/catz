@@ -1,6 +1,18 @@
-% use Catz::Util::String qw ( enurl );
-% use Catz::Util::Time qw ( dtexpand );
-
+% extends 'base/light';
+<% content 'ptitle' => begin %><%= $t->{EXCEPTION} %><% end %>
+<% content 'main' => begin %>
+<h1><%= $t->{EXCEPTION} %></h1>
+<div><%= $exception->{message} %> (<%= $exception->{line} %>)</div>
+<table>
+% foreach my $row ( @{ $exception->{frames} } ) {
+<tr>
+% foreach my $item ( @$row  ) {
+<td><%= $item %></td>
+% }
+</tr>
+% }
+</table>
+<% end %>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
