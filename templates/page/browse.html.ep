@@ -1,15 +1,76 @@
-% layout 'std';
-<% content_for 'htmltitle' => begin %>
-%== include 'elem/args';
-(<%= $t->{PAGE} %> <%= $page %>/<%= $pages %>) - <%= $t->{SITE} %>
+% extends 'base/heavy';
+%#
+<% content 'ptitleadd' => begin %>
+%== include 'elem/argstitle';
+(<%= $t->{PAGE} %> <%= $page %>/<%= $pages %>)
 <% end %>
-%== include 'top/browse';
-%== include 'title/browse';
-%== include 'move/browse';
-<div class="aero unit">
-%== include 'block/thumb';
+%#
+<% content 'btitle' => begin %>
+<h1><%== include 'elem/argstitle' %> (<%= $from %>-<%== $to %>/<%= $total %>)</h1>
+<% end %>
+%#
+<% content 'setupadd' => begin %>
+<%== include 'elem/setup', setupkey => 'perpage' %>
+<%== include 'elem/setup', setupkey => 'thumbsize' %>
+<% end %>
+%#
+<% content 'pathadd' => begin %>
+<%== include 'elem/argspath' %>
+<% end %>  
+%#
+<% content 'main' => begin %>
+% if ( $pages > 1 ) { # show browser only if more than one page
+<div class="center flop bar">
+% my $label1 = $t->{PAGE_FIRST};
+% my $label2 = $t->{PAGE_PREV};
+% if ( $page > 1 ) { # not first page -> active first & back
+<a href="<%== include 'href/id', toid => $pin->[0] %>"><%= $label1 %></a> <%= $sep %>
+<a href="<%== include 'href/id', toid => $pin->[$page-2] %>"><%= $label2 %></a>
+% } else { # first page -> passive first & back 
+<%= $label1 %></span> <%= $sep %> <%= $label2 %> 
+% }
+ <%= $sep %> <%= $t->{PAGE} %> 
+<select class="flop" name="page" onchange="location.href='<%== include 'href/id', toid =>  "'+this.options[this.selectedIndex].value" %>">
+% foreach my $i ( 0 .. ( scalar @{ $pin } -1 ) ) {
+% if ( $page == ( $i + 1 ) ) {
+<option selected value="<%== $pin->[$i] %>"><%= $i+1 %></option>
+% } else { 
+<option value="<%== $pin->[$i] %>"><%= $i+1 %></option>
+% }
+% }
+</select> / <%= $pages %> <%= $sep %>
+% $label1 = $t->{PAGE_NEXT};
+% $label2 = $t->{PAGE_LAST};
+% if ( $page < $pages ) {
+<a href="<%== include 'href/id', toid => $pin->[$page] %>"><%= $label1 %></a>  <%= $sep %>
+<a href="<%== include 'href/id', toid => $pin->[$pages-1] %>"><%= $label2 %></a>
+% } else { 
+<%= $label1 %> <%= $sep %> <%= $label2 %>
+% }
 </div>
-%== include 'stripe/related';
+% }
+%#
+% foreach my $th ( @{ $thumb } ) {
+% my $toid = fullnum33 ( $th->[0], $th->[1] );
+% my $width = int ( ( $thumbsize / $th->[5] ) * $th->[4] ); 
+<a href="<%== include 'href/pathid', topath => 'view', toid => $toid %>"><img src="<%== $photobase %>/<%== $th->[2] %>/<%== $th->[3] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
+% }
+%#
+<div>
+% if ( $related ) { # related info is provided by controller
+<h2><%= $t->{uc($args_array->[0])} %> <%= $args_array->[1] %></h2>
+% foreach my $row ( @$related ) {
+<div class="aero unit">
+<%== $t->{uc($row->[0])} %>
+% foreach my $item ( @{ $row->[1] } ) {
+<%== $sep %> <a href="<%== include 'href/argsnoid', tokey => $row->[0], toval => $item %>"><%== $item %></a>
+% }
+</div>
+% }
+% }
+</div>
+%#
+<% end %>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

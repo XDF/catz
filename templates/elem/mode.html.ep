@@ -1,5 +1,0 @@
-% if ( $mode ne $tomode ) {
-<a href="/<%= $lang %>/list/<%= $subject %>/<%= $tomode %>/"><%= $t->{'MODE_'.uc($tomode)} %></a>
-% } else {
-<%= $t->{'MODE_'.uc($tomode)} %>
-% }

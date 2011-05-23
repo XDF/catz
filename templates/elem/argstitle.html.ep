@@ -3,5 +3,5 @@
 % } elsif ( $args_count < 3 ) {
 <%= $args_array->[1] %> 
 % } else {
-<%= $t->{SEARCH_RESULT} %>
+<%= $t->{SEARCH_RESULT} %> <%= $search %>     
 % }

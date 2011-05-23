@@ -31,7 +31,7 @@ use base 'Exporter';
 
 our @EXPORT_OK = qw ( 
  clean decode deurl dna encode enurl 
- lcc limit nobreak trim ucc ucclcc 
+ lcc limit nobreak trim ucc ucclcc
 ); 
 
 use Digest::MD5 qw ( md5_base64 );

@@ -31,6 +31,7 @@ use warnings;
 use parent 'Catz::Core::Ctrl';
 
 use Catz::Core::Conf;
+use Catz::Data::List qw ( list_matrix );
 use Catz::Data::Search;
 use Catz::Util::Number qw ( round );
 
@@ -87,23 +88,17 @@ sub find {
 sub list {
 
  my $self = shift; my $s = $self->{stash};
+
+ $s->{matrix} = list_matrix;
+ 
+ $s->{matrix}->{$s->{subject}} or ( $self->not_found and return );
    
  my $res = $self->fetch( 'locate#full', $s->{subject}, $s->{mode} );
  
  $s->{total} = $res->[0];
  $s->{idx} = $res->[1];
  $s->{sets} = $res->[2];
- 
- if ( $s->{subject} eq 'breeder' ) {
- 
-  $s->{modes} = [ qw ( a2z top nat ) ];
- 
- } else {
- 
-  $s->{modes} = [ qw ( a2z top ) ];
- 
- } 
- 
+   
  $s->{total} > 0 or ( $self->not_found and return );
  
  $self->render(template => 'page/list');

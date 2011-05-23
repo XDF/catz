@@ -43,8 +43,8 @@ sub new {
  my $db = DBI->connect (
   conf ( 'dbconn' ) . conf ( 'path_db' ) . "/$version.db",
   undef, undef, conf( 'dbargs_runtime' )
- ) || die ( $DBI::errstr );   
-
+ ) || die ( $DBI::errstr );
+ 
  my $self = { version => $version, db => $db, cache => -1 };
  
  bless ( $self, $class );

@@ -40,8 +40,8 @@ $style->{size}->{normal} = 92;
 
 $style->{size}->{tiny} = round ( $style->{size}->{normal} * 0.70 );
 $style->{size}->{small} = round ( $style->{size}->{normal} * 0.86 );
-$style->{size}->{big} = round ( $style->{size}->{normal} * 1.20 );
-$style->{size}->{huge} = round ( $style->{size}->{normal} * 1.65 );
+$style->{size}->{big} = round ( $style->{size}->{normal} * 1.35 );
+$style->{size}->{huge} = round ( $style->{size}->{normal} * 1.85 );
 
 do { 
  $style->{size}->{$_} = $style->{size}->{$_} . '%';

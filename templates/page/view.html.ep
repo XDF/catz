@@ -1,18 +1,98 @@
-% layout 'std';
-% if ( $display ne 'none' ) {
-%== include 'top/view';
-%== include 'title/view';
-% }
-<div>
-%== include 'move/view';
-</div>
+% extends 'base/heavy';
+%#
+<% content 'jsadd' => begin %>
+<script type="text/javascript" src="/js_site/result.js"></script>
+% $photosize eq 'fit' and do {
+<script type="text/javascript" src="/js_site/fit.js"></script>
+% };
+<% end %>
+%#
+<% content 'ptitleadd' => begin %>
+%== include 'elem/argstitle';
+(<%== $pos %>/<%== $total %>)
+<% end %>
+%#
+<% content 'pathadd' => begin %>
+<%== include 'elem/argspath' %>
+<% end %> 
+%#
+<% content 'classtop' => begin %><%== $display eq 'none' ? '' : 'bar' %><% end %>
+%#
+<% content 'btitle' => begin %>
+%#
 % if ( $display eq 'full' ) {
-%== include 'stripe/detail';
+<h1><%== include 'elem/argstitle' %> (<%= $t->{PHOTO} %> <%== $pos %>/<%== $total %>)</h1>
+% }
+<% end %>
+%#
+<% content 'pathadd' => begin %>
+% if ( $display ne 'full' ) {
+<%== include 'elem/argstitle' %> (<%= $t->{PHOTO} %> <%== $pos %>/<%== $total %>)
+% }
+<% end %>
+%#
+<% content 'setupadd' => begin %>
+<%== include 'elem/setup', setupkey => 'display' %>
+<%== include 'elem/setup', setupkey => 'photosize' %>
+<% end %>
+%#
+<% content 'main' => begin %>
+<div class="flop center<%= $display eq 'full' ? ' bar' : '' %>">
+% my $label1 = $t->{PHOTO_FIRST};
+% my $label2 = $t->{PHOTO_PREV};
+% if ( $pos > 1 ) {
+<a title="<%= $label1 %>" href="<%== include 'href/id', toid => $pin->[0] %>"><%= $label1 %></a>
+<%== $sep %>
+<a title="<%= $label2 %>" href="<%== include 'href/id', toid => $pin->[1] %>"><%= $label2 %></a>
+% } else { 
+<%= $label1 %> <%== $sep %> <%= $label2 %>
+% }
+<%== $sep %>
+<a href="<%== include 'href/path', topath => 'browse' %>"><%= $t->{THUMBS} %></a>
+<%== $sep %>
+% $label1 = $t->{PHOTO_NEXT};
+% $label2 = $t->{PHOTO_LAST};
+% if ( $pos < $total ) {
+<a title="<%= $label1 %>" href="<%== include 'href/id', toid => $pin->[2] %>"><%= $label1 %></a>
+<%== $sep %>
+<a title="<%= $label2 %>" href="<%== include 'href/id', toid => $pin->[3] %>"><%= $label2 %></a>
+% } else { 
+<%= $label1 %> <%== $sep %> <%= $label2 %>
+% }
+</div>
+%#
+% if ( $display eq 'full' ) {
+<div class="aeroplus bar">
+% my $i = 0;
+% scalar ( @$comment ) > 0 and do {
+%  foreach my $comm ( @{ $comment } ) {
+<%= $comm %>
+%   if ( defined $resultkey->[$i] ) {
+<span class="result lean shrink" id="<%== $resultkey->[$i] %>"></span>
+%   $i++; 
+%   }
+%  }
+<%= $sep %>
+% };
+<span class="shrink">
+% $i = 1;
+% my $pdet = '93liokasdflui3l8rlsasdflku23wr';
+% foreach my $detail ( @$detail ) {
+% if ( $detail->[0] ne $pdet ) {
+<%= $i++ == 1 ? '' : $sep %>
+<%= $t->{uc($detail->[0])} %>
+% $pdet =  $detail->[0];
+% }
+<a href="/<%= $lang %>/browse?<%= $detail->[0] %>=<%= enurl ( $detail->[1] ) %><%= $id ? '&id='.$id : '' %>">
+<%= $detail->[0] ne 'dt' ? $detail->[1] : dtexpand ( $detail->[1], $lang ) %></a>
+% }
+<span></div>
 % }
 <div class="center" id="fitparent">
 <a href="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>">
 <img id="fittarget" src="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>"></a>
 </div>
+<% end %>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

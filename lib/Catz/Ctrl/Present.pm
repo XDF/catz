@@ -33,6 +33,7 @@ use parent 'Catz::Core::Ctrl';
 use List::MoreUtils qw ( any );
 
 use Catz::Data::Result;
+use Catz::Data::Search qw ( args2search );
 use Catz::Util::String qw ( enurl );
 
 sub process_id {
@@ -98,7 +99,6 @@ sub process_id {
    }
 
  } 
-
  return 1;
  
 }
@@ -135,10 +135,11 @@ sub process_args {
   };
 
  }
-
+ 
  $s->{args_string} = $str;  
  $s->{args_count} = scalar @args;
  $s->{args_array} = [ @args ];
+ $s->{search} = args2search ( $s->{args_array} );
    
  return 1;
 
@@ -147,14 +148,14 @@ sub process_args {
 sub browse {
 
  my $self = shift; my $s = $self->{stash};
-   
+    
  $self->process_args or $self->not_found and return;
  $self->process_id or $self->not_found and return;
-   
+    
  my $res = $self->fetch('vector#pager', 
    $s->{x}, $s->{perpage}, @{ $s->{args_array} }  
   );
-    
+     
  $res->[0] == 0 and $self->not_found and return;
 
  $s->{total} = $res->[0];
@@ -175,7 +176,16 @@ sub browse {
  
  $s->{thumb} = $res->[0];
  $s->{earliest} = $res->[1];
- $s->{latest} = $res->[2]; 
+ $s->{latest} = $res->[2];
+ 
+ $s->{related} = undef;
+ 
+ # when on first page, more than 1 photos and just one pri-sec -pair
+ # then fetch related information and send it to template
+ $s->{page} == 1 and $s->{total} > 1 and $s->{args_count} == 2 and  
+  $s->{related} = $self->fetch( 
+   'locate#related', $s->{args_array}->[0], $s->{args_array}->[1] 
+  ); 
              
  $self->render( template => 'page/browse' );
     
@@ -200,9 +210,9 @@ sub view {
  $s->{detail} = $self->fetch( 'photo#detail', $s->{x});
 
  $s->{comment} =  $self->fetch( 'photo#text', $s->{x} );
-
+ 
  $s->{image} =  $self->fetch( 'photo#image', $s->{x} );
-
+ 
  my $keys = $self->fetch ( 'photo#resultkey', $s->{x} );
 
  result_prepare ( $self, $keys );

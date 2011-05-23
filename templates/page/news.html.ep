@@ -1,6 +1,26 @@
-% use Catz::Util::String qw ( enurl );
-% use Catz::Util::Time qw ( dtexpand );
-
+% extends 'base/heavy';
+%#
+<% content 'ptitleadd' => begin %>
+<%== $t->{NEWS_ALL} %>
+<% end %>
+%#
+<% content 'btitle' => begin %>
+<h1><%== $t->{NEWS_ALL} %></h1>
+<% end %>
+%#
+<%= content 'main' => begin %>
+% my $i = 1;
+% foreach my $row ( @$news ) {
+% if ( $i++ > 1 ) {
+<hr class="divid">
+% } 
+<div class="unit">
+<h2 id="<%== $row->[0] %>"><%=  dtexpand ( dtdate ( $row->[0] ), $lang ) %> <%= $row->[1] %></h2>
+<div class="unit"><%= $row->[2] %> 
+<span class="aero shrink lean"><%=  dtexpand ( $row->[0], $lang ) %></span></div>
+</div>
+% }
+<% end %> 
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

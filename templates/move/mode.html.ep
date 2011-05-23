@@ -1,5 +1,0 @@
-<div class="box center">
-%== include 'elem/mode', tomode =>'a2z';
-<%= $sep %> 
-%== include 'elem/mode', tomode =>'top';
-</div>

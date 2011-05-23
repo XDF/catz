@@ -1,0 +1,91 @@
+% extends 'base/heavy';
+%#
+<% content 'ptitleadd' => begin %>
+<%== fmt ( $total, $lang ) %> <%== $total == 1 ? $t->{uc($subject)} : $t->{uc($subject).'A'} %> <%== $t->{'MODE_'.uc($mode)} %>
+<% end %>
+%#
+<% content 'btitle' => begin %>
+<h1><%== fmt ( $total, $lang ) %> <%== $total == 1 ? $t->{uc($subject)} : $t->{uc($subject).'A'} %> <%== $t->{'MODE_'.uc($mode)} %></h1>
+<% end %>
+%#
+<%= content 'main' => begin %>
+<div class="center flop bar">
+% my $i = 1;
+% foreach my $md ( @{ $matrix->{$subject}->{modes} } ) {
+% if ( $i++ > 1) {
+<%== $sep %>
+% }
+% if ( $mode eq $md ) {
+<%== $t->{'MODE_'.uc($md)} %>
+% } else {
+<a href="/<%== $lang %>/list/<%== $subject %>/<%== $md %>/"><%==  $t->{'MODE_'.uc($md)} %></a>
+% }
+% }
+</div>
+%#
+% $matrix->{$subject}->{dividers} and do {
+<div class="center flip bar">
+% my $i = 1;
+% foreach my $tab ( @$idx ) {
+% if ( $i++ > 1) {
+<%== $sep %>
+% }
+<a href="#idx<%== $tab %>"><%= $tab %></a>
+% }
+</div>
+% };
+%#
+% foreach my $set ( @$sets ) {
+% $matrix->{$subject}->{dividers} and do {
+<div class="unit outer"><table class="full"><tr><td class="left">
+<h2 id="idx<%= $set->[0] %>"><%= $set->[0] . ( $mode eq 'top' ? '.' : '' ) %></h2></td><td class="right">
+% my $sz = scalar ( @{ $set->[1] } );
+% my $szf = fmt ( scalar ( @{ $set->[1] } ), $lang ); 
+<%= $szf %> <%= $sz == 1 ? $t->{uc($subject)} : $t->{uc($subject).'A'} %>
+</td></tr></table></div><hr class="divid">
+% };
+% my $i = 1;
+% foreach my $row ( @{ $set->[1] } ) {
+<div class="list unit inner">
+% if ( $i++ == 1 and $mode eq 'nat' and $row->[7] ) {
+<img alt="<%= $set->[0] %>" class="flag" src="http://www.heikkisiltala.com/g/flags/<%== lc($row->[7]) %>.gif">
+% }
+% if ( $mode eq 'top' ) {
+<%= $row->[6]. ' ' . $sep %>
+% }
+<a title="<%== $t->{uc($subject)} %>: <%= $row->[1] %>" href="/<%= $lang %>/browse?<%== lc($subject) %>=<%== enurl($row->[1]) %>">
+<%= $subject ne 'date' ? $row->[1] : dtexpand ( $row->[1], $lang ) %>
+</a> <%= $sep %>
+<%= $row->[3] %> <%= $row->[3] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> 
+% if ( $subject ne 'album' and $subject ne 'date' ) {
+<%= $lang eq 'en' ? ' in ' : '' %> <%= $row->[2] %> <%= $row->[2] == 1 ? $t->{ALBUMX} : $t->{ALBUMSX} %>
+<%= $sep %>
+<%= dtexpand ( $row->[4], $lang ) %><%= $row->[4] eq $row->[5] ? '' : ' - ' . dtexpand ( $row->[5], $lang ) %> 
+% }
+</div>
+% }
+% }
+<% end %>
+%#
+%# Catz - the world's most advanced cat show photo engine
+%# Copyright (c) 2010-2011 Heikki Siltala
+%# Licensed under The MIT License
+%# 
+%# Permission is hereby granted, free of charge, to any person obtaining a copy
+%# of this software and associated documentation files (the "Software"), to deal
+%# in the Software without restriction, including without limitation the rights
+%# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+%# copies of the Software, and to permit persons to whom the Software is
+%# furnished to do so, subject to the following conditions:
+%# 
+%# The above copyright notice and this permission notice shall be included in
+%# all copies or substantial portions of the Software.
+%# 
+%# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+%# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+%# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+%# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+%# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+%# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+%# THE SOFTWARE.
+%# 

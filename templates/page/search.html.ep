@@ -1,7 +1,22 @@
-% use Catz::Util::String qw ( enurl );
-% use Catz::Util::Number qw ( fmt );
-% layout 'std'; 
-%== include 'top/search';
+% extends 'base/heavy';
+%#
+<% content 'ptitleadd' => begin %>
+% if ( length ( $what // '' ) > 0 ) { # if something is searches even no results
+<%= $t->{SEARCH_RESULT} %> <%= $what %>
+% } else {
+<%= $t->{SEARCH} %>
+% }
+<% end %>
+%#
+<% content 'btitle' => begin %>
+% if ( length ( $what // '' ) > 0 ) { # if something is searches even no results
+<h1><%= $t->{SEARCH_RESULT} %> <%= $what %></h1>
+% } else {
+<h1><%= $t->{SEARCH} %></h1>
+% }
+<% end %>
+%#
+<% content 'main' => begin %>
 % if ( $found > 0 ) {
 <div class="unit">
 <%= fmt ( $found, $lang ) %> <%= $found == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> <%= $t->{SEARCH_FOUND} %>
@@ -25,6 +40,7 @@
 %== include 'block/thumb';
 </div>
 % };
+<% end %> 
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

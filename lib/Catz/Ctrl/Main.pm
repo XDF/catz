@@ -33,6 +33,7 @@ use parent 'Catz::Core::Ctrl';
 use I18N::AcceptLanguage;
 
 use Catz::Core::Conf;
+use Catz::Data::List qw ( list_matrix );
 use Catz::Data::Result;
 use Catz::Data::Setup;
 use Catz::Data::Style;
@@ -60,11 +61,13 @@ sub front {
  
  $s->{news} = $self->fetch ( 'news#latest', 8 );
  
- $s->{album} = $self->fetch ( 'locate#album' );
+ $s->{albums} = $self->fetch ( 'locate#album' );
  
  $s->{pris} =  $self->fetch ( 'locate#pris' ); 
 
- $s->{maxx} = fmt ( $self->fetch ( 'common#maxx' ), $s->{lang} );
+ $s->{maxx} = $self->fetch ( 'common#maxx' );
+  
+ $s->{matrix} = list_matrix;
     
  $self->render( template => 'page/front' );
  

@@ -34,15 +34,8 @@ sub _all {
 
  my $self = shift; my $lang = $self->{lang};
       
- my $res = $self->dball( "select dt,null,substr(dt,1,8),null,title_$lang,text_$lang from mnews order by dt desc" );
- 
- do {
+ my $res = $self->dball( "select dt,title_$lang,text_$lang from mnews order by dt desc" );
   
-  $_->[1] = dtexpand ( $_->[0], $lang ); 
-  $_->[3] = dtexpand ( $_->[2], $lang );
- 
- } foreach @{ $res };
- 
  return $res;
  
 }
