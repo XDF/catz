@@ -32,6 +32,8 @@ our @EXPORT = qw (
  setup_init setup_exit setup_set setup_values setup_keys setup_verify 
 );
 
+use Catz::Core::Conf;
+
 my $defaults = {
  display => 'full',
  palette => 'neutral',
@@ -88,18 +90,28 @@ sub setup_init {
 
  }
 
- # reads the version cookie and uses it's value if present
- # otherwise sets to the default value 0
+ # reads the version number for peek cookie and uses it's value if present
+ # otherwise sets peek to the default value 0
 
- my $val = $app->cookie ( 'version' );
+ my $val = $app->cookie ( 'peek' );
 
- if ( $val and length ( $val ) == 14 and $val =~ /^\d{14}$/ ) {
+ warn "read peek val $val from cookie ".$app->stash->{url};
  
-  $app->stash->{version} = int ( $val );
+ # inspect the peek cookie value very carefully, even check the file existence
+ if ( 
+  $val and $val ne '0' and length ( $val ) == 14 and $val =~ /^\d{14}$/ 
+  and -f ( conf ( 'path_db' ) . "/$val.db" )
+ ) {
+ 
+   warn "cookie val ok";
+ 
+  $app->stash->{peek} = $val;
   
- } else {
+ } else { # the normal production behavior when peek is 0 
 
-  $app->stash->{version} = 0;
+ warn "cookie val rejected";
+
+  $app->stash->{peek} = 0;
  
  } 
   
@@ -119,8 +131,8 @@ sub setup_exit {
 
  }
 
- # also version is sent out 
- $app->cookie ( 'version' => $s->{version} );
+ # peek is written out even if it is 0
+ $app->cookie ( 'peek' => $s->{peek} );
 
 }
 
@@ -142,23 +154,23 @@ sub setup_set {
 
  }
 
- if ( $key and $key eq 'version' ) {
- 
-   length ( $val ) < MAXVAL or return 0; # failed
+ if ( $key and $key eq 'peek' ) {
 
-   $val eq '0' and do {
-    $app->stash->{version} = 0;
-    return 1; # OK
-   }; 
+  length ( $val ) < MAXVAL or return 0; # failed
+    
+  $val and $val ne '0' and length ( $val ) == 14 and $val =~ /^\d{14}$/ 
+  and -f ( conf ( 'path_db' ) . "/$val.db" ) and do {
+    
+    $app->cookie ( $key => $val, { path => '/' }  );
 
-   $val =~ /^\d{14}$/ and do {
-    $app->stash->{version} = $val;
-    return 1; # OK
-   }; 
-
-  }
+    return 1; # OK  
   
-  return 0; # FAILED 
+  };
+
+ }
+  
+ return 0; # FAILED
+  
 }
 
 sub setup_keys { \@keys } # return all key names as arrayref

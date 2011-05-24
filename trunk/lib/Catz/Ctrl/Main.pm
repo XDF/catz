@@ -103,7 +103,10 @@ sub set {
  }
  
  # at least one set was done -> OK
- $i and $self->render( text => 'OK' ) and return;
+ $i and do { 
+  $self->render( text => 'OK' ); 
+  return;
+ };
   
  $self->render( text => 'FAILED' ); 
  

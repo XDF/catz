@@ -178,11 +178,18 @@ sub before {
  # fetch texts for the current language and make them available to all
  # controller and templates as variable t 
  $s->{t} = text ( $s->{lang} // 'en' );
+ 
+ # done if setup change requested
+ substr ( $s->{url}, 0, 4 ) eq '/set' and return; 
 
  # VITAL STEP: reads cookies and processed them to stash                                                                                  
- setup_init ( $self ); 
+ setup_init ( $self );
  
- $s->{version} or do { # version is not set -> use the latest data 
+ if ( $s->{peek} > 0 ) { # obey version value from cookie
+ 
+  $s->{version} = $s->{peek}; 
+  
+ } else { # version is not defined -> use the latest data 
    
   my $now = time();
 
@@ -214,7 +221,7 @@ sub before {
  
   }
  
- };
+ }
  
  # attempt to fetch from cache
  
@@ -245,10 +252,12 @@ sub after {
  
  # we will not cache setup change request 
  # since they must alter the session data
+ # we also don't send out the default cookies
  $s->{action} eq 'set' and return;
-
- setup_exit ( $self );
  
+ # set cookies
+ setup_exit ( $self ); 
+
  my $val = 0;
  
  exists $s->{hold} and $s->{hold} > 0 and $val = $s->{hold}*60;
@@ -274,7 +283,7 @@ sub after {
   
   }
  }
- 
+    
 }
 
 sub cachekey {
