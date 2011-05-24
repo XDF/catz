@@ -311,10 +311,8 @@ sub _related {
      
  scalar @set > 0 and push @sets, [ $prev, [ @set ] ];
    
-
- use Data::Dumper;
- warn Dumper \@sets;
-return \@sets ; 
+ return \@sets;
+  
 }
 
 
