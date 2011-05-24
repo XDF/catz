@@ -441,7 +441,7 @@ sub fixgap {
   
   if(defined $prevnum) {
   
-   if( int ( $filenum ) > ( int ( $prevnum ) + 5000 ) ) { # gap detected
+   if( int ( $filenum ) > ( int ( $prevnum ) + 7000 ) ) { # gap detected
     
     my @arr = (); # new modified array
     

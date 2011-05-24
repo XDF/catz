@@ -1,5 +1,3 @@
-% use Catz::Util::Number qw ( fullnum33 );
-% use Catz::Util::String qw ( enurl );
 <div class="unit">
 % foreach my $th ( @{ $thumb } ) {
 % my $id = fullnum33 ( $th->[0], $th->[1] );
