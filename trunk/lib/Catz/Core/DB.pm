@@ -53,12 +53,14 @@ sub new {
  
 }
 
-sub DESTROY {
+sub DESTROY { $_[0]->disconnect }
+
+sub disconnect {
 
  my $self = shift;
 
  $self->{db} and $self->{db}->disconnect;
-   
+
 }
 
 sub run {
