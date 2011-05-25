@@ -78,7 +78,7 @@ sub fetch { # the API for Controllers to access Models
  ( $self->{db} and $self->{db}->{version} eq $version ) or do {
  
   # if not, then switch to a fresh database instance
-  
+  $self->{db} and $self->{db}->disconnect;
   $self->{db} = Catz::Core::DB->new ( $version );
   
  };

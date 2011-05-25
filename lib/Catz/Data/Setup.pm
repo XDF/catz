@@ -28,18 +28,21 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( 
- setup_init setup_exit setup_set setup_values setup_keys setup_verify 
-);
+our @EXPORT = qw ( setup_init setup_set setup_values setup_verify setup_keys );
+
+use List::MoreUtils qw ( any );
 
 use Catz::Core::Conf;
 
-my $defaults = {
+my $default = {
  display => 'full',
  palette => 'neutral',
  photosize => 'fit',
  perpage => 20,
- thumbsize => 150
+ thumbsize => 150,
+ # peek is special default key in $default, not in $values
+ peek => 0, # the forced data version
+  
 };
 
 my $values = {
@@ -47,145 +50,82 @@ my $values = {
  palette => [ qw ( dark neutral bright ) ],
  photosize => [ qw ( fit original ) ],
  perpage => [ qw( 10 15 20 25 30 35 40 45 50 ) ],
- thumbsize => [ qw ( 100 125 150 175 200 ) ]
+ thumbsize => [ qw ( 100 125 150 175 200 ) ],
 };
 
-my @keys = keys %{ $defaults }; 
       
-my $ok = {}; # for simple key vefification
+sub setup_verify  {
 
-foreach my $key ( @keys ) {
-
- foreach my $val ( @{ $values->{$key} } ) {
+ # check that a single value is ok, 1 = ok, 0 = not ok
  
-  $ok->{$key}->{$val} = 1;
+ my ( $key, $val ) = @_;
+ 
+ ( length $key > 50 or length $val > 50 ) and return 0; # preliminary check
+ 
+ if ( $key eq 'peek' ) { # peek gets special handling
+ 
+  # if value is ok and such a database file is found then return 1 = ok
+  ( $val eq '0' or ( $val =~ /^\d{14}$/ and 
+   -f ( conf ( 'path_db' ) . "/$val.db" ) ) ) and return 1; 
+    
+  return 0; # 0 = not ok
+ 
+ } else { # standard handling for all the rest
+ 
+  exists $values->{$key} and ( any { $val eq $_ } @{ $values->{$key} } )
+   and return 1;
+   
+  return 0; 
   
- }
+ } 
 
 }
-
-use constant MAXKEY => 50; # maximum lenght of a setup key
-use constant MAXVAL => 50; # maximum lenght of a setup value
 
 sub setup_init {
 
- # read incoming cookies and populate stash from them or from default values
+ # check that session values are ok and if needed populate them with defaults
 
  my $app = shift;
-
- foreach my $key ( @keys ) {
-
-  my $val = $app->cookie ( $key );
-
-  if ( 
-   $val and ( length ( $val ) < MAXVAL ) and $ok->{$key}->{$val} ) {
-
-   $app->stash->{$key} = $val; # value from cookie
-
+ 
+ foreach my $key ( keys %{ $default } ) {
+ 
+  my $val = $app->session ( $key ) // ''; # read from session
+  
+  if ( setup_verify ( $key, $val ) ) { # if key-value -pair is ok...
+  
+   $app->stash->{$key} = $val; # ...copy to stash
+  
   } else {
-
-   $app->stash->{$key} = $defaults->{ $key }; # default value
-
+  
+   $app->session ( $key => $default->{$key} ); # set the default...
+   $app->stash->{$key} = $default->{$key}; # ...and also stash
+  
   } 
-
+ 
  }
-
- # reads the version number for peek cookie and uses it's value if present
- # otherwise sets peek to the default value 0
-
- my $val = $app->cookie ( 'peek' );
-
- warn "read peek val $val from cookie ".$app->stash->{url};
  
- # inspect the peek cookie value very carefully, even check the file existence
- if ( 
-  $val and $val ne '0' and length ( $val ) == 14 and $val =~ /^\d{14}$/ 
-  and -f ( conf ( 'path_db' ) . "/$val.db" )
- ) {
- 
-   warn "cookie val ok";
- 
-  $app->stash->{peek} = $val;
+ # set version & checked to 0 if not at all set 
+ $app->session ( version => $app->session ( 'version' ) // '0' );
+ $app->session ( checked => $app->session ( 'checked' ) // '0' );
   
- } else { # the normal production behavior when peek is 0 
-
- warn "cookie val rejected";
-
-  $app->stash->{peek} = 0;
- 
- } 
   
-}
-
-sub setup_exit {
-
- my $app = shift; my $s = $app->{stash};
-
- foreach my $key ( @keys ) {
-
-  if ( $s->{$key} ) { 
-  
-   $app->cookie ( $key =>  $s->{$key}, { path => '/' } );
- 
-  }
-
- }
-
- # peek is written out even if it is 0
- $app->cookie ( 'peek' => $s->{peek} );
-
 }
 
 sub setup_set {
+ 
+ # set one key-value -pair 
 
  my ( $app, $key, $val ) = @_;
 
- if ( 
-  $key and 
-  $val and 
-  ( length ( $key ) < MAXKEY ) and 
-  ( length ( $val ) < MAXVAL ) and 
-  $ok->{$key}->{$val} 
- ) {
-
-  $app->cookie ( $key => $val, { path => '/' }  );
- 
-  return 1; # OK
-
- }
-
- if ( $key and $key eq 'peek' ) {
-
-  length ( $val ) < MAXVAL or return 0; # failed
-    
-  $val and $val ne '0' and length ( $val ) == 14 and $val =~ /^\d{14}$/ 
-  and -f ( conf ( 'path_db' ) . "/$val.db" ) and do {
-    
-    $app->cookie ( $key => $val, { path => '/' }  );
-
-    return 1; # OK  
+ # if the pair verifies ok, then set session and return 1 = ok
+ setup_verify ( $key, $val ) and do { $app->session( $key => $val ); return 1 };
   
-  };
+ return 0; # = not ok
 
- }
-  
- return 0; # FAILED
-  
 }
+  
+sub setup_keys { keys %{ $values } } # return all key names as arrayref
 
-sub setup_keys { \@keys } # return all key names as arrayref
-
-sub setup_values { $values } # return hashref having all keys with all values 
-
-sub setup_verify {
-
- ( $_[0] and $_[1] ) or return 0;
-
- length ( $_[0] ) > MAXKEY and return 0;
- length ( $_[1] ) > MAXVAL and return 0; 
-
- $ok->{$_[0]}->{$_[1]} 
- 
-};
+sub setup_values { $values } # return hashref of all possible values 
 
 1;

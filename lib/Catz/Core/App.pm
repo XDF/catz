@@ -37,18 +37,15 @@ use Catz::Util::Time qw( dt dtdate dtexpand dtlang );
 use Catz::Util::Number qw ( fmt fullnum33 );
 use Catz::Util::String qw ( enurl );
 
-# last epoch time we checked for the database key file
-my $lastcheck = 0;
-
-# the latest data version we have encountered
-my $version = undef;
-
 sub startup {
 
  my $self = shift;
  
  $self->renderer->root ( conf ( 'path_template' ) );
  $self->renderer->layout_prefix ( conf ( 'prefix_layout' ) );
+ 
+ $self->sessions->cookie_name( conf ( 'cookie_name' ) );
+ $self->sessions->default_expiration( conf ( 'cookie_expir' ) );
   
  # initialize the key for cookie signing 
  $self->secret( conf ( 'cookie_key' ) );
@@ -133,14 +130,47 @@ sub before {
 
  # the url where the images get fetched from
  $s->{photobase} = conf ( 'base_photo' );
+  
+ my $url = $self->req->url;
  
+ #warn ".....";
+ #warn $url;
+ #warn $self->req->query_params->params;
+ #warn $self->req->url->path->trailing_slash;
+ 
+ #
+ # require url to end with slash
+ #
+ 
+  $self->req->url->path->trailing_slash or # a trailing slash 
+  scalar @{ $self->req->query_params->params } > 0 or # or query param(s) 
+  ( $self->req->url->path->to_string  =~ /\..{2,4}$/ ) # or static file request
+  or do {
+   
+   warn "called with ".$self->req->query_params->params;
+   
+  # this redirect code is a modified version from Mojolicious core
+  # and appears to work as expected
+       
+  my $res = $self->res;
+  $res->code(301); # a permanent redirect
+
+  my $headers = $res->headers;
+  
+  # add slash to the end of the path
+  $headers->location($self->req->url->path->to_string.'/'); 
+  # if there was query parameters, they get dropped on redirect
+  # since this code is not executed with query params, it is ok
+  
+  $headers->content_length(0); $self->rendered; return $self;
+ 
+ };
+  
  # the language detection
  # - detect correct langauge based on the beginning of URL
  # - store the language to stash
  # - prepare the URL for language change feature
- 
- my $url = $self->req->url; 
- 
+
  if ( length ( $url ) < 3 ) {
  
   # too short to detect language
@@ -152,13 +182,11 @@ sub before {
  } elsif ( substr ( $url, 0, 3 ) eq '/fi' ) {
  
   $s->{lang} = 'fi';
-
   $s->{langother} = '/en' . substr ( $url, 3 );
   
  } elsif( substr ( $url, 0, 3 ) eq '/en' ) {
  
   $s->{lang} = 'en';
- 
   $s->{langother} = '/fi' . substr ( $url, 3 );
 
  } else {
@@ -179,50 +207,51 @@ sub before {
  # controller and templates as variable t 
  $s->{t} = text ( $s->{lang} // 'en' );
  
- # done if setup change requested
- substr ( $s->{url}, 0, 4 ) eq '/set' and return; 
 
- # VITAL STEP: reads cookies and processed them to stash                                                                                  
+ # VITAL STEP: process and populate session                                                                                  
  setup_init ( $self );
+    
+ my $now = time();
  
- if ( $s->{peek} > 0 ) { # obey version value from cookie
- 
-  $s->{version} = $s->{peek}; 
-  
- } else { # version is not defined -> use the latest data 
-   
-  my $now = time();
+ if ( $self->session ( 'peek' ) ne '0' ) { # version is set in peek
 
-  if ( $now - $lastcheck > 5 ) { # if the check has expired
+  # force use of the user's set version
+  $s->{version} = $self->session ( 'peek' );
+  
+  # reset session version & checked
+  $self->session ( version => 0 );
+  $self->session ( checked => 0 );
  
+ } else {
+
+  
+  if ( 
+   ( $now - $self->session('checked') ) > conf ( 'version_check_delay' )
+  ) { # check no often than every 'version_check_delay' seconds 
+   
    # find the latest key file
-
    my $file = findlatest ( conf ( 'path_db' ), 'txt' );
+   
+   # if key file not found then find the latest database file
+   $file or $file = findlatest ( conf ( 'path_db' ), 'db' );
+   
+   # key file or db file must be found else it is a fatal error
+   $file or die "tried twice but database not found";
          
-   if ( defined $file ) {
-  
-    my $new = substr ( pathcut ( $file ), 0, 14 ); # get the datetime part
-  
-    $version = $new; # store it to static variable
-  
-    $s->{version} = $new; # store it to stash
+   my $new = substr ( pathcut ( $file ), 0, 14 ); # get the datetime part
+    
+   $self->session ( version => $new ); $s->{version} = $new;
 
-    $lastcheck = $now; # update the check time
-   
-   } else { # error in finding the latest file
-   
-    $lastcheck = $now; # try again in next cycle, maybe should die?
-   
-   }
-  
+   $self->session ( checked => $now );
+        
   } else { # the check has not yet expired
- 
-   $s->{version} = $version; # so we just copy the latest to stash
+    
+   $s->{version} =  $self->session('version');
  
   }
  
  }
- 
+  
  # attempt to fetch from cache
  
  if ( conf('cache_page' ) ) {
@@ -255,9 +284,6 @@ sub after {
  # we also don't send out the default cookies
  $s->{action} eq 'set' and return;
  
- # set cookies
- setup_exit ( $self ); 
-
  my $val = 0;
  
  exists $s->{hold} and $s->{hold} > 0 and $val = $s->{hold}*60;

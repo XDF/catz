@@ -26,9 +26,7 @@ package Catz::Core::Ctrl;
 
 # the base class for all Controllers
 
-use 5.10.0;
-use strict;
-use warnings;
+use 5.10.0; use strict; use warnings;
  
 use parent 'Mojolicious::Controller';
 
