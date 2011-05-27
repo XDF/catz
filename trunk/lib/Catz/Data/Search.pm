@@ -35,8 +35,8 @@ use Text::ParseWords;
 
 use Catz::Util::String qw ( enurl );
 
-# the pri key for photo comments
-use constant PRITEXT => 'text';
+# the default pri key used if none is given in the query
+use constant DEFAULT => 'any';
 
 sub search2args { # covert a search parameter to argument list 
   
@@ -46,7 +46,7 @@ sub search2args { # covert a search parameter to argument list
  
  my $fixed = $str;
     
- # smart split to words allowing quotation marks    
+ # smart split to words allowing quotation marks on the outer edges   
  my @args = quotewords ( ' ', 0, $str );
    
  my @out = ();
@@ -61,7 +61,7 @@ sub search2args { # covert a search parameter to argument list
      
    length $2 > 0 and do { $key = $1; $val = $2 }; 
  
-  } else { $key = PRITEXT; $val = $arg; }
+  } else { $key = DEFAULT; $val = $arg; }
   
   defined $key and defined $val and do {
  
@@ -110,7 +110,7 @@ sub args2search { # convert argument list to a search parameter
   # if not the first param then put a space to separate from the previous param
   $c > 0 and $str = $str . ' '; 
   
-  if ( $key eq 'text' ) { $str = $str . $val } 
+  if ( $key eq DEFAULT ) { $str = $str . $val } 
    else { $str = $str . $key . '=' . $val }
   
   $c++; 

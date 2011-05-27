@@ -89,7 +89,7 @@ sub result_process {
 
  foreach my $line ( split /\n/, $raw ) {
 
-  my ( $date, $loc, $num, $cat, $class, $gender, $name, $ems, $result )
+  my ( $date, $loc, $num, $cat, $class, $gender, $name, $code, $result )
    = split /\t/, $line;
   
   defined $result and push @items, 

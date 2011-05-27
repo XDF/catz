@@ -26,9 +26,7 @@ package Catz::Core::Model;
 
 # the base class for all Models
 
-use 5.10.0;
-use strict;
-use warnings;
+use 5.10.0; use strict; use warnings;
 
 use Catz::Core::Cache;
 use Catz::Core::Conf;

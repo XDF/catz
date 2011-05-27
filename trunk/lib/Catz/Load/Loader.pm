@@ -116,12 +116,12 @@ my $run = [
  qq{delete from inexif where sid_meta is null and sid_data is null and sid_file is null},
  qq{delete from sec where sid not in ( select sid from inalbum union select sid_meta from inexif union select sid_data from inexif union select sid_file from inexif union select sid from inpos )},
  
- # deleting + inserting breeds according to ems3 
+ # deleting + inserting breeds according to bcode 
  qq{delete from inpos where rowid in (select inpos.rowid from inpos natural join sec where pid=(select pid from pri where pri='breed'))},
  qq{delete from sec where pid=(select pid from pri where pri='breed')},
- qq{insert into sec (pid,sec_en) select (select pid from pri where pri='breed'),breed_en from sec inner join mbreed on (sec_en=ems3) where pid=(select pid from pri where pri='ems3') and breed_en=breed_fi},
- qq{insert into sec (pid,sec_en,sec_fi) select (select pid from pri where pri='breed'),breed_en,breed_fi from sec inner join mbreed on (sec_en=ems3) where pid=(select pid from pri where pri='ems3') and breed_en<>breed_fi},
- qq{insert into inpos select aid,n,p,s2.sid from inpos i,sec s1,mbreed m,sec s2 where i.sid=s1.sid and s1.sec_en=m.ems3 and m.breed_en=s2.sec_en and s1.pid=(select pid from pri where pri='ems3') and s2.pid=(select pid from pri where pri='breed')},
+ qq{insert into sec (pid,sec_en) select (select pid from pri where pri='breed'),breed_en from sec inner join mbreed on (sec_en=bcode) where pid=(select pid from pri where pri='bcode') and breed_en=breed_fi},
+ qq{insert into sec (pid,sec_en,sec_fi) select (select pid from pri where pri='breed'),breed_en,breed_fi from sec inner join mbreed on (sec_en=bcode) where pid=(select pid from pri where pri='bcode') and breed_en<>breed_fi},
+ qq{insert into inpos select aid,n,p,s2.sid from inpos i,sec s1,mbreed m,sec s2 where i.sid=s1.sid and s1.sec_en=m.bcode and m.breed_en=s2.sec_en and s1.pid=(select pid from pri where pri='bcode') and s2.pid=(select pid from pri where pri='breed')},
 
  qq{drop table if exists _prim},
  qq{create table _prim (pid integer primary key not null,cntpri integer not null)},
