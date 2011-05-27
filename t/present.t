@@ -43,19 +43,19 @@ foreach my $lang ( qw ( en fi ) ) {
 
   # more complex rules
 
-  $t->get_ok("/$lang/$mode?nick=Mikke&ems3=TUV&ems1=d")
+  $t->get_ok("/$lang/$mode?nick=Mikke&bcode=TUV&feat=d")
    ->status_is(200)
    ->content_like(qr/\.JPG/);
 
-  $t->get_ok("/$lang/$mode?nick=Mikke&ems3=TUV&ems1=%2Bd")
+  $t->get_ok("/$lang/$mode?nick=Mikke&bcode=TUV&feat=%2Bd")
    ->status_is(200)
    ->content_like(qr/\.JPG/);
 
-  $t->get_ok("/$lang/$mode?nick=Mikke&ems3=%2BTUV&ems1=%2Bd&id=157164")
+  $t->get_ok("/$lang/$mode?nick=Mikke&bcode=%2BTUV&feat=%2Bd&id=157164")
    ->status_is(200)
    ->content_like(qr/\.JPG/);
   
-  $t->get_ok("/$lang/$mode?ems3=-TUV&ems1=%2Bd")
+  $t->get_ok("/$lang/$mode?bcode=-TUV&feat=%2Bd")
    ->status_is(200)
    ->content_like(qr/\.JPG/);  
  
@@ -63,7 +63,7 @@ foreach my $lang ( qw ( en fi ) ) {
    ->status_is(200)
    ->content_like(qr/\.JPG/);
 
-  $t->get_ok("/$lang/$mode?has=ems5")
+  $t->get_ok("/$lang/$mode?has=code")
    ->status_is(200)
    ->content_like(qr/\.JPG/);
 
@@ -96,7 +96,7 @@ foreach my $lang ( qw ( en fi ) ) {
   $t->get_ok("/$lang/$mode?breeder=just_a_random_text&id=046182") 
    ->status_is(404); # unknown breeder
   
-  $t->get_ok("/$lang/$mode?has=-ems3&ems3=%2BTUV") # nothing found
+  $t->get_ok("/$lang/$mode?has=-bcode&bcode=%2BTUV") # nothing found
    ->status_is(404);
   
   $c=$c+16;

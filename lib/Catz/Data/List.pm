@@ -79,49 +79,49 @@ my $matrix = {
  cat => {
   modes => [ qw ( a2z top first ) ],
   dividers => 1,
-  related => [ qw ( title ems1 ems3 ems4 ems5 ) ]
+  related => [ qw ( title feat bcode app code ) ]
  },
  
  breed => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
-  related => [ qw ( ems3 ems4 ) ]
+  related => [ qw ( bcode app ) ]
  },
  
  breeder => {
   modes => [ qw ( a2z top first nat ) ],
   dividers => 1,
-  related => [ qw ( breed ems3 cat org umb ) ] 
+  related => [ qw ( breed bcode cat org umb ) ] 
  },
  
- ems5 => {
+ code => {
   modes => [ qw ( a2z top first ) ],
   dividers => 1,
   related => [ qw ( cat breeder ) ] 
  },
 
- ems4 => {
+ app => {
   modes => [ qw ( a2z top ) ],
   dividers => 1,
   related => [ qw ( cat breeder ) ]
  },
  
- ems3 => {
+ bcode => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
-  related => [ qw ( breeder ems1 ) ]
+  related => [ qw ( breeder feat ) ]
  },
  
- ems1 => {
+ feat => {
   modes => [ qw ( a2z top ) ],
   dividers => 1,
-  related => [ qw ( ems1 ems4 ) ] 
+  related => [ qw ( feat app ) ] 
  },
  
  nick => {
   modes => [ qw ( a2z top ) ],
   dividers => 1,
-  related => [ qw ( cat breed ems3 ) ]
+  related => [ qw ( cat breed bcode ) ]
  },
 
  title => {

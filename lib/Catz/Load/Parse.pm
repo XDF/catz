@@ -48,28 +48,28 @@ sub cat {
 
  my $d = {}; # collect the fragments to a hashref
  
- # collect ems and remove it from data
+ # collect code and remove it from data
  if ( $data =~ /^(.*)\[(.+?)\](.*)$/ ) {
   
   $data = $1 . $3;
   
-  my $ems = $2;
+  my $code = $2;
   
-  $ems =~ /^([A-Z]{3,3})(\s+)?(.+)?$/ or die "malformed EMS code '$ems'";
+  $code =~ /^([A-Z]{3,3})(\s+)?(.+)?$/ or die "malformed code (1) '$code'";
   
-  $d->{ems3} = $1;
+  $d->{bcode} = $1;
   
-  $3 and $d->{ems4} = $3;
+  $3 and $d->{app} = $3;
  
-  defined $d->{ems4} and $d->{ems1} = [ split / +/, $d->{ems4} ];
+  defined $d->{app} and $d->{feat} = [ split / +/, $d->{app} ];
    
-  $d->{ems5} = $ems; # the original EMS is ems5
+  $d->{code} = $code; # the original code in code
   
-  length ( trim ( $ems ) ) == 0 and die;
+  length ( trim ( $code ) ) == 0 and die "malformed code (2) '$code'";
      
  } else {
  
-  die "no ems code in cat data '$data'"
+  die "no code in cat data '$data'"
    
  }
   
@@ -162,7 +162,7 @@ sub comment {
  length ( $text ) > 0 and index ( $text, '[' ) > -1 and 
   index ( $text, ']' ) > -1  and do {
    
-  # if something is left and ems code is present 
+  # if something is left and code is present 
  
   $d->[2] = cat ( $text );
   

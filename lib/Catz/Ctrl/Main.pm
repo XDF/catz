@@ -24,9 +24,7 @@
 
 package Catz::Ctrl::Main;
 
-use 5.10.0;
-use strict;
-use warnings;
+use 5.10.0; use strict; use warnings;
 
 use parent 'Catz::Core::Ctrl';
 
