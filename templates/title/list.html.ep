@@ -1,3 +1,0 @@
-<table class="full"><tr><td class="center">
-<h1><%= $t->{ALL} %> <%= $t->{uc($subject).'S'} %> <%= $t->{'MODE_'.uc($mode)} %></h1>
-<td><td class="center"><%= scalar @$list %> <%= $t->{uc($subject).'A'} %></td></tr></table>

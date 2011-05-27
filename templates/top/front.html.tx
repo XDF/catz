@@ -1,7 +1,0 @@
-: cascade 'top/top.html.tx'
-: override path -> {
-<span class="aero"><: $t.SLOGAN :></span>
-: }
-: override btitle -> {
-<h1 class="aeroplus"><: $t.SITE :></h1>
-: }  
