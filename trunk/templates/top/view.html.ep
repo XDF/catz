@@ -1,8 +1,0 @@
-% extends 'top/top';
-<%= content path => begin %>
-<%== include 'elem/argspath' %>
-<% end %>
-<%= content misc => begin %>
-<%== include 'elem/setup', key => 'photosize' %>
-<%== include 'elem/setup', key => 'display' %>
-<% end %>  
