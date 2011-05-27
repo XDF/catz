@@ -29,7 +29,7 @@ use 5.10.0; use strict; use warnings;
 use base 'Exporter';
 
 our @EXPORT_OK = qw( 
- body exifsort exid explink expmacro exptext fixgap lens loc nat org 
+ body exifsort exid expmacro exptext fixgap lens loc nat org 
  plaincat textchoose textremove tolines topiles umb 
 );
 
@@ -105,20 +105,6 @@ sub exifsort {
  
 }
 
-memoize ( 'expand_common' );
-
-sub expand_common {
-
- ### NOT USED RIGHT NOW!
-
- my $text = shift;
-
- $text =~ s/FIFE/FIFe/g;
- 
- return $text; 
-
-}
-
 memoize ( 'exptext' );
 
 sub exptext {
@@ -145,22 +131,6 @@ sub exptext {
   
  return $text;
  
-}
-
-memoize ( 'explink' );
-
-sub explink {
-
- my $text = shift;
- 
- #my $old = $text; 
-  
- $text =~ s/\<(.+?)\|(.+?)\>/\<a href\=\"$1\"\>$2\<\/a\>/g;
- 
- #( $text ne $old ) and logit ( "$old -> $text" ); 
- 
- return $text;
-   
 }
 
 memoize ( 'macro' );
@@ -253,7 +223,7 @@ sub expmacro {
   $text =~ s/$from/$to/g;
    
  }
-
+ 
  return $text;
  
 }
