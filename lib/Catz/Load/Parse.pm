@@ -33,7 +33,7 @@ our @EXPORT = qw ( parse_pile );
 use Data::Dumper;
 
 use Catz::Load::Data qw ( 
- exid explink expmacro exptext loc nat org plaincat tolines umb 
+ exid expmacro exptext loc nat org plaincat tolines umb 
 );
 use Catz::Util::Log qw ( logit );
 use Catz::Util::String qw ( clean trim );
@@ -86,7 +86,7 @@ sub cat {
  
  # remove country codes before and after breeder
  $data =~ s/[A-Z]+\*(\{)/$1/;
- $data =~ s/\*(\})[A-Z]+/$1/;
+ $data =~ s/(\})\*[A-Z]+/$1/;
   
  # collect breeder and remove {} 
  ( $data =~ /^(.*)\{(.+?)\}(.*)$/ ) and do 
@@ -115,16 +115,18 @@ sub cat {
  }
 
  # collect post-titles and remove them
- if ( $data =~ /^(.+),(([A-Z0-9 ]|,| )+)/ ) {
-
-  # fixed fixes
-  $2 eq 'USA' and do { $2 = ''; $data = $data . ", $2" };
+ if ( $data =~ /^(.+), (([A-Z0-9 ]|,| )+)$/ ) {
   
   $data = $1;
   
   push @titles, map { trim $_ } split /,/, $2;
   
  }
+ 
+ # remove the null characters from the cat data
+ # null characters are used to prevent incorrect title extractions
+ 
+ $data =~ s/\~//g; 
  
  scalar ( @titles ) > 0 and $d->{title} = \@titles;
   
@@ -142,19 +144,25 @@ sub comment {
  my $text = shift;
  
  my $d = []; # all findings get packed to this arrayref
-
+ 
+ # data splitting with & is prevented by writing it &&, now convert it back
+ $text =~ s/\&\&/\&/g; 
+  
  # expand all macros
  $text = expmacro ( $text );
- 
- # expand all links
- $text = explink ( $text );
- 
+   
  # the first element is the text in english
  $d->[0] = exptext ( $text, 'en' );
  
+ $d->[0] =~ s/\~//g; # remove null characters
+ $d->[0] =~ s/FIFE/FIFe/g;
+
  # the second element is the text in finnish
  $d->[1] = exptext ( $text, 'fi' );
  
+ $d->[1] =~ s/\~//g; # remove null characters
+ $d->[1] =~ s/FIFE/FIFe/g;
+  
  #$d->[0] =~ /\(/ or do { $d->[0] ne $d->[1] and die "$d->[0] $d->[1]" };
   
  $text =  plaincat ( $text );

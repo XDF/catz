@@ -64,8 +64,12 @@
 % if ( $display eq 'full' ) {
 <div class="aeroplus bar">
 % my $i = 0;
+% my $j = 1;
 % scalar ( @$comment ) > 0 and do {
 %  foreach my $comm ( @{ $comment } ) {
+% $j++ > 1 and do {
+<%= $sep %>
+% };  
 <%= $comm %>
 %   if ( defined $resultkey->[$i] ) {
 <span class="result lean shrink" id="<%== $resultkey->[$i] %>"></span>
