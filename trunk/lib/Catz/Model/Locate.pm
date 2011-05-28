@@ -160,7 +160,7 @@ sub _full {
 
     $row->[6] = ++$i;
    
-    if ( $i == $break[0] ) {
+    if ( $break[0] and $i == $break[0] ) {
     
      shift @break;
 

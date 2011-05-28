@@ -84,26 +84,41 @@ sub _vectorize {
    
  if ( $pri eq 'has' ) {
     
-  $res = $self->dbcol( "select x from _search_$orig where pri=? collate nocase", $sec )
+  $res = $self->dbcol( "select x from _search_$orig where pri=?", $sec )
             
  } else { # no 'has'
  
-  if ( ( index ( $sec, '%' ) > -1 ) or ( index ( $sec, '_' ) > -1 ) ) {
+  my $first = substr $sec, 0, 1; 
+  my $last = substr $sec, -1, 1;
+    
+  if ( $first eq '%' ) {
   
-   # pattern matching, always from both languages to make site's language change feature work smoothly
-
-   $res = $self->dbcol ( "select x from _search_$orig where pri=? collate nocase and sec like ? collate nocase", $pri, $sec )
-       
+   if ( $last eq '%') {  # %xyz%
+   
+    $res = $self->dbcol ( "select x from _search_$orig where pri=? and sec like ?", $pri, $sec );
+   
+   }  else { # %xyz
+   
+    $res = $self->dbcol ( "select x from _search_$orig where pri=? and (sec like ? or sec like ?)", $pri, $sec, "$sec %" );
+   
+   }
+  
   } else {
 
-   # exact, always from both languages to make site's language change feature work smoothly
-      
-   $res = $self->dbcol ( "select x from _search_$orig where pri=? collate nocase and sec=? collate nocase", $pri, $sec )
- 
-  }  
+   if ( $last eq '%') { # xyz%
 
+    $res = $self->dbcol ( "select x from _search_$orig where pri=? and (sec like ? or sec like ?)", $pri, $sec, "% $sec" );
+      
+   }  else { # xyz
+
+    $res = $self->dbcol ( "select x from _search_$orig where pri=? and (sec=? collate nocase or sec like ? or sec like ? or sec like ?)", $pri, $sec, "$sec %", "% $sec", "% $sec %" );   
+   
+   }
+
+  } 
+ 
  }
-       
+        
  my $bvec = Bit::Vector->new( $size );
    
  $bvec->Index_List_Store ( @$res ); # store the x indexes as bits
