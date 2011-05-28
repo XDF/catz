@@ -30,16 +30,6 @@ use parent 'Exporter';
 
 our @EXPORT = qw ( list_matrix list_node );
 
-my $def_div = { # default setup with dividers
- modes => [ qw ( a2z top first ) ],
- dividers => 1
-};
-
-my $def_nodiv = { # default setup with no dividers
- modes => [ qw ( a2z top first ) ],
- dividers => 0
-};
-
 my $matrix = {
 
  album => {
@@ -63,13 +53,13 @@ my $matrix = {
  },
  
  org => {
-  modes => [ qw ( a2z top ) ],
+  modes => [ qw ( a2z top first ) ],
   dividers => 0,
   related => [ qw ( date album loc ) ]
  },
  
  umb => {
-  modes => [ qw ( a2z top ) ],
+  modes => [ qw ( a2z top first ) ],
   dividers => 0,
   related => [ qw ( org ) ]
  },
@@ -101,7 +91,7 @@ my $matrix = {
  },
 
  app => {
-  modes => [ qw ( a2z top ) ],
+  modes => [ qw ( a2z top first ) ],
   dividers => 1,
   related => [ qw ( cat breeder ) ]
  },
@@ -113,19 +103,19 @@ my $matrix = {
  },
  
  feat => {
-  modes => [ qw ( a2z top ) ],
+  modes => [ qw ( a2z top first ) ],
   dividers => 1,
   related => [ qw ( feat app ) ] 
  },
  
  nick => {
-  modes => [ qw ( a2z top ) ],
+  modes => [ qw ( a2z top first ) ],
   dividers => 1,
   related => [ qw ( cat breed bcode ) ]
  },
 
  title => {
-  modes => [ qw ( a2z top ) ],
+  modes => [ qw ( a2z top first ) ],
   dividers => 1,
   related => [ qw ( title ) ]
  },
@@ -143,25 +133,25 @@ my $matrix = {
  },
 
  fnum => {
-  modes => [ qw ( a2z top ) ],
+  modes => [ qw ( a2z top first ) ],
   dividers => 0,
   related => [ qw ( lens iso etime ) ]
  },
 
  etime => {
-  modes => [ qw ( a2z top ) ],
+  modes => [ qw ( a2z top first ) ],
   dividers => 0,
   related => [ qw ( lens iso fnum ) ]
  },
 
  iso => {
-  modes => [ qw ( a2z top ) ],
+  modes => [ qw ( a2z top first ) ],
   dividers => 0,
   related => [ qw ( body iso etime ) ]
  },
 
  flen => {
-  modes => [ qw ( a2z top ) ],
+  modes => [ qw ( a2z top first ) ],
   dividers => 0,
   related => [ qw ( lens ) ]
  },

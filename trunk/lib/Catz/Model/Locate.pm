@@ -41,7 +41,9 @@ sub _full {
  
  exists $matrix->{$pri} or return [ 0, undef, undef ];  
        
- my $cols = "pri,sec,cntalbum,cntphoto,first,last,null"; 
+ my $cols = "pri,sec,cntalbum,cntphoto,first,last,null";
+ 
+ my $cols_first = "pri,sec,cntalbum,cntphoto,substr(first,1,8)||replace(substr(first,9,6),'','000000')),last,null";  
  
  given ( $mode ) {
  
@@ -80,8 +82,9 @@ sub _full {
   }
   
   when ( 'date' ) {
-    
-   my $res = $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by first desc}, $pri );
+  
+   # special ordering where missing HHMMSS is assumed to be 000000 so is the first photo on that date  
+   my $res = $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by  substr(first,1,8)||replace(substr(first,9,6),'','000000') desc}, $pri );
    
    my @idx = (); my @sets = (); my @set = (); my $prev = ''; my $i = 1;
    
@@ -115,7 +118,8 @@ sub _full {
     
   when ( 'first' ) {
   
-   my $res = $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by first,sort}, $pri );
+   # special ordering where missing HHMMSS is assumed to be 000000 so is the first photo on that date
+   my $res = $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by substr(first,1,8)||replace(substr(first,9,6),'','000000'),sort}, $pri );
    
    my @idx = (); my @sets = (); my @set = (); my $prev = ''; my $i = 1;
    

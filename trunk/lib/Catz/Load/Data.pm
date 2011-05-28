@@ -111,8 +111,6 @@ sub exptext {
 
  my ( $text, $lang ) = @_;
  
-# my $old = $text;
- 
  if( $lang eq 'fi' ) { 
  
   $text =~ s/\"(.+?)\|(.+?)\"/$2/g; # dual lang, use second version
@@ -124,10 +122,12 @@ sub exptext {
  }
  
  $text =~ s/\"(.+?)\"/$1/g; # single lang
-
-# ( $text ne $old ) and logit ( "$old -> $text" );
   
  $text =~ s/\{(.+)\}/$1/g; # also remove breeder markers
+ 
+ $text =~ s/\~//g; # remove null characters ~
+
+ $text =~ s/FIFE/FIFe/g;
   
  return $text;
  

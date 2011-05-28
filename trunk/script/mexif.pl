@@ -24,8 +24,6 @@
 
 use 5.10.0; use strict; use warnings;
 
-use feature qw ( say );
-
 use lib '../lib';
 
 use File::Find;

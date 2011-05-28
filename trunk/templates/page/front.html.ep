@@ -14,8 +14,8 @@
 %#
 <% content 'btitle' => begin %>
 % my $text =  $t->{SITE};
-% $text =~ s|z|<span class="giga xtra">z</span>|g;
-<h1 class="huge"><%== $text %></h1>
+% $text =~ s|z|<span class="xtra">z</span>|g;
+<h1 class="giga"><%== $text %></h1> <%= $t->{AUTHORBY} %> <a href="<%== $t->{AUTHORURL} %>"><%= $t->{AUTHOR} %></a>
 <% end %>
 %#
 <% content 'main' => begin %>

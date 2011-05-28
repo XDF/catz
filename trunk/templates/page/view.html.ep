@@ -80,15 +80,20 @@
 % };
 <span class="shrink">
 % $i = 1;
-% my $pdet = '93liokasdflui3l8rlsasdflku23wr';
+% my $pdet = '93liokasd=))(/l8rlsasdflOLW3wr';
 % foreach my $detail ( @$detail ) {
 % if ( $detail->[0] ne $pdet ) {
 <%= $i++ == 1 ? '' : $sep %>
 <%= $t->{uc($detail->[0])} %>
-% $pdet =  $detail->[0];
 % }
+% $pdet =  $detail->[0];
+% $detail->[0] ne 'time' and do {
 <a href="/<%= $lang %>/browse?<%= $detail->[0] %>=<%= enurl ( $detail->[1] ) %><%= $id ? '&id='.$id : '' %>">
-<%= $detail->[0] ne 'dt' ? $detail->[1] : dtexpand ( $detail->[1], $lang ) %></a>
+% };
+<%= ( $detail->[0] ne 'date' and $detail->[0] ne 'time' ) ? $detail->[1] : dtexpand ( $detail->[1], $lang ) %>
+% $detail->[0] ne 'time' and do {
+</a>
+% };
 % }
 <span></div>
 % }

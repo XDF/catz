@@ -127,11 +127,13 @@ my $run = [
  qq{create table _prim (pid integer primary key not null,cntpri integer not null)},
  qq{insert into _prim select pid,count(*) from pri natural join sec group by pid},
 
+ # creating and populcatin sec-statistics table
+ # we use special handling of time (moment) where we make sure that a null time doesn't affect the min/max results
  qq{drop table if exists _secm},
  qq{create table _secm (sid integer primary key not null,cntalbum integer not null,cntphoto integer not null, first integer not null, last integer not null)},
- qq{insert into _secm select sec.sid,count(distinct album.aid),count(distinct x),min(substr(folder,1,8)),max(substr(folder,1,8)) from inalbum natural join photo natural join sec natural join pri natural join album where origin='album' group by sec.sid},
- qq{insert into _secm select inexiff.sid,count(distinct album.aid),count(distinct x),min(substr(folder,1,8)),max(substr(folder,1,8)) from photo natural join inexiff natural join album where sid in ( select sid from inexiff ) group by sid},
- qq{insert into _secm select sec.sid,count(distinct album.aid),count(distinct x),min(substr(folder,1,8)),max(substr(folder,1,8)) from inpos natural join photo natural join sec natural join pri natural join album where origin='pos' group by sec.sid},
+ qq{insert into _secm select sec.sid,count(distinct album.aid),count(distinct x),replace(min(substr(folder,1,8)||ifnull(moment,'999999')),'999999',''),replace(max(substr(folder,1,8)||ifnull(moment,'000000')),'000000','') from inalbum natural join photo natural join sec natural join pri natural join album where origin='album' group by sec.sid},
+ qq{insert into _secm select inexiff.sid,count(distinct album.aid),count(distinct x),replace(min(substr(folder,1,8)||ifnull(moment,'999999')),'999999',''),replace(max(substr(folder,1,8)||ifnull(moment,'000000')),'000000','') from photo natural join inexiff natural join album where sid in ( select sid from inexiff ) group by sid},
+ qq{insert into _secm select sec.sid,count(distinct album.aid),count(distinct x),replace(min(substr(folder,1,8)||ifnull(moment,'999999')),'999999',''),replace(max(substr(folder,1,8)||ifnull(moment,'000000')),'000000','') from inpos natural join photo natural join sec natural join pri natural join album where origin='pos' group by sec.sid},
 
  qq{drop table if exists _find_en},
  qq{drop table if exists _find_fi},
@@ -430,7 +432,6 @@ sub load_folder {
   
   my $moment = undef; # by default moment is null
   
-
   defined $exif->{dt} and do { # if exif contains dt
 
    # YYYYMMDD must match in dt and album name in order to 
@@ -490,6 +491,14 @@ sub load_simple {
    
    # skip the photo URL that comes as third value
    when ( 'mbreeder' ) { @lines = ( $lines[0], $lines[1], $lines[3] ) };
+   
+   when ( 'mnat' ) {
+   
+    # verify that a flag file is present
+    my $fflag = conf ( 'path_flag') . '/' . lc ( $lines[0] ) . '.gif'; 
+    -f $fflag or die "unable to locate flag file '$fflag' for '$lines[0]'"; 
+    
+   }
     
   } 
   

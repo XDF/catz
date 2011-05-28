@@ -49,18 +49,61 @@ memoize ( 'dtexpand' );
 
 sub dtexpand {
  
- # HHMMSS are optional 
- ( $_[0] =~ /^(\d{4})(\d\d)(\d\d)((\d\d)(\d\d)(\d\d))?$/ )
-  or die "invalid timestamp input '$_[0]'";
-
- my $lang = defined $_[1] ? $_[1] : 'en'; # defaults to english
+ # expands YYYYMMDD YYYYMMDDHHMMSS HHMMSS
  
- my $str = ( $lang eq 'fi' ? int($3) . '.' . int($2) . '.' . $1 : "$1-$2-$3" );
-
- defined ( $4 ) and $str = "$str $5:$6:$7";
-
- return $str;
+ if ( length $_[0] == 8 ) {
  
+  if ( ( $_[1] // 'en' ) eq 'fi' ) {
+  
+   return 
+    int ( substr( $_[0], 6, 2 ) ) . '.' .
+    int ( substr( $_[0], 4, 2 ) ) . '.' .
+    substr( $_[0], 0, 4 );
+  
+  } else {
+
+   return 
+    substr( $_[0], 0, 4 ) . '-' .
+    substr( $_[0], 4, 2 ) . '-' .
+    substr( $_[0], 6, 2 );
+   
+  }    
+ 
+ } elsif ( length $_[0] == 14 ) {
+
+  if ( ( $_[1] // 'en' ) eq 'fi' ) {
+  
+   return 
+    int ( substr( $_[0], 6, 2 ) ) . '.' .
+    int ( substr( $_[0], 4, 2 ) ) . '.' .
+    substr( $_[0], 0, 4 ) . ' ' .
+    substr( $_[0], 8, 2 ) . ':' .
+    substr( $_[0], 10, 2 ) . ':' .
+    substr( $_[0], 12, 2 );
+  
+  } else {
+
+   return 
+    substr( $_[0], 0, 4 ) . '-' .
+    substr( $_[0], 4, 2 ) . '-' .
+    substr( $_[0], 6, 2 ) . ' ' .
+    substr( $_[0], 8, 2 ) . ':' .
+    substr( $_[0], 10, 2 ) . ':' .
+    substr( $_[0], 12, 2 );
+   
+  }   
+    
+ } elsif ( length $_[0] == 6 ) {
+ 
+   return 
+    substr( $_[0], 0, 2 ) . ':' .
+    substr( $_[0], 2, 2 ) . ':' .
+    substr( $_[0], 4, 2 );
+     
+ } 
+ 
+ die "invalid timestamp input '$_[0]'";
+  
 }
 
 #

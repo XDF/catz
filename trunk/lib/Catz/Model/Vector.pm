@@ -75,6 +75,8 @@ sub _vectorize {
  
  my $res;
  
+ ( length ( $pri // '' ) > 0 and length ( $sec // '' ) > 0 ) or return Bit::Vector->new( $size );
+  
  # create a bit vector of x indexes based on pri + sec pair
  # first we ask if this data comes from album, exif or position
  my $orig = $self->origin ( $pri, $sec );

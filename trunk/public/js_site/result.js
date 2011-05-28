@@ -23,7 +23,7 @@
 // THE SOFTWARE.
 //
 
-function resultURL( key ) {
+function catzResultURL( key ) {
 
  var head = $(location).attr('pathname').toString().substring ( 0, 3 );
 
@@ -31,14 +31,14 @@ function resultURL( key ) {
 
 }
 
-function fetchResults() {
+function catzFetchResults() {
 
  $("span.result").each(function() {
 
   $(this).html( '...' ); // indicate that the data is being fetched
 
   $.ajax ({
-    url: resultURL ( $(this).attr('id') ),
+    url: catzResultURL ( $(this).attr('id') ),
     context: this,
     success: function( data ){
       $(this).html( data ); // update the result to DOM   
@@ -54,6 +54,6 @@ function fetchResults() {
 
 $(document).ready(function() { 
 
- fetchResults();
+ catzFetchResults();
    
 });

@@ -1,6 +1,5 @@
-% my $func = 'setupChange'; # the default JavaScript function to be called
 % my $arg1 = qq{'$setupkey'}; 
-<select id="setup_<%= $setupkey %>" class="flip" onchange="<%= $func %>(<%== $arg1 %>,$('#setup_<%== $setupkey %>').val())">
+<select id="setup_<%= $setupkey %>" class="flip" onchange="catzSetupChange(<%== $arg1 %>,$('#setup_<%== $setupkey %>').val())">
 % foreach my $val ( @{ $setup_values->{$setupkey} } ) {
 % my $selected = ' ';
 % $val eq stash ( $setupkey ) and $selected = ' selected ';

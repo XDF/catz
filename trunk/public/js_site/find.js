@@ -24,25 +24,25 @@
 
 // stores the previous value of the find text
 // to detect if the value has really changed 
-var prevVal = '89435jklkasd83i89h3n5n23';
+var catzPrevVal = '89435jklkas7/)=)3i89h3n5n23';
 
 // keeps a reference to the previous find and sample requests
 // in order to make them abortable if a new requests are issued
 // before the previous ones have been completed
-var prevReqFind;
-var prevReqSample;
+var catzPrevReqFind;
+var catzPrevReqSample;
 
-function doFind() {
+function catzDoFind() {
 
  what = $('#find').val();
  
- if ( what != prevVal ) { // if the value has really changed ...
+ if ( what != catzPrevVal ) { // if the value has really changed ...
  
-  prevVal = what;
+  catzPrevVal = what;
 
   // terminate ongoing requests if any
-  if ( prevReqFind ) { prevReqFind.abort(); }  
-  if ( prevReqSample ) { prevReqSample.abort(); } 
+  if ( catzPrevReqFind ) { catzPrevReqFind.abort(); }  
+  if ( catzPrevReqSample ) { catzPrevReqSample.abort(); } 
   
   // extract '/fi' or '/en' from the current URL
   // to make find language sensitive
@@ -55,11 +55,11 @@ function doFind() {
    $('div#found').hide(); 
        
    // load "anonymous" samples
-   prevReqSample = $.ajax ({
+   catzPrevReqSample = $.ajax ({
     url: head + '/sample/',
     success: function( data ){ // when te request completes this get executed
      
-      prevReqSample = null; // clear the reference to this request
+      catzPrevReqSample = null; // clear the reference to this request
       $('div#samples').html( data ); // update the result to DOM   
       $('div#samples').show(); // make them visible
       
@@ -68,11 +68,11 @@ function doFind() {
     
   } else { // there is something to find
      
-   prevReqFind = $.ajax ({
+   catzPrevReqFind = $.ajax ({
     url: head + '/find?what=' + what,
     success: function( data ){ // when te request completes this get executed
      
-      prevReqFind = null; // clear the reference to this request
+      catzPrevReqFind = null; // clear the reference to this request
       $('div#found').html( data ); // update the visible results
       $('div#found').show(); // make them visible
      
@@ -105,11 +105,11 @@ $(document).ready(function() {
  // intial rendering when page loads, to bring
  // last content back up when returning to a page
  // and to load default samples when no find 
- doFind();
+ catzDoFind();
 
  // run every time there is a keyboard action on find field
  $('#find').keyup(function() {
-  doFind();
+  catzDoFind();
  });
 
 });
