@@ -48,6 +48,7 @@ do {
 } foreach ( keys %{ $style->{size} } ); 
 
 $style->{lineh}->{normal} = 145;
+$style->{lineh}->{medium} = round ( $style->{lineh}->{normal} * 1.04 );
 $style->{lineh}->{large} = round ( $style->{lineh}->{normal} * 1.15 );
 
 do { 

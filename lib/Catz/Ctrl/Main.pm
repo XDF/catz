@@ -31,7 +31,6 @@ use parent 'Catz::Core::Ctrl';
 use I18N::AcceptLanguage;
 
 use Catz::Core::Conf;
-use Catz::Data::List qw ( list_matrix );
 use Catz::Data::Result;
 use Catz::Data::Setup;
 use Catz::Data::Style;
@@ -64,9 +63,7 @@ sub front {
  $s->{pris} =  $self->fetch ( 'locate#pris' ); 
 
  $s->{maxx} = $self->fetch ( 'common#maxx' );
-  
- $s->{matrix} = list_matrix;
-    
+     
  $self->render( template => 'page/front' );
  
 }

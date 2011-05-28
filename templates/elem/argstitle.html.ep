@@ -1,7 +1,11 @@
 % if ( $args_count == 0 ) {
 <%= $t->{ALL} %> <%= $t->{PHOTOS} %>
 % } elsif ( $args_count < 3 ) {
-<%= $args_array->[1] %> 
+% if ( $args_array->[0] eq 'date' ) {
+<%= dtexpand ( $args_array->[1], $lang ) %>
+% } else {
+<%= $args_array->[1] %>
+% } 
 % } else {
 <%= $t->{SEARCH_RESULT} %> <%= $search %>     
 % }

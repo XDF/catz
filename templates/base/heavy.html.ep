@@ -8,13 +8,7 @@
 %== include 'elem/js', jstype => 'lib', jsfile => 'jquery';
 %== include 'elem/js', jstype => 'lib', jsfile => 'jquery.urlencode';
 %== include 'elem/js', jstype => 'site', jsfile => 'setup'; 
-<%= content 'jsadd' %>
-% $action eq 'view' and do {
-<script type="text/javascript" src="/js_site/result.js"></script>
-%  $photosize eq 'fit' and do {
-<script type="text/javascript" src="/js_site/fit.js"></script> 
-%  };
-% }; 
+<%= content 'jsadd' %> 
 <meta meta="generator" content="<%== $t->{APPLICATION} %>">
 <meta meta="generated_at" content="<%== $now %>"> 
 <meta meta="data_version" content="<%== $version %>"> 

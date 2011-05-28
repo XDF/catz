@@ -31,6 +31,7 @@ use parent 'Mojolicious';
 use Catz::Core::Cache;
 use Catz::Core::Conf;
 use Catz::Core::Text;
+use Catz::Data::List qw ( list_matrix );
 use Catz::Data::Setup;
 use Catz::Util::File qw ( fileread findlatest pathcut );
 use Catz::Util::Time qw( dt dtdate dtexpand dtlang );
@@ -102,6 +103,8 @@ sub startup {
 sub before {
 
  my $self = shift; my $s = $self->{stash};
+ 
+ $s->{matrix} = list_matrix;
    
  # default to "index,follow", actions may modify it as needed 
  $s->{meta_index} = 1;
@@ -130,6 +133,8 @@ sub before {
 
  # the url where the images get fetched from
  $s->{photobase} = conf ( 'base_photo' );
+ 
+ $s->{flagbase} = conf ( 'base_flag' );
   
  my $url = $self->req->url;
  

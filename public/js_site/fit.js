@@ -22,25 +22,22 @@
 // THE SOFTWARE.
 //
 
-function fitPhoto() {
+function catzFitPhoto() {
 
-  var windowHeight = $(window).height();  
-  var top = $('#fitparent').offset().top;
+ $('#fittarget').height(
+  $(window).height() - $('#fitparent').offset().top
+ );
   
-  var photoHeight = windowHeight - top;
-    
- $('#fittarget').height( photoHeight  ); 
-
 }
 
 $(document).ready(function() { // first activation on page load
 
- fitPhoto();
+ catzFitPhoto();
    
 });
 
-$(window).resize(function() { // reactivation on resize
+$(window).resize(function() { // reactivation on every resize
 
- fitPhoto();
+ catzFitPhoto();
 
 });

@@ -59,8 +59,18 @@
 <%= $row->[3] %> <%= $row->[3] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> 
 % if ( $subject ne 'album' and $subject ne 'date' ) {
 <%= $lang eq 'en' ? ' in ' : '' %> <%= $row->[2] %> <%= $row->[2] == 1 ? $t->{ALBUMX} : $t->{ALBUMSX} %>
+% }
+% if ( $subject ne 'album' and $subject ne 'date' ) {
 <%= $sep %>
 <%= dtexpand ( $row->[4], $lang ) %><%= $row->[4] eq $row->[5] ? '' : ' - ' . dtexpand ( $row->[5], $lang ) %> 
+% } else {
+% length (  $row->[4] ) == 14 and do {
+<%= $sep %>
+<%= dtexpand ( substr( $row->[4], 8, 6 ), $lang ) %>
+% length (  $row->[5] ) == 14 and ( substr( $row->[4], 8, 6 ) ne substr ( $row->[5], 8, 6 ) ) and do {
+- <%= dtexpand ( substr( $row->[5], 8, 6 ), $lang ) %>
+% };
+% };
 % }
 </div>
 % }

@@ -1,5 +1,5 @@
 % if ( $args_count > 0 and $args_count < 3 ) {
-<a href="/<%= $lang %>/list/<%= $args_array->[0] %>/a2z/"><%= $t->{uc($args_array->[0]).'S'} %></a> <%= $pathsep %>
+<a href="/<%= $lang %>/list/<%== $args_array->[0] %>/<%== $matrix->{$args_array->[0]}->{modes}->[0] %>/"><%= $t->{uc($args_array->[0]).'S'} %></a> <%= $pathsep %>
 % } else {
 <a href="/<%= $lang %>/search/"><%= $t->{SEARCH} %></a> <%= $pathsep %>
 % } 

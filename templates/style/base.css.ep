@@ -176,6 +176,7 @@ h1 {
  font-family: <%== $st->{font} %>;
  letter-spacing: 0.25em;
  font-weight: 500;
+ line-height: <%== $st->{lineh}->{medium} %>;
 }
 
 h1.giga { font-weight: 700; }

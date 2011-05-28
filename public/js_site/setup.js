@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-function setupChange( key, val ) {
+function catzSetupChange( key, val ) {
  
  $.ajax ({
   url: '/set?' + key + '=' + val, 
