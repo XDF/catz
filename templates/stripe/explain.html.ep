@@ -13,7 +13,7 @@ while ( $i < scalar ( @{ $args_array } ) ) {
  my $ends = ( substr ( $val, 0, 1 ) eq '*' ) ? 1 : 0;
  if ( $begins and $ends ) {
   $tag = $tag . '_CONTAIN';
-  $visible = substr ( $val, -1, 1 );
+  $visible = substr ( $val, 1, -1 );
  } elsif ( $begins ) {
   $tag = $tag . '_BEGIN';
   $visible = substr ( $val, 0, -1 );

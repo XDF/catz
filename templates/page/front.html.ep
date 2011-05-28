@@ -13,7 +13,9 @@
 <% end %>
 %#
 <% content 'btitle' => begin %>
-<h1 class="giga"><%= $t->{SITE} %></h1>
+% my $text =  $t->{SITE};
+% $text =~ s|z|<span class="giga xtra">z</span>|g;
+<h1 class="huge"><%== $text %></h1>
 <% end %>
 %#
 <% content 'main' => begin %>

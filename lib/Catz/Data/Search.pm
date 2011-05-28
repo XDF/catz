@@ -36,7 +36,7 @@ use Text::ParseWords;
 use Catz::Util::String qw ( enurl );
 
 # the default pri key used if none is given in the query
-use constant DEFAULT => 'any';
+use constant DEFAULT => 'text';
 
 sub search2args { # covert a search parameter to argument list 
   
