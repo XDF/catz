@@ -19,7 +19,7 @@
 <% end %>  
 %#
 <% content 'main' => begin %>
-% if ( $pages > 1 ) { # show browser only if more than one page
+%#
 <div class="center flop bar">
 % my $label1 = $t->{PAGE_FIRST};
 % my $label2 = $t->{PAGE_PREV};
@@ -48,7 +48,6 @@
 <%= $label1 %> <%= $sep %> <%= $label2 %>
 % }
 </div>
-% }
 %#
 % foreach my $th ( @{ $thumb } ) {
 % my $toid = fullnum33 ( $th->[0], $th->[1] );

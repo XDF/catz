@@ -95,8 +95,10 @@ sub result_process {
   defined $result and push @items, 
    grep { $results->{ $_ } } split /\s+/, trim ( $result );
 
-  my $c = int ( $class ) // 0;
-
+  $class =~ /(\d+)/;
+  
+  my $c = defined $1 ? int ( $1 ) : 0;
+    
   ( $c == 11 or $c == 12 ) and $rclass = $c;
 
   ( $gender eq 'F' or $gender eq 'M' ) and $rgender = $gender;

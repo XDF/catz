@@ -59,8 +59,9 @@ sub cache_set {
  $time == 0 and return; # time is 0 = no caching
 
  my $val = pop @_; # val is the last argument
-  
- my $key = enurl ( join SEP, @_ ); # urlencode to handle spaces
+ 
+ # urlencode to handle spaces and other aliens
+ my $key = enurl ( join SEP, @_ ); 
  
  length ( $key ) > 250 and $key = shrink ( $key );
  

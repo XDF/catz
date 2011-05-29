@@ -44,7 +44,7 @@ my $key_name = conf ( 'result_param_name' );
 
 my $net = Mojo::UserAgent->new;
 
-$net->name( text('en')->{SITE} . ' (Mojo::UserAgent)' );
+$net->name( text('en')->{SITE} . ' Perl Mojo::UserAgent' );
 
 # hopefully these disable keepalive
 $net->keep_alive_timeout(0); 
