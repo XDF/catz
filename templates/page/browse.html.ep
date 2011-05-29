@@ -20,7 +20,8 @@
 %#
 <% content 'main' => begin %>
 %#
-<div class="center flop bar">
+<div class="center flip bar">
+<hr>
 % my $label1 = $t->{PAGE_FIRST};
 % my $label2 = $t->{PAGE_PREV};
 % if ( $page > 1 ) { # not first page -> active first & back

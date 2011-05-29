@@ -29,6 +29,8 @@ use lib '../lib'; use lib '../libi';
 use Catz::Core::Conf;
 use Catz::Util::File qw ( fileread filewrite fileremove findlatest pathcut );
 
+my $rolled = 0;
+
 my $path = conf ( 'path_db' );
 
 # rolls to the latest database by updating the key file
@@ -50,8 +52,8 @@ if ( not defined $dtold ) {
  # no old db, just make a key file
  filewrite ( "$path/$dtnew.txt", "Catz database key file" );
  
- say "rolled initially to '$dtnew'"; 
- 
+ say "rolled initially to '$dtnew'"; $rolled++;
+  
 } else {
 
  if ( $dtold eq $dtnew ) { 
@@ -65,10 +67,19 @@ if ( not defined $dtold ) {
   # remove the old key file
   fileremove ( $keyold );
 
-  say "rolled from '$dtold' to '$dtnew'"; 
+  say "rolled from '$dtold' to '$dtnew'"; $rolled++; 
  
  }
  
 }
+
+if ( $rolled and conf ( 'linux' ) ) {
+ 
+ chmod ( 0444, $dbnew ) || die $!;
+  
+ say "set read only '$dbnew'";
+    
+} 
+
 
 

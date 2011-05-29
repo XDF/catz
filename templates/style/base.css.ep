@@ -104,13 +104,11 @@ general horizontal and vertical paddings
 .unit { padding-top: 1em;}
 .unitplus { padding-top: 1.7em; }
 
-
-#top { padding: 1em; }
+#top { padding: 0.6em 1em 0em 1em; }
 #main { padding: 0em; }
-#bottom { padding: 1em; }
-.bar { padding: 0.6em; }
-.barplus { padding: 0.6em 1.7em 0.6em 1.7em; }
-
+#bottom { padding: 1em; margin-top: 1em; }
+.bar { padding: 0.4em; }
+.barplus { padding: 0em 1.7em 0.6em 1.7em; }
 
 /*
 the system's widths
@@ -128,6 +126,15 @@ list row dividing hr formatting
  width: 70%; 
  height: 0px;
  border-bottom: 1px;
+ border-style: none none solid none;
+ color: <%== $st->{color}->{$palette}->{dim} %>;   
+}
+
+.stripe { 
+ width: 100%; 
+ height: 0px;
+ border-bottom: 1px;
+ border-style: none none solid none;
  color: <%== $st->{color}->{$palette}->{dim} %>;   
 }
 
