@@ -24,49 +24,35 @@
 
 // stores the previous value of the find text
 // to detect if the value has really changed 
-var catzPrevVal = '89435jklkas7/)=)3i89h3n5n23';
+var catzPrevValFind = '89435?2;:#jklOPIs7/)=)3IZ9h3n5n2X';
 
 // keeps a reference to the previous find and sample requests
 // in order to make them abortable if a new requests are issued
 // before the previous ones have been completed
 var catzPrevReqFind;
-var catzPrevReqSample;
 
 function catzDoFind() {
 
  what = $('#find').val();
  
- if ( what != catzPrevVal ) { // if the value has really changed ...
+ if ( what != catzPrevValFind ) { // if the value has really changed ...
  
-  catzPrevVal = what;
+  catzPrevValFind = what;
 
-  // terminate ongoing requests if any
+  // terminate ongoing request if any
   if ( catzPrevReqFind ) { catzPrevReqFind.abort(); }  
-  if ( catzPrevReqSample ) { catzPrevReqSample.abort(); } 
   
   // extract '/fi' or '/en' from the current URL
   // to make find language sensitive
   var head = $(location).attr('pathname').toString().substring ( 0, 3 );
   
-  if ( what == '' ) { // there is nothing to find
+  if ( what == '' ) { // there is nothing to look for
 
-   // clear the find results and hide the element
+   // clear the find results and hide the found
    $('div#found').html('');
    $('div#found').hide(); 
-       
-   // load "anonymous" samples
-   catzPrevReqSample = $.ajax ({
-    url: head + '/sample/',
-    success: function( data ){ // when te request completes this get executed
-     
-      catzPrevReqSample = null; // clear the reference to this request
-      $('div#samples').html( data ); // update the result to DOM   
-      $('div#samples').show(); // make them visible
-      
-    }  
-   });
-    
-  } else { // there is something to find
+           
+  } else { // there is something to find, send request
      
    catzPrevReqFind = $.ajax ({
     url: head + '/find?what=' + what,
@@ -78,18 +64,7 @@ function catzDoFind() {
      
     }  
    });
-
-   prevReqSample = $.ajax ({
-    url: head + '/sample?what=' + what,
-    success: function( data ){ // when te request completes this get executed
      
-      prevReqSample = null; // clear the reference to this request
-      $('div#samples').html( data ); // update the result to DOM   
-      $('div#samples').show(); // make them visible
-      
-    }  
-   });
-  
   }
     
  }
@@ -98,13 +73,11 @@ function catzDoFind() {
 
 $(document).ready(function() {
 
- // make the find and samples visible when JavaScript enabled
+ // make the find visible when JavaScript enabled
  $('.find').show(); 
- $('#samples').show();
   
- // intial rendering when page loads, to bring
- // last content back up when returning to a page
- // and to load default samples when no find 
+ // intial rendering when page loads, to bring possible
+ // previous content back up when returning to page
  catzDoFind();
 
  // run every time there is a keyboard action on find field

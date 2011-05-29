@@ -1,16 +1,26 @@
 % extends 'base/heavy';
 %#
+%# --------------------
+%# The template for the front page
+%# --------------------
+%#
 <% content 'jsadd' => begin %>
 %== include 'elem/js', jstype => 'site', jsfile => 'find';
 <% end %>
+%#
+%# --------------------
 %#
 <% content 'ptitle' => begin %>
 <%= $t->{SITE} %> - <%== $t->{SLOGAN} %> 
 <% end %>
 %#
+%# --------------------
+%#
 <% content 'path' => begin %>
 <%== $t->{SLOGAN} %>
 <% end %>
+%#
+%# --------------------
 %#
 <% content 'btitle' => begin %>
 % my $text =  $t->{SITE};
@@ -18,13 +28,20 @@
 <h1 class="giga"><%== $text %></h1> <%= $t->{AUTHORBY} %> <a href="<%== $t->{AUTHORURL} %>"><%= $t->{AUTHOR} %></a>
 <% end %>
 %#
+%# --------------------
+%#
 <% content 'main' => begin %>
-<div class="bar find"><h2><%= $t->{FIND} %></h2>
+%#
+%# --------------------
+%#
+<div class="barplus find"><h2><%= $t->{FIND} %></h2>
 <input class="aero" type="text" id="find">
 <a class="aero" href="/<%== $lang %>/search/"><%= $t->{SEARCH} %></a></div>
-<div class="bar" id="found"></div>
+<div class="bar find" id="found"></div>
 %#
-<div class="bar">
+%# --------------------
+%#
+<div class="barplus">
 <a href="/<%== $lang %>/browse/"><%= fmt ( $maxx, $lang )  %> <%== $t->{PHOTOA_CATSHOW} %></a>
 % foreach my $row ( @$pris ) {
 <%= $sep %> <a href="/<%= $lang %>/list/<%= $row->[0] %>/<%= $matrix->{$row->[0]}->{modes}->[0] %>/">
@@ -33,21 +50,40 @@
 % }
 </div>
 %#
-<div class="bar"><h2><%= $t->{NEWS} %></h2><%== $sep %>
+%# --------------------
+%#
+<div class="barplus"><h2><%= $t->{NEWS} %></h2><%== $sep %>
 % foreach my $row ( @$news ) {
 <a href="/<%== $lang %>/news/#<%== $row->[0] %>"><%= dtexpand ( dtdate ( $row->[0] ), $lang ) %> <%= $row->[1] %></a> <%== $sep %>
 % } 
 <a href="/<%== $lang %>/news/"><%= $t->{NEWS_ALL} %></a>
 </div>
 %#
-<div class="bar"><h2><%= $t->{ALBUMS} %></h2> <%= $sep %> 
+%# --------------------
+%#
+<div class="barplus"><h2><%= $t->{ALBUMS} %></h2> <%= $sep %> 
 % foreach my $row ( @$albums ) {
 <a title="<%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%= $lang %>/browse?folder=<%== enurl( $row->[0] ) %>"><%= $row->[1] %></a> <%= $sep %>
 % }
 <a href="/<%= $lang %>/list/album/a2z/"><%= $t->{ALBUMS_ALL} %></a>
 </div>
 %#
-<div class="bar" id="samples"></div>      
+%# --------------------
+%#
+<div class="barplus">
+% foreach my $th ( @{ $thumbs } ) {
+% my $id = fullnum33 ( $th->[1], $th->[2] );
+% my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
+% my $titl = dtexpand ( dtdate ( $th->[3] ), $lang );
+% defined $texts->{$th->[0]} and $titl = "$titl $sep " . $texts->{$th->[0]}; 
+<a title="<%= $titl %>" href="/<%== $lang %>/view?id=<%== $id %>">
+<img src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>">
+</a>
+% }
+</div>
+%#
+%# --------------------
+%#      
 <% end %>
 %#
 %# Catz - the world's most advanced cat show photo engine

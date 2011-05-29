@@ -44,7 +44,10 @@
   <%= content 'btitle' %>
  </td></tr></table></div>
  <div id="main"><%= content 'main' %></div>
- <div id="bottom" class="unit center flip"><%= $t->{COPYRIGHT_FULL} %></div>
+ <div id="bottom" class="unit center flip shrink">
+ <%= $t->{COPYRIGHT} %> <a href="<%== $t->{AUTHORURL} %>"><%= $t->{AUTHOR} %></a> <%== $t->{FIRSTYEAR} %>-<%== thisyear %>.
+ <a href="<%== $t->{LICENCE_URL} %>"><%= $t->{LICENCE} %></a>.
+ </div>
 </div></body></html>
 %#
 %# Catz - the world's most advanced cat show photo engine

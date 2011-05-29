@@ -95,7 +95,7 @@
 </a>
 % };
 % }
-<span></div>
+<%= $sep %> <%= $t->{PHOTO_ID} %> <%== fullnum33 ( $image->[0], $image->[1] ) %><span></div>
 % }
 <div class="center" id="fitparent">
 <a href="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>">

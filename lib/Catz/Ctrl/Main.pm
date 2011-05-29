@@ -63,6 +63,14 @@ sub front {
  $s->{pris} =  $self->fetch ( 'locate#pris' ); 
 
  $s->{maxx} = $self->fetch ( 'common#maxx' );
+ 
+ my $samp = $self->fetch ( 'vector#array_rand_n', 50 );
+ 
+ my $th = $self->fetch ( 'photo#thumb', @{ $samp } );
+
+ $s->{thumbs} = $th->[0];
+ 
+ $s->{texts} = $self->fetch ( 'photo#texts', @{ $samp } );
      
  $self->render( template => 'page/front' );
  
@@ -122,11 +130,11 @@ sub result {
   
  scalar @keys == 3 or $self->render( text => RESULT_NA ) and return;
  
- my $count = $self->fetch ( 'result#count', $keys[0], $keys[1] ) // 0;
+ my $count = $self->fetch ( 'net#count', $keys[0], $keys[1] ) // 0;
  
  $count == 0 and $self->render( text => RESULT_NA ) and return;
 
- my $res = $self->fetch ( 'result#data', @keys );
+ my $res = $self->fetch ( 'net#data', @keys );
 
  defined $res and do {
  
@@ -138,6 +146,19 @@ sub result {
  };
  
  $self->render( text => RESULT_NA );
+
+}
+
+sub link {
+
+ my $self = shift; my $s = $self->{stash};
+
+ my $key = $self->param( 'key' ) // undef;
+
+ ( defined $key and length $key < 2000 and $key =~ /^[A-Z2-7]+$/ ) or
+  $self->render( text => RESULT_NA ) and return;
+
+ # waiting to be implemented ...
 
 }
 

@@ -35,7 +35,7 @@ function catzFetchResults() {
 
  $("span.result").each(function() {
 
-  $(this).html( '...' ); // indicate that the data is being fetched
+  $(this).html( '' );
 
   $.ajax ({
     url: catzResultURL ( $(this).attr('id') ),
@@ -44,7 +44,7 @@ function catzFetchResults() {
       $(this).html( data ); // update the result to DOM   
     },
     error: function(){
-      $(this).html( '?' ); // indicate error   
+      $(this).html( '' );
     }  
   });
 

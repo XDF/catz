@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 #  
 
-package Catz::Model::Result;
+package Catz::Model::Net;
 
 use 5.10.0; use strict; use warnings;
 
@@ -99,5 +99,12 @@ sub _count {
  $res and length ( $res ) > 0 and return int ( $res );
 
  return undef;
+
+}
+
+sub _link {
+
+ my ( $self, $breeder )
+
 
 }
