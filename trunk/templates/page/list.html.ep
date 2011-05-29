@@ -23,8 +23,13 @@
 %# --------------------
 %#
 %# add the mode changing bar by reading the modes from the list definition matrix provided by the stash
+%# alsoinclude the in-page navigation is required
 %# 
-<div class="center flop bar">
+<div class="center flip bar">
+%#
+%# --------------------
+%#
+<hr class="stripe">
 % my $i = 1;
 % do {
 %  if ( $i++ > 1) {
@@ -32,27 +37,26 @@
 %  }
 %  if ( $mode eq $_ ) {
 <%== $t->{'MODE_'.uc($_)} %>
+% $matrix->{$subject}->{dividers} and do {
+<select class="flip" name="page" onchange="location.href='<%== $url %>'+this.options[this.selectedIndex].value">
+% my $i = 1;
+% foreach my $tab ( @$idx ) {
+%  if ( $i++ == 1) {
+<option selected value="#idx<%== $tab %>"><%= $tab %></option>
+%  } else {
+<option value="#idx<%== $tab %>"><%= $tab %></option>
+%  }
+% }
+</select>
+% };
 %  } else {
 <a href="/<%== $lang %>/list/<%== $subject %>/<%== $_ %>/"><%== $t->{'MODE_'.uc($_)} %></a>   
 %  }
 % } foreach ( @{ $matrix->{$subject}->{modes} } ); 
-</div>
 %#
 %# --------------------
 %#
-%# if the list should has dividers then generate the in-page index from the stash
-%#
-% $matrix->{$subject}->{dividers} and do {
-<div class="center flip bar">
-% my $i = 1;
-% foreach my $tab ( @$idx ) {
-%  if ( $i++ > 1) {
-<%== $sep %>
-%  }
-<a href="#idx<%== $tab %>"><%= $tab %></a>
-% }
 </div>
-% };
 %#
 %# --------------------
 %#

@@ -37,7 +37,8 @@
 <% end %>
 %#
 <% content 'main' => begin %>
-<div class="flop center<%= $display eq 'full' ? ' bar' : '' %>">
+<div class="flip center<%= $display eq 'full' ? ' bar' : '' %>">
+<hr class="stripe">
 % my $label1 = $t->{PHOTO_FIRST};
 % my $label2 = $t->{PHOTO_PREV};
 % if ( $pos > 1 ) {
