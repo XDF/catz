@@ -125,7 +125,7 @@ my $run = [
 
  qq{drop table if exists _prim},
  qq{create table _prim (pid integer primary key not null,cntpri integer not null)},
- qq{insert into _prim select pid,count(*) from pri natural join sec group by pid},
+ qq{insert into _prim select pid,count(*) from pri natural join sec where sid in ( select sid from inalbum union select sid from inexiff union select sid from inpos ) group by pid},
 
  # creating and populcatin sec-statistics table
  # we use special handling of time (moment) where we make sure that a null time doesn't affect the min/max results

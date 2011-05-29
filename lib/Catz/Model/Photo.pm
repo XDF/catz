@@ -73,19 +73,24 @@ sub _resultkey {
 
  my ( $self, $x ) = @_; my $lang = $self->{lang};
 
- my $loc = $self->dbone ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='loc'", $x );
+ my $loc = $self->dbone ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='loc'", $x ); # this query runs in 0 ms
  
- my $date = $self->dbone ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='date'", $x );
-
- my $top = $self->dbone ( 'select max(p) from photo natural join inpos where x=?', $x );
+ my $date = $self->dbone ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='date'", $x ); # this query runs in 0 ms
 
  my @cats = ();
 
- do {
+ # this returns undef if the photo doesn't have comment
+ my $top = $self->dbone ( 'select max(p) from photo natural join inpos where x=?', $x ); # this query runs in 0 ms
 
-  push @cats, $self->dbone ( "select sec from pri natural join sec_$lang natural join inpos natural join photo where x=? and p=? and pri='cat'", $x, $_ );
+ $top and do { 
+ 
+  do {
 
- } foreach ( 1 .. $top );
+   push @cats, $self->dbone ( "select sec from pri natural join sec_$lang natural join inpos natural join photo where x=? and p=? and pri='cat'", $x, $_ ); # this query runs in 0 ms
+
+  } foreach ( 1 .. $top );
+  
+ };
 
  [ $date, $loc, @cats ];
 

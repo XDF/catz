@@ -1,8 +1,10 @@
 <div class="unit">
 % foreach my $th ( @{ $thumb } ) {
 % my $id = fullnum33 ( $th->[0], $th->[1] );
-% my $width = int ( ( $thumbsize / $th->[5] ) * $th->[4] ); 
+% my $width = int ( ( $thumbsize / $th->[5] ) * $th->[4] );
+<a href="/<%== $lang %>/view?id=<%== $id %>">
 <img src="<%== $photobase %>/<%== $th->[2] %>/<%== $th->[3] %>" width="<%== $width %>" height="<%== $thumbsize %>">
+</a>
 % }
 </div>
 %#

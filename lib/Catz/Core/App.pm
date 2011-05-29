@@ -303,15 +303,15 @@ sub after {
  
   if ( $self->req->method eq 'GET' and $self->res->code == 200 ) {
    
-   my @set = ( 
+   my $set = [ 
     $self->res->headers->content_type,
     $self->res->headers->content_length,
     $self->res->body 
-   ); 
+   ]; 
  
    #warn ( "CACHING $s->{url}" );
    
-   cache_set ( cachekey ( $self ), \@set );
+   cache_set ( cachekey ( $self ), $set );
   
   }
  }

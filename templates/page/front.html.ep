@@ -22,14 +22,14 @@
 <div class="bar find"><h2><%= $t->{FIND} %></h2>
 <input class="aero" type="text" id="find">
 <a class="aero" href="/<%== $lang %>/search/"><%= $t->{SEARCH} %></a></div>
-<div class="roomy" id="found"></div>
+<div class="bar" id="found"></div>
 %#
 <div class="bar">
 <a href="/<%== $lang %>/browse/"><%= fmt ( $maxx, $lang )  %> <%== $t->{PHOTOA_CATSHOW} %></a>
 % foreach my $row ( @$pris ) {
 <%= $sep %> <a href="/<%= $lang %>/list/<%= $row->[0] %>/<%= $matrix->{$row->[0]}->{modes}->[0] %>/">
-<%= fmt ( $row->[2], $lang ) %>
-<%= $t->{$row->[1].'A'} %></a>
+<%= fmt ( $row->[1], $lang ) %>
+<%= $t->{uc($row->[0]).'A'} %></a>
 % }
 </div>
 %#
@@ -45,7 +45,9 @@
 <a title="<%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%= $lang %>/browse?folder=<%== enurl( $row->[0] ) %>"><%= $row->[1] %></a> <%= $sep %>
 % }
 <a href="/<%= $lang %>/list/album/a2z/"><%= $t->{ALBUMS_ALL} %></a>
-</div>      
+</div>
+%#
+<div class="bar" id="samples"></div>      
 <% end %>
 %#
 %# Catz - the world's most advanced cat show photo engine

@@ -257,7 +257,7 @@ sub _pris {
  my $self = shift; my $lang = $self->{lang};
  
  # exclude photo texts and technical folder names
- my $res = $self->dball("select pri,upper(pri),cntpri from pri natural join _prim where pri not in ('text','folder') order by disp");
+ my $res = $self->dball("select pri,cntpri from pri natural join _prim where pri not in ('text','folder') order by disp");
  
  return $res; 
 
