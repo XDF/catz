@@ -110,56 +110,6 @@ sub list {
  
 }
 
-sub sample {
-
- my $self = shift; my $s = $self->{stash};
-
- $self->process_width;
-
- $self->process_width or $s->{what} = undef;
-
- my @set = ();
-
- if ( $s->{what} ) {
- 
-  my $res = $self->fetch ( 'locate#find', $s->{what}, $s->{count_find} );
-  
-  scalar @$res > 0 and do {
-
-   foreach my $i ( 0 .. ( scalar @$res - 1 ) ) {
-
-    if ( scalar @set < $s->{count_thumb} ) {
-
-     push @set, @{ 
-      $self->fetch ( 'vector#array_rand', $res->[$i]->[0], $res->[$i]->[1] )
-     };
-
-    }   
-
-   }
-
-  };
-  
- } else {
-
-  @set = @{ $self->fetch ( 'vector#array_rand' ) };
-     
- }
-
- if ( scalar @set > $s->{count_thumb} ) {
-
-  @set = @set[ 0 .. $s->{count_thumb} - 1 ];
-
- }
- 
- my $th = $self->fetch ( 'photo#thumb', @set );
-
- $s->{thumb} = $th->[0];
-
- $self->render( template => 'block/sample' );
-
-}
-
 sub search {
 
  my $self = shift; my $s = $self->{stash};
@@ -178,17 +128,15 @@ sub search {
   
   $s->{args_count} = scalar ( @{ $s->{args_array} } );
         
-  my @set = @{ $self->fetch ( 'vector#array_rand', @{ $s->{args_array} } ) };
+  $s->{found} = $self->fetch ( 'vector#count', @{ $s->{args_array} } );
   
-  $s->{found} = scalar @set;
-  
-  scalar @set > 12 and @set = @set[ 0 .. 12 ];
+  my $samp = $self->fetch ( 'vector#array_rand_n', @{ $s->{args_array} }, 15 );
    
-  my $th = $self->fetch ( 'photo#thumb', @set );
-  
-  $s->{thumb} = $th->[0];  
-  $s->{earliest} = $th->[1];
-  $s->{latest} = $th->[2];        
+  my $th = $self->fetch ( 'photo#thumb', @{ $samp } );
+
+  $s->{thumbs} = $th->[0];
+       
+  $s->{texts} = $self->fetch ( 'photo#texts', @{ $samp } );
    
  }
  

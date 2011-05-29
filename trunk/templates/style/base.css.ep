@@ -58,9 +58,7 @@ form { display: inline; }
 by default hide find, found, samples and setup - JavaScript
 should set them visible for JavaScript enabled browsers
 */
-div#found { display: none; }
-div#samples { display: none; }
-div.find { display: inline; }
+div.find { display: none; }
 option.setup { display: none; }
 
 /*
@@ -106,11 +104,12 @@ general horizontal and vertical paddings
 .unit { padding-top: 1em;}
 .unitplus { padding-top: 1.7em; }
 
+
 #top { padding: 1em; }
 #main { padding: 0em; }
 #bottom { padding: 1em; }
 .bar { padding: 0.6em; }
-.barplus { padding: 1.7em; }
+.barplus { padding: 0.6em 1.7em 0.6em 1.7em; }
 
 
 /*

@@ -176,6 +176,8 @@ sub browse {
  $s->{earliest} = $res->[1];
  $s->{latest} = $res->[2];
  
+ $s->{texts} = $self->fetch ( 'photo#texts', @{ $s->{xs} } );
+ 
  $s->{related} = undef;
  
  # when on first page, more than 1 photos and just one pri-sec -pair

@@ -34,7 +34,7 @@ use Catz::Core::Text;
 use Catz::Data::List qw ( list_matrix );
 use Catz::Data::Setup;
 use Catz::Util::File qw ( fileread findlatest pathcut );
-use Catz::Util::Time qw( dt dtdate dttime dtexpand dtlang );
+use Catz::Util::Time qw( dt dtdate dttime dtexpand dtlang thisyear );
 use Catz::Util::Number qw ( fmt fullnum33 );
 use Catz::Util::String qw ( enurl );
 
@@ -57,6 +57,7 @@ sub startup {
  $self->helper ( fmt => sub { shift; fmt $_[0], $_[1] } );
  $self->helper ( enurl => sub { shift; enurl $_[0] } );
  $self->helper ( fullnum33 => sub { shift; fullnum33 $_[0], $_[1] } );
+ $self->helper ( thisyear => sub { shift; thisyear } );
       
  my $r = $self->routes;
   
@@ -83,7 +84,8 @@ sub startup {
  $l->route( '/' )->to( 'main#front', hold => 15 );
 
  $l->route( '/result',  )->to ( "main#result", hold => 5 );
-
+ $l->route( '/link',  )->to ( "main#link", hold => 60 );
+ 
  $l->route( '/news/feed' )->to ( "news#feed", hold => 15  );
  $l->route( '/news' )->to ( "news#all", hold => 15 );
  
@@ -99,6 +101,20 @@ sub startup {
  $self->hook ( before_dispatch => \&before );  
  $self->hook ( after_dispatch => \&after );
  
+}
+
+sub urio {
+
+ my ( $self, $lang ) = @_;
+ 
+ return 
+  "/$lang" . 
+  substr ( $self->req->url->path->to_string, 3 ) . 
+  ( $self->req->query_params->to_string ? 
+   '?' . $self->req->query_params->to_string : 
+   '' 
+  ); 
+
 }
 
 sub before {
@@ -152,9 +168,7 @@ sub before {
   scalar @{ $self->req->query_params->params } > 0 or # or query param(s) 
   ( $self->req->url->path->to_string  =~ /\..{2,4}$/ ) # or static file request
   or do {
-   
-   warn "called with ".$self->req->query_params->params;
-   
+      
   # this redirect code is a modified version from Mojolicious core
   # and appears to work as expected
        
@@ -187,21 +201,17 @@ sub before {
  
  } elsif ( substr ( $url, 0, 3 ) eq '/fi' ) {
  
-  $s->{lang} = 'fi';
-  $s->{langother} = '/en' . substr ( $url, 3 );
+  $s->{lang} = 'fi'; $s->{langother} = urio ( $self, 'en' ); 
   
  } elsif( substr ( $url, 0, 3 ) eq '/en' ) {
  
-  $s->{lang} = 'en';
-  $s->{langother} = '/fi' . substr ( $url, 3 );
+  $s->{lang} = 'en'; $s->{langother} = urio ( $self, 'fi' );
 
  } else {
  
   # default to english
  
-  $s->{lang} = 'en';
-  $s->{langother} = '/fi' . substr ( $url, 3 ); 
- 
+  $s->{lang} = 'en'; $s->{langother} = urio ( $self, 'fi' );
  }
 
  # let the url be in the stash also

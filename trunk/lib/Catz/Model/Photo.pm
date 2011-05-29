@@ -41,15 +41,16 @@ sub _thumb {
  my $min = 99999999;
  my $max = 00000000; 
  
- my $thumbs = $self->dball( qq{select s,n,folder,file||'$LR',lwidth,lheight from album natural join photo where x in (} . ( join ',', @xs ) .  ') order by x' );
+ my $thumbs = $self->dball( qq{select x,s,n,folder,file||'$LR',lwidth,lheight from album natural join photo where x in (} . ( join ',', @xs ) .  ') order by x' );
 
  foreach my $row ( @$thumbs ) { 
   # extract date from the folder name (first eight characters) 
-  my $d = int (  substr ( $row->[2], 0, 8 ) ); 
+  my $d = int (  substr ( $row->[3], 0, 8 ) ); 
   $d < $min and $min = $d;
   $d > $max and $max = $d;
  } 
 
+ # send min and max date with the thumbs set
  [ $thumbs, $min ne 99999999 ? $min : undef, $max ne 00000000 ? $max : undef ];
 
 }
@@ -73,20 +74,20 @@ sub _resultkey {
 
  my ( $self, $x ) = @_; my $lang = $self->{lang};
 
- my $loc = $self->dbone ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='loc'", $x ); # this query runs in 0 ms
+ my $loc = $self->dbone ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='loc'", $x ); # 0 ms / 2011-05-29
  
- my $date = $self->dbone ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='date'", $x ); # this query runs in 0 ms
+ my $date = $self->dbone ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='date'", $x ); # 0 ms / 2011-05-29
 
  my @cats = ();
 
  # this returns undef if the photo doesn't have comment
- my $top = $self->dbone ( 'select max(p) from photo natural join inpos where x=?', $x ); # this query runs in 0 ms
+ my $top = $self->dbone ( 'select max(p) from photo natural join inpos where x=?', $x ); # 0 ms / 2011-05-29
 
  $top and do { 
  
   do {
 
-   push @cats, $self->dbone ( "select sec from pri natural join sec_$lang natural join inpos natural join photo where x=? and p=? and pri='cat'", $x, $_ ); # this query runs in 0 ms
+   push @cats, $self->dbone ( "select sec from pri natural join sec_$lang natural join inpos natural join photo where x=? and p=? and pri='cat'", $x, $_ ); # 0 ms / 2011-05-29
 
   } foreach ( 1 .. $top );
   
@@ -105,6 +106,35 @@ sub _text {
  );
 
 }
+
+sub _texts {
+
+ my ( $self, @xs ) = @_; my $lang = $self->{lang};
+
+ my $res = $self->dball( 
+  qq{select x,sec from pri natural join sec_$lang natural join inpos natural join photo where pri='text' and x in (} . ( join ',', @xs ) .  ') order by x,p' # 0 ms / 2011-05-29   
+ );
+ 
+ my $texts = {};
+  
+ do {
+ 
+  if ( exists $texts->{ $_->[0] } ) {
+  
+   $texts->{ $_->[0] } .=  ' & ' . $_->[1];
+  
+  } else {
+  
+   $texts->{ $_->[0] } =  $_->[1];
+  
+  }
+
+ } foreach ( @$res );
+  
+ return $texts 
+ 
+}
+
 
 sub _image {
 
