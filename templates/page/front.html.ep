@@ -19,12 +19,12 @@
 <% end %>
 %#
 <% content 'main' => begin %>
-<div class="unit find"><h2><%= $t->{FIND} %></h2>
+<div class="bar find"><h2><%= $t->{FIND} %></h2>
 <input class="aero" type="text" id="find">
 <a class="aero" href="/<%== $lang %>/search/"><%= $t->{SEARCH} %></a></div>
 <div class="roomy" id="found"></div>
 %#
-<div class="unit">
+<div class="bar">
 <a href="/<%== $lang %>/browse/"><%= fmt ( $maxx, $lang )  %> <%== $t->{PHOTOA_CATSHOW} %></a>
 % foreach my $row ( @$pris ) {
 <%= $sep %> <a href="/<%= $lang %>/list/<%= $row->[0] %>/<%= $matrix->{$row->[0]}->{modes}->[0] %>/">
@@ -33,16 +33,16 @@
 % }
 </div>
 %#
-<div class="unit"><h2><%= $t->{NEWS} %></h2><%== $sep %>
+<div class="bar"><h2><%= $t->{NEWS} %></h2><%== $sep %>
 % foreach my $row ( @$news ) {
 <a href="/<%== $lang %>/news/#<%== $row->[0] %>"><%= dtexpand ( dtdate ( $row->[0] ), $lang ) %> <%= $row->[1] %></a> <%== $sep %>
 % } 
 <a href="/<%== $lang %>/news/"><%= $t->{NEWS_ALL} %></a>
 </div>
 %#
-<div class="unit"><h2><%= $t->{ALBUMS} %></h2> <%= $sep %> 
+<div class="bar"><h2><%= $t->{ALBUMS} %></h2> <%= $sep %> 
 % foreach my $row ( @$albums ) {
-<a title="<%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%= $lang %>/album/<%= $row->[0] %>/"><%= $row->[1] %></a> <%= $sep %>
+<a title="<%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%= $lang %>/browse?folder=<%== enurl( $row->[0] ) %>"><%= $row->[1] %></a> <%= $sep %>
 % }
 <a href="/<%= $lang %>/list/album/a2z/"><%= $t->{ALBUMS_ALL} %></a>
 </div>      

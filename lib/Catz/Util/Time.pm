@@ -34,7 +34,7 @@ use POSIX qw( floor );
 
 use parent 'Exporter';
 
-our @EXPORT_OK = qw( dtdate dtexpand dt dtlang dtsplit thisyear );
+our @EXPORT_OK = qw( dtdate dttime dtexpand dt dtlang dtsplit thisyear );
 
 #
 # expands timestamp from YYYYMMDD or YYYYMMDDHHMMSS into 
@@ -102,7 +102,8 @@ sub dtexpand {
      
  } 
  
- die "invalid timestamp input '$_[0]'";
+ # don't know what to do, to be safe return the input as is
+ return $_[0];
   
 }
 
@@ -119,7 +120,6 @@ sub dt {
   
 }
 
-sub dtdate { substr $_[0], 0, 8 }
 
 #
 # returns the systep time in a human-readable form
@@ -136,5 +136,10 @@ sub thisyear {
  return $y + 1900;
  
 }
-sub dtsplit { substr ( $_[0], 0, 8 ), substr ( $_[0], 8 ) }
+#sub dtsplit { substr ( $_[0], 0, 8 ), substr ( $_[0], 8 ) }
+
+
+sub dtdate { substr $_[0], 0, 8 }
+
+sub dttime { substr $_[0], 8, 6 }
 1;

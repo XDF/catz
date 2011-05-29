@@ -28,6 +28,8 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Catz::Core::Ctrl';
 
+use List::MoreUtils qw ( any );
+
 use Catz::Core::Conf;
 use Catz::Data::List qw ( list_matrix );
 use Catz::Data::Search;
@@ -89,7 +91,12 @@ sub list {
 
  $s->{matrix} = list_matrix;
  
+ # verify that the subject is known
  $s->{matrix}->{$s->{subject}} or ( $self->not_found and return );
+ 
+ # verify that the mode is known for this subject
+ ( any { $s->{mode} eq $_ } @{ $s->{matrix}->{$s->{subject}}->{modes} } )
+  or ( $self->not_found and return );
    
  my $res = $self->fetch( 'locate#full', $s->{subject}, $s->{mode} );
  

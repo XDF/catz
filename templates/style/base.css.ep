@@ -109,7 +109,8 @@ general horizontal and vertical paddings
 #top { padding: 1em; }
 #main { padding: 0em; }
 #bottom { padding: 1em; }
-.bar { padding: 0.5em; }
+.bar { padding: 0.6em; }
+.barplus { padding: 1.7em; }
 
 
 /*

@@ -63,7 +63,7 @@ sub _detail {
    select pri,disp,sec,sort from pri natural join sec_$lang natural join inalbum natural join photo where pri<>'folder' and x=? union all
    select pri,disp,sec,sort from pri natural join sec_$lang natural join inexiff natural join photo where x=? union all
    select pri,disp,sec,sort from pri natural join sec_$lang natural join inpos natural join photo where pri<>'text' and x=? union all
-   select 'time','99',moment,moment from photo where x=?
+   select 'time','99',moment,moment from photo where x=? and moment is not null
   ) order by disp,sort}, $x, $x, $x, $x 
  );
 

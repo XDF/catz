@@ -34,7 +34,7 @@ use Catz::Core::Text;
 use Catz::Data::List qw ( list_matrix );
 use Catz::Data::Setup;
 use Catz::Util::File qw ( fileread findlatest pathcut );
-use Catz::Util::Time qw( dt dtdate dtexpand dtlang );
+use Catz::Util::Time qw( dt dtdate dttime dtexpand dtlang );
 use Catz::Util::Number qw ( fmt fullnum33 );
 use Catz::Util::String qw ( enurl );
 
@@ -52,6 +52,7 @@ sub startup {
  $self->secret( conf ( 'cookie_key' ) );
  
  $self->helper ( dtdate => sub { shift; dtdate $_[0] } );
+ $self->helper ( dttime => sub { shift; dttime $_[0] } );
  $self->helper ( dtexpand => sub { shift; dtexpand $_[0], $_[1] } ); 
  $self->helper ( fmt => sub { shift; fmt $_[0], $_[1] } );
  $self->helper ( enurl => sub { shift; enurl $_[0] } );
