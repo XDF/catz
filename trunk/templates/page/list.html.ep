@@ -1,80 +1,131 @@
 % extends 'base/heavy';
 %#
-<% content 'ptitleadd' => begin %>
-<%== fmt ( $total, $lang ) %> <%== $total == 1 ? $t->{uc($subject)} : $t->{uc($subject).'A'} %> <%== $t->{'MODE_'.uc($mode)} %>
-<% end %>
+%# --------------------
+%# The template for all list pages
+%# --------------------
 %#
-<% content 'btitle' => begin %>
-<h1><%== fmt ( $total, $lang ) %> <%== $total == 1 ? $t->{uc($subject)} : $t->{uc($subject).'A'} %> <%== $t->{'MODE_'.uc($mode)} %></h1>
-<% end %>
+%# title is used twice so prepare it into a variable
+%#
+% my $titl = fmt ( $total, $lang ) . ' ' . ( $total == 1 ? $t->{uc($subject)} : $t->{uc($subject).'A'} ) . ' ' . $t->{'MODE_'.uc($mode)};
+%#
+%# --------------------
+%#
+<% content 'ptitleadd' => begin %><%= $titl %><% end %>
+%#
+%# --------------------
+%#
+<% content 'btitle' => begin %><h1><%= $titl %></h1><% end %>
+%#
+%# --------------------
 %#
 <%= content 'main' => begin %>
+%#
+%# --------------------
+%#
+%# add the mode changing bar by reading the modes from the list definition matrix provided by the stash
+%# 
 <div class="center flop bar">
 % my $i = 1;
-% foreach my $md ( @{ $matrix->{$subject}->{modes} } ) {
-% if ( $i++ > 1) {
+% do {
+%  if ( $i++ > 1) {
 <%== $sep %>
-% }
-% if ( $mode eq $md ) {
-<%== $t->{'MODE_'.uc($md)} %>
-% } else {
-<a href="/<%== $lang %>/list/<%== $subject %>/<%== $md %>/"><%==  $t->{'MODE_'.uc($md)} %></a>
-% }
-% }
+%  }
+%  if ( $mode eq $_ ) {
+<%== $t->{'MODE_'.uc($_)} %>
+%  } else {
+<a href="/<%== $lang %>/list/<%== $subject %>/<%== $_ %>/"><%== $t->{'MODE_'.uc($_)} %></a>   
+%  }
+% } foreach ( @{ $matrix->{$subject}->{modes} } ); 
 </div>
+%#
+%# --------------------
+%#
+%# if the list should has dividers then generate the in-page index from the stash
 %#
 % $matrix->{$subject}->{dividers} and do {
 <div class="center flip bar">
 % my $i = 1;
 % foreach my $tab ( @$idx ) {
-% if ( $i++ > 1) {
+%  if ( $i++ > 1) {
 <%== $sep %>
-% }
+%  }
 <a href="#idx<%== $tab %>"><%= $tab %></a>
 % }
 </div>
 % };
 %#
+%# --------------------
+%#
+%# now the outer loop that is going thru all sets of a list from stash
+%#
 % foreach my $set ( @$sets ) {
+%#
+%# --------------------
+%#
+%# if dividers are required then generate a divider for the current set
+%#
 % $matrix->{$subject}->{dividers} and do {
-<div class="unit outer"><table class="full"><tr><td class="left">
-<h2 id="idx<%= $set->[0] %>"><%= $set->[0] . ( $mode eq 'top' ? '.' : '' ) %></h2></td><td class="right">
-% my $sz = scalar ( @{ $set->[1] } );
-% my $szf = fmt ( scalar ( @{ $set->[1] } ), $lang ); 
-<%= $szf %> <%= $sz == 1 ? $t->{uc($subject)} : $t->{uc($subject).'A'} %>
+<div class="unit outer"><table class="full"><tr>
+<td class="left"><h2 id="idx<%= $set->[0] %>"><%= ( $mode eq 'top' and $lang eq 'en' ) ? '#' : '' %><%= $set->[0] %><%= ( $mode eq 'top' and $lang eq 'fi' ) ? '.' : '' %></h2></td>
+<td class="right">
+% my $sz = scalar ( @{ $set->[1] } ); # the size of this set   
+<%= fmt ( $sz, $lang ) %> <%= $sz == 1 ? $t->{uc($subject)} : $t->{uc($subject).'A'} %>
 </td></tr></table></div><hr class="divid">
 % };
+%#
+%# --------------------
+%#
+%# then the inner loop that goes thru all rows in a set
+%#
 % my $i = 1;
 % foreach my $row ( @{ $set->[1] } ) {
 <div class="list unit inner">
+%#
+%# --------------------
+%#
+%# special for nation mode lists: if first item and nation is defined then add the flag img
+%# note that $i++ gets executed first so $i increases even the conditions are not met
+%#
 % if ( $i++ == 1 and $mode eq 'nat' and $row->[7] ) {
-<img alt="<%= $set->[0] %>" class="flag" src="http://www.heikkisiltala.com/g/flags/<%== lc($row->[7]) %>.gif">
+<img alt="<%= $set->[0] %>" class="flag" src="<%== $flagbase %>/<%== lc($row->[7]) %>.gif">
 % }
-% if ( $mode eq 'top' ) {
-<%= $row->[6]. ' ' . $sep %>
+% if ( $mode eq 'top' ) { # show the row number if displaying the top list 
+<%= $lang eq 'fi' ? $row->[6] . '.' : '#' . $row->[6] %>
 % }
-<a title="<%== $t->{uc($subject)} %>: <%= $row->[1] %>" href="/<%= $lang %>/browse?<%== lc($subject) %>=<%== enurl($row->[1]) %>">
-<%= $subject ne 'date' ? $row->[1] : dtexpand ( $row->[1], $lang ) %>
-</a> <%= $sep %>
-<%= $row->[3] %> <%= $row->[3] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> 
-% if ( $subject ne 'album' and $subject ne 'date' ) {
-<%= $lang eq 'en' ? ' in ' : '' %> <%= $row->[2] %> <%= $row->[2] == 1 ? $t->{ALBUMX} : $t->{ALBUMSX} %>
+%#
+%# --------------------
+%#
+%# now the data line
+%#
+<a title="<%== $t->{uc($subject)} %> <%== $sep %> <%= $row->[1] %>" href="/<%= $lang %>/browse?<%== lc($subject) %>=<%== enurl($row->[1]) %>">
+<%= $subject ne 'date' ? $row->[1] : dtexpand ( $row->[1], $lang ) %></a>
+%#
+%# --------------------
+%#
+<%= $sep %> <%= $row->[3] %> <%= $row->[3] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>
+%#
+%# --------------------
+%# 
+% if ( $subject ne 'album' and $subject ne 'date' ) { # album and date are all in one album so don't print album count for them
+<%= $lang eq 'fi' ? '' : ' in ' %> <%= $row->[2] %> <%= $row->[2] == 1 ? $t->{ALBUMX} : $t->{ALBUMSX} %>
 % }
-% if ( $subject ne 'album' and $subject ne 'date' ) {
-<%= $sep %>
-<%= dtexpand ( $row->[4], $lang ) %><%= $row->[4] eq $row->[5] ? '' : ' - ' . dtexpand ( $row->[5], $lang ) %> 
+%#
+%# --------------------
+%#
+% if ( $mode eq 'first' ) { # first appeared -> print only the beginning and the full date and time
+<%= $sep %> <%= dtexpand ( $row->[4], $lang ) %>
 % } else {
-% length (  $row->[4] ) == 14 and do {
-<%= $sep %>
-<%= dtexpand ( substr( $row->[4], 8, 6 ), $lang ) %>
-% length (  $row->[5] ) == 14 and ( substr( $row->[4], 8, 6 ) ne substr ( $row->[5], 8, 6 ) ) and do {
-- <%= dtexpand ( substr( $row->[5], 8, 6 ), $lang ) %>
-% };
-% };
+%  if ( $subject eq 'album' or $subject eq 'date' ) { # if album or date then print time only
+<%= $sep %> <%= dtexpand ( dttime ( $row->[4] ) , $lang ) %>
+<%= dttime ( $row->[4] ) eq dttime ( $row->[5] ) ? '' : ' - ' . dtexpand ( dttime ( $row->[5] ), $lang ) %>
+%  } else { # otherwise print date only
+<%= $sep %> <%= dtexpand ( dtdate ( $row->[4] ), $lang ) %>
+<%= ( dtdate ( $row->[4] ) eq dtdate ( $row->[5] ) ) ? '' : ' - ' . dtexpand ( dtdate ( $row->[5] ), $lang ) %>
+%  }
 % }
 </div>
-% }
-% }
+% } # end of the inner loop
+% } # end of the outer loop
 <% end %>
 %#
 %# Catz - the world's most advanced cat show photo engine
