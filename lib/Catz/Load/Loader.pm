@@ -135,32 +135,26 @@ my $run = [
  qq{insert into _secm select inexiff.sid,count(distinct album.aid),count(distinct x),replace(min(substr(folder,1,8)||ifnull(moment,'999999')),'999999',''),replace(max(substr(folder,1,8)||ifnull(moment,'000000')),'000000','') from photo natural join inexiff natural join album where sid in ( select sid from inexiff ) group by sid},
  qq{insert into _secm select sec.sid,count(distinct album.aid),count(distinct x),replace(min(substr(folder,1,8)||ifnull(moment,'999999')),'999999',''),replace(max(substr(folder,1,8)||ifnull(moment,'000000')),'000000','') from inpos natural join photo natural join sec natural join pri natural join album where origin='pos' group by sec.sid},
 
+ # instant find requires queries to respond as quick as possible
+ # therefore we need these special tables for both languages
+ # speed tests were done 2011-05-30 and these tables are really needed
  qq{drop table if exists _find_en},
  qq{drop table if exists _find_fi},
  qq{create table _find_en (sid integer not null, sec text not null)},
  qq{create table _find_fi (sid integer not null, sec text not null)},
- qq{insert into _find_en select sid,sec from pri natural join _secm natural join sec_en where pri not in ( 'text' ) order by cntphoto desc, sort asc},
- qq{insert into _find_fi select sid,sec from pri natural join _secm natural join sec_fi where pri not in ( 'text' ) order by cntphoto desc, sort asc},
+ # we use the special ability of SQLite so that we insert rows in certain order
+ # and when we use order by rowid on query the order by doesn't cost anything
+ qq{insert into _find_en select sid,sec from pri natural join _secm natural join sec_en where cntphoto is not null and cntphoto>0 and pri not in ( 'folder','text' ) order by cntphoto desc, sort asc},
+ qq{insert into _find_fi select sid,sec from pri natural join _secm natural join sec_fi where cntphoto is not null and cntphoto>0 and pri not in ( 'folder','text' ) order by cntphoto desc, sort asc},
 
- qq{drop table if exists _search_pos},
- qq{create table _search_pos (x integer not null, pri text not null, sec text not null)},
- qq{insert into _search_pos select x,pri,sec from photo natural join inpos natural join sec_en natural join pri union select x,pri,sec from photo natural join inpos natural join sec_fi natural join pri},
- qq{create index _search_pos1 on _search_pos(pri,sec)},
-
- qq{drop table if exists _search_exif},
- qq{create table _search_exif (x integer not null, pri text not null, sec text not null)},
- qq{insert into _search_exif select x,pri,sec from photo natural join inexiff natural join sec_en natural join pri union select x,pri,sec from photo natural join inexiff natural join sec_fi natural join pri},
- qq{create index _search_exif1 on _search_exif(pri,sec)},
- 
- qq{drop table if exists _search_album},
- qq{create table _search_album (x integer not null, pri text not null, sec text not null)}, 
- qq{insert into _search_album select x,pri,sec from photo natural join inalbum natural join sec_en natural join pri union select x,pri,sec from photo natural join inalbum natural join sec_fi natural join pri},
- qq{create index _search_album1 on _search_album(pri,sec)},
- 
- qq{drop table if exists _related},
- qq{create table _related (source integer not null,target integer not null)},
- qq{create index _related1 on _related(source)},
- 
+ # we use sid -> x mapping to execute both pri-sec pair fetches and advanced searches
+ # we first look for sids by the pair or search and then map sids to xs with this table
+ # xs are then used to create bit vectors 
+ qq{drop table if exists _sid_x},
+ qq{create table _sid_x (sid integer not null,x integer not null)},
+ qq{insert into _sid_x select sid,x from photo natural join inalbum group by sid,x union select sid,x from photo natural join inexiff group by sid,x union select sid,x from photo natural join inpos group by sid,x},
+ qq{create index _sid_x1 on _sid_x(sid)},
+  
 ]; 
 
 # defined the correct table truncation order
@@ -672,67 +666,8 @@ sub load_post {
  
  }
   
- foreach my $do ( @$run ) {
- 
-  $dbc->do ( $do );
+ foreach my $do ( @$run ) { $dbc->do ( $do ); $i++; logadd ( '.' ) }
   
-  $i++; logadd ( '.' );
-  
- }
- 
- my $matrix = list_matrix;
- 
- foreach my $src ( keys %{ $matrix } ) {
- 
-  foreach my $tgt ( @{ $matrix->{$src}->{related} } ) {
-  
-   my $osrc = load_exec ( 'origin_one', $src );
-   my $otgt = load_exec ( 'origin_one', $tgt );
-  
-   my $joins = undef;
-  
-   given ( $osrc ) {
-   
-    when ( 'album' ) { $joins = 'j1.aid=j2.aid' }
-    
-    when ( 'exif' ) {
-
-     if ( $otgt eq 'album ') { 
-      $joins = 'j1.aid=j2.aid' 
-     } else {
-      $joins = 'j1.aid=j2.aid and j1.n=j2.n'
-     }  
-    }
-
-    when ( 'pos' ) {
-        
-     if ( $otgt eq 'album' ) {
-       $joins = 'j1.aid=j2.aid'     
-     } elsif ( $otgt eq 'exif' ) {
-       $joins = 'j1.aid=j2.aid and j1.n=j2.n'
-     } elsif ( $otgt eq 'pos' ) {
-       $joins = 'j1.aid=j2.aid and j1.n=j2.n and j1.p=j2.p'
-     }
-    
-    }
-    
-   }
-   
-   $joins or die "joins not set with $src/$osrc $tgt/$otgt"; 
-   
-   $osrc eq 'exif' and $osrc = 'exiff';
-   $otgt eq 'exif' and $otgt = 'exiff'; 
-  
-   my $sql = qq{insert into _related select s1.sid,s2.sid from pri p1,sec s1,in$osrc j1,pri p2,sec s2,in$otgt j2 where p1.pri=? and p2.pri=? and $joins and p1.pid=s1.pid and s1.sid=j1.sid and p2.pid=s2.pid and s2.sid=j2.sid and s1.sid<>s2.sid group by s1.sid,s2.sid};
-   
-   $dbc->do ( $sql, undef, $src, $tgt );
-   
-   $i++; logadd ( '.' );
-  
-  }
- 
- }
- 
  logdone;
 
  logit ( "$i secondaries processed" ); 

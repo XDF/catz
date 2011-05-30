@@ -36,7 +36,7 @@ use Catz::Data::Setup;
 use Catz::Util::File qw ( fileread findlatest pathcut );
 use Catz::Util::Time qw( dt dtdate dttime dtexpand dtlang thisyear );
 use Catz::Util::Number qw ( fmt fullnum33 );
-use Catz::Util::String qw ( enurl );
+use Catz::Util::String qw ( enurl decode encode );
 
 sub startup {
 
@@ -58,6 +58,8 @@ sub startup {
  $self->helper ( enurl => sub { shift; enurl $_[0] } );
  $self->helper ( fullnum33 => sub { shift; fullnum33 $_[0], $_[1] } );
  $self->helper ( thisyear => sub { shift; thisyear } );
+ $self->helper ( encode => sub { shift; encode $_[0] } );
+ $self->helper ( decode => sub { shift; decode $_[0] } );
       
  my $r = $self->routes;
   
@@ -84,18 +86,41 @@ sub startup {
  $l->route( '/' )->to( 'main#front', hold => 15 );
 
  $l->route( '/result',  )->to ( "main#result", hold => 5 );
- $l->route( '/link',  )->to ( "main#link", hold => 60 );
+ $l->route( '/link',  )->to ( "main#link", hold => 60 ); # not yet implemented
  
  $l->route( '/news/feed' )->to ( "news#feed", hold => 15  );
  $l->route( '/news' )->to ( "news#all", hold => 15 );
  
  $l->route( '/find' )->to ( "locate#find", hold => 15 );
- $l->route( '/sample' )->to ( "locate#sample", hold => 15 );
- $l->route( '/search' )->to ( "locate#search", hold => 15 );
- $l->route('/list/:subject/:mode')->to('locate#list', hold => 15 );
-    
- $l->route ( '/browse' )->to ( "present#browse", hold => 15 ); 
- $l->route ( '/view' )->to ( "present#view", hold => 15 ); 
+  
+ $l->route(
+  '/list/:subject/:mode', subject => qr/[a-z0-9]{1,15}/ 
+ )->to('locate#list', hold => 15 );
+     
+ my $bv = $l->route ('/:action', action => qr/browse|view/ );
+ 
+ $bv->route ( '/:id', id => qr/\d{6}/ )->to( controller => 'present' );
+
+ $bv->route ( 
+  ':pri/:sec', 
+   pri => qr/[a-z0-9]{1,15}/, 
+   sec => qr/[A-Za-z0-9\-\_]{1,1000}/ 
+ )->to( controller => 'present' );
+ 
+ $bv->route ( 
+  '/:pri/:sec/:id', 
+   pri => qr/[a-z0-9]{1,15}/, 
+   sec => qr/[A-Za-z0-9\-\_]{1,1000}/, 
+   id => qr/\d{6}/
+ )->to( controller => 'present' );
+ 
+ $bv->route ( '/' )->to( controller => 'present' );
+
+ my $sd = $r->route ('/:action', action => qr/search|display/ );
+  
+ $sd->route ( '/:id', id => qr/\d{6}/ )->to( controller => 'present' );
+
+ $sd->route ( '/' )->to( controller => 'present' ); 
      
  # add hooks to subs that are executed before and after the dispatch
  $self->hook ( before_dispatch => \&before );  

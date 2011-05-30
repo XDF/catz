@@ -35,11 +35,16 @@ our @EXPORT_OK = qw (
 ); 
 
 use Digest::MD5 qw ( md5_base64 );
+use Memoize;
 use URI::Escape::XS qw ( uri_escape uri_unescape );
+
 
 #
 # an internal utility function called by encode sub
 #
+
+memoize ( 'chrsolve' );
+
 sub chrsolve {
  
  (
@@ -64,24 +69,16 @@ sub clean { $_ = $_[0]; s/ +/ /; $_; }
 # This_Ain-039t_Jungle -> This Ain't Jungle
 # A-039rdn-225n_Nau_Mau-039s -> A'rdnán Nau Mau's
 #
+
+memoize ( 'decode' );
+
 sub decode { $_ = $_[0]; s/\-(\d\d\d)/chr($1)/ge; s|_| |g; return $_; }
 
 #
 # url decodes a string
-# slash gets double-decoded
 #
-sub deurl { 
-
- my $str = uri_unescape( $_[0] );
+sub deurl { uri_unescape( $_[0] ) }
  
- #$str =~ s|\@|/|g;  # slash decoding hack !!! not for production !!!
- 
- #warn ( "deurl $_[0] -> $str " );
- 
- return $str; 
- 
-}
-
 #
 # returns MD5 checksum for a string as a base64 string
 #
@@ -99,6 +96,9 @@ sub dna { md5_base64 ( $_[0] ) }
 # This Ain't Jungle -> This_Ain-039t_Jungle
 # A'rdnán Nau Mau's -> A-039rdn-225n_Nau_Mau-039s
 #
+
+memoize ( 'encode' );
+
 sub encode { join '', map { chrsolve( ord ( $_ ) ) } split //, $_[0] }
 
 #
@@ -107,11 +107,12 @@ sub encode { join '', map { chrsolve( ord ( $_ ) ) } split //, $_[0] }
 sub enurl { 
 
  my $str = $_[0];
+ 
+ $str =~ s|~|~~|g; # duplicate all ~s
+ $str =~ s|/|~|g; # slash is evil even url encoded -> encode it to ~
   
- $str =  uri_escape ( $str ); 
- 
- return $str; 
- 
+ uri_escape ( $str ); # the rest is up to the library 
+
 }
 
 #
