@@ -1,14 +1,27 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+%#
+%# --------------------
+%# An abstract template for all pages excluding the error & exception pages
+%# --------------------
+%#
 <html lang="<%== $lang %>"><head>
 <title><%= content 'ptitle' => begin %>
- <%= content 'ptitleadd' %> - <%= $t->{SITE} %>
-<% end %></title>
+<%= content 'ptitleadd' %> - <%= $t->{SITE} %><% end %></title>
+%#
+%# --------------------
+%#
 <link rel="stylesheet" type="text/css" href="/style/reset/">
 <link rel="stylesheet" type="text/css" href="/style/<%== $palette %>/">
+%#
+%# --------------------
+%#
 %== include 'elem/js', jstype => 'lib', jsfile => 'jquery';
 %== include 'elem/js', jstype => 'lib', jsfile => 'jquery.urlencode';
 %== include 'elem/js', jstype => 'site', jsfile => 'setup'; 
-<%= content 'jsadd' %> 
+<%= content 'jsadd' %>
+%#
+%# --------------------
+%# 
 <meta meta="generator" content="<%== $t->{APPLICATION} %>">
 <meta meta="generated_at" content="<%== $now %>"> 
 <meta meta="data_version" content="<%== $version %>"> 
@@ -16,6 +29,9 @@
 <meta meta="copyright" content="<%== $t->{COPYRIGHT} %>"> 
 <meta meta="credits" content="<%== $t->{CREDITS} %>"> 
 <meta meta="robots" content="<%==  ( $meta_index ? 'index' : 'noindex' ) . ',' . ( $meta_follow ? 'follow' : 'nofollow' ) %>">
+%#
+%# --------------------
+%#
 % $googlekey and do {
 <script type="text/javascript">
   var _gaq = _gaq || [];
@@ -28,26 +44,46 @@
   })();
 </script>
 % };
+%#
+%# --------------------
+%#
 </head><body lang="<%== $lang %>"><div id="page">
-<div id="top" class="flip <%= content 'classtop' => begin %>bar<% end %>">
-<table class="full"><tr><td class="left">
- <%= content 'path' => begin %>
-  <a href="/<%== $lang %>/"><%= $t->{SITE} %></a> <%== $pathsep %>
-  <%= content 'pathadd' %>
- <% end %></td><td class="right">
- <%= content 'setup' => begin %>
-  <%= content 'setupadd' %>
-  <%== include 'elem/setup', setupkey => 'palette' %>
- <% end %>
- <a class="aero" title="<%= $t->{LANGOTHER} %>" href="<%== $langother %>"><%= $t->{LANGOTHER} %></a>
- </td></tr><tr><td class="left" colspan="2">
-  <%= content 'btitle' %>
- </td></tr></table></div>
- <div id="main"><%= content 'main' %></div>
- <div id="bottom" class="unit center flip shrink">
- <%= $t->{COPYRIGHT} %> <a href="<%== $t->{AUTHORURL} %>"><%= $t->{AUTHOR} %></a> <%== $t->{FIRSTYEAR} %>-<%== thisyear %>.
- <a href="<%== $t->{LICENCE_URL} %>"><%= $t->{LICENCE} %></a>.
- </div>
+%#
+%# --------------------
+%#
+<div class="shade section"><div class="bar"><table class="full">
+%#
+%# --------------------
+%#
+<tr><td class="left"><%= content 'path' => begin %>
+<a href="/<%== $lang %>/"><%= $t->{SITE} %></a> <%== $pathsep %>
+<%= content 'pathadd' %>
+<% end %></td>
+%#
+%# --------------------
+%#
+<td class="right"><span class="aero"><%= content 'setup' => begin %><%= content 'setupadd' %>
+<%== include 'elem/setup', setupkey => 'palette' %><% end %></span>
+<a title="<%= $t->{LANGOTHER} %>" href="<%== $langother %>"><%= $t->{LANGOTHER} %></a>
+</td></tr>
+%#
+%# --------------------
+%#
+<tr><td class="left" colspan="2"><%= content 'btitle' %></td></tr></table></div></div>
+%#
+%# --------------------
+%#
+<div class="section"><%= content 'main' %></div>
+%#
+%# --------------------
+%#
+<div class="section center shade shrink">
+<%= $t->{COPYRIGHT} %> <a href="<%== $t->{AUTHORURL} %>"><%= $t->{AUTHOR} %></a> <%== $t->{FIRSTYEAR} %>-<%== thisyear %>.
+<a href="<%== $t->{LICENCE_URL} %>"><%= $t->{LICENCE} %></a>.
+</div>
+%#
+%# --------------------
+%#  
 </div></body></html>
 %#
 %# Catz - the world's most advanced cat show photo engine

@@ -96,57 +96,28 @@ the system's alignments
 .right { text-align: right; }
 .top { vertical-align: top; }
 
+.aero { padding: 0 1em 0 1em; }
+
 /* 
-general horizontal and vertical paddings
+general page elements
 */
-.aero { padding-left: 0.6em; padding-right: 0.6em; }
-.aeroplus { padding-left: 1.7em; padding-right: 1.7em; }
-.unit { padding-top: 1em;}
-.unitplus { padding-top: 1.7em; }
+.section { margin: 0; padding: <%== $st->{space}->{x} %> 0 <%== $st->{space}->{x} %> 0; }
+.bar { padding: <%== $st->{space}->{x} %> <%== $st->{space}->{y} %> <%== $st->{space}->{x} %> <%== $st->{space}->{x} %>; } 
 
-#top { padding: 0.6em 1em 0em 1em; }
-#main { padding: 0em; }
-#bottom { padding: 1em; margin-top: 1em; }
-.bar { padding: 0.4em; }
-.barplus { padding: 0em 1.7em 0.6em 1.7em; }
-
-/*
-the system's widths
-*/
 .full { width: 100%; }
-.half { width: 50%; }
-.tri { width: 33%; }
-.trix { width: 34%; }
-.quint { width: 20%; }
 
-/*
-list row dividing hr formatting
-*/
-.divid { 
- width: 70%; 
+hr {
  height: 0px;
  border-bottom: 1px;
  border-style: none none solid none;
- color: <%== $st->{color}->{$palette}->{dim} %>;   
+ color: <%== $st->{color}->{$palette}->{dim} %>;
 }
+.divid { width: 70%; }
+.stripe { width: 100%; }
 
-.stripe { 
- width: 100%; 
- height: 0px;
- border-bottom: 1px;
- border-style: none none solid none;
- color: <%== $st->{color}->{$palette}->{dim} %>;   
-}
+.outer { margin: 0 15% 0 15%; }
 
-.outer {
- margin-left: 15%;
- margin-right: 15%;
-}
-
-.inner {
- margin-left: 20%;
- margin-right: 20%;
-}
+.inner { margin: 0 20% 0 20%; }
 
 .flag {
  border-style: solid;
@@ -163,14 +134,9 @@ search pattern highlighting in the found text
 */
 .match { border-bottom: 2px dotted <%== $st->{color}->{$palette}->{dim} %>;  }
 
-.flip {
+.shade {
  color: <%== $st->{color}->{$palette}->{text} %>;
- background-color: <%== $st->{color}->{$palette}->{area1} %>;   
-}
-
-.flop {
- color: <%== $st->{color}->{$palette}->{text} %>;
- background-color: <%== $st->{color}->{$palette}->{area2} %>;   
+ background-color: <%== $st->{color}->{$palette}->{shade} %>;   
 }
 
 /*

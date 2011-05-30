@@ -42,6 +42,8 @@ sub startup {
 
  my $self = shift;
  
+ $self->plugin('default_helpers');
+ 
  $self->renderer->root ( conf ( 'path_template' ) );
  $self->renderer->layout_prefix ( conf ( 'prefix_layout' ) );
  

@@ -70,6 +70,19 @@
 </div>
 % }
 % }
+<div>
+<div>
+% my $i = 1;
+% foreach my $th ( @{ $thumb } ) {
+% defined $texts->{$th->[0]} and do {
+% $i++ > 1 and do {
+<%== $sep %>
+% };
+% my $toid = fullnum33 ( $th->[1], $th->[2] ); 
+<a href="/<%== $lang %>/view/<%== $pri %>/<%== encode ( $sec ) %>/<%== $toid %>/"><%= $texts->{$th->[0]} %></a>                            
+% };
+% }
+</div>
 </div>
 %#
 <% end %>
