@@ -151,9 +151,7 @@ sub browse { # browse photos by one pri-sec pair or no arguments
  $s->{args_array} = []; # browsing all photos
  
  $s->{sec} = $self->decode ( $s->{sec} );
- 
- warn $s->{sec};
- 
+  
  $s->{pri} and $s->{sec} and
    $s->{args_array} = [ $s->{pri}, $s->{sec} ]; # browsing a pair
  
@@ -275,8 +273,6 @@ sub view { # show onte photo defined by pri-sec pair or no arguments
  $s->{args_array} = []; # browsing all photos
  
  $s->{sec} = $self->decode ( $s->{sec} );
- 
- warn $s->{sec};
  
  $s->{pri} and $s->{sec} and
    $s->{args_array} = [ $s->{pri}, $s->{sec} ]; # browsing a pair

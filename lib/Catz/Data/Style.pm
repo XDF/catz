@@ -45,8 +45,11 @@ $style->{size}->{huge} = round ( $style->{size}->{normal} * 1.85 );
 
 do { 
  $style->{size}->{$_} = $style->{size}->{$_} . '%';
-} foreach ( keys %{ $style->{size} } ); 
+} foreach ( keys %{ $style->{size} } );
 
+$style->{space}->{x} = '0.5em';
+$style->{space}->{y} = '1em';
+ 
 $style->{lineh}->{normal} = 145;
 $style->{lineh}->{medium} = round ( $style->{lineh}->{normal} * 1.04 );
 $style->{lineh}->{large} = round ( $style->{lineh}->{normal} * 1.15 );
@@ -71,8 +74,7 @@ $style->{color} = {
   
  dark => {
   back => '#000000',
-  area1 => '#444444',
-  area2 => '#686868',
+  shade => '#444444',
   dim => '#a3a3a3',
   text => '#c4c4c4', 
   high => '#ffffff',
@@ -81,8 +83,7 @@ $style->{color} = {
   
  neutral => {
   back => '#b5b5b5',
-  area1 => '#c1c1c1',
-  area2 => '#d4d4d4',
+  shade => '#c7c7c7',
   dim => '#666666',
   text => '#444444', 
   high => '#000000',
@@ -91,8 +92,7 @@ $style->{color} = {
   
  bright => {
   back => '#ffffff',
-  area1 => '#c8c8c8',
-  area2 => '#e2e2e2',
+  shade => '#d3d3d3',
   dim => '#585858',
   text => '#444444', 
   high => '#000000',

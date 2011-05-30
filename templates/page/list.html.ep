@@ -25,11 +25,10 @@
 %# add the mode changing bar by reading the modes from the list definition matrix provided by the stash
 %# alsoinclude the in-page navigation is required
 %# 
-<div class="center flip bar">
+<div class="center shade">
 %#
 %# --------------------
 %#
-<hr class="stripe">
 % my $i = 1;
 % do {
 %  if ( $i++ > 1) {
@@ -52,7 +51,7 @@
 %  } else {
 <a href="/<%== $lang %>/list/<%== $subject %>/<%== $_ %>/"><%== $t->{'MODE_'.uc($_)} %></a>   
 %  }
-% } foreach ( @{ $matrix->{$subject}->{modes} } ); 
+% } foreach ( @{ $matrix->{$subject}->{modes} } );
 %#
 %# --------------------
 %#
@@ -62,6 +61,7 @@
 %#
 %# now the outer loop that is going thru all sets of a list from stash
 %#
+<div class="roomy">
 % foreach my $set ( @$sets ) {
 %#
 %# --------------------
@@ -127,9 +127,16 @@
 <%= ( dtdate ( $row->[4] ) eq dtdate ( $row->[5] ) ) ? '' : ' - ' . dtexpand ( dtdate ( $row->[5] ), $lang ) %>
 %  }
 % }
+%#
+%# --------------------
+%#
 </div>
 % } # end of the inner loop
 % } # end of the outer loop
+</div>
+%#
+%# --------------------
+%#
 <% end %>
 %#
 %# Catz - the world's most advanced cat show photo engine

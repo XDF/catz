@@ -89,7 +89,7 @@
 % }
 % $pdet =  $detail->[0];
 % $detail->[0] ne 'time' and do {
-<a href="/<%= $lang %>/browse?<%= $detail->[0] %>=<%= enurl ( $detail->[1] ) %><%= $id ? '&id='.$id : '' %>">
+<a href="/<%= $lang %>/browse/<%== $detail->[0] %>/<%== encode ( $detail->[1] ) %>/<%== $id ? $id . '/' : '' %>">
 % };
 <%= ( $detail->[0] ne 'date' and $detail->[0] ne 'time' ) ? $detail->[1] : dtexpand ( $detail->[1], $lang ) %>
 % $detail->[0] ne 'time' and do {

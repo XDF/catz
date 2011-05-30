@@ -34,14 +34,14 @@
 %#
 %# --------------------
 %#
-<div class="barplus find"><h2><%= $t->{FIND} %></h2>
+<div class="bar find"><h2><%= $t->{FIND} %></h2>
 <input class="aero" type="text" id="find">
 <a class="aero" href="/<%== $lang %>/search/"><%= $t->{SEARCH} %></a></div>
 <div class="bar find" id="found"></div>
 %#
 %# --------------------
 %#
-<div class="barplus">
+<div class="bar">
 <a href="/<%== $lang %>/browse/"><%= fmt ( $maxx, $lang )  %> <%== $t->{PHOTOA_CATSHOW} %></a>
 % foreach my $row ( @$pris ) {
 <%= $sep %> <a href="/<%= $lang %>/list/<%= $row->[0] %>/<%= $matrix->{$row->[0]}->{modes}->[0] %>/">
@@ -52,7 +52,7 @@
 %#
 %# --------------------
 %#
-<div class="barplus"><h2><%= $t->{NEWS} %></h2><%== $sep %>
+<div class="bar"><h2><%= $t->{NEWS} %></h2><%== $sep %>
 % foreach my $row ( @$news ) {
 <a href="/<%== $lang %>/news/#<%== $row->[0] %>"><%= dtexpand ( dtdate ( $row->[0] ), $lang ) %> <%= $row->[1] %></a> <%== $sep %>
 % } 
@@ -61,7 +61,7 @@
 %#
 %# --------------------
 %#
-<div class="barplus"><h2><%= $t->{ALBUMS} %></h2> <%= $sep %> 
+<div class="bar"><h2><%= $t->{ALBUMS} %></h2> <%= $sep %> 
 % foreach my $row ( @$albums ) {
 <a title="<%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%= $lang %>/browse?folder=<%== enurl( $row->[0] ) %>"><%= $row->[1] %></a> <%= $sep %>
 % }
@@ -70,7 +70,7 @@
 %#
 %# --------------------
 %#
-<div class="barplus">
+<div class="bar">
 % foreach my $th ( @{ $thumbs } ) {
 % my $id = fullnum33 ( $th->[1], $th->[2] );
 % my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
