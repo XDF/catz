@@ -41,7 +41,7 @@ sub bsearch {
   # http://staff.washington.edu/jon/dsa-perl/dsa-perl.html
   # http://staff.washington.edu/jon/dsa-perl/bsearch-copy
     
-  my ( $a, $x ) = @_; # search for x in arrayref a
+  my ( $self, $a, $x ) = @_; # search for x in arrayref a
     
   my ( $l, $u ) = ( 0, scalar(@$a)-1 ); # search interval $l - $u
  
@@ -64,121 +64,6 @@ sub bsearch {
    -1;
   
  }
-
-sub _vectorize {
- 
- my ( $self, $pri, $sec ) = @_;
- 
- # creating an empty bit vector one larger than there are photos
- # since 0 index in not used 
- my $size = $self->maxx  + 1;
- 
- my $res;
- 
- ( length ( $pri // '' ) > 0 and length ( $sec // '' ) > 0 ) or return Bit::Vector->new( $size );
-  
- # create a bit vector of x indexes based on pri + sec pair
- # first we ask if this data comes from album, exif or position
- my $orig = $self->origin ( $pri, $sec );
-  
- # unknown pri -> return empty vector
- $orig or return Bit::Vector->new( $size ); 
-   
- if ( $pri eq 'has' ) {
-    
-  $res = $self->dbcol( "select x from _search_$orig where pri=?", $sec )
-            
- } else { # no 'has'
- 
-  my $first = substr $sec, 0, 1; 
-  my $last = substr $sec, -1, 1;
-    
-  if ( $first eq '%' ) {
-  
-   if ( $last eq '%') {  # %xyz%
-   
-    $res = $self->dbcol ( "select x from _search_$orig where pri=? and sec like ?", $pri, $sec );
-   
-   }  else { # %xyz
-   
-    $res = $self->dbcol ( "select x from _search_$orig where pri=? and (sec like ? or sec like ?)", $pri, $sec, "$sec %" );
-   
-   }
-  
-  } else {
-
-   if ( $last eq '%') { # xyz%
-
-    $res = $self->dbcol ( "select x from _search_$orig where pri=? and (sec like ? or sec like ?)", $pri, $sec, "% $sec" );
-      
-   }  else { # xyz
-
-    $res = $self->dbcol ( "select x from _search_$orig where pri=? and (sec=? collate nocase or sec like ? or sec like ? or sec like ?)", $pri, $sec, "$sec %", "% $sec", "% $sec %" );   
-   
-   }
-
-  } 
- 
- }
-        
- my $bvec = Bit::Vector->new( $size );
-   
- $bvec->Index_List_Store ( @$res ); # store the x indexes as bits
-  
- return $bvec;  
-  
-}   
-
-sub _bits { # fetch a bit vector for a set of arguments
-
- my ( $self, @args ) = @_;
- 
- my $size = $self->maxx + 1;
-     
- # OR base vector is a completely empty vector
- my $ors =  Bit::Vector->new( $size ); 
-
- # AND base vector is a completely filled vector 
- my $ands = Bit::Vector->new( $size );
- 
- $ands->Fill; # fill the vector
- 
- $ands->Bit_Off(0); # 0th bit is unused as x counting start from 1
-  
- my $hasor = 0; # flag to detect if any ors were present
- 
- for ( my $i = 0; $i <= $#args; $i = $i + 2 ) {
-  
-  $args[$i+1] =~ /^(\+|\-)(.*)$/;
-    
-  my $oper = $1 // '0'; # the default operand is 0 = or
-  my $rest = $2 // $args[$i+1]; 
-  
-  $rest =~ s/\?/\_/g; # user interface ? -> database interface _
-  $rest =~ s/\*/\%/g; # user interface * -> database interface %
-              
-  my $bvec = $self->vectorize( $args[$i], $rest ); # make one vector
-                
-  given ( $oper ) {
-  
-   when ( '+' ) { $ands->And( $ands, $bvec ) ; }
-      
-   when ( '0' ) { $hasor++; $ors->Or( $ors, $bvec ); }
-   
-   when ( '-' ) { $ands->AndNot( $ands, $bvec ); }
-   
-   default { die "unknow vector operation '$oper'"; }
-  
-  }
-  
- }
- 
- # if ors vere present then and them with ands
- $hasor and $ands->And( $ands, $ors );
- 
- return $ands;
-       
-}
 
 sub _array { # vector as an array of indexes
 
@@ -221,7 +106,7 @@ sub _pager { # create a vector and process it to usable for browsing
      
  my $svec = $self->array ( @args );
     
- my $xfrom = bsearch( $svec, $x ); # search for the x
+ my $xfrom = $self->bsearch( $svec, $x ); # search for the x
   
  $xfrom == -1 and return [ 0 ]; # not found -> total = 0
 
@@ -265,7 +150,7 @@ sub _pointer {
     
  my $svec = $self->array ( @args ); # get an array of xs
     
- my $idx = bsearch ( $svec, $x ); # search for the x
+ my $idx = $self->bsearch ( $svec, $x ); # search for the x
   
  $idx == -1 and return [ 0 ]; # not found -> total = 0 
  

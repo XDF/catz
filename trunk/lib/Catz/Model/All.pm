@@ -20,66 +20,34 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+#  
+
+package Catz::Model::All;
+
+#
+# Get all photos
 #
 
 use 5.10.0; use strict; use warnings;
 
-use lib '../lib'; use lib '../libi';
+use parent 'Catz::Model::Vector';
 
-use Catz::Core::Conf;
-use Catz::Util::File qw ( fileread filewrite fileremove findlatest pathcut );
+use Bit::Vector;
 
-my $rolled = 0;
+sub _bits { # create a bit vector of xs for a pri-sec pair
 
-my $path = conf ( 'path_db' );
-
-# rolls to the latest database by updating the key file
-
-# latest key file
-my $keyold = findlatest ( $path, 'txt' );
-
-# current dt
-my $dtold = defined $keyold ? substr ( pathcut ( $keyold ), 0, 14 ) : undef;
-
-# latest database file
-my $dbnew = findlatest ( $path, 'db' );
-
-# new dt
-my $dtnew = defined $dbnew ? substr ( pathcut ( $dbnew ), 0, 14 ) : undef;
-
-if ( not defined $dtold ) {
-
- # no old db, just make a key file
- filewrite ( "$path/$dtnew.txt", "Catz database key file" );
+ my ( $self, $pri, $sec ) = @_;
  
- say "rolled initially to '$dtnew'"; $rolled++;
-  
-} else {
-
- if ( $dtold eq $dtnew ) { 
-
-  say "already at the latest dt '$dtold', no need to roll";
-  
- } else {
  
-  filewrite ( "$path/$dtnew.txt", "Catz database key file" );
+ # creating an empty bit vector one larger than there are photos
+ # since 0 index in not used     
+ my $vec =  Bit::Vector->new( $self->maxx + 1 );
 
-  # remove the old key file
-  fileremove ( $keyold );
-
-  say "rolled from '$dtold' to '$dtnew'"; $rolled++; 
- 
- }
- 
+ $vec->Fill;
+ $vec->Bit_Off(0); # 0th bit is unused as x counting start from 1
+   
+ return $vec;
+       
 }
 
-if ( $rolled and conf ( 'lin' ) ) {
- 
- chmod ( 0444, $dbnew ) || die $!;
-  
- say "set read only '$dbnew'";
-    
-} 
-
-
-
+1;

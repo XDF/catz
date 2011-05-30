@@ -55,7 +55,7 @@
 % my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
 % my $titl = dtexpand ( dtdate ( $th->[3] ), $lang );
 % defined $texts->{$th->[0]} and $titl = "$titl $sep " . $texts->{$th->[0]}; 
-<a title="<%= $titl %>" href="<%== include 'href/pathid', topath => 'view', toid => $toid %>"><img src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
+<a title="<%= $titl %>" href="/<%== $lang %>/view/<%== $pri %>/<%== encode ( $sec ) %>/<%== $toid %>/"><img src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
 % }
 %#
 <div>

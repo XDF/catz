@@ -62,9 +62,9 @@ sub front {
  
  $s->{pris} =  $self->fetch ( 'locate#pris' ); 
 
- $s->{maxx} = $self->fetch ( 'common#maxx' );
+ $s->{maxx} = $self->fetch ( 'all#maxx' );
  
- my $samp = $self->fetch ( 'vector#array_rand_n', 50 );
+ my $samp = $self->fetch ( 'all#array_rand_n', 50 );
  
  my $th = $self->fetch ( 'photo#thumb', @{ $samp } );
 
