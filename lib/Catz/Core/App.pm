@@ -95,53 +95,22 @@ sub startup {
  
  $l->route( '/find' )->to ( "locate#find", hold => 15 );
   
- $l->route(
-  '/list/:subject/:mode', subject => qr/[a-z0-9]{1,15}/ 
- )->to('locate#list', hold => 15 );
+ $l->route( '/list/:subject/:mode' )->to('locate#list', hold => 15 );
+ 
+ my $p = $l->route ( '/:action', action => qr/browse|view/ )->to( controller => 'present' ); 
+
+ $p->route ('/:pri/:sec/:id', id => qr/\d{6}/ )->to ( what => undef );
+ 
+ $p->route ('/:pri/:sec', id => qr/\d{6}/ )->to ( what => undef, id => undef );
+
+ $p->route ('/:id', id => qr/\d{6}/ )->to ( pri => undef, sec => undef );
      
- my $bv = $l->route ('/:action', action => qr/browse|view/ );
- 
- $bv->route ( '/:id', id => qr/\d{6}/ )->to( controller => 'present' );
-
- $bv->route ( 
-  ':pri/:sec', 
-   pri => qr/[a-z0-9]{1,15}/, 
-   sec => qr/[A-Za-z0-9\-\_]{1,1000}/ 
- )->to( controller => 'present' );
- 
- $bv->route ( 
-  '/:pri/:sec/:id', 
-   pri => qr/[a-z0-9]{1,15}/, 
-   sec => qr/[A-Za-z0-9\-\_]{1,1000}/, 
-   id => qr/\d{6}/
- )->to( controller => 'present' );
- 
- $bv->route ( '/' )->to( controller => 'present' );
-
- my $sd = $r->route ('/:action', action => qr/search|display/ );
-  
- $sd->route ( '/:id', id => qr/\d{6}/ )->to( controller => 'present' );
-
- $sd->route ( '/' )->to( controller => 'present' ); 
-     
+ $p->route ('/' )->to ( what => undef, id => undef, pri => undef, sec => undef );
+      
  # add hooks to subs that are executed before and after the dispatch
  $self->hook ( before_dispatch => \&before );  
  $self->hook ( after_dispatch => \&after );
  
-}
-
-sub urio {
-
- my ( $self, $lang ) = @_;
- 
- return 
-  "/$lang" . 
-  substr ( $self->req->url->path->to_string, 3 ) . 
-  ( $self->req->query_params->to_string ? 
-   '?' . $self->req->query_params->to_string : 
-   '' 
-  ); 
-
 }
 
 sub before {
@@ -224,21 +193,20 @@ sub before {
   # default to english
  
   $s->{lang} = 'en';
-  $s->{langother} = '/fi/'; 
+  $s->{langother} = 'fi'; 
  
  } elsif ( substr ( $url, 0, 3 ) eq '/fi' ) {
  
-  $s->{lang} = 'fi'; $s->{langother} = urio ( $self, 'en' ); 
+  $s->{lang} = 'fi'; $s->{langother} = 'en'; 
   
  } elsif( substr ( $url, 0, 3 ) eq '/en' ) {
  
-  $s->{lang} = 'en'; $s->{langother} = urio ( $self, 'fi' );
+  $s->{lang} = 'fels'; $s->{langother} = 'fi';
 
- } else {
+ } else { # default to english
  
-  # default to english
- 
-  $s->{lang} = 'en'; $s->{langother} = urio ( $self, 'fi' );
+  $s->{lang} = 'fi'; $s->{langother} = 'en';
+  
  }
 
  # let the url be in the stash also

@@ -147,13 +147,21 @@ sub process_args {
 sub browse { # browse photos by one pri-sec pair or no arguments
 
  my $self = shift; my $s = $self->{stash};
+
+ $s->{args_array} = []; # browsing all photos as default
+ $s->{args_count} = 0;
+ $s->{dual} = [ undef, undef ];
  
- $s->{args_array} = []; # browsing all photos
+ if ( $s->{pri} and $s->{pri} ) {
  
- $s->{sec} = $self->decode ( $s->{sec} );
+  $s->{sec} = $self->decode ( $s->{sec} );
+
+  $s->{args_array} = [ $s->{pri}, $s->{sec} ]; # browsing all photos as default
+  $s->{args_count} = 2;
   
- $s->{pri} and $s->{sec} and
-   $s->{args_array} = [ $s->{pri}, $s->{sec} ]; # browsing a pair
+  $s->{args_disp} = $self->fetch('mapper#disp',$s->{pri}, $s->{sec});
+  
+ } 
  
  if ( $s->{id} ) { # id was given in request, resolve x
 
@@ -172,12 +180,18 @@ sub browse { # browse photos by one pri-sec pair or no arguments
   $s->{x} or ( $self->not_found and return );
  
   $s->{id} = $self->fetch ( 'pair#x2id', $s->{x} );
+  
+ }
+
+  my $trans = $self->fetch ( 'mapper#trans', $s->{pri}, $s->{sec} );
  
- } 
-     
- my $res = $self->fetch( 'pair#pager', $s->{x}, $s->{perpage}, $s->{pri}, $s->{sec} );
+ $s->{urlother} =  
+  '/' . $s->{langother} . '/' . $s->{action} . '/' . 
+  $trans->[0] . '/' . $self->encode ( $trans->[1] ) . '/';
+       
+ my $res = $self->fetch( 'pair#pager', $s->{x}, $s->{perpage}, @ { $s->{args_array }} );
  
- $s->{args_count} = 2; $s->{search} = 'asdfasdf';
+ $s->{search} = 'asdfasdf';
  $s->{args_string} = 'asdfasdf';
      
  $res->[0] == 0 and $self->not_found and return;

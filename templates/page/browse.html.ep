@@ -20,7 +20,7 @@
 %#
 <% content 'main' => begin %>
 %#
-<div class="center flip bar">
+<div class="center shade">
 <hr>
 % my $label1 = $t->{PAGE_FIRST};
 % my $label2 = $t->{PAGE_PREV};
@@ -31,7 +31,7 @@
 <%= $label1 %></span> <%= $sep %> <%= $label2 %> 
 % }
  <%= $sep %> <%= $t->{PAGE} %> 
-<select class="flop" name="page" onchange="location.href='<%== include 'href/id', toid =>  "'+this.options[this.selectedIndex].value" %>">
+<select class="flop" name="page" onchange="location.href='<%== include 'href/id', toid => "'+this.options[this.selectedIndex].value" %>+'/'">
 % foreach my $i ( 0 .. ( scalar @{ $pin } -1 ) ) {
 % if ( $page == ( $i + 1 ) ) {
 <option selected value="<%== $pin->[$i] %>"><%= $i+1 %></option>

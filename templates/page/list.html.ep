@@ -101,7 +101,8 @@
 %#
 %# now the data line
 %#
-<a title="<%== $t->{uc($subject)} %> <%== $sep %> <%= $row->[1] %>" href="/<%= $lang %>/browse/<%== lc($subject) %>/<%== encode($row->[1]) %>/">
+% my $to = shift @{ $links };        
+<a title="<%== $t->{uc($subject)} %> <%== $sep %> <%= $row->[1] %>" href="/<%= $lang %>/browse/<%== $to->[0] %>/<%== encode($to->[1]) %>/">
 <%= $subject ne 'date' ? $row->[1] : dtexpand ( $row->[1], $lang ) %></a>
 %#
 %# --------------------

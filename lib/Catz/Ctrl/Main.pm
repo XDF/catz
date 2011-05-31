@@ -56,6 +56,8 @@ sub front {
 
  my $self = shift; my $s = $self->{stash};
  
+ $s->{urlother} = '/' . $s->{langother} . '/';
+ 
  $s->{news} = $self->fetch ( 'news#latest', 8 );
  
  $s->{albums} = $self->fetch ( 'locate#album' );
