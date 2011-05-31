@@ -28,6 +28,8 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Catz::Core::Model';
 
+use List::MoreUtils qw ( any );
+
 use Catz::Util::Time qw ( dtexpand );
 
 sub _link { # provides mapping for links
@@ -37,15 +39,6 @@ sub _link { # provides mapping for links
  if ( $spri eq 'album' ) {
 
   return $self->dbrow("select 'folder',folder from album natural join inalbum natural join sec_$lang natural join pri where pri='album' and sec=?",$ssec);
-
- } elsif ( $spri eq 'breed' ) {
- 
- 
-  return $self->dbrow("select 'bcode',bcode from mbreed where breed_$lang=?",$ssec);
- 
- } elsif ( $spri eq 'nat' ) {
- 
-  return $self->dbrow("select 'ncode',ncode from mnat where nat_$lang=?",$ssec);
 
  }
 
@@ -67,35 +60,13 @@ sub _disp { # provides mapping for displaying
 
 }
 
-sub _dual { # provides mapping for dual-like extra data
-
- my ( $self, $spri, $ssec ) = @_; my $lang = $self->{lang};
- 
- if ( $spri eq 'bcode' ) {
- 
-  my $ol = $lang eq 'fi' ? 'en' : 'fi';
-    
-  return $self->dbrow("select 'breed',breed_$ol from mbreed where bcode=?",$spri);
- 
- } elsif ( $spri eq 'ncode' ) {
-
-  my $ol = $lang eq 'fi' ? 'en' : 'fi';
-
-  return $$self->dbrow("select 'nat',nat_$ol from mnat where ncode=?",$spri);
- 
- } else { # not a dual, return undef
- 
-  return undef;
- 
- }
-
-}
+my @istrans =  qw ( breed loc org umb );
 
 sub _trans { # provides mapping for translations
 
  my ( $self, $spri, $ssec ) = @_; my $lang = $self->{lang};
  
- if ( $spri eq 'loc' or $spri eq 'org' or $spri eq 'umb' ) {
+ if ( any { $spri eq $_ } @istrans ) {
  
   my $ol = $lang eq 'fi' ? 'en' : 'fi';
   

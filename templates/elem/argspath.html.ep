@@ -1,7 +1,7 @@
 % if ( $args_count == 0 ) {
 %# do nothing = use the default path
 % } elsif ( ( $args_count > 0 and $args_count < 3 ) and ( $args_array->[0] ne 'text' ) ) {
-<a href="/<%= $lang %>/list/<%== $args_array->[0] %>/<%== $matrix->{$args_array->[0]}->{modes}->[0] %>/"><%= $t->{uc($args_array->[0]).'S'} %></a> <%= $pathsep %>
+<a href="/<%= $lang %>/list/<%== $disp_array->[0] %>/<%== $matrix->{$disp_array->[0]}->{modes}->[0] %>/"><%= $t->{uc($disp_array->[0]).'S'} %></a> <%= $pathsep %>
 % } else {
 <a href="/<%= $lang %>/search?what=<%== $search %>"><%= $t->{SEARCH} %></a> <%= $pathsep %>
 % } 

@@ -36,24 +36,16 @@ use Catz::Util::String qw ( enurl );
 
 sub process_id {
  
- # processes the id parameter from the request
- # sets the photo x to stash
-
- # returns true in success, return false on reject
+ # processes id parameter or resolves it from data
+ # returns 1 in success, return 0 on reject
  
  my $self = shift; my $s = $self->{stash};
-  
- if ( defined $self->param('id') ) { # id was given in request
 
-  my $id = $self->param('id');
-
-  ( length ( $id ) == 6 and $id =~ /^\d+$/ )  or return 0;
+ if ( $s->{id} ) { 
 
   $s->{origin} = 'id'; # mark that this was request had an id
- 
-  $s->{id} = $id;
-  
-  $s->{x} = $self->fetch( 'common#id2x', $id );
+   
+  $s->{x} = $self->fetch( $s->{runmode} . '#id2x', $s->{id} );
     
   $s->{x} or return 0;
           
@@ -61,42 +53,16 @@ sub process_id {
  
   $s->{origin} = 'x'; # mark that the id was resolved
  
-  $s->{x} = $self->fetch ( 'vector#first', @{ $s->{args_array} } );
+  $s->{x} = $self->fetch ( $s->{runmode} . '#first', @{ $s->{args_array} } );
         
   $s->{x} or return 0;
   
-  $s->{id} = $self->fetch ( 'common#x2id', $s->{x} );
+  $s->{id} = $self->fetch ( $s->{runmode} . '#x2id', $s->{x} );
   
   $s->{id} or return 0; 
    
  }
-
- $s->{idparam} = '';
- $s->{pad} = '';
  
- if ( $s->{origin} eq 'id' ) {
-                
-   $s->{pad} = '?';
-
-   if ( $s->{args_string} ne '' ) {
-
-    $s->{idparam} = '&id=' . $s->{id};
-
-   } else {
-
-    $s->{idparam} = 'id=' . $s->{id};
-
-   }
-
- } else {
-   
-  if ( $s->{args_string} ne '' ) {
-
-    $s->{pad}= '?';
-
-   }
-
- } 
  return 1;
  
 }
@@ -144,23 +110,109 @@ sub process_args {
 }
 
 
-sub browse { # browse photos by one pri-sec pair or no arguments
+sub browseall { # browse all photos 
 
  my $self = shift; my $s = $self->{stash};
 
  $s->{args_array} = []; # browsing all photos as default
- $s->{args_count} = 0;
- $s->{dual} = [ undef, undef ];
+ $s->{args_count} = 0;  # so the count of args is also 0
+ $s->{disp_array} = [];
+ $s->{runmode} = 'all'; # set the runmode to all photos
  
- if ( $s->{pri} and $s->{pri} ) {
+ $self->process_id or $self->not_found and return;
+ 
+ $s->{urlother} =  
+  '/' . $s->{langother} . '/' . $s->{action} . '/' .
+  ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
+ 
+ $s->{search} = 'asdfasdf';
+ $s->{args_string} = '';
+ 
+ $self->page;
+ 
+}
+
+sub page {
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ my $res = $self->fetch( $s->{runmode} . '#pager', $s->{x}, $s->{perpage}, @{ $s->{args_array} } );
+
+ $res->[0] == 0 and $self->not_found and return;
+
+ $s->{total} = $res->[0];
+ $s->{page} = $res->[1];
+ $s->{pages} = $res->[2];
+ $s->{from} = $res->[3];
+ $s->{to} = $res->[4];
+ $s->{pin} = $res->[5];
+ $s->{xs} = $res->[6];
+                   
+ $s->{total} == 0 and $self->not_found and return; 
+ # no photos found by search 
+ 
+ scalar @{ $s->{xs} } == 0 and $self->not_found and return; 
+ # no photos in this page
+ 
+ $res = $self->fetch( 'photo#thumb', @{ $s->{xs} } ) ;
+ 
+ $s->{thumb} = $res->[0];
+ $s->{earliest} = $res->[1];
+ $s->{latest} = $res->[2];
+ 
+ $s->{texts} = $self->fetch ( 'photo#texts', @{ $s->{xs} } );
+ 
+ $s->{related} = undef;
+ 
+ # when on first page, more than 1 photos and just one pri-sec -pair
+ # then fetch related information and send it to template
+ #$s->{page} == 1 and $s->{total} > 1 and $s->{args_count} == 2 and  
+ # $s->{related} = $self->fetch( 
+ #  'locate#related', $s->{args_array}->[0], $s->{args_array}->[1] 
+ # ); 
+             
+ $self->render( template => 'page/browse' );
+
+}
+
+1;
+
+__END__
+
+sub browse { # browse photos by one pri-sec pair or no arguments
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ $s->{args_array} = []; # browsing all photos as default
+ $s->{args_count} = 0;  # so the count of args is also 0
+ $s->{runmode} = 'all'; # set the runmode to all photos 
+ 
+ my $what $self->param( 'what' ) // undef; 
+ 
+ if ( $s->{pri} and $s->{pri} ) { # priority goes to pri,sec pair
  
   $s->{sec} = $self->decode ( $s->{sec} );
 
   $s->{args_array} = [ $s->{pri}, $s->{sec} ]; # browsing all photos as default
   $s->{args_count} = 2;
+  $s->{runmode} = 'pair'; # set the runmode to all photos 
+ 
+  $s->{disp_array} = $self->fetch('mapper#disp',$s->{pri}, $s->{sec});
   
-  $s->{args_disp} = $self->fetch('mapper#disp',$s->{pri}, $s->{sec});
-  
+ } elsif ( $what ) { # the second possibility is that this is search
+ 
+  $s->{search} = 'all'; # set the runmode to all photos 
+ 
+ 
+ 
+ }
+ 
+ # or we are 
+ 
+    
+ 
+ 
+ 
  } 
  
  if ( $s->{id} ) { # id was given in request, resolve x

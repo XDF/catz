@@ -96,16 +96,30 @@ sub startup {
  $l->route( '/find' )->to ( "locate#find", hold => 15 );
   
  $l->route( '/list/:subject/:mode' )->to('locate#list', hold => 15 );
- 
- my $p = $l->route ( '/:action', action => qr/browse|view/ )->to( controller => 'present' ); 
 
- $p->route ('/:pri/:sec/:id', id => qr/\d{6}/ )->to ( what => undef );
- 
- $p->route ('/:pri/:sec', id => qr/\d{6}/ )->to ( what => undef, id => undef );
+ # all
+  
+ my $a = $l->route( '/:action', action => qr/browseall|viewall/ )
+  ->to( controller => 'present' );   
 
- $p->route ('/:id', id => qr/\d{6}/ )->to ( pri => undef, sec => undef );
-     
- $p->route ('/' )->to ( what => undef, id => undef, pri => undef, sec => undef );
+ $a->route( '/:id', id => qr/\d{6}/ )->to( ); 
+ $a->route( '/' )->to( id => undef );
+
+ # pair
+
+ my $p = $l->route( '/:action', action => qr/browse|view/ )
+  ->to( controller => 'present' );   
+
+ $p->route( ':pri/:sec/:id', id => qr/\d{6}/ )->to( ); 
+ $p->route( ':pri/:sec/' )->to( id => undef );
+
+ # search
+
+ my $s = $l->route( '/:action', action => qr/search|display/ )
+  ->to( controller => 'present' );   
+
+ $s->route( '/:id', id => qr/\d{6}/ )->to( ); 
+ $s->route( '/' )->to( id => undef );
       
  # add hooks to subs that are executed before and after the dispatch
  $self->hook ( before_dispatch => \&before );  
