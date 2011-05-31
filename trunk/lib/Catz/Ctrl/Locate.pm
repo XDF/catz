@@ -97,12 +97,28 @@ sub list {
  # verify that the mode is known for this subject
  ( any { $s->{mode} eq $_ } @{ $s->{matrix}->{$s->{subject}}->{modes} } )
   or ( $self->not_found and return );
+  
+ $s->{urlother} =  
+  '/' . $s->{langother} . '/' . $s->{action} . '/' . 
+  $s->{subject} . '/' . $s->{mode} . '/';
    
  my $res = $self->fetch( 'locate#full', $s->{subject}, $s->{mode} );
- 
+  
  $s->{total} = $res->[0];
  $s->{idx} = $res->[1];
  $s->{sets} = $res->[2];
+ 
+ $s->{links} = [];
+ 
+ foreach my $set ( @{ $s->{sets} } ) {
+ 
+  foreach my $row ( @{ $set->[1] } ) {
+        
+   push @{ $s->{links} }, $self->fetch('mapper#link',$row->[0],$row->[1]); 
+  
+  }
+ 
+ }
    
  $s->{total} > 0 or ( $self->not_found and return );
  
