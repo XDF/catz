@@ -101,8 +101,10 @@
 %#
 %# now the data line
 %#
-% my $to = shift @{ $links };        
-<a title="<%== $t->{uc($subject)} %> <%== $sep %> <%= $row->[1] %>" href="/<%= $lang %>/browse/<%== $to->[0] %>/<%== encode($to->[1]) %>/">
+% my $topri = $row->[0];
+% my $tosec = $row->[1];
+% if ( $subject eq 'album' ) { $topri = 'folder'; $tosec = $map->{$tosec} }        
+<a title="<%== $t->{uc($subject)} %> <%== $sep %> <%= $row->[1] %>" href="/<%= $lang %>/browse/<%== $topri %>/<%== encode($tosec) %>/"> 
 <%= $subject ne 'date' ? $row->[1] : dtexpand ( $row->[1], $lang ) %></a>
 %#
 %# --------------------

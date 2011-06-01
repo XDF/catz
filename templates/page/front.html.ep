@@ -42,7 +42,7 @@
 %# --------------------
 %#
 <div class="bar">
-<a href="/<%== $lang %>/browse/"><%= fmt ( $maxx, $lang )  %> <%== $t->{PHOTOA_CATSHOW} %></a>
+<a href="/<%== $lang %>/browseall/"><%= fmt ( $maxx, $lang )  %> <%== $t->{PHOTOA_CATSHOW} %></a>
 % foreach my $row ( @$pris ) {
 <%= $sep %> <a href="/<%= $lang %>/list/<%= $row->[0] %>/<%= $matrix->{$row->[0]}->{modes}->[0] %>/">
 <%= fmt ( $row->[1], $lang ) %>

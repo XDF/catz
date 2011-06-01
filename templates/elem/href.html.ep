@@ -1,0 +1,9 @@
+% if ( $runmode eq 'all' ) {
+/<%== $lang %>/<%== $action %>/<%== $id %>/
+% } elsif ( $runmode eq 'pair' ) {
+/<%== $lang %>/<%== $action %>/<%== $args_array->[0] %>/<%== encode($args_array->[1]) %>/<%== $id %>/
+% } elsif ( $runmode eq 'search' ) {
+/<%== $lang %>/<%== $action %>/<%== $id %>?notyetimplemented
+% } else {
+%  die "unknown runmode '$runmode' in href generation";
+% }

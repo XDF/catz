@@ -69,7 +69,7 @@ my $matrix = {
  cat => {
   modes => [ qw ( a2z top first ) ],
   dividers => 1,
-  related => [ qw ( title feat bcode app code ) ]
+  related => [ qw ( tcode feat bcode app code ) ]
  },
  
  breed => {
@@ -114,10 +114,10 @@ my $matrix = {
   related => [ qw ( cat breed bcode ) ]
  },
 
- title => {
+ tcode => {
   modes => [ qw ( a2z top first ) ],
   dividers => 1,
-  related => [ qw ( title ) ]
+  related => [ qw ( tcode ) ]
  },
 
  lens => {

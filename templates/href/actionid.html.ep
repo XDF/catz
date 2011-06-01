@@ -1,5 +1,11 @@
-%# Create link to same action & parameter but different id
-%== include 'href/actionid', toaction => $action;
+%# Create link to different action & id but with same parameters
+% if ( $runmode eq 'pair' ) { 
+/<%== $lang %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/<%== $toid %>/
+% } elsif ( $runmode eq 'search' ) {
+/<%== $lang %>/<%== $toaction %>/<%== $toid %>?what=<%== enurl($what) %>
+% } else { # default to runmode 'all' 
+/<%== $lang %>/<%== $toaction %>/<%== $toid %>/
+% }
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

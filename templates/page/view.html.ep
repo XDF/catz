@@ -49,7 +49,7 @@
 <%= $label1 %> <%== $sep %> <%= $label2 %>
 % }
 <%== $sep %>
-<a href="<%== include 'href/path', topath => 'browse' %>"><%= $t->{THUMBS} %></a>
+<a href="<%== include 'href/action', toaction => 'browse' %>"><%= $t->{THUMBS} %></a>
 <%== $sep %>
 % $label1 = $t->{PHOTO_NEXT};
 % $label2 = $t->{PHOTO_LAST};
@@ -81,17 +81,17 @@
 % };
 <span class="shrink">
 % $i = 1;
-% my $pdet = '93liokasd=))(/l8rlsasdflOLW3wr';
+% my $pdet = '93lioI+d=))(/l8rflOLW3wr';
 % foreach my $detail ( @$detail ) {
 % if ( $detail->[0] ne $pdet ) {
 <%= $i++ == 1 ? '' : $sep %>
-<%= $t->{uc($detail->[0])} %>
+<%= $t->{uc( $detail->[0] ne 'folder' ? $detail->[0] : 'album' )} %>
 % }
 % $pdet =  $detail->[0];
 % $detail->[0] ne 'time' and do {
-<a href="/<%= $lang %>/browse/<%== $detail->[0] %>/<%== encode ( $detail->[1] ) %>/<%== $id ? $id . '/' : '' %>">
+<a href="<%== include 'href/actionpair', topri => $detail->[0], tosec => $detail->[1] %>">
 % };
-<%= ( $detail->[0] ne 'date' and $detail->[0] ne 'time' ) ? $detail->[1] : dtexpand ( $detail->[1], $lang ) %>
+%== include 'elem/out', a => $detail->[0], b => $detail->[1]; 
 % $detail->[0] ne 'time' and do {
 </a>
 % };
