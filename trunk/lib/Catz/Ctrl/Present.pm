@@ -31,16 +31,20 @@ use parent 'Catz::Core::Ctrl';
 use List::MoreUtils qw ( any );
 
 use Catz::Data::Result;
-use Catz::Data::Search qw ( args2search );
+use Catz::Data::Search qw ( search2args );
 use Catz::Util::String qw ( enurl );
 
-sub process_id {
+sub pre {
+
+ my $self = shift; my $s = $self->{stash};
+
+ # fetch folder<->album mappings
+
+ $s->{map} = $self->fetch ( 'mapper#map' );
  
  # processes id parameter or resolves it from data
  # returns 1 in success, return 0 on reject
  
- my $self = shift; my $s = $self->{stash};
-
  if ( $s->{id} ) { 
 
   $s->{origin} = 'id'; # mark that this was request had an id
@@ -67,99 +71,115 @@ sub process_id {
  
 }
 
-sub process_args {
-
- my $self = shift; my $s = $self->{stash};
- 
- # processes the get parameters of the request
- # returns true in success, false on reject
-   
- my @args = ();
- my $str = '';
-
- my $pri = $self->fetch ( 'photo#pri_all' );
-
- push @{ $pri }, 'has';
-
- foreach my $key ( $self->param ) {
-
-  any { $_ eq $key } @{ $pri } and do {
-
-   my @vals = $self->param( $key );
-
-   foreach my $val ( @vals ) {
-
-    $str eq '' or $str .= '&';
-    $str .= "$key=".enurl($val); 
-    push @args, $key; 
-    push @args, $val;
-
-   }
-
-  };
-
- }
- 
- $s->{args_string} = $str;  
- $s->{args_count} = scalar @args;
- $s->{args_array} = [ @args ];
- $s->{search} = args2search ( $s->{args_array} );
-   
- return 1;
-
-}
-
-
-sub browseall { # browse all photos 
+sub all {
 
  my $self = shift; my $s = $self->{stash};
 
  $s->{args_array} = []; # browsing all photos as default
  $s->{args_count} = 0;  # so the count of args is also 0
- $s->{disp_array} = [];
- $s->{runmode} = 'all'; # set the runmode to all photos
+ $s->{runmode} = 'all'; # set the runmode to all photos mode
+ $s->{pri} = undef; $s->{sec} = undef; $s->{what} = undef;
  
- $self->process_id or $self->not_found and return;
- 
+ $self->pre;
+
  $s->{urlother} =  
   '/' . $s->{langother} . '/' . $s->{action} . '/' .
   ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
  
- $s->{search} = 'asdfasdf';
- $s->{args_string} = '';
- 
- $self->page;
- 
 }
 
-sub page {
+sub pair {
+
+ my $self = shift; my $s = $self->{stash};
+   
+ $s->{pri} and $s->{sec} or $self->not_found and return;
+ $s->{sec} = $self->decode ( $s->{sec} );
+ $s->{args_array} = [ $s->{pri}, $s->{sec} ];
+ $s->{args_count} = 2;
+ $s->{what} = undef;
+  
+ $s->{runmode} = 'pair'; # set the runmode to pri-sec pair 
+
+ $self->pre;
+ 
+ my $trans = $self->fetch('mapper#trans',$s->{pri}, $s->{sec});  
+
+ $s->{urlother} =  
+  '/' . ( join '/', $s->{langother} , $s->{action}, $s->{pri}, 
+  $self->encode( $trans ) ). '/' .
+  ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
+
+}
+
+sub pattern {
 
  my $self = shift; my $s = $self->{stash};
  
- my $res = $self->fetch( $s->{runmode} . '#pager', $s->{x}, $s->{perpage}, @{ $s->{args_array} } );
+ $s->{args_array} = search2args ( $s->{what} );
+ $s->{args_count} = scalar @{ $s->{args_array} };
+ $s->{runmode} = 'search';
+ 
+ $self->pre;
 
- $res->[0] == 0 and $self->not_found and return;
+ $s->{urlother} =  
+  '/' . $s->{langother} . '/' . $s->{action} . '/' .
+  ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
+ 
+} 
 
- $s->{total} = $res->[0];
- $s->{page} = $res->[1];
- $s->{pages} = $res->[2];
- $s->{from} = $res->[3];
- $s->{to} = $res->[4];
- $s->{pin} = $res->[5];
- $s->{xs} = $res->[6];
+sub browseall { $_[0]->all; $_[0]->multi }
+sub viewall { $_[0]->all; $_[0]->single }
+
+sub browse { $_[0]->pair; $_[0]->multi }
+sub view { $_[0]->pair; $_[0]->single }
+
+sub search { $_[0]->pattern; $_[0]->multi }
+sub display { $_[0]->pattern; $_[0]->single }
+
+sub single {
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ ( $s->{total}, $s->{pos}, $s->{pin} ) = @{
+  $self->fetch( $s->{runmode} . '#pointer', $s->{x}, @{ $s->{args_array} } )
+ };
+     
+ $s->{total} == 0 and $self->not_found and return;
+  
+ $s->{detail} = $self->fetch( 'photo#detail', $s->{x});
+
+ $s->{comment} =  $self->fetch( 'photo#text', $s->{x} );
+ 
+ $s->{image} =  $self->fetch( 'photo#image', $s->{x} );
+ 
+ my $keys = $self->fetch ( 'photo#resultkey', $s->{x} );
+
+ result_prepare ( $self, $keys );
+        
+ $self->render( template => 'page/view' );
+
+}
+ 
+sub multi {
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ ( 
+  $s->{total}, $s->{page}, $s->{pages}, $s->{from}, 
+  $s->{to}, $s->{pin}, $s->{xs} 
+ ) = @{ $self->fetch( 
+   $s->{runmode} . '#pager', $s->{x}, $s->{perpage}, @{ $s->{args_array} } 
+  ) };
                    
- $s->{total} == 0 and $self->not_found and return; 
- # no photos found by search 
+# if no photos found                   
+ $s->{total} == 0 and $self->not_found and return;   
  
+ # if no photos on this page
  scalar @{ $s->{xs} } == 0 and $self->not_found and return; 
- # no photos in this page
  
- $res = $self->fetch( 'photo#thumb', @{ $s->{xs} } ) ;
- 
- $s->{thumb} = $res->[0];
- $s->{earliest} = $res->[1];
- $s->{latest} = $res->[2];
- 
+ ( $s->{thumb}, $s->{earliest}, $s->{latest} ) = 
+  @{ $self->fetch( 'photo#thumb', @{ $s->{xs} } ) };
+  
  $s->{texts} = $self->fetch ( 'photo#texts', @{ $s->{xs} } );
  
  $s->{related} = undef;
@@ -174,6 +194,10 @@ sub page {
  $self->render( template => 'page/browse' );
 
 }
+
+
+
+
 
 1;
 

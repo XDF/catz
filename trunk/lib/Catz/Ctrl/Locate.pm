@@ -108,18 +108,8 @@ sub list {
  $s->{idx} = $res->[1];
  $s->{sets} = $res->[2];
  
- $s->{links} = [];
- 
- foreach my $set ( @{ $s->{sets} } ) {
- 
-  foreach my $row ( @{ $set->[1] } ) {
-        
-   push @{ $s->{links} }, $self->fetch('mapper#link',$row->[0],$row->[1]); 
-  
-  }
- 
- }
-   
+ $s->{map} = $self->fetch ( 'mapper#map' );
+    
  $s->{total} > 0 or ( $self->not_found and return );
  
  $self->render(template => 'page/list');

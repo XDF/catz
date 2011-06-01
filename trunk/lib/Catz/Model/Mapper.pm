@@ -28,53 +28,36 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Catz::Core::Model';
 
-use List::MoreUtils qw ( any );
+sub _map { # provides album -> folder and folder -> album mappings
 
-use Catz::Util::Time qw ( dtexpand );
+ my $self = shift; my $lang = $self->{lang};
+ 
+ my $base = $self->dball("select folder,sec from album natural join inalbum natural join sec_$lang natural join pri where pri='album'");
 
-sub _link { # provides mapping for links
-
- my ( $self, $spri, $ssec ) = @_; my $lang = $self->{lang};
+ my %res = ();
+ 
+ # make both folder -> album and album -> folder mapping to same has
+ do { $res{$_->[0]} = $_->[1]; $res{$_->[1]} = $_->[0] } foreach ( @$base );
   
- if ( $spri eq 'album' ) {
-
-  return $self->dbrow("select 'folder',folder from album natural join inalbum natural join sec_$lang natural join pri where pri='album' and sec=?",$ssec);
-
- }
-
- return [ $spri, $ssec ]; # returns as was
-
+ return \%res;
+ 
 }
 
-sub _disp { # provides mapping for displaying
-
-  my ( $self, $spri, $ssec ) = @_; my $lang = $self->{lang};
-  
-  if ( $spri eq 'folder' ) {
-  
-   return $self->dbrow("select pri,sec from album natural join inalbum natural join sec_$lang natural join pri where pri='album' and folder=?",$ssec);
-      
-  } elsif ( $spri eq 'date' ) { return [ 'date', dtexpand ( $ssec, $lang ) ] }
-
-  return [ $spri, $ssec ]; # returns as was
-
-}
-
-my @istrans =  qw ( breed loc org umb );
+my %istrans = map { $_ => 1 } qw ( breed loc org umb );
 
 sub _trans { # provides mapping for translations
 
  my ( $self, $spri, $ssec ) = @_; my $lang = $self->{lang};
  
- if ( any { $spri eq $_ } @istrans ) {
+ if ( $istrans{$spri} ) {
  
   my $ol = $lang eq 'fi' ? 'en' : 'fi';
   
   my $sid = $self->dbone("select sid from sec_$lang natural join pri where pri=? and sec=?",$spri,$ssec);
   
-  return $self->dbrow("select '$spri',sec from sec_$ol where sid=?",$sid);   
+  return $self->dbone("select sec from sec_$ol where sid=?",$sid);   
   
- } else { return [ $spri,$ssec ] } # not to translate, return as is
+ } else { return $ssec } # not to translate, return as is
 
 }
 

@@ -1,0 +1,7 @@
+% if ( $a eq 'folder' ) {
+<%= $map->{$b} %>
+% } elsif ( $a eq 'date' or $a eq 'time' ) {
+<%= dtexpand ( $b, $lang ) %>
+% } else {
+<%= $b %>
+% }

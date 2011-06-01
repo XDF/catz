@@ -1,0 +1,7 @@
+% if ( $runmode eq 'pair' ) { 
+%== include 'elem/out', a => $pri, b => $sec; 
+% } elsif ( $runmode eq 'search' ) {
+<%= $t->{SEARCH_RESULT} %><%= 'not set in template' %>
+% } else { # default to runmode 'all' 
+<%= $t->{ALL} %> <%= $t->{PHOTOS} %>
+% }

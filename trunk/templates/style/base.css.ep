@@ -95,6 +95,8 @@ the system's alignments
 .left { text-align: left; }
 .right { text-align: right; }
 .top { vertical-align: top; }
+.middle { vertical-align: middle; }
+.bottom { vertical-align: middle; }
 
 .aero { padding: 0 1em 0 1em; }
 

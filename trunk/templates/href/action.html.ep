@@ -1,5 +1,5 @@
-%# Create link to different path but to same params & id
-/<%== $lang %>/<%== $topath %>/<%== $pri %>/<%== encode ( $sec ) %>/<%== $id %>
+%# Create link to different action but with same parameters & id
+%== include 'href/actionid', toid => $id;
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

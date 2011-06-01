@@ -94,15 +94,15 @@ sub cat {
  ( $data =~ /^(.*)\{(.+?)\}(.*)$/ ) and do
   { $d->{breeder} = $2; $data = $1 . $2 . $3 };
   
- my @titles = ();
+ my @tcodes = ();
  
- # collect pre-titles and remove them from data
+ # collect pre-title codes and remove them from data
   
  if ( $data =~ /^(([A-Z0-9 ]|,| )+) (.*)$/ ) {
   
   $data = $3;           
   
-  push @titles, map {
+  push @tcodes, map {
    
    trim $_;
       
@@ -116,16 +116,16 @@ sub cat {
   
  }
 
- # collect post-titles and remove them
+ # collect post-title codes and remove them from data
  if ( $data =~ /^(.+), (([A-Z0-9 ]|,| )+)$/ ) {
   
   $data = $1;
   
-  push @titles, map { trim $_ } split /,/, $2;
+  push @tcodes, map { trim $_ } split /,/, $2;
   
  }
   
- scalar ( @titles ) > 0 and $d->{title} = \@titles;
+ scalar ( @tcodes ) > 0 and $d->{tcode} = \@tcodes;
   
  # store the cat itself, if any left
  
@@ -137,7 +137,7 @@ sub cat {
  # null characters are used to prevent incorrect title extractions
  # they can at this point appear anywhere but on titles
  
- do { $_ ne 'title' and $d->{$_} =~ s/\~//g } foreach ( keys %{ $d } );
+ do { $_ ne 'tcode' and $d->{$_} =~ s/\~//g } foreach ( keys %{ $d } );
  
  return $d; # return the string output and fragments as hashref
 
