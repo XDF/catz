@@ -63,7 +63,7 @@
 %#
 <div class="bar"><h2><%= $t->{ALBUMS} %></h2> <%= $sep %> 
 % foreach my $row ( @$albums ) {
-<a title="<%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%= $lang %>/browse/folder/<%== decode( $row->[0] ) %>/"><%= $row->[1] %></a> <%= $sep %>
+<a title="<%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%= $lang %>/browse/folder/<%== $row->[0] %>/"><%= $map->{$row->[0]} %></a> <%= $sep %>
 % }
 <a href="/<%= $lang %>/list/album/a2z/"><%= $t->{ALBUMS_ALL} %></a>
 </div>

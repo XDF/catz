@@ -247,7 +247,7 @@ sub _album {
   push @coll, ( [ $row->[1], $name, $n ] );
     
  }
-   
+    
  \@coll;
 
 }
@@ -289,36 +289,6 @@ sub _lastshow {
   
 }
 
-sub _related {
-
- my ( $self, $pri, $sec ) = @_; my $lang = $self->{lang};
- 
- my $res = $self->dball('select pri,sec from sec_fi natural join pri where sid in (select target from _related where source=(select sid from sec_fi natural join pri where pri=? and sec=?)) order by disp,sort',$pri,$sec);
-  
- my @sets = (); my @set = (); my $prev = ''; my $i = 0;
- 
- foreach my $row ( @$res ) {
- 
-  if ( $prev ne $row->[0] ) {
-         
-   scalar @set > 0 and push @sets, [ $prev, [ @set ] ];
-     
-   @set = ();
-     
-   push @set, $row->[1];
-     
-   $prev = $row->[0];
-    
-  } else { push @set, $row->[1] }
-  
- } 
-     
- scalar @set > 0 and push @sets, [ $prev, [ @set ] ];
-   
- return \@sets;
-  
-}
-
 sub _verify  {
 
  my ( $self, $folder ) = @_;
@@ -326,7 +296,5 @@ sub _verify  {
  $self->dbone('select n from album where folder=?', $folder );
 
 }
-
-
 
 1;

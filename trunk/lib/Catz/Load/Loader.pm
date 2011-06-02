@@ -154,7 +154,7 @@ my $run = [
  qq{create table _sid_x (sid integer not null,x integer not null)},
  qq{insert into _sid_x select sid,x from photo natural join inalbum group by sid,x union select sid,x from photo natural join inexiff group by sid,x union select sid,x from photo natural join inpos group by sid,x},
  qq{create index _sid_x1 on _sid_x(sid)},
-  
+ qq{create index _sid_x2 on _sid_x(x)},  
 ]; 
 
 # defined the correct table truncation order
@@ -180,9 +180,11 @@ sub fsort {
  
   # reverse the number for sorting 1 -> 9, 2 -> 8 etc
   
-  $1 . ( 10 - int ( $2 ) ); 
+  $1 . ( 10 - int ( $2 ) );
   
- } else { $_[0] } # as is  
+  return $1 . ( 10 - int ( $2 ) ); 
+  
+ } else { warn $_[0]; return $_[0] } # as is  
 
 }
 
@@ -580,6 +582,8 @@ sub load_complex {
    $d->{$key.'_fi'}, $d->{$key.'_fi'} 
   );
 
+  load_exec ( 'inalbum_ins', $aid, $sid );
+  
  }
       
  # loading position level elements

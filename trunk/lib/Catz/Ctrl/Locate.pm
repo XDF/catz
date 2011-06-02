@@ -78,6 +78,9 @@ sub find {
  $self->process_width;
  
  $self->process_what or ( $self->not_found and return );
+ 
+ # fetch folder<->album mappings
+ $s->{map} = $self->fetch ( 'mapper#map' );
   
  $s->{find} = $self->fetch ( 'locate#find', $s->{what}, $s->{count_find} );
 

@@ -282,11 +282,4 @@ sub parse_pile {
  
 }
 
-__END__
-
-print Dumper ( line ( 'EP, IC, TICA TGA, WW2010 {Framillan} Cool Hurricane, DVM, DTM (Aatu) [CRX n 03]' ) );
-#print Dumper ( comm ( 'SC {Ilveslinnan} Amir Akanyildiz, DVM (Miro) [TUV d 62] "first show|ensimmäinen näyttely"' ) );
-#print Dumper ( comm ( '"strange|outo" SC {Ilveslinnan} Amir Akanyildiz, DVM (Miro) [TUV d 62]' ) );
-#print Dumper ( line ( '"strange|outo" SC {Ilveslinnan} Amir Akanyildiz, DVM (Miro) [TUV d 62] "first show|ensimmäinen näyttely"' ) );
-#print Dumper ( comm ( '"strange first show|outo ensimmäinen näyttely"' ) );
 

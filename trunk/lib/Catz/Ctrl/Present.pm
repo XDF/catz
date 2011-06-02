@@ -39,7 +39,6 @@ sub pre {
  my $self = shift; my $s = $self->{stash};
 
  # fetch folder<->album mappings
-
  $s->{map} = $self->fetch ( 'mapper#map' );
  
  # processes id parameter or resolves it from data
