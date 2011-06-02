@@ -1,24 +1,22 @@
 #summary The data model of the system
 
-|| *Technical code* || *Visible subject* || *Explanation* || *Related to* || *Langauge dependent* || *Special handling* ||
-|| album || Album || The visible name of a photo album || album || X || ||
+|| *Technical code* || *Visible subject* || *Explanation* || *Source data level* || *Langauge dependent* || *Special handling* ||
+|| album || Album || The visible name of a photo album || album || X || used only in lists and in displayed forms for folders, converted to folder in URLs ||
 || folder || Folder || The technical folder name of a photo album || album || - || not presented to the user, converted to album when viewed ||
-|| date || Date || The date of a photo album || album || - || in format YYYYMMDD (and so matches 8 first characters of folder), converted to YYYY-MM-DD in English and to DD.MM.YYYY in Finnish ||
+|| date || Date || The date of a photo album || album || - || in format YYYYMMDD (and so actually matches 8 first characters of folder), converted to YYYY-MM-DD in English and to D.M.YYYY in Finnish when displayed ||
 || loc || Location || The name of the geographical location of a photo album || album || X || ||
 || org || Organizer || The organizer of the show || album || X || ||
 || umb || Umbrella || The umbrella organization of the organizer of the show || album ||  X || ||
-|| text || Text || Photo comment || pos || X || ||
+|| text || Text || Photo comment || pos || X ||  ||
 || cat || Cat || The name of the cat || pos || - || ||
-|| breed || Breed || The breed name || pos || X || mapped to and synonym to bcode ||
+|| breed || Breed || The breed name || pos || X || ||
 || breeder || Breeder || The breeder name || pos || - || some breeders have a country data ||
-|| nat || Nation || The nation of the cat's breeder || pos || X || mapped to and synonym to code ||
-|| ncode || Country code || The country code of the cat's breeder's nation || - || synonym to nat ||
 || code || Code || The EMS code || pos || - || ||
+|| bcode || Breed code || The EMS code without the appearance part || pos || - || ||
 || app || Appearance || The EMS code without the breed part || pos || - || ||
-|| bcode || Breed code || The EMS code without the appearance part || pos || - || synonym to breed, presented with breed ||
 || feat || Feature || A single atomic code in the EMS code excluding the breed part || pos || - || - ||      
 || nick || Nickname || The nickname of a cat || pos || - || ||
-|| title || Title || The title (achievement) code || pos || - || ||
+|| tcode || Title || The title (achievement) code || pos || - || ||
 || lens || Camera lens || The camera lens || exif || - || ||
 || body || Camera body || The camera body || exif || - || ||
 || fnum || Aperture || The photographic aperture || exif || - || ||
