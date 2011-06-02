@@ -28,7 +28,7 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( setup_init setup_set setup_values setup_verify setup_keys );
+our @EXPORT = qw ( setup_default setup_init setup_set setup_values setup_verify setup_keys );
 
 use List::MoreUtils qw ( any );
 
@@ -53,6 +53,7 @@ my $values = {
  thumbsize => [ qw ( 100 125 150 175 200 ) ],
 };
 
+sub setup_default { $default->{$_[0]} }
       
 sub setup_verify  {
 

@@ -46,13 +46,16 @@
 % } else { # first page -> passive first & back 
 <%= $label1 %></span> <%= $sep %> <%= $label2 %> 
 % }
-<%= $sep %> <%= $t->{PAGE} %>'   
+<%= $sep %> <%= $t->{PAGE} %>   
 <select class="flop" name="page" onchange="location.href='<%== include 'href/id', toid => "'+this.options[this.selectedIndex].value+'" %>'">
+% my $vol = scalar @{ $pin };
 % foreach my $i ( 0 .. ( scalar @{ $pin } -1 ) ) {
 % if ( $page == ( $i + 1 ) ) {
 <option selected value="<%== $pin->[$i] %>"><%= $i+1 %></option>
-% } else { 
+% } else {
+%  if ( ( $i < 100 ) or ( $i > $vol - 100 ) or ( ( $i + 1 ) % 10 == 0 ) or ( abs ( $i - $page ) < 50 ) ) { # limit the length of the list  
 <option value="<%== $pin->[$i] %>"><%= $i+1 %></option>
+%  }
 % }
 % }
 </select> / <%= $pages %> <%= $sep %>

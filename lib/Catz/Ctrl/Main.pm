@@ -58,6 +58,9 @@ sub front {
  
  $s->{urlother} = '/' . $s->{langother} . '/';
  
+ # fetch folder<->album mappings
+ $s->{map} = $self->fetch ( 'mapper#map' );
+ 
  $s->{news} = $self->fetch ( 'news#latest', 8 );
  
  $s->{albums} = $self->fetch ( 'locate#album' );
@@ -73,6 +76,9 @@ sub front {
  $s->{thumbs} = $th->[0];
  
  $s->{texts} = $self->fetch ( 'photo#texts', @{ $samp } );
+ 
+ # overriding the user's setting for the front page
+ $s->{thumbsize} = setup_default ( 'thumbsize' );
      
  $self->render( template => 'page/front' );
  
