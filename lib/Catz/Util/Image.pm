@@ -29,81 +29,14 @@ use 5.10.0; use strict; use warnings;
 use Image::Size;
 use Image::ExifTool qw( :Public );
 
-use Catz::Load::Data qw ( body lens ); # Utils shouldn't call Load modules! 
-use Catz::Util::Number qw ( round );
-
 use base 'Exporter';
 
-our @EXPORT_OK = qw( exif thumbfile widthheight );
-
-sub exif {
- 
- my ( $album, $file ) = @_;
- 
- my $i = ImageInfo ( $file ); 
- 
- my $o = {};
-   
- foreach my $key ( keys %{ $i } ) {
- 
-  given ( $key ) {
-  
-   when ( 'FocalLength' ) { 
-   
-    $i->{ $key } =~ s/ mm$//;  
-    
-    # filter out unknown focal lengths reported by the body as 0 or 0.0
-    $i->{ $key } ne '0' and $i->{ $key } ne '0.0' and
-     $o->{ flen } = round ( $i->{ $key }, 0 ) . ' mm'; 
-   
-   }
-   
-   when ( 'ExposureTime' ) { $o->{etime} = $i->{ $key } . ' s' } 
-  
-   when ( 'FNumber' ) {
-   
-    # filter out unknown aperture values reported by the body as 0 or 0.0
-    $i->{ $key } ne '0' and  $i->{ $key } ne '0.0' and 
-     $o->{fnum} = 'f/' . $i->{ $key } 
-   
-   }
-
-   when ( 'CreateDate' ) { 
-  
-   $i->{ $key } =~ /(\d\d\d\d).(\d\d).(\d\d) (\d\d).(\d\d).(\d\d)/;
-     
-   $o->{dt} = "$1$2$3$4$5$6";
-  
-   }
-  
-   when ( 'ISO' ) { $o->{iso} = 'ISO ' . $i->{ $key } }
-  
-   when ( 'Model' ) {
-    
-    body ( $i->{ $key } )
-     or die "unable to resolve body name with '$i->{ $key }'";
-   
-    $o->{body} = body ( $i->{ $key } );
-      
-   }
-   
-  } 
-   
- }
- 
- # resolve lens only for albums 2011 and beyond
- int ( substr ( $album, 0, 4 ) ) > 2010 and do { 
-  $o->{lens} = lens ( $album, $o->{flen}, $o->{fnum} );
- };
- 
- return $o;
-     
-}  
+our @EXPORT_OK = qw( thumbfile widthheight );
   
 #  
 # convert image file name to thumbnail file name
 #
-sub thumbfile { substr ( $_[0], 0, -4 ) . conf ( 'part_thumb' )  }
+sub thumbfile { substr ( $_[0], 0, -4 ) . '_LR.JPG' }
 
 #
 # get image width and height

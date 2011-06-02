@@ -234,7 +234,7 @@ sub _album {
 
  my $res;
 
- my $albums = $self->dball('select aid,folder from album order by folder desc limit 8');
+ my $albums = $self->dball('select aid,folder from album order by s desc limit 8');
           
  my @coll = ();
     
@@ -317,6 +317,14 @@ sub _related {
    
  return \@sets;
   
+}
+
+sub _verify  {
+
+ my ( $self, $folder ) = @_;
+ 
+ $self->dbone('select n from album where folder=?', $folder );
+
 }
 
 

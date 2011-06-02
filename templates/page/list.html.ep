@@ -24,8 +24,8 @@
 %#
 %# add the mode changing bar by reading the modes from the list definition matrix provided by the stash
 %# alsoinclude the in-page navigation is required
-%# 
-<div class="center shade">
+%#
+ <div class="center shade stripetop">
 %#
 %# --------------------
 %#

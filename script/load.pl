@@ -96,11 +96,15 @@ SKIP_FOLDERS:
 
 # phase 2: load files
 
-logit ( 'verifying ' . scalar (  @{ conf ( 'metafiles' ) } ) . ' files' );
+my @metafiles =  qw ( 
+ exifmeta newsmeta natmeta breedmeta breedermeta gallerymeta
+);
 
-foreach my $head ( @{ conf ( 'metafiles' ) } ) {
+logit ( 'verifying ' . scalar @metafiles  . ' files' );
 
- my $file =  $head . '.' . conf ( 'ext_meta' );
+foreach my $head ( @metafiles ) {
+
+ my $file =  $head . '.txt'; # meta files extension is txt
  
  my $full = conf ( 'path_meta' ) . '/' . $file;
   
@@ -140,14 +144,13 @@ foreach my $head ( @{ conf ( 'metafiles' ) } ) {
   } else { # simple loading
   
    my $table;
-   
-   { 
-   
-    no strict 'refs';
-    
-    $table = conf ( 'file2table' ) -> ( $file );   
-   }
+ 
+   $file =~ /^(.+)meta/;
   
+   $1 or die "unable to convert file name '$_[0]' to table name";
+    
+   $table = "m$1" ;
+      
    if ( $table eq 'mexif' ) {
   
     load_exif ( $table, $data );

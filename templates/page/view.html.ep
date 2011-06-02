@@ -8,8 +8,8 @@
 <% end %>
 %#
 <% content 'ptitleadd' => begin %>
-%== include 'elem/argstitle';
-(<%== $pos %>/<%== $total %>)
+%== include 'elem/title';
+(<%= $t->{PHOTO} %> <%== $pos %>/<%== $total %>)
 <% end %>
 %#
 <% content 'pathadd' => begin %>
@@ -22,7 +22,7 @@
 %#
 % if ( $display eq 'full' ) {
 %  if ( $runmode ne 'search' ) {
-<h1><%== include 'elem/argstitle' %> (<%= $t->{PHOTO} %> <%== $pos %>/<%== $total %>)</h1>
+<h1><%== include 'elem/title' %> (<%= $t->{PHOTO} %> <%== $pos %>/<%== $total %>)</h1>
 %  } else {
 %== include 'block/search';
 %  }
@@ -41,8 +41,7 @@
 <% end %>
 %#
 <% content 'main' => begin %>
-<div class="flip center<%= $display eq 'full' ? ' bar' : '' %>">
-<hr class="stripe">
+<div class="shade center stripetop">
 % my $label1 = $t->{PHOTO_FIRST};
 % my $label2 = $t->{PHOTO_PREV};
 % if ( $pos > 1 ) {
@@ -104,7 +103,7 @@
 % }
 <div class="center" id="fitparent">
 <a href="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>">
-<img id="fittarget" src="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>"></a>
+<img id="fittarget" src="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>"<%== $photosize ne 'fit'? ' width="'.$image->[4].'" height="'.$image->[5].'"' : '' %>></a>
 </div>
 <% end %>
 %#

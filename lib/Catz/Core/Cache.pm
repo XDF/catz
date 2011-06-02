@@ -39,10 +39,16 @@ use Digest::MD5 qw ( md5_base64 );
 use Catz::Core::Conf;
 use Catz::Util::String qw ( enurl );
 
-my $setup = conf ( 'cache' );
-
 # using a simple single static reference to the cache object
-my $cache = Cache::Memcached::Fast->new( $setup );
+my $cache = Cache::Memcached::Fast->new({
+ servers => conf ( 'cache_servers' ),
+ connect_timeout => 0.2,
+ io_timeout => 0.2,
+ max_failures => 2,
+ failure_timeout => 15,
+ nowait => 1,
+ compress_threshold => 10_000
+});
 
 # the cache key separator
 use constant SEP => '/';

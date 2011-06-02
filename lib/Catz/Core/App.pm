@@ -79,6 +79,8 @@ sub startup {
  # if the site root is requested then detect the correct language
  $r->route('/')->to( "main#detect", hold => 'off' );
  
+ $r->route( '/reroute',  )->to ( "reroute#get",  hold => 'off' );
+
  # stylesheets
  $r->route( '/style/reset' )->to( 'main#reset', hold => 'static' );
  $r->route( '/style/:palette' )->to( 'main#base', hold => 'static' );
@@ -94,7 +96,7 @@ sub startup {
  
  # the front page is the root under language
  $l->route( '/' )->to( 'main#front', hold => 'dynamic' );
-
+ 
  $l->route( '/result',  )->to ( "main#result",  hold => 'dynamic' );
  
  $l->route( '/news/feed' )->to ( "news#feed", hold => 'dynamic' );

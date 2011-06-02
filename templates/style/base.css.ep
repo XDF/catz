@@ -103,16 +103,23 @@ the system's alignments
 /* 
 general page elements
 */
-.section { margin: 0; padding: <%== $st->{space}->{x} %> 0 <%== $st->{space}->{x} %> 0; }
-.bar { padding: <%== $st->{space}->{x} %> <%== $st->{space}->{y} %> <%== $st->{space}->{x} %> <%== $st->{space}->{x} %>; } 
+.section { margin: 0; padding: <%== $st->{space}->{x} %> 0 0 0; }
+.bar { padding: <%== $st->{space}->{x} %> <%== $st->{space}->{y} %> <%== $st->{space}->{x} %> <%== $st->{space}->{y} %>; } 
 
 .full { width: 100%; }
+
+.stripetop {
+ border-top: 1px;
+ border-style: solid none none none;
+ border-top-color: <%== $st->{color}->{$palette}->{dim} %>;
+}
 
 hr {
  height: 0px;
  border-bottom: 1px;
  border-style: none none solid none;
- color: <%== $st->{color}->{$palette}->{dim} %>;
+ margin: 0 0 0 0;
+ padding: 0 0 0 0;
 }
 .divid { width: 70%; }
 .stripe { width: 100%; }
