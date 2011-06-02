@@ -18,6 +18,9 @@
 %== include 'block/search';
 <% end %>
 %#
+<% content 'pathadd' => begin %>
+<%= $t->{SEARCH} %> <%= $pathsep %>
+<% end %>
 %# --------------------
 %#
 <% content 'main' => begin %>

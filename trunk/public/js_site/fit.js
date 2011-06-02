@@ -23,11 +23,11 @@
 //
 
 function catzFitPhoto() {
-
- $('#fittarget').height(
-  $(window).height() - $('#fitparent').offset().top
+ 
+ $('#fittarget').height( 
+  $(window).height() - $('#fitparent').offset().top 
  );
-  
+   
 }
 
 $(document).ready(function() { // first activation on page load

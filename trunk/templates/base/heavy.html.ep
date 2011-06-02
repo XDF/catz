@@ -73,7 +73,7 @@
 %#
 %# --------------------
 %#
-<div class="section"><%= content 'main' %></div>
+<%= content 'main' %>
 %#
 %# --------------------
 %#

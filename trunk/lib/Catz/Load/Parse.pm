@@ -33,7 +33,7 @@ our @EXPORT = qw ( parse_pile );
 use Data::Dumper;
 
 use Catz::Load::Data qw ( 
- exid expmacro exptext loc nat org plaincat tolines umb 
+ exid expmacro exptext loc org plaincat tolines umb 
 );
 use Catz::Util::Log qw ( logit );
 use Catz::Util::String qw ( clean trim );
@@ -267,9 +267,7 @@ sub parse_pile {
  
  defined $d->{org_en} and 
   ( $d->{umb_en}, $d->{umb_fi} ) = umb ( $d->{org_en}, $album );
-  
- $d->{nat} = nat ( $d->{loc_en} );
- 
+   
  # skip descrption lines, they are deprecated
  shift @lines; shift @lines;
  

@@ -41,8 +41,8 @@ sub new {
  my ( $class, $version ) = @_;
    
  my $db = DBI->connect (
-  conf ( 'dbconn' ) . conf ( 'path_db' ) . "/$version.db",
-  undef, undef, conf( 'dbargs_runtime' )
+  'dbi:SQLite:dbname=' . conf ( 'path_db' ) . "/$version.db",
+  undef, undef, { AutoCommit => 1, RaiseError => 1, PrintError => 1 }
  ) || die ( $DBI::errstr );
  
  my $self = { version => $version, db => $db, cache => -1 };

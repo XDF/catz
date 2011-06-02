@@ -29,7 +29,7 @@ use 5.10.0; use strict; use warnings;
 use base 'Exporter';
 
 our @EXPORT_OK = qw( 
- body exifsort exid expmacro exptext fixgap lens loc nat org 
+ body exifsort exif exid expmacro exptext fixgap lens loc org 
  plaincat textchoose textremove tolines topiles umb 
 );
 
@@ -133,13 +133,26 @@ sub exptext {
  
 }
 
+my $macro = {
+ front => "\"(front)|(edessä)\"",
+ back => "\"(back)|(takana)\"",
+ bottom => "\"(bottom)|(alimpana)\"",
+ top => "\"(top)|(ylimpänä)\"",
+ middle => "\"(middle)|(keskellä)\"",
+ center => "\"(middle)|(keskellä)\"",
+ left => "\"(left)|(vasemmalla)\"",
+ right => "\"(right)|(oikealla)\"",
+ floor => "\"(floor)|(lattialla)\"",
+ bonus => "\"bonus photo|bonuskuva\"",
+ view => "\"view over the show site|yleiskuvaa näyttelypaikalta\"",
+ panel => "\"the panel|paneeli\""
+};
+
 memoize ( 'macro' );
 
 sub macro {
 
  my ( $type, $key ) = @_;
- 
- my $macro = conf ( 'macro' );
  
  given ( $type ) {
  
@@ -242,6 +255,39 @@ sub plaincat {
 
 }
 
+# lenses' internal techical names and the corresponding visible names 
+my $lensname = {
+ 'lbc' => 'Lensbaby Composer',
+ 'lbc_dg' => 'Lensbaby Composer & Dougle Glass Optic',
+ 'lbc_sg' => 'Lensbaby Composer & Single Glass Optic',
+ 'lbc_sf' => 'Lensbaby Composer & Soft Focus Optic',
+ 'peleng8' => 'Peleng 8mm f/3.5 Fisheye',
+ 'jupiter85' => 'MC Jupiter-9 85mm f/2.0',
+ 'jupiter135' => 'Jupiter-37AM 135mm f/3.5',
+ 'tokina17' => 'Tokina 17mm f/3.5 AT-X Pro',
+ 'tamron2875' => 'Tamron SP AF 28-75mm f/2.8 XR Di LD',
+ 'canon50ii' => 'Canon EF 50mm f/1.8 II',
+ 'canon50usm' => 'Canon EF 50mm f/1.4 USM',
+ 'canon85usm' => 'Canon EF 85mm f/1.8 USM',
+ 'sigma70300' => 'Sigma 70-300mm f/4-5.6 APO Macro Super II',
+ 'rubinar500' => 'MC Rubinar 500mm f/8 Reflex',
+ 'canon28' => 'Canon EF 28mm f/2.8',
+ 'canon1855' => 'Canon EF-S 18-55mm f/3.5-5.6',
+ 'canon70200l' => 'Canon EF 70-200mm f/2.8L IS USM', 
+ 'canon50ii+2x' => 'Canon EF 50mm f/1.8 II & Tamron 2X MC7 C-AF1 BBAR',
+ 'canon85usm+2x' => 'Canon EF 85mm f/1.8 USM & Tamron 2X MC7 C-AF1 BBAR',
+ 'sigma28' => 'Sigma 28mm f/1.8 EX DG',
+ 'sigma30' => 'Sigma 30mm f/1.4 EX DC HSM',
+ 'sigma10' => 'Sigma 10mm f/2.8 EX DC HSM Fisheye',
+ 'sigma50' => 'Sigma 50mm f/1.4 EX DG HSM',
+ 'sigma85' => 'Sigma 85mm f/1.4 EX DG HSM',
+ 'canon135l' => 'Canon EF 135mm f/2.0 L USM',
+ 'canon200l' => 'Canon EF 200mm f/2.8 L II USM',
+ 'lx3leica' => 'Leica DC Vario-Summicron 5.1-12.8mm f/2.0-2.8',
+ 'dmwlw64' => 'Leica DC Vario-Summicron 5.1-12.8mm f/2.0-2.8 & DMW-LW46',
+ 'nytech_nd4020' => 'Nytech ND-4020 Lens'
+};
+
 memoize ( 'lens' );
 
 sub lens {
@@ -278,13 +324,7 @@ sub lens {
   
  }
  
- my $true = conf ( 'lensname' )->{$lens} // undef;
- 
- $true or die "unable to find true lens name for '$lens'";
- 
- #print "$true\n";
- 
- return $true; 
+ return $lens;
 
 }
 
@@ -310,9 +350,30 @@ sub body {
  
 }
 
-memoize ( 'nat' );
-
-sub nat { 'FI' } # at the moment all galleries are from Finland
+my $lensflen = {
+ 'lbc' => '50 mm',
+ 'lbc_dg' => '50 mm',
+ 'lbc_sg' => '50 mm',
+ 'lbc_sf' => '50 mm',
+ 'peleng8' => '8 mm',
+ 'jupiter85' => '85 mm',
+ 'jupiter135' => '135 mm',
+ 'tokina17' => '17 mm',
+ 'canon50ii' => '50 mm',
+ 'canon50usm' => '50 mm',
+ 'canon85usm' => '85 mm',
+ 'rubinar500' => '500 mm',
+ 'canon28' => '28 mm', 
+ 'canon50ii+2x' => '100 mm',
+ 'canon85usm+2x' => '170 mm',
+ 'sigma28' => '28 mm',
+ 'sigma30' => '30 mm',
+ 'sigma10' => '10 mm',
+ 'sigma50' => '50 mm',
+ 'sigma85' => '85 mm',
+ 'canon135l' => '135 mm',
+ 'canon200l' => '200 mm'
+};
 
 sub exid {
  
@@ -320,14 +381,9 @@ sub exid {
   
  my $o = {};
  
- # lens must be the first part
+ # technical lens name must be the first part
  my $lens = shift @parts;
- 
- defined conf ( 'lensname' )->{ $lens } or 
-  die "unknow lens '$lens'";
   
- $o->{lens} = conf ( 'lensname' )->{ $lens };
- 
  # other parts may vary
  foreach my $part ( @parts ) {
  
@@ -391,10 +447,93 @@ sub exid {
   }
   
  }
-      
+ 
+ $lens and $lensflen->{$lens} and do {  
+  $o->{flen} = $lensflen->{$lens};
+ }; 
+
+ if ( $lens and $lensname->{$lens} ) {
+  $o->{lens} = $lensname->{$lens};
+ } else {
+  die "lens '$lens' is giving trouble"; 
+ } 
+       
  return $o;
      
 }
+
+sub exif {
+ 
+ my ( $album, $file ) = @_;
+ 
+ my $i = ImageInfo ( $file ); 
+ 
+ my $o = {};
+   
+ foreach my $key ( keys %{ $i } ) {
+ 
+  given ( $key ) {
+  
+   when ( 'FocalLength' ) { 
+   
+    $i->{ $key } =~ s/ mm$//;  
+    
+    # filter out unknown focal lengths reported by the body as 0 or 0.0
+    $i->{ $key } ne '0' and $i->{ $key } ne '0.0' and
+     $o->{ flen } = round ( $i->{ $key }, 0 ) . ' mm'; 
+   
+   }
+   
+   when ( 'ExposureTime' ) { $o->{etime} = $i->{ $key } . ' s' } 
+  
+   when ( 'FNumber' ) {
+   
+    # filter out unknown aperture values reported by the body as 0 or 0.0
+    $i->{ $key } ne '0' and  $i->{ $key } ne '0.0' and 
+     $o->{fnum} = 'f/' . $i->{ $key } 
+   
+   }
+
+   when ( 'CreateDate' ) { 
+  
+   $i->{ $key } =~ /(\d\d\d\d).(\d\d).(\d\d) (\d\d).(\d\d).(\d\d)/;
+     
+   $o->{dt} = "$1$2$3$4$5$6";
+  
+   }
+  
+   when ( 'ISO' ) { $o->{iso} = 'ISO ' . $i->{ $key } }
+  
+   when ( 'Model' ) {
+    
+    body ( $i->{ $key } )
+     or die "unable to resolve body name with '$i->{ $key }'";
+   
+    $o->{body} = body ( $i->{ $key } );
+      
+   }
+   
+  } 
+   
+ }
+ # resolve lens only for albums 2011 and beyond
+ int ( substr ( $album, 0, 4 ) ) > 2010 and do {
+ 
+  $o->{lens} and $lensflen->{$o->{lens}} and do {  
+   $o->{flen} = $lensflen->{$o->{lens}};
+  }; 
+
+  if ( $o->{lens} and $lensname->{$o->{lens}} ) {
+   $o->{lens} = $lensname->{$o->{lens}};
+  } else {
+   die "lens '".$o->{lens}."' is giving trouble"; 
+  } 
+      
+ };
+ 
+ return $o;
+     
+}  
 
 sub fixgap {
  
@@ -435,15 +574,26 @@ sub fixgap {
 
 }
 
+my $location =  {
+ myrskyla => 'myrskylä',
+ hyvinkaa => 'hyvinkää',
+ jamsa => 'jämsä',
+ palkane => 'pälkäne',
+ hameenlinna => 'hämeenlinna',
+ jyvaskyla => 'jyväskylä',
+ seinajoki => 'seinäjoki',
+ jarvenpaa => 'järvenpää',
+ siilinjarvi => 'siilinjärvi',
+ riihimaki => 'riihimäki'
+};
+  
 memoize ( 'loc' );
 
 sub loc {
 
- my $loc = $_[0];
- 
- my $conf = conf ( 'location' );
- 
- $conf->{$loc} and $loc = $conf->{$loc};
+ my $loc = shift;
+  
+ $location->{$loc} and $loc = $location->{$loc};
      
  return ucclcc($loc), ucclcc($loc);
      
@@ -528,7 +678,7 @@ sub umb {
 
   when ( 'SUVAK' ) {
    
-   int ( substr ( $_[1], 0, 4) ) < 2008 and return 'other','muu';
+   int ( substr ( $_[1], 0, 4) ) < 2008 and return 'other', 'muu';
      
    return 'FIFe','FIFe';
     
@@ -542,7 +692,7 @@ sub umb {
    'POH-KIS','ERY-SYD','URK','SUVAK','SRK'] )
    { return 'FIFe','FIFe' }
  
-  default { return 'other','muu' }
+  default { return 'other', 'muu' }
  
  }
    

@@ -38,11 +38,11 @@ use DBI;
 
 use Catz::Core::Conf;
 use Catz::Data::List qw ( list_matrix );
-use Catz::Load::Data qw ( exifsort fixgap lens tolines topiles );
+use Catz::Load::Data qw ( exifsort exif fixgap lens tolines topiles );
 use Catz::Load::Parse;
 use Catz::Util::Time qw ( dtexpand );
 use Catz::Util::File qw ( filehead filesize filethumb findphotos pathcut );
-use Catz::Util::Image qw ( exif widthheight );
+use Catz::Util::Image qw ( widthheight );
 use Catz::Util::Log qw ( logit logadd logdone );
 use Catz::Util::Number qw ( fullnum33 );
 use Catz::Util::String qw ( trim );
@@ -96,11 +96,11 @@ my $sql = {
  seq_one => 'select seq_init(1)', # initialize sequence to 1
  
  album_null_upd => 'update album set s=null',
- album_col => 'select rowid from album order by folder',
+ album_col => 'select rowid from album order by fsort(folder)',
  album_upd => 'update album set s=seq_incr() where rowid=?',
  
  photo_null_upd => 'update photo set x=null',
- photo_col => 'select photo.rowid from photo natural join album order by folder desc,n asc',
+ photo_col => 'select photo.rowid from photo natural join album order by s desc,n asc',
  photo_upd => 'update photo set x=seq_incr() where rowid=?',
  
  origin_one => 'select origin from pri where pri=?',
@@ -174,6 +174,18 @@ sub seq_init { $seq = $_[0] // 1 }
 
 sub seq_incr { $seq++ }
 
+sub fsort {
+
+ if ( $_[0] =~ /^(.+)(\d)$/ ) { # if folder ends with a number
+ 
+  # reverse the number for sorting 1 -> 9, 2 -> 8 etc
+  
+  $1 . ( 10 - int ( $2 ) ); 
+  
+ } else { $_[0] } # as is  
+
+}
+
 sub load_begin {
 
  my ( $dt, $dbfile ) = @_;
@@ -181,7 +193,8 @@ sub load_begin {
  logit ( "connecting database '$dbfile'" );
 
  $dbc = DBI->connect( 
-  conf ( 'dbconn' ) . $dbfile , '', '', conf ( 'dbargs_load' ) 
+  'dbi:SQLite:dbname=' . $dbfile , undef, undef, 
+  { AutoCommit => 0, RaiseError => 1, PrintError => 1 } 
  )  or die "unable to connect to database $dbfile: $DBI::errstr";
 
  logit ( 'registering functions' );
@@ -189,6 +202,7 @@ sub load_begin {
  # sequence
  $dbc->func( 'seq_init', 1, \&seq_init, 'create_function' );
  $dbc->func( 'seq_incr', 0, \&seq_incr, 'create_function' );
+ $dbc->func( 'fsort', 1, \&fsort, 'create_function' );
 
  logit ( 'preparing ' . scalar ( keys %{ $sql } ). ' SQL statements' );
  
@@ -560,16 +574,14 @@ sub load_complex {
  load_exec ( 'inalbum_ins', $aid, $sid ); 
 
  foreach my $key ( qw ( folder album loc org umb ) ) {
-
+ 
   $sid = get_sid ( $key, 
    $d->{$key.'_en'}, $d->{$key.'_en'},
    $d->{$key.'_fi'}, $d->{$key.'_fi'} 
   );
 
-  load_exec ( 'inalbum_ins', $aid, $sid );
-    
  }
-  
+      
  # loading position level elements
  
  load_exec ( 'inpos_del', $aid );
