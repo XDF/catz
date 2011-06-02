@@ -63,7 +63,7 @@
 %#
 <div class="bar"><h2><%= $t->{ALBUMS} %></h2> <%= $sep %> 
 % foreach my $row ( @$albums ) {
-<a title="<%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%= $lang %>/browse?folder=<%== enurl( $row->[0] ) %>"><%= $row->[1] %></a> <%= $sep %>
+<a title="<%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%= $lang %>/browse/folder/<%== decode( $row->[0] ) %>/"><%= $row->[1] %></a> <%= $sep %>
 % }
 <a href="/<%= $lang %>/list/album/a2z/"><%= $t->{ALBUMS_ALL} %></a>
 </div>
@@ -76,7 +76,7 @@
 % my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
 % my $titl = dtexpand ( dtdate ( $th->[3] ), $lang );
 % defined $texts->{$th->[0]} and $titl = "$titl $sep " . $texts->{$th->[0]}; 
-<a title="<%= $titl %>" href="/<%== $lang %>/view?id=<%== $id %>">
+<a title="<%= $titl %>" href="/<%== $lang %>/viewall/<%== $id %>/">
 <img src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>">
 </a>
 % }

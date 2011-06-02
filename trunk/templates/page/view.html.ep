@@ -21,7 +21,11 @@
 <% content 'btitle' => begin %>
 %#
 % if ( $display eq 'full' ) {
+%  if ( $runmode ne 'search' ) {
 <h1><%== include 'elem/argstitle' %> (<%= $t->{PHOTO} %> <%== $pos %>/<%== $total %>)</h1>
+%  } else {
+%== include 'block/search';
+%  }
 % }
 <% end %>
 %#
@@ -49,7 +53,7 @@
 <%= $label1 %> <%== $sep %> <%= $label2 %>
 % }
 <%== $sep %>
-<a href="<%== include 'href/action', toaction => 'browse' %>"><%= $t->{THUMBS} %></a>
+<a href="<%== include 'href/action', toaction => 'auto' %>"><%= $t->{THUMBS} %></a>
 <%== $sep %>
 % $label1 = $t->{PHOTO_NEXT};
 % $label2 = $t->{PHOTO_LAST};

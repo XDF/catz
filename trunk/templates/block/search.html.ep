@@ -1,0 +1,4 @@
+<form name="search" action="/<%= $lang %>/search" method="get">
+<input type"=text" name="what" size="80" value="<%= $what // '' %>">
+<input type="submit" value="<%= $t->{SEARCH_SUBMIT} %>">
+</form>

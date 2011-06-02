@@ -102,9 +102,12 @@ sub AUTOLOAD {
  my $res;
   
  $cacheon and do { # try to get the requested result from the cache
-  
+ 
+  # we use model+sub+version+lang+args as key for models
+  # model and db caching use different key scheme to prevent collisions
+
   $res = cache_get ( 
-   $self->{name}, $self->{db}->{version}, $self->{lang}, $sub, @args 
+   $self->{name}, $sub, $self->{db}->{version}, $self->{lang}, @args 
   );
  
   $res and return $res; # if cache hit then done
@@ -116,13 +119,15 @@ sub AUTOLOAD {
  { no strict 'refs'; $res = $self->$target( @args ) }
   
  $cacheon and cache_set ( 
-  $self->{name}, $self->{db}->{version}, $self->{lang}, $sub, 
+  $self->{name}, $sub, $self->{db}->{version}, $self->{lang}, 
   @args, $res, $self->cachetime ( $sub ) 
  );
  
  return $res;
 
 }
+
+
 
 sub dball { my $self = shift; $self->{db}->run ( 'all', @_ ) }
 

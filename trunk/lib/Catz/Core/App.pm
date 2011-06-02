@@ -42,7 +42,7 @@ sub startup {
 
  my $self = shift;
  
- $self->plugin('default_helpers');
+ #$self->plugin('default_helpers');
  
  $self->renderer->root ( conf ( 'path_template' ) );
  $self->renderer->layout_prefix ( conf ( 'prefix_layout' ) );
@@ -67,40 +67,45 @@ sub startup {
   
  # All controllers are in Catz::Ctrl 
  $r->namespace( 'Catz::Ctrl' );
+ 
+ #
+ # hold controls both response cache headers & server side page cache
+ #
+ #  off = no caching
+ #  dynamic = let the content to change dynamically fairly quickly
+ #  static = static-type of content 
+ #
 
  # if the site root is requested then detect the correct language
- $r->route('/')->to( "main#detect", hold => 0 );
+ $r->route('/')->to( "main#detect", hold => 'off' );
  
  # stylesheets
- $r->route( '/style/reset' )->to( 'main#reset', hold => 60 );
- $r->route( '/style/:palette' )->to( 'main#base', hold => 60 );
+ $r->route( '/style/reset' )->to( 'main#reset', hold => 'static' );
+ $r->route( '/style/:palette' )->to( 'main#base', hold => 'static' );
  
  # set user parameters
- $r->route( '/set' )->to( 'main#set', hold => 0 );
+ $r->route( '/set' )->to( 'main#set', hold => 'off' );
  
  # classic lastshow interface
- $r->route( '/lastshow' )->to( 'main#lastshow', hold => 15 );
+ $r->route( '/lastshow' )->to( 'main#lastshow',  hold => 'static' );
 
  # all site content is found under /:lang where lang is 'en' or 'fi'
  my $l = $r->route ('/:lang', lang => qr/en|fi/ );
  
  # the front page is the root under language
- $l->route( '/' )->to( 'main#front', hold => 15 );
+ $l->route( '/' )->to( 'main#front', hold => 'dynamic' );
 
- $l->route( '/result',  )->to ( "main#result", hold => 5 );
- $l->route( '/link',  )->to ( "main#link", hold => 60 ); # not yet implemented
+ $l->route( '/result',  )->to ( "main#result",  hold => 'dynamic' );
  
- $l->route( '/news/feed' )->to ( "news#feed", hold => 15  );
- $l->route( '/news' )->to ( "news#all", hold => 15 );
+ $l->route( '/news/feed' )->to ( "news#feed", hold => 'dynamic' );
+ $l->route( '/news' )->to ( "news#all", hold => 'static' );
  
- $l->route( '/find' )->to ( "locate#find", hold => 15 );
+ $l->route( '/find' )->to ( "locate#find", hold => 'static' );
   
- $l->route( '/list/:subject/:mode' )->to('locate#list', hold => 15 );
-
- # all
+ $l->route( '/list/:subject/:mode' )->to('locate#list', hold => 'static' );
   
  my $a = $l->route( '/:action', action => qr/browseall|viewall/ )
-  ->to( controller => 'present' );   
+  ->to( controller => 'present', hold => 'static' );   
 
  $a->route( '/:id', id => qr/\d{6}/ )->to( ); 
  $a->route( '/' )->to( id => undef );
@@ -108,7 +113,7 @@ sub startup {
  # pair
 
  my $p = $l->route( '/:action', action => qr/browse|view/ )
-  ->to( controller => 'present' );   
+  ->to( controller => 'present', hold => 'static' );   
 
  $p->route( ':pri/:sec/:id', id => qr/\d{6}/ )->to( ); 
  $p->route( ':pri/:sec/' )->to( id => undef );
@@ -116,7 +121,7 @@ sub startup {
  # search
 
  my $s = $l->route( '/:action', action => qr/search|display/ )
-  ->to( controller => 'present' );   
+  ->to( controller => 'present', hold => 'static' );   
 
  $s->route( '/:id', id => qr/\d{6}/ )->to( ); 
  $s->route( '/' )->to( id => undef );
@@ -279,13 +284,16 @@ sub before {
   
  # attempt to fetch from cache
  
+ # not for static content
+( $self->req->url->path->to_string  =~ /\..{2,4}$/ ) and return;   
+ 
  if ( conf('cache_page' ) ) {
   
   if ( my $res = cache_get ( cachekey ( $self ) ) ) {
  
    $self->res->code(200);
    $self->res->headers->content_type( $res->[0] );
-   $self->res->body( $res->[2] );
+   $self->res->body( ${ $res->[2] } );
    $self->rendered;
    $s->{cached} = 1;
    #warn ( "CACHE HIT $s->{url}" );
@@ -300,20 +308,27 @@ sub before {
 sub after {
 
  my $self = shift; my $s = $self->{stash};
+ 
+ # don't touch static content
+ ( $self->req->url->path->to_string  =~ /\..{2,4}$/ ) and return;
     
  ( defined $s->{controller} and defined $s->{action} and
- defined $s->{url} ) or return; 
+ defined $s->{url} ) or return;
  
- # we will not cache setup change request 
- # since they must alter the session data
- # we also don't send out the default cookies
- $s->{action} eq 'set' and return;
+ my $age = 0;
+ my $cac = 0;
+   
+ given ( $s->{hold} ) {
  
- my $val = 0;
+  when ( 'dynamic' ) { $age = 15; $cac = 14 } # 5 min on client, 4 min on server
+  
+  when ( 'static' ) { $age = 15; $cac = -1 } # 15 min on client, inf on server
  
- exists $s->{hold} and $s->{hold} > 0 and $val = $s->{hold}*60;
-    
- $self->res->headers->header('Cache-Control' => "max-age=$val");
+ }
+ 
+ $self->res->headers->header('Cache-Control' => 'max-age=' . $age * 60 );
+ 
+ $cac == 0 and return;
  
  # no recaching: if the result came from the cache don't cache it again
  defined $s->{cached} and return;
@@ -325,26 +340,23 @@ sub after {
    my $set = [ 
     $self->res->headers->content_type,
     $self->res->headers->content_length,
-    $self->res->body 
-   ]; 
- 
-   #warn ( "CACHING $s->{url}" );
-   
-   cache_set ( cachekey ( $self ), $set );
+    \$self->res->body 
+   ];
+       
+   cache_set ( cachekey ( $self ), $set, $cac );
   
   }
  }
     
 }
 
-sub cachekey {
- 
- return ( 
-  $_[0]->{stash}->{version}, 
-  $_[0]->{stash}->{url}, 
-  map { $_[0]->{stash}->{$_} } @{ setup_keys() }
- ); 
+# we use version+úrl+setupkeys as key for pages
+# model and db caching use different key scheme to prevent collisions
 
-}
+sub cachekey {( 
+ $_[0]->{stash}->{version},
+ $_[0]->{stash}->{url}, 
+ map { $_[0]->{stash}->{$_} } setup_keys
+)}
 
 1;

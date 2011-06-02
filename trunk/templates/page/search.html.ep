@@ -1,7 +1,7 @@
 % extends 'base/heavy';
 %#
 %# --------------------
-%# The template for the advanced search
+%# The template for the advanced search with no search results
 %# --------------------
 %#
 <% content 'ptitleadd' => begin %>
@@ -15,11 +15,7 @@
 %# --------------------
 %#
 <% content 'btitle' => begin %>
-% if ( length ( $what // '' ) > 0 ) { # if something is searches even no results
-<h1><%= $t->{SEARCH_RESULT} %> <%= $what %></h1>
-% } else {
-<h1><%= $t->{SEARCH} %></h1>
-% }
+%== include 'block/search';
 <% end %>
 %#
 %# --------------------
@@ -28,48 +24,12 @@
 %#
 %# --------------------
 %#
-% if ( $found > 0 ) {
-<div class="unit">
-<%= fmt ( $found, $lang ) %> <%= $found == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> <%= $t->{SEARCH_FOUND} %>
-<%= $sep %> <a class="aero" href="/<%= $lang %>/browse?<%== $args_string %>"><%= $t->{SEARCH_THUMB} %></a>
-<%= $sep %> <a class="aero" href="/<%= $lang %>/view?<%== $args_string %>"><%= $t->{SEARCH_VIEW} %></a>
-</div>
-% } else {
-%  if ( $what ) {
-<div class="unit"><%= $t->{SEARCH_NOTHING} %></div>
-%  }
-% }
 %#
 %# --------------------
 %#
-<form name="search_guided" action="/<%= $lang %>/search" method="get">
-<input type"=text" name="what" size="80" value="<%= $what ? $what : '' %>">
-<input type="submit" value="<%= $t->{SEARCH_SUBMIT} %>">
-<input type="reset" value="<%= $t->{SEARCH_RESET} %>">
-</form>
+
 %#
 %# --------------------
-%#
-%== include 'stripe/explain';
-%#
-%# --------------------
-%#
-% $what and $found and do {
-% my $thumbs = stash ( 'thumbs' );
-% my $texts = stash ( 'texts ');
-<h2 class="block"><%= $t->{SAMPLES} %></h2>
-<div class="barplus">
-% foreach my $th ( @{ $thumbs } ) {
-% my $id = fullnum33 ( $th->[1], $th->[2] );
-% my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
-% my $titl = dtexpand ( dtdate ( $th->[3] ), $lang );
-% defined $texts->{$th->[0]} and $titl = "$titl $sep " . $texts->{$th->[0]}; 
-<a title="<%= $titl %>" href="/<%== $lang %>/view?<%== $args_string %>&id=<%== $id %>">
-<img src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>">
-</a>
-% }
-</div>
-% };
 %#
 %# --------------------
 %#

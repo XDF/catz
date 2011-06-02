@@ -124,7 +124,7 @@ sub setup_set {
 
 }
   
-sub setup_keys { keys %{ $values } } # return all key names as arrayref
+sub setup_keys { keys %{ $values } } # return all key names as array
 
 sub setup_values { $values } # return hashref of all possible values 
 
