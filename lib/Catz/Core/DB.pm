@@ -75,7 +75,10 @@ sub run {
  
   # try to get the requested result from the cache
   
-  $res = cache_get ( $version, $comm, $sql, @args );
+  # we use command+version+args+sql as key for models
+  # model and db caching use different key scheme to prevent collisions
+  
+  $res = cache_get ( $comm, $version, @args, $sql );
  
   $res and return $res; # if cache hit then done
  
@@ -113,7 +116,7 @@ sub run {
  
  }
 
- $cacheon and cache_set ( $version, $comm, $sql, @args, $res, $self->{cache} );
+ $cacheon and cache_set ( $comm, $version, @args, $sql, $res, $self->{cache} );
   
  return $res;
 

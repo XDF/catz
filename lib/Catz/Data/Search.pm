@@ -36,7 +36,7 @@ use Text::ParseWords;
 use Catz::Util::String qw ( enurl );
 
 # the default pri key used if none is given in the query
-use constant DEFAULT => 'text';
+use constant DEFAULT => 'any';
 
 sub search2args { # covert a search parameter to argument list 
   
@@ -50,9 +50,7 @@ sub search2args { # covert a search parameter to argument list
  my @args = quotewords ( ' ', 0, $str );
    
  my @out = ();
- 
- my $path = '';
- 
+  
  foreach my $arg ( @args ) {
  
   my $key = undef; my $val = undef;
@@ -80,15 +78,11 @@ sub search2args { # covert a search parameter to argument list
    
    push @out, $key; push @out, $val;
    
-   length $path > 0 and $path = $path . "&";
-   
-   $path .= $key . '=' . enurl ( $val );
-   
   };
        
  }
   
- return $fixed, \@out, $path;
+ return $fixed, \@out;
 
 }
 

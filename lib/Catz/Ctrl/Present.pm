@@ -115,12 +115,24 @@ sub pattern {
 
  my $self = shift; my $s = $self->{stash};
  
- $s->{args_array} = search2args ( $s->{what} );
- $s->{args_count} = scalar @{ $s->{args_array} };
+ $s->{what} = $self->param('what') // undef;
+ 
+ if ( $s->{what} ) {
+ 
+  ( $s->{what}, $s->{args_array} ) = search2args ( $s->{what} );
+  $s->{args_count} = scalar @{ $s->{args_array} };
+  $s->{pri} = undef; $s->{sec} = undef;
+
+ } else {
+  $s->{args_array} = [];
+  $s->{args_count} = 0;
+  $s->{pri} = undef; $s->{sec} = undef; $s->{what} = undef;
+ }
+  
  $s->{runmode} = 'search';
  
- $self->pre;
-
+ $s->{args_count} > 0 and $self->pre;
+ 
  $s->{urlother} =  
   '/' . $s->{langother} . '/' . $s->{action} . '/' .
   ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
@@ -133,7 +145,18 @@ sub viewall { $_[0]->all; $_[0]->single }
 sub browse { $_[0]->pair; $_[0]->multi }
 sub view { $_[0]->pair; $_[0]->single }
 
-sub search { $_[0]->pattern; $_[0]->multi }
+sub search { 
+
+ my $self = shift; my $s = $self->{stash};
+
+ $self->pattern; 
+
+ if ( $s->{x} and $s->{id} ) { $self->multi
+  
+  } else { $self->guide } 
+
+}
+
 sub display { $_[0]->pattern; $_[0]->single }
 
 sub single {
@@ -195,7 +218,15 @@ sub multi {
 
 }
 
+sub guide {
 
+ my $self = shift; my $s = $self->{stash};
+ 
+ $s->{total} = 0;
+ 
+ $self->render( template => 'page/search' );
+
+}
 
 
 

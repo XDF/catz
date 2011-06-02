@@ -77,7 +77,7 @@ sub decode { $_ = $_[0]; s/\-(\d\d\d)/chr($1)/ge; s|_| |g; return $_; }
 #
 # url decodes a string
 #
-sub deurl { uri_unescape( $_[0] ) }
+sub deurl { uri_unescape $_[0] }
  
 #
 # returns MD5 checksum for a string as a base64 string
@@ -104,16 +104,7 @@ sub encode { join '', map { chrsolve( ord ( $_ ) ) } split //, $_[0] }
 #
 # url encodes a string
 #
-sub enurl { 
-
- my $str = $_[0];
- 
- $str =~ s|~|~~|g; # duplicate all ~s
- $str =~ s|/|~|g; # slash is evil even url encoded -> encode it to ~
-  
- uri_escape ( $str ); # the rest is up to the library 
-
-}
+sub enurl { uri_escape $_[0] }
 
 #
 # limits string length to a given length, if truncates then adds '...'

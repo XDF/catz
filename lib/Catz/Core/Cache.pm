@@ -41,30 +41,47 @@ use Catz::Util::String qw ( enurl );
 
 my $setup = conf ( 'cache' );
 
-# using a static reference to the cache object
+# using a simple single static reference to the cache object
 my $cache = Cache::Memcached::Fast->new( $setup );
 
 # the cache key separator
-use constant SEP => '#';
+use constant SEP => '/';
 
-# force the cache key to be 250 characters or less (Memcached limit)
-# all characters after 228 are hashed to md5 hash in base64 encoding
-# so the key is then 228 + 22 = 250 characters
-sub shrink { substr ( $_[0], 0 , 228 ) . md5_base64 ( substr ( $_[0], 228 ) ) }
+# slash is a good choice for separator since we use url encoding
+# for keys and slash never exists in an encoded url
+
+sub makekey { # prepares a cache key 
+
+ # join url encoded key parts together with the separator
+ my $key = join SEP, map { enurl $_ } @_;
+ 
+ # url encoding was chosen since some encoding is necessary because
+ # keys can't have spaces and the url encoding library we use is
+ # a pretty fast one (XS-based) 
+ 
+ if ( length ( $key ) > 250 ) {
+   
+  # force the cache key to be 250 characters or less (Memcached limit)
+  # all characters after 228 are hashed to md5 hash in base64 encoding
+  # so the key is then 228 + 22 = 250 characters - we get the longest
+  # possible key to minimize the risk of key collision
+   
+  substr ( $key, 0 , 228 ) . md5_base64 ( substr ( $key, 228 ) )
+ 
+ } else { $key } 
+
+}
   
 sub cache_set {
 
- my $time = pop @_; # time is the last argument
+ my $time = pop @_; # time is always the last argument and must be given
  
- $time == 0 and return; # time is 0 = no caching
+ $time == 0 and return; # time = 0 -> no caching -> return immediately
 
- my $val = pop @_; # val is the last argument
+ my $val = pop @_; # value to cache is the second last argument
  
- # urlencode to handle spaces and other aliens
- my $key = enurl ( join SEP, @_ ); 
- 
- length ( $key ) > 250 and $key = shrink ( $key );
- 
+ my $key = makekey ( @_ ); 
+  
  #warn "SET $key";
  
  if ( $time == -1 ) { # -1 is infinite
@@ -81,11 +98,11 @@ sub cache_set {
 
 sub cache_get {
  
- my $key = enurl ( join SEP, @_ ); # urlencode to handle spaces
- 
- length ( $key ) > 250 and $key = shrink ( $key );
+ my $key = makekey ( @_ );
  
  #warn "GET $key";
+ 
+ #if ( $cache->get( $key ) ) { warn "HIT $key" } else { warn "MISS $key" } 
     
  return $cache->get( $key );
    

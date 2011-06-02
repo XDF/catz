@@ -1,4 +1,15 @@
 %# Create link to different action & id but with same parameters
+% use 5.10.0;
+% $toaction eq 'auto' and do {
+%  given ( $action ) {
+%   when ( 'browseall' ) { $toaction = 'viewall' }
+%   when ( 'viewall' ) { $toaction = 'browseall' }
+%   when ( 'browse' ) { $toaction = 'view' }
+%   when ( 'view' ) { $toaction = 'browse' }
+%   when ( 'search' ) { $toaction = 'display' }
+%   when ( 'display' ) { $toaction = 'search' }
+%  }
+% }; 
 % if ( $runmode eq 'pair' ) { 
 /<%== $lang %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/<%== $toid %>/
 % } elsif ( $runmode eq 'search' ) {

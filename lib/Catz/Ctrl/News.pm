@@ -38,6 +38,8 @@ sub all { # the list of all news
  my $self = shift; my $s = $self->{stash};
  
  $s->{fanpage} = conf ( 'url_fanpage' );
+ 
+ $s->{urlother} = '/' . $s->{langother} . '/news/';
   
  # edit this news is not listed in wiki!!! stash vars...
  $s->{news} = $self->fetch ( 'news#all' );

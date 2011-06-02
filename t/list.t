@@ -9,10 +9,11 @@ foreach my $lang ( qw ( en fi ) ) {
 
  $t->get_ok("/$lang/list/cat/a2z/")->status_is(200);
  $t->get_ok("/$lang/list/app/top/")->status_is(200);
- $t->get_ok("/$lang/list/breeder/a2z/")->status_is(200);
+ $t->get_ok("/$lang/list/tcode/first/")->status_is(200);
+ $t->get_ok("/$lang/list/breeder/nat/")->status_is(200);
  $t->get_ok("/$lang/list/code/top/")->status_is(200);
 
- $c=$c+8;
+ $c=$c+10;
   
  $t->get_ok("/$lang/list/text/top/")->status_is(404);
  $t->get_ok("/$lang/list/folder/a2z/")->status_is(404);
