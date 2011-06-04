@@ -36,7 +36,7 @@ use Catz::Data::Setup;
 use Catz::Util::File qw ( fileread findlatest pathcut );
 use Catz::Util::Time qw( dt dtdate dttime dtexpand dtlang thisyear );
 use Catz::Util::Number qw ( fmt fullnum33 round );
-use Catz::Util::String qw ( enurl decode encode );
+use Catz::Util::String qw ( enurl decode encode limit );
 
 sub startup {
 
@@ -53,16 +53,17 @@ sub startup {
  # initialize the key for cookie signing 
  $self->secret( conf ( 'cookie_key' ) );
  
- $self->helper ( dtdate => sub { shift; dtdate $_[0] } );
- $self->helper ( dttime => sub { shift; dttime $_[0] } );
- $self->helper ( dtexpand => sub { shift; dtexpand $_[0], $_[1] } ); 
- $self->helper ( fmt => sub { shift; fmt $_[0], $_[1] } );
- $self->helper ( enurl => sub { shift; enurl $_[0] } );
- $self->helper ( fullnum33 => sub { shift; fullnum33 $_[0], $_[1] } );
- $self->helper ( thisyear => sub { shift; thisyear } );
- $self->helper ( encode => sub { shift; encode $_[0] } );
- $self->helper ( decode => sub { shift; decode $_[0] } );
- $self->helper ( round => sub { shift; round $_[0] } );
+ $self->helper ( dtdate => sub { shift; dtdate @_ } );
+ $self->helper ( dttime => sub { shift; dttime @_ } );
+ $self->helper ( dtexpand => sub { shift; dtexpand @_ } ); 
+ $self->helper ( fmt => sub { shift; fmt @_ } );
+ $self->helper ( enurl => sub { shift; enurl @_ } );
+ $self->helper ( limit => sub { shift; limit @_ } );
+ $self->helper ( fullnum33 => sub { shift; fullnum33 @_ } );
+ $self->helper ( thisyear => sub { shift; thisyear @_ } );
+ $self->helper ( encode => sub { shift; encode @_ } );
+ $self->helper ( decode => sub { shift; decode @_ } );
+ $self->helper ( round => sub { shift; round @_ } );
       
  my $r = $self->routes;
   

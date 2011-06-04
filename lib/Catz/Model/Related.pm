@@ -28,6 +28,14 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Catz::Model::Common';
 
+sub _jump2date {
+
+ my ( $self, $pri, $sec ) = @_;  my $lang = $self->{lang};
+
+ $self->dball(qq{select min(s),min(n),substr(folder,1,8) from album natural join photo natural join _sid_x where sid=(select sid from sec_en where  pid=(select pid from pri where pri=?) and sec=?) group by substr(folder,1,8) order by substr(folder,1,8) desc},$pri,$sec);
+
+} 
+
 sub _coverage { # how many photos have the given pri defined
 
  my ( $self, $pri, $sec, $target ) = @_;  my $lang = $self->{lang};

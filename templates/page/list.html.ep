@@ -109,6 +109,14 @@
 %#
 %# --------------------
 %#
+%# add bcode to pair breed and breed to pair bcode
+%# 
+% if ( $subject eq 'bcode' or $subject eq 'breed' ) {
+<%= $sep %> <%= $map->{$row->[1]} %>
+% }
+%#
+%# --------------------
+%#
 <%= $sep %> <%= $row->[3] %> <%= $row->[3] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>
 %#
 %# --------------------

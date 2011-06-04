@@ -84,6 +84,9 @@ sub all {
  $s->{urlother} =  
   '/' . $s->{langother} . '/' . $s->{action} . '/' .
   ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
+
+
+ $s->{jump2date} = undef; # only for pairs
  
 }
 
@@ -107,6 +110,9 @@ sub pair {
   '/' . ( join '/', $s->{langother} , $s->{action}, $s->{pri}, 
   $self->encode( $trans ) ). '/' .
   ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
+
+ # date jumps are only available in pair browsing
+ $s->{jump2date} = $self->fetch ( 'related#jump2date', $s->{pri}, $s->{sec} );
 
 }
 
@@ -135,6 +141,8 @@ sub pattern {
  $s->{urlother} =  
   '/' . $s->{langother} . '/' . $s->{action} . '/' .
   ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
+
+ $s->{jump2date} = undef; # only for pairs
  
 } 
 

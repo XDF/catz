@@ -1,23 +1,44 @@
 % extends 'base/heavy';
 %#
 <% content 'ptitleadd' => begin %>
-%== include 'elem/title';
+%== include 'elem/titlea';
 (<%= $t->{PAGE} %> <%= $page %>/<%= $pages %>)
 <% end %>
 %#
 <% content 'btitle' => begin %>
 % if ( $runmode ne 'search' ) {
-<h1><%== include 'elem/title' %> (<%= $from %>-<%== $to %>/<%= $total %>)</h1>
+<h1><%== include 'elem/titleb' =%>
+(<%== $from %>-<%== $to %>/<%= $total %>)</h1>
 % } else {
 %== include 'block/search';
 % }
 <% end %>
 %#
 <% content 'bextra' => begin %>
-% if ( $pri ne 'folder' and $pri ne 'date' ) {
-<%= $t->{ONTHISPAGE} %> <%= dtexpand ( $latest, $lang ) %>
+<%= $total %> <%= $t->{'PHOTO'.($total==1?'':'A')} %>
+% if ( $runmode eq 'pair') { # we show date jump if more than one date
+%  if ( scalar @{ $jump2date } > 1 ) {
+<%= $sep %> <%= $t->{ONTHISPAGE} %>
+<select name="date" onchange="location.href='<%== include 'href/id', toid => "'+this.options[this.selectedIndex].value+'" %>'">
+% foreach my $row ( @{ $jump2date } ) {
+% my $target = fullnum33( $row->[0], $row->[1] );
+%  if ( $id == $target ) {
+<option selected value="<%== $target %>"><%= dtexpand ( $row->[2], $lang ) %></option>
+%  } else {
+<option value="<%== $target %>"><%= dtexpand ( $row->[2], $lang ) %></option>
+%  }
+% }
+</select>
 %  if ( $earliest ne $latest ) {
+-  <%= dtexpand ( $earliest, $lang ) %>
+%   }
+%  }
+% } else {
+%  if ( $pri ne 'folder' and $pri ne 'date' ) {
+<%= $sep %> <%= $t->{ONTHISPAGE} %> <%= dtexpand ( $latest, $lang ) %>
+%   if ( $earliest ne $latest ) {
 - <%= dtexpand ( $earliest, $lang ) %>
+%   }
 %  }
 % }
 <% end %>
@@ -47,7 +68,7 @@
 <%= $label1 %></span> <%= $sep %> <%= $label2 %> 
 % }
 <%= $sep %> <%= $t->{PAGE} %>   
-<select class="flop" name="page" onchange="location.href='<%== include 'href/id', toid => "'+this.options[this.selectedIndex].value+'" %>'">
+<select name="page" onchange="location.href='<%== include 'href/id', toid => "'+this.options[this.selectedIndex].value+'" %>'">
 % my $vol = scalar @{ $pin };
 % foreach my $i ( 0 .. ( scalar @{ $pin } -1 ) ) {
 % if ( $page == ( $i + 1 ) ) {
@@ -89,6 +110,7 @@
 </div>
 % }
 % }
+<h2><%== include 'elem/titlea' %></h2> 
 <%== fmt ( round ( ( ( $coverage_text / $total ) * 100 ), 1 ), $lang ) %>
 <%== fmt ( round ( ( ( $coverage_cat / $total ) * 100 ), 1 ), $lang ) %>
 <hr class="divid">
