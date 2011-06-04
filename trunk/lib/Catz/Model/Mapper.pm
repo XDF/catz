@@ -28,11 +28,17 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Catz::Core::Model';
 
-sub _map { # provides album -> folder and folder -> album mappings
+sub _map { 
+
+ # provides mappings for 
+ #  album -> folder
+ #  folder -> album
+ #  breed -> bcode
+ #  bcode -> breed
 
  my $self = shift; my $lang = $self->{lang};
  
- my $base = $self->dball("select folder,sec from album natural join inalbum natural join sec_$lang natural join pri where pri='album'");
+ my $base = $self->dball("select folder,sec from album natural join inalbum natural join sec_$lang natural join pri where pri='album' union all select bcode,breed_$lang from mbreed");
 
  my %res = ();
  

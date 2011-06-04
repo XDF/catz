@@ -1,0 +1,13 @@
+% if ( $runmode eq 'pair' ) {
+%  if ( $pri eq 'folder' ) {
+<%= $t->{ALBUM} %> <%= $map->{$sec} %>
+%  } elsif ( $pri eq 'date' ) {
+<%= $t->{DATE} %> <%= dtexpand ( $sec, $lang ) %>
+%  } else {
+<%= $t->{uc($pri)} %> <%= $sec %> 
+%  }
+% } elsif ( $runmode eq 'search' ) {
+<%= $t->{SEARCH_RESULT} %> <%= limit ( $what, 50 ) %>
+% } else { # default to runmode 'all' 
+<%= $t->{ALL} %> <%= $t->{PHOTOS} %>
+% }

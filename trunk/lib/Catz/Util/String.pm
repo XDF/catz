@@ -57,7 +57,7 @@ sub chrsolve {
 #
 # trims extra spaces = several adjacent spaces becomes a single space
 #
-sub clean { $_ = shift; warn $_; s/\s+/ /g; warn $_; $_; }
+sub clean { $_ = shift; s/\s+/ /g; $_; }
 
 #
 # converts an encoded string back from its unencoded ascii form

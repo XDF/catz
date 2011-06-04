@@ -1,0 +1,16 @@
+% if ( $runmode eq 'pair' ) {
+%  if ( $pri eq 'folder' ) {
+<%= $map->{$sec} %>
+%  } elsif ( $pri eq 'date' ) {
+<%= dtexpand ( $sec, $lang ) %>
+%  } else {
+<%= $sec %>
+%   if ( $pri eq 'bcode' or $pri eq 'breed' ) {
+<span class="lean"><%= $map->{$sec} %></span>
+%   } 
+%  }
+% } elsif ( $runmode eq 'search' ) {
+<%= $t->{SEARCH_RESULT} %> <%= limit ( $what, 50 ) %>
+% } else { # default to runmode 'all' 
+<%= $t->{ALL} %> <%= $t->{PHOTOS} %>
+% }
