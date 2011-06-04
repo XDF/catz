@@ -50,7 +50,7 @@ sub _basic { # first, last
 
 }
 
-sub todate {
+sub _dates {
 
  my ( $self, $pri, $sec ) = @_;  my $lang = $self->{lang}; 
 

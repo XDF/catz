@@ -34,10 +34,9 @@ use parent 'Catz::Model::Vector';
 
 use Bit::Vector;
 
-sub _bits { # create a bit vector of xs for a pri-sec pair
+sub _bits { # create a fully filled bit vector to represent all photos
 
- my ( $self, $pri, $sec ) = @_;
- 
+ my $self = shift;
  
  # creating an empty bit vector one larger than there are photos
  # since 0 index in not used     
