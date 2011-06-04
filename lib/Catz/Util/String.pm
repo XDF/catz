@@ -24,8 +24,7 @@
 
 package Catz::Util::String;
 
-use strict;
-use warnings;
+use 5.10.0; use strict; use warnings;
 
 use base 'Exporter';
 
@@ -37,7 +36,6 @@ our @EXPORT_OK = qw (
 use Digest::MD5 qw ( md5_base64 );
 use Memoize;
 use URI::Escape::XS qw ( uri_escape uri_unescape );
-
 
 #
 # an internal utility function called by encode sub
@@ -59,7 +57,7 @@ sub chrsolve {
 #
 # trims extra spaces = several adjacent spaces becomes a single space
 #
-sub clean { $_ = $_[0]; s/ +/ /; $_; }
+sub clean { $_ = shift; warn $_; s/\s+/ /g; warn $_; $_; }
 
 #
 # converts an encoded string back from its unencoded ascii form

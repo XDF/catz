@@ -89,19 +89,20 @@
 </div>
 % }
 % }
-<div>
+<%== fmt ( round ( ( ( $coverage_text / $total ) * 100 ), 1 ), $lang ) %>
+<%== fmt ( round ( ( ( $coverage_cat / $total ) * 100 ), 1 ), $lang ) %>
+<hr class="divid">
 <div>
 % my $i = 1;
 % foreach my $th ( @{ $thumb } ) {
 % defined $texts->{$th->[0]} and do {
 % $i++ > 1 and do {
-<%== $sep %>
+<br>
 % };
 % my $toid = fullnum33 ( $th->[1], $th->[2] ); 
 <a href="/<%== $lang %>/view/<%== $toid %>/"><%= $texts->{$th->[0]} %></a>                            
 % };
 % }
-</div>
 </div>
 %#
 <% end %>

@@ -33,17 +33,15 @@ our @EXPORT = qw ( search2args args2search );
 
 use Text::ParseWords;
 
-use Catz::Util::String qw ( enurl );
+use Catz::Util::String qw ( enurl trim clean );
 
 # the default pri key used if none is given in the query
 use constant DEFAULT => 'any';
 
 sub search2args { # covert a search parameter to argument list 
   
- my $str = shift;
- 
- $str =~ s/\s+/ /; # convert all multiple white spaces to one space
- 
+ my $str = clean trim shift;
+
  my $fixed = $str;
     
  # smart split to words allowing quotation marks on the outer edges   

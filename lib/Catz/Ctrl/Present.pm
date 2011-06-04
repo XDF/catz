@@ -201,6 +201,12 @@ sub multi {
  
  ( $s->{thumb}, $s->{earliest}, $s->{latest} ) = 
   @{ $self->fetch( 'photo#thumb', @{ $s->{xs} } ) };
+
+ $s->{coverage_text} = 
+  $self->fetch ( "search#count", @{ $s->{args_array} }, 'has', '+text' );
+
+ $s->{coverage_cat} = 
+  $self->fetch ( "search#count", @{ $s->{args_array} }, 'has', '+bcode', 'has', '-cat' );
   
  $s->{texts} = $self->fetch ( 'photo#texts', @{ $s->{xs} } );
  

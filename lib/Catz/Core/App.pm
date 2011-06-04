@@ -35,7 +35,7 @@ use Catz::Data::List qw ( list_matrix );
 use Catz::Data::Setup;
 use Catz::Util::File qw ( fileread findlatest pathcut );
 use Catz::Util::Time qw( dt dtdate dttime dtexpand dtlang thisyear );
-use Catz::Util::Number qw ( fmt fullnum33 );
+use Catz::Util::Number qw ( fmt fullnum33 round );
 use Catz::Util::String qw ( enurl decode encode );
 
 sub startup {
@@ -62,6 +62,7 @@ sub startup {
  $self->helper ( thisyear => sub { shift; thisyear } );
  $self->helper ( encode => sub { shift; encode $_[0] } );
  $self->helper ( decode => sub { shift; decode $_[0] } );
+ $self->helper ( round => sub { shift; round $_[0] } );
       
  my $r = $self->routes;
   

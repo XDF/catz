@@ -39,19 +39,20 @@ sub _bits {
  # create a bit vector of xs for a pri-sec pair
  # language dependent
 
- my ( $self, $pri, $sec ) = @_; my $lang = $self->{lang};
- 
- # get an unsorted list of xs that may have duplicates, all that doesn't matter
- my $res = $self->dbcol ( "select x from _sid_x where sid in (select sid from sec_$lang where pid=(select pid from pri where pri=?) and sec=?)", $pri, $sec );
- 
- # creating an empty bit vector one larger than there are photos
- # since 0 index in not used     
- my $vec =  Bit::Vector->new( $self->maxx + 1 );
- 
- $vec->Index_List_Store ( @$res ); # store the xs as bit positions
-   
- return $vec;
-       
+ my ( $self, $pri, $sec ) = @_;
+
+ if ( 
+  $pri eq 'has' or $pri eq 'any' or $sec eq 'text' or $sec eq 'album' or
+  index ( $sec, '*' ) > -1 or index ( $sec, '?' ) > -1 
+ ) { # reject
+
+  return Bit::Vector->new( $self->maxx + 1 ); # empty vector
+
+ } else { # pass-thru
+
+  return $self->base( $pri, $sec );
+
+ }
 }
 
 1;

@@ -43,7 +43,8 @@ my $matrix = {
  date => {
   modes => [ qw ( date top ) ],
   dividers => 1,
-  related => [ qw ( cat breed breeder body lens ) ]
+  related => [ qw ( cat breed breeder body lens ) ],
+  coverage => [ qw ( text cat ) ],
  },
  
  loc => {

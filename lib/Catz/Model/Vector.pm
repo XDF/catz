@@ -65,6 +65,56 @@ sub bsearch {
   
  }
 
+sub _base {
+ 
+ my ( $self, $pri, $sec ) = @_;
+ 
+ my $res;
+      
+ if ( $pri eq 'has' ) { # get all photos that have a subject of subject class  $sec defined
+    
+  $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec where pid=(select pid from pri where pri=?))", $sec);
+            
+ } else {
+ 
+  if ( ( index ( $sec, '%' ) > 0 ) or ( index ( $sec, '_' ) > 0 ) ) { # must like
+  
+   if ( $pri eq 'any' ) {
+    
+    $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec where (sec_en like ? or sec_fi like ?))", $sec, $sec);   
+   
+   } else {
+   
+    $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec where pid=(select pid from pri where pri=?) and (sec_en like ? or sec_fi like ?))", $pri, $sec,$sec);
+   
+   }
+    
+  } else { # not like
+  
+   if ( $pri eq 'any' ) {
+    
+    $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec where (sec_en=? collate nocase or sec_fi=? collate nocase))", $sec,$sec);   
+   
+   } else {
+   
+    $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec where pid=(select pid from pri where pri=?) and (sec_en=? collate nocase or sec_fi=? collate nocase))", $pri, $sec, $sec);
+   
+   }
+
+  }
+  
+ }
+  
+ # creating an empty bit vector one larger than there are photos
+ # since 0 index in not used      
+ my $vec = Bit::Vector->new( $self->maxx  + 1 );
+   
+ $vec->Index_List_Store ( @$res ); # store the x indexes as bits
+  
+ return $vec;  
+  
+} 
+
 sub _array { # vector as an array of indexes
 
  my ( $self, @args ) = @_;
