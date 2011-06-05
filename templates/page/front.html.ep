@@ -34,8 +34,8 @@
 %#
 %# --------------------
 %#
-<div class="bar find"><h2><%= $t->{FIND} %></h2>
-<input class="aero" type="text" id="find">
+<div class="bar find shade stripetop center clearafter"><h2 class="aero"><%= $t->{FIND} %></h2>
+<input class="aero" type="text" id="find" size="35">
 <a class="aero" href="/<%== $lang %>/search/"><%= $t->{SEARCH} %></a></div>
 <div class="bar find" id="found"></div>
 %#
@@ -65,7 +65,7 @@
 % foreach my $row ( @$albums ) {
 <a title="<%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%= $lang %>/browse/folder/<%== $row->[0] %>/"><%= $map->{$row->[0]} %></a> <%= $sep %>
 % }
-<a href="/<%= $lang %>/list/album/a2z/"><%= $t->{ALBUMS_ALL} %></a>
+<a href="/<%= $lang %>/list/album/date/"><%= $t->{ALBUMS_ALL} %></a>
 </div>
 %#
 %# --------------------

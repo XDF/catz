@@ -1,6 +1,6 @@
 % use Catz::Util::String qw ( enurl );
 % my $i = 1;
-<div class="bar">
+<div>
 % foreach my $sugg ( @{ $find } ) {
 % $i++ == 1 or do {
 <%== $sep %>

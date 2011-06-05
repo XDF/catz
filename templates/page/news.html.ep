@@ -11,13 +11,14 @@
 <%= content 'main' => begin %>
 % my $i = 1;
 % foreach my $row ( @$news ) {
-% if ( $i++ > 1 ) {
-<hr class="divid">
+% if ( $i++ == 1 ) {
+<div class="bar">
+% } else {
+<div class="bar stripetop">
 % } 
-<div class="unit">
 <h2 id="<%== $row->[0] %>"><%=  dtexpand ( dtdate ( $row->[0] ), $lang ) %> <%= $row->[1] %></h2>
-<div class="unit"><%= $row->[2] %> 
-<span class="aero shrink lean"><%=  dtexpand ( $row->[0], $lang ) %></span></div>
+<div class="bar"><%= $row->[2] %></div> 
+<div class="shrink lean bar"><%=  dtexpand ( $row->[0], $lang ) %></div>
 </div>
 % }
 <% end %> 

@@ -1,3 +1,4 @@
+% use 5.10.0;
 % extends 'base/heavy';
 %#
 <% content 'jsadd' => begin %>
@@ -5,6 +6,7 @@
 % $photosize eq 'fit' and do {
 <script type="text/javascript" src="/js_site/fit.js"></script>
 % };
+<script type="text/javascript" src="/js_site/info.js"></script>
 <% end %>
 %#
 <% content 'ptitleadd' => begin %>
@@ -14,9 +16,16 @@
 %#
 <% content 'pathadd' => begin %>
 <%== include 'elem/argspath' %>
+% if ( $display ne 'full' ) {
+%  if ( $runmode ne 'search' ) {
+<h1 class="mini"><%== include 'elem/titleb' %> (<%= $t->{PHOTO} %> <%== $pos %>/<%== $total %>)</h1>
+%  } else {
+%== include 'block/search';
+%  }
+% }
 <% end %> 
 %#
-<% content 'classtop' => begin %><%== $display eq 'none' ? '' : 'bar' %><% end %>
+<% content 'classtop' => begin %><%== $display ne 'full' ? '' : 'bar' %><% end %>
 %#
 <% content 'btitle' => begin %>
 %#
@@ -65,31 +74,45 @@
 % }
 </div>
 %#
-% if ( $display eq 'full' ) {
-<div class="aeroplus bar">
+%# --------------------
+%#
+% if ( $display ne 'none' ) { # comments displayed on full and brief
+<div class="aeroplus bar<%== $display eq 'brief' ? ' center' : '' %>">
 % my $i = 0;
 % my $j = 1;
-% scalar ( @$comment ) > 0 and do {
+% if ( scalar ( @$comment ) > 0 ) {
 %  foreach my $comm ( @{ $comment } ) {
 % $j++ > 1 and do {
 <%= $sep %>
-% };  
+% };
+% if ( index ( $comm, '[' ) == 0 ) { # must be just a code
+<%= $comm %> 
+<span class="shrink"><%= $t->{NO_CAT_A} %> <%== $id %> <%= $t->{NO_CAT_B} %> <a class="info" href=""></a></span>
+% } else { # not just a code
 <%= $comm %>
+% }  
 %   if ( defined $resultkey->[$i] ) {
 <span class="result lean shrink" id="<%== $resultkey->[$i] %>"></span>
 %   $i++; 
 %   }
 %  }
+% } else { # no comments
+<span class="shrink"><%= $t->{NO_COMMENT_A} %> <%== $id %> <%= $t->{NO_COMMENT_B} %> <a class="info" href=""></a></span>
+% }
+% }
+% if ( $display eq 'full' ) { # detailed info only when full display
 <%= $sep %>
-% };
 <span class="shrink">
-% $i = 1;
 % my $pdet = '93lioI+d=))(/l8rflOLW3wr';
+% my $i = 1;
+% my $j = 1;
 % foreach my $detail ( @$detail ) {
 % if ( $detail->[0] ne $pdet ) {
+% $j = 1;
 <%= $i++ == 1 ? '' : $sep %>
 <%= $t->{uc( $detail->[0] ne 'folder' ? $detail->[0] : 'album' )} %>
 % }
+<%= $j++ == 1 ? '' : $sep %>
 % $pdet =  $detail->[0];
 % $detail->[0] ne 'time' and do {
 <a href="<%== include 'href/actionpair', topri => $detail->[0], tosec => $detail->[1] %>">
@@ -99,8 +122,14 @@
 </a>
 % };
 % }
-<%= $sep %> <%= $t->{PHOTO_ID} %> <%== fullnum33 ( $image->[0], $image->[1] ) %><span></div>
+<%= $sep %> <%= $t->{PHOTO_ID} %> <%== fullnum33 ( $image->[0], $image->[1] ) %><span>
 % }
+% if ( $display ne 'none' ) {
+</div>
+% }
+%#
+%# --------------------
+%#
 <div class="center" id="fitparent">
 <a href="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>">
 <img id="fittarget" src="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>"<%== $photosize ne 'fit'? ' width="'.$image->[4].'" height="'.$image->[5].'"' : '' %>></a>

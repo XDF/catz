@@ -55,7 +55,7 @@ function catzDoFind() {
   } else { // there is something to find, send request
      
    catzPrevReqFind = $.ajax ({
-    url: head + '/find?what=' + what,
+    url: head + '/find?what=' + $.URLEncode(what),
     success: function( data ){ // when te request completes this get executed
      
       catzPrevReqFind = null; // clear the reference to this request

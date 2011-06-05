@@ -19,7 +19,7 @@
 % if ( $runmode eq 'pair') { # we show date jump if more than one date
 %  if ( scalar @{ $jump2date } > 1 ) {
 <%= $sep %> <%= $t->{ONTHISPAGE} %>
-<select name="date" onchange="location.href='<%== include 'href/id', toid => "'+this.options[this.selectedIndex].value+'" %>'">
+<select name="date" onchange="<%== include 'href/id', toid => 'this' %>">
 % foreach my $row ( @{ $jump2date } ) {
 % my $target = fullnum33( $row->[0], $row->[1] );
 %  if ( $id == $target ) {
@@ -68,7 +68,7 @@
 <%= $label1 %></span> <%= $sep %> <%= $label2 %> 
 % }
 <%= $sep %> <%= $t->{PAGE} %>   
-<select name="page" onchange="location.href='<%== include 'href/id', toid => "'+this.options[this.selectedIndex].value+'" %>'">
+<select name="page" onchange="<%== include 'href/id', toid => 'this' %>">
 % my $vol = scalar @{ $pin };
 % foreach my $i ( 0 .. ( scalar @{ $pin } -1 ) ) {
 % if ( $page == ( $i + 1 ) ) {
@@ -90,6 +90,7 @@
 % }
 </div>
 %#
+<div class="bar">
 % foreach my $th ( @{ $thumb } ) {
 % my $toid = fullnum33 ( $th->[1], $th->[2] );
 % my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
@@ -97,6 +98,7 @@
 % defined $texts->{$th->[0]} and $titl = "$titl $sep " . $texts->{$th->[0]};  
 <a title="<%= $titl %>" href="<%== include 'href/actionid', toaction => 'auto', toid => $toid %>"><img src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
 % }
+</div>
 %#
 <div>
 % if ( $related ) { # related info is provided by controller
@@ -113,7 +115,6 @@
 <h2><%== include 'elem/titlea' %></h2> 
 <%== fmt ( round ( ( ( $coverage_text / $total ) * 100 ), 1 ), $lang ) %>
 <%== fmt ( round ( ( ( $coverage_cat / $total ) * 100 ), 1 ), $lang ) %>
-<hr class="divid">
 <div>
 % my $i = 1;
 % foreach my $th ( @{ $thumb } ) {

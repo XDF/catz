@@ -114,15 +114,11 @@ general page elements
  border-top-color: <%== $st->{color}->{$palette}->{dim} %>;
 }
 
-hr {
- height: 0px;
+.stripebottom {
  border-bottom: 1px;
  border-style: none none solid none;
- margin: 0 0 0 0;
- padding: 0 0 0 0;
+ border-bottom-color: <%== $st->{color}->{$palette}->{dim} %>;
 }
-.divid { width: 70%; }
-.stripe { width: 100%; }
 
 .outer { margin: 0 15% 0 15%; }
 
@@ -134,8 +130,7 @@ hr {
  border-color: <%== $st->{color}->{$palette}->{dim} %>; 
  height: 40px;
  margin: 2px;
- float: right;
- 
+ float: right; 
 }
 
 /* 
@@ -161,6 +156,8 @@ h1 {
 }
 
 h1.giga { font-weight: 700; }
+
+h1.mini { font-size: <%== $st->{size}->{normal} %>; }
 
 /*
 level n headings
