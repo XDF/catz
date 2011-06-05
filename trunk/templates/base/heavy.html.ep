@@ -51,7 +51,7 @@
 %#
 %# --------------------
 %#
-<div class="shade section"><div class="bar"><table class="full">
+<div id="top" class="shade"><div class="<%= content 'classtop' => begin%>bar<% end %>"><table class="full">
 %#
 %# --------------------
 %#
@@ -77,7 +77,7 @@
 %#
 %# --------------------
 %#
-<div class="section center shade shrink">
+<div id="bottom" class="section center shade shrink clearbefore">
 <%= $t->{COPYRIGHT} %> <a href="<%== $t->{AUTHORURL} %>"><%= $t->{AUTHOR} %></a> <%== $t->{FIRSTYEAR} %>-<%== thisyear %>.
 <a href="<%== $t->{LICENCE_URL} %>"><%= $t->{LICENCE} %></a>.
 </div>

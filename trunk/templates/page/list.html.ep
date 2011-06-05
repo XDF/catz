@@ -69,12 +69,12 @@
 %# if dividers are required then generate a divider for the current set
 %#
 % $matrix->{$subject}->{dividers} and do {
-<div class="unit outer"><table class="full"><tr>
+<div class="unit outer stripebottom"><table class="full"><tr>
 <td class="left"><h2 id="idx<%= $set->[0] %>"><%= ( $mode eq 'top' and $lang eq 'en' ) ? '#' : '' %><%= $set->[0] %><%= ( $mode eq 'top' and $lang eq 'fi' ) ? '.' : '' %></h2></td>
 <td class="right">
 % my $sz = scalar ( @{ $set->[1] } ); # the size of this set   
 <%= fmt ( $sz, $lang ) %> <%= $sz == 1 ? $t->{uc($subject)} : $t->{uc($subject).'A'} %>
-</td></tr></table></div><hr class="divid">
+</td></tr></table></div>
 % };
 %#
 %# --------------------

@@ -175,10 +175,10 @@ sub single {
  };
      
  $s->{total} == 0 and $self->not_found and return;
-  
- $s->{detail} = $self->fetch( 'photo#detail', $s->{x});
 
  $s->{comment} =  $self->fetch( 'photo#text', $s->{x} );
+   
+ $s->{detail} = $self->fetch( 'photo#detail', $s->{x});
  
  $s->{image} =  $self->fetch( 'photo#image', $s->{x} );
  

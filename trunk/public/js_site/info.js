@@ -22,37 +22,36 @@
 // THE SOFTWARE.
 //
 
-function catzResultURL( key ) {
+var catz_v00 = 'href';
+var catz_v01 = 't';
+var catz_v02 = 'e';
+var catz_v03 = 'n';
+var catz_v04 = 'a';
+var catz_v05 = 'catz';
+var catz_v06 = '.';
+var catz_v07 = ':';
+var catz_v08 = 'lto';
+var catz_v09 = 'mai';
+var catz_v10 = 'fo';
+var catz_v11 = 'in';
+var catz_v12 = '@';
 
- var head = $(location).attr('pathname').toString().substring ( 0, 3 );
+function catzInfo() {
 
- return head + '/result?key=' + key;
-
-}
-
-function catzFetchResults() {
-
- $("span.result").each(function() {
-
-  $(this).html( '' );
-
-  $.ajax ({
-    url: catzResultURL ( $(this).attr('id') ),
-    context: this,
-    success: function( data ){
-      $(this).html( data ); // update the result to DOM   
-    },
-    error: function(){
-      $(this).html( '' );
-    }  
-  });
-
- });
-
+ $(catz_v06+catz_v11+catz_v10).attr(
+  catz_v00,catz_v09+catz_v08+catz_v07+catz_v11+catz_v10+catz_v12+
+  catz_v05+catz_v04+catz_v06+catz_v03+catz_v02+catz_v01
+ );
+ 
+ $(catz_v06+catz_v11+catz_v10).html(
+  catz_v11+catz_v10+catz_v12+catz_v05+catz_v04+catz_v06+catz_v03+
+  catz_v02+catz_v01
+ );
+ 
 }
 
 $(document).ready(function() { 
 
- catzFetchResults();
+ catzInfo();
    
 });

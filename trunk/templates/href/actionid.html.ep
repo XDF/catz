@@ -11,13 +11,31 @@ $toaction eq 'auto' and do {
   when ( 'display' ) { $toaction = 'search' }
  }
 };
-%> 
-% if ( $runmode eq 'pair' ) { 
+%>
+% if ( $toid eq 'this' ) {
+%  given ( $runmode ) {
+%   when ( 'pair' ) { 
+location.href='/<%== $lang %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/'+this.options[this.selectedIndex].value+'/'
+%   } 
+%   when ( 'search' ) {
+location.href='/<%== $lang %>/<%== $toaction %>/'+this.options[this.selectedIndex].value+'/?what=<%== enurl($what) %>'
+%   } 
+%   default  { 
+location.href='/<%== $lang %>/<%== $toaction %>/'+this.options[this.selectedIndex].value+'/'
+%   }
+%  }   
+% } else {
+%  given ( $runmode ) {
+%   when ( 'pair' ) { 
 /<%== $lang %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/<%== $toid %>/
-% } elsif ( $runmode eq 'search' ) {
+%   } 
+%   when ( 'search' ) {
 /<%== $lang %>/<%== $toaction %>/<%== $toid %>?what=<%== enurl($what) %>
-% } else { # default to runmode 'all' 
+%   } 
+%   default  { 
 /<%== $lang %>/<%== $toaction %>/<%== $toid %>/
+%   }
+%  }
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine

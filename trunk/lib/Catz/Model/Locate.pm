@@ -267,7 +267,7 @@ sub _find {
 
  my ( $self, $pattern, $count ) = @_; my $lang = $self->{lang};
  
- $pattern =~ s/[^a-zA-Z0-9åöäÅÖÄ]/_/;
+ #$pattern =~ s/[^a-zA-Z0-9åöäÅÖÄ]/_/;
  
  $pattern = '%' . $pattern . '%';
  

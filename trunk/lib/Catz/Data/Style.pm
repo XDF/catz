@@ -76,7 +76,7 @@ $style->{color} = {
   back => '#000000',
   shade => '#444444',
   dim => '#a3a3a3',
-  text => '#c4c4c4', 
+  text => '#c9c9c9', 
   high => '#ffffff',
   xtra => '#ff3333',
  },
