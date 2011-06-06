@@ -179,12 +179,10 @@ sub fsort {
  if ( $_[0] =~ /^(.+)(\d)$/ ) { # if folder ends with a number
  
   # reverse the number for sorting 1 -> 9, 2 -> 8 etc
-  
-  $1 . ( 10 - int ( $2 ) );
-  
+    
   return $1 . ( 10 - int ( $2 ) ); 
   
- } else { warn $_[0]; return $_[0] } # as is  
+ } else { return $_[0] } # as is  
 
 }
 

@@ -1,9 +1,13 @@
 % extends 'base/heavy';
 %#
+%# --------------------
+%#
 <% content 'ptitleadd' => begin %>
 %== include 'elem/titlea';
 (<%= $t->{PAGE} %> <%= $page %>/<%= $pages %>)
 <% end %>
+%#
+%# --------------------
 %#
 <% content 'btitle' => begin %>
 % if ( $runmode ne 'search' ) {
@@ -13,6 +17,8 @@
 %== include 'block/search';
 % }
 <% end %>
+%#
+%# --------------------
 %#
 <% content 'bextra' => begin %> 
 % if ( $pri ne 'folder' and $pri ne 'date' ) {
@@ -35,6 +41,8 @@
 % }
 <% end %>
 %#
+%# --------------------
+%#
 <% content 'setupadd' => begin %>
 <%== include 'elem/setup', setupkey => 'perpage' %>
 <%== include 'elem/setup', setupkey => 'thumbsize' %>
@@ -49,9 +57,10 @@
 % }
 <% end %>  
 %#
-<% content 'main' => begin %>
+%# --------------------
 %#
-<div class="center shade stripetop">
+<% content 'sub' => begin %>
+<div class="center stripetop">
 % my $label1 = $t->{PAGE_FIRST};
 % my $label2 = $t->{PAGE_PREV};
 % if ( $page > 1 ) { # not first page -> active first & back
@@ -82,8 +91,15 @@
 <%= $label1 %> <%= $sep %> <%= $label2 %>
 % }
 </div>
+<% end %>
 %#
-<div class="bar">
+%# --------------------
+%#
+<% content 'main' => begin %>
+%#
+%# --------------------
+%#
+<div>
 % foreach my $th ( @{ $thumb } ) {
 % my $toid = fullnum33 ( $th->[1], $th->[2] );
 % my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
@@ -93,8 +109,10 @@
 % }
 </div>
 %#
-<div>
+%# --------------------
+%#
 % if ( $related ) { # related info is provided by controller
+<div>
 <h2><%= $t->{uc($args_array->[0])} %> <%= $args_array->[1] %></h2>
 % foreach my $row ( @$related ) {
 <div class="aero unit">
@@ -104,10 +122,13 @@
 % }
 </div>
 % }
+</div>
 % }
+%#
+%# --------------------
+%#
 <div class="bar">
-<h2><%== include 'elem/titlea' %></h2>
-<div> 
+<div><h2><%== include 'elem/titlea' %></h2></div> 
 <%= $total %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> <%= $sep %>
 <%= dtexpand ( $ancient, $lang ) %>
 % if ( $fresh ne $ancient ) {
@@ -116,25 +137,31 @@
 <%= $sep %> comment coverage <%== fmt ( round ( ( 100 - ( $coverage_text / $total ) * 100 ), 1 ), $lang ) %> % <%= $sep %> 
 <%== fmt ( $coverage_text, $lang ) %> uncommented photos <%= $sep %>  
 <%== fmt ( $coverage_cat, $lang ) %> photos with breed but no cat name
-</div></div>
+</div>
+%#
+%# --------------------
+%#
 % if ( scalar keys %{ $texts } > 0 ) {
-% my $i = 0;
 <div class="bar">
-<h2><%= $t->{TEXTS} %></h2>
+% my $i = 0;
+<div><h2><%= $t->{TEXTS} %></h2></div> 
+<span class="shrink">
 % foreach my $th ( @{ $thumb } ) {
 % defined $texts->{$th->[0]} and do {
-<div>
 % my $toid = fullnum33 ( $th->[1], $th->[2] ); 
-<%= $t->{PHOTO} %> <%== $from + $i %> <%= $sep %> <a href="<%== include 'href/actionid', toaction => 'auto', toid => $toid %>"><%= $texts->{$th->[0]} %></a>
-</div>                            
+<%= $i++ > 0 ? $sep : '' %> <%= $t->{PHOTO} %> <%== $from + $i %> <%= $sep %> <a href="<%== include 'href/actionid', toaction => 'auto', toid => $toid %>"><%= $texts->{$th->[0]} %></a>
 % };
 % $i++;
 % }
-</div>
+</span></div>
 % }
 </div>
 %#
+%# --------------------
+%#
 <% end %>
+%#
+%# --------------------
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

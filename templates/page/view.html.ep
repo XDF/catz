@@ -1,6 +1,8 @@
 % use 5.10.0;
 % extends 'base/heavy';
 %#
+%# --------------------
+%#
 <% content 'jsadd' => begin %>
 <script type="text/javascript" src="/js_site/result.js"></script>
 % $photosize eq 'fit' and do {
@@ -9,10 +11,14 @@
 <script type="text/javascript" src="/js_site/info.js"></script>
 <% end %>
 %#
+%# --------------------
+%#
 <% content 'ptitleadd' => begin %>
 %== include 'elem/titlea';
 (<%= $t->{PHOTO} %> <%== $pos %>/<%== $total %>)
 <% end %>
+%#
+%# --------------------
 %#
 <% content 'pathadd' => begin %>
 <%== include 'elem/argspath' %>
@@ -23,12 +29,19 @@
 %== include 'block/search';
 %  }
 % }
-<% end %> 
+<% end %>
 %#
-<% content 'classtop' => begin %><%== $display eq 'full' ? 'bar' : 'aero' %><% end %>
+%# --------------------
+%#
+<% content 'topid' => begin %>topx<% end %>
+%#
+%# --------------------
+%#
+<% content 'topclass' => begin %><%== $display eq 'full' ? 'bar' : 'aero' %><% end %>
+%#
+%# --------------------
 %#
 <% content 'btitle' => begin %>
-%#
 % if ( $display eq 'full' ) {
 %  if ( $runmode ne 'search' ) {
 <h1><%== include 'elem/titleb' %> (<%= $t->{PHOTO} %> <%== $pos %>/<%== $total %>)</h1>
@@ -37,6 +50,8 @@
 %  }
 % }
 <% end %>
+%#
+%# --------------------
 %#
 <% content 'pathadd' => begin %>
 % if ( $display ne 'full' ) {
@@ -49,8 +64,10 @@
 <%== include 'elem/setup', setupkey => 'photosize' %>
 <% end %>
 %#
-<% content 'main' => begin %>
-<div class="shade center stripetop">
+%# --------------------
+%#
+<% content 'sub' => begin %>
+<div class="center stripetop">
 % my $label1 = $t->{PHOTO_FIRST};
 % my $label2 = $t->{PHOTO_PREV};
 % if ( $pos > 1 ) {
@@ -73,6 +90,11 @@
 <%= $label1 %> <%== $sep %> <%= $label2 %>
 % }
 </div>
+<% end %>
+%#
+%# --------------------
+%#
+<% content 'main' => begin %>
 %#
 %# --------------------
 %#
@@ -134,6 +156,9 @@
 <a href="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>">
 <img id="fittarget" src="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>"<%== $photosize ne 'fit'? ' width="'.$image->[4].'" height="'.$image->[5].'"' : '' %>></a>
 </div>
+%#
+%# --------------------
+%#
 <% end %>
 %#
 %# Catz - the world's most advanced cat show photo engine

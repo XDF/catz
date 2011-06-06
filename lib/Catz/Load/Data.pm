@@ -700,6 +700,6 @@ sub umb {
 
 sub tolines { map { trim( $_ ) } split /\n/, trim ( $_[0] ) }
 
-sub topiles { map { trim( $_ ) } split /\#\n/, trim ( $_[0] ) }
+sub topiles { map { trim( $_ ) } split /\#/, trim ( $_[0] ) }
 
 1; 

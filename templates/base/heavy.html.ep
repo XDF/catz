@@ -51,12 +51,12 @@
 %#
 %# --------------------
 %#
-<div id="top" class="shade"><div class="<%= content 'classtop' => begin%>bar<% end %>"><table class="full">
+<div id="<%= content 'topid' => begin %>top<% end %>"><div class="<%= content 'topclass' => begin%>bar<% end %>"><table class="full">
 %#
 %# --------------------
 %#
 <tr><td class="left"><%= content 'path' => begin %>
-<a href="/<%== $lang %>/"><%= $t->{SITE} %></a> <%== $pathsep %>
+<a href="/<%== $lang %>/"><%= $t->{SITE} %></a> <%= $pathsep %>
 <%= content 'pathadd' %>
 <% end %></td>
 %#
@@ -69,7 +69,9 @@
 %#
 %# --------------------
 %#
-<td class="left middle"><%= content 'btitle' %></td><td class="right middle"><%= content 'bextra' %></td></tr></table></div></div>
+<td class="left middle"><%= content 'btitle' %></td><td class="right middle"><%= content 'bextra' %></td></tr></table></div>
+<%= content 'sub' %>
+</div>
 %#
 %# --------------------
 %#

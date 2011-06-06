@@ -18,24 +18,21 @@
 %#
 %# --------------------
 %#
-<%= content 'main' => begin %>
-%#
-%# --------------------
+<% content 'sub' => begin %>
 %#
 %# add the mode changing bar by reading the modes from the list definition matrix provided by the stash
 %# alsoinclude the in-page navigation is required
 %#
- <div class="center shade stripetop">
-%#
 %# --------------------
 %#
+<div class="center stripetop">
 % my $i = 1;
-% do {
+% foreach my $tom ( @{ $matrix->{$subject}->{modes} } ) {
 %  if ( $i++ > 1) {
 <%== $sep %>
 %  }
-%  if ( $mode eq $_ ) {
-<%== $t->{'MODE_'.uc($_)} %>
+%  if ( $mode eq $tom ) {
+<%== $t->{'MODE_'.uc($tom)} %>
 % $matrix->{$subject}->{dividers} and do {
 <select class="flip" name="page" onchange="location.href='<%== $url %>'+this.options[this.selectedIndex].value">
 % my $i = 1;
@@ -49,13 +46,22 @@
 </select>
 % };
 %  } else {
-<a href="/<%== $lang %>/list/<%== $subject %>/<%== $_ %>/"><%== $t->{'MODE_'.uc($_)} %></a>   
+<a href="/<%== $lang %>/list/<%== $subject %>/<%== $tom %>/"><%== $t->{'MODE_'.uc($tom)} %></a>   
 %  }
-% } foreach ( @{ $matrix->{$subject}->{modes} } );
+% }
+</div>
 %#
 %# --------------------
 %#
-</div>
+<% end %>
+%#
+%# --------------------
+%#
+<%= content 'main' => begin %>
+%#
+%# --------------------
+%#
+
 %#
 %# --------------------
 %#
@@ -69,8 +75,8 @@
 %# if dividers are required then generate a divider for the current set
 %#
 % $matrix->{$subject}->{dividers} and do {
-<div class="unit outer stripebottom"><table class="full"><tr>
-<td class="left"><h2 id="idx<%= $set->[0] %>"><%= ( $mode eq 'top' and $lang eq 'en' ) ? '#' : '' %><%= $set->[0] %><%= ( $mode eq 'top' and $lang eq 'fi' ) ? '.' : '' %></h2></td>
+<div class="bar outer stripebottom"><table class="full"><tr>
+<td class="left"><h2 id="idx<%= $set->[0] %>"><%= $set->[0] %></h2></td>
 <td class="right">
 % my $sz = scalar ( @{ $set->[1] } ); # the size of this set   
 <%= fmt ( $sz, $lang ) %> <%= $sz == 1 ? $t->{uc($subject)} : $t->{uc($subject).'A'} %>
@@ -83,7 +89,7 @@
 %#
 % my $i = 1;
 % foreach my $row ( @{ $set->[1] } ) {
-<div class="list unit inner">
+<div class="inner">
 %#
 %# --------------------
 %#
@@ -94,7 +100,7 @@
 <img alt="<%= $set->[0] %>" class="flag" src="<%== $flagbase %>/<%== lc($row->[7]) %>.gif">
 % }
 % if ( $mode eq 'top' ) { # show the row number if displaying the top list 
-<%= $lang eq 'fi' ? $row->[6] . '.' : '#' . $row->[6] %>
+<%= $lang eq 'fi' ? $row->[6] : '#' . $row->[6] %> <%= $sep %>
 % }
 %#
 %# --------------------

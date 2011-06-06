@@ -32,8 +32,6 @@ html { background-color: <%== $st->{color}->{$palette}->{back} %>; height: 100%;
 body {
  color: <%== $st->{color}->{$palette}->{text} %>;
  background-color: <%== $st->{color}->{$palette}->{back} %>;
- margin: 0 0 0 0;
- padding: 0 0 0 0;
  font-family: <%== $st->{font} %>; 
  font-size: <%== $st->{size}->{normal} %>;
  line-height: <%== $st->{lineh}->{normal} %>;
@@ -41,56 +39,42 @@ body {
  height: 100%;
 }
 
-/* 
-the base div of a page - it appears that some browsers and some 
-settings require this div to exist to render the correct formatting
-*/
-div#page {
- height: 100%;
-} 
+.full { width: 100%; }
+.half { width: 50%; }
 
-/* 
-the default is to display all forms inline 
-*/
+/*  make the default to display all forms inline */
 form { display: inline; }
 
 /* 
-by default hide find, found, samples and setup - JavaScript
-should set them visible for JavaScript enabled browsers
+by default hide classed find and setup  
+JavaScript should set them visible for 
+JavaScript enabled browsers
 */
 div.find { display: none; }
 option.setup { display: none; }
 
-/*
-text size
-*/
+/* text sizes */
 .shrink { font-size: 88%; }
-.shrinkplus { font-size: 68%; }
+.shrinkmore { font-size: 68%; }
 .enlarge { font-size: 118%; }
-.enlargeplus { font-size: 133%; }
+.enlargemore { font-size: 133%; }
+
+/* more room between lines */
 .roomy { line-height: <%== $st->{lineh}->{large} %>; }
 
-/*
-text styling
-*/
+/* text styling */
 .heavy { font-weight: 600; }
 .lean { font-style: italic; }
 .sparse { letter-spacing: 1px; }
 
-/*
-extra style used in site name presentation on front page
-*/
+/* extra style used on site name presentation on the front page */
 .xtra { font-weight: 800; color: <%== $st->{color}->{$palette}->{xtra} %>; }
 
-/*
-the ablitity to set block & inline to any element via setting its class
-*/
+/* the ablitity to set block & inline to any element */
 .block { display: block; }
 .inline { display: inline; }
 
-/*
-the system's alignments
-*/
+/* the alignments */
 .center { text-align: center; }
 .left { text-align: left; }
 .right { text-align: right; }
@@ -98,15 +82,11 @@ the system's alignments
 .middle { vertical-align: middle; }
 .bottom { vertical-align: middle; }
 
-.aero { padding: 0 1em 0 1em; }
+/*  spacing */
 
-/* 
-general page elements
-*/
-.section { margin: 0; padding: <%== $st->{space}->{x} %> 0 0 0; }
+.aero { padding: 0 <%== $st->{space}->{y} %> 0 <%== $st->{space}->{y} %> ; }
+
 .bar { padding: <%== $st->{space}->{x} %> <%== $st->{space}->{y} %> <%== $st->{space}->{x} %> <%== $st->{space}->{y} %>; } 
-
-.full { width: 100%; }
 
 .stripetop {
  border-top: 1px;
@@ -126,10 +106,10 @@ general page elements
 
 .flag {
  border-style: solid;
- border-width: 2px;
+ border-width: 1px;
  border-color: <%== $st->{color}->{$palette}->{dim} %>; 
  height: 40px;
- margin: 2px;
+ margin: 5px;
  float: right; 
 }
 
@@ -138,31 +118,19 @@ search pattern highlighting in the found text
 */
 .match { border-bottom: 2px dotted <%== $st->{color}->{$palette}->{dim} %>;  }
 
-.shade {
+#top, #topx, #bottom, .shade {
  color: <%== $st->{color}->{$palette}->{text} %>;
  background-color: <%== $st->{color}->{$palette}->{shade} %>;   
 }
 
-/*
-level 1 heading
-*/
-h1 {
- font-size: <%== $st->{size}->{huge} %>;
- display: inline;
- font-family: <%== $st->{font} %>;
- letter-spacing: 0.25em;
- font-weight: 500;
- line-height: <%== $st->{lineh}->{medium} %>;
-}
+#top { padding: 0; margin: 0 0 <%== $st->{space}->{x} %> 0; }
 
-h1.giga { font-weight: 700; }
+#topx { padding: 0; margin: 0; }
 
-h1.mini { font-size: <%== $st->{size}->{normal} %>; }
+#bottom { padding: 0; margin: <%== $st->{space}->{x} %> 0 0 0; }
 
-/*
-level n headings
-*/
-h2,h3,h4,h5,h6 {
+/* headings, general */
+h1,h2 { 
  font-size: <%== $st->{size}->{big} %>;
  display: inline;
  font-family: <%== $st->{font} %>;
@@ -170,12 +138,21 @@ h2,h3,h4,h5,h6 {
  font-weight: 500;
 }
 
-/*
-links
-*/
+/* special for h1 */ 
+h1 {
+ font-size: <%== $st->{size}->{huge} %>;
+ line-height: <%== $st->{lineh}->{medium} %>;
+}
+
+h1.giga { font-weight: 700; }
+
+h1.mini { font-size: <%== $st->{size}->{normal} %>; }
+
+
+/* links */
 a:link, a:visited, a:active {
  color: <%== $st->{color}->{$palette}->{high} %>;
- font-weight: 600; 
+ font-weight: 700; 
  text-decoration: none;
 } 
 
@@ -185,12 +162,10 @@ a:hover {
  text-decoration: none;   
 }
 
-/*
-photo thumbnails
-*/
+/* photo thumbnails */
 .thumb {
- border: 2px;
- border-style: solid;
- margin-left: 2px;
- margin-right: 2px;
+ border: 0;
+ border-style: none;
+ margin-left: 3px;
+ margin-right: 3px;
 }

@@ -26,12 +26,17 @@
 // to detect if the value has really changed 
 var catzPrevValFind = '89435?2;:#jklOPIs7/)=)3IZ9h3n5n2X';
 
+// stores the original value that gets then modified if not found
+var catzCSSOrig = -1;
+
 // keeps a reference to the previous find and sample requests
 // in order to make them abortable if a new requests are issued
 // before the previous ones have been completed
 var catzPrevReqFind;
 
 function catzDoFind() {
+
+ console.log ( catzCSSOrig );
 
  what = $('#find').val();
  
@@ -50,7 +55,8 @@ function catzDoFind() {
 
    // clear the find results and hide the found
    $('div#found').html('');
-   $('div#found').hide(); 
+   $('div#found').hide();
+   $('#find').css('border',catzCSSOrig); 
            
   } else { // there is something to find, send request
      
@@ -59,9 +65,16 @@ function catzDoFind() {
     success: function( data ){ // when te request completes this get executed
      
       catzPrevReqFind = null; // clear the reference to this request
-      $('div#found').html( data ); // update the visible results
-      $('div#found').show(); // make them visible
-     
+      
+      if ( data == '' ) {
+       $('#find').css('border','2px solid red');
+       $('div#found').html('');
+       $('div#found').hide();      
+      } else {
+       $('#find').css('border',catzCSSOrig);
+       $('div#found').html( data ); // update the visible results
+       $('div#found').show(); // make them visible
+      }
     }  
    });
      
@@ -72,6 +85,9 @@ function catzDoFind() {
 } 
 
 $(document).ready(function() {
+
+ // store the original formatting for restore
+ catzCSSOrig = $('#find').css('border');
 
  // make the find visible when JavaScript enabled
  $('.find').show(); 
