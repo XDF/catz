@@ -27,7 +27,7 @@
 <meta meta="data_version" content="<%== $version %>"> 
 <meta meta="author" content="<%== $t->{AUTHOR} %>"> 
 <meta meta="copyright" content="<%== $t->{COPYRIGHT} %>"> 
-<meta meta="credits" content="<%== $t->{CREDITS} %>"> 
+<meta meta="technologies" content="<%== $t->{TECHNOLOGIES} %>"> 
 <meta meta="robots" content="<%==  ( $meta_index ? 'index' : 'noindex' ) . ',' . ( $meta_follow ? 'follow' : 'nofollow' ) %>">
 %#
 %# --------------------

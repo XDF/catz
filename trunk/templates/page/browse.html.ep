@@ -8,36 +8,28 @@
 <% content 'btitle' => begin %>
 % if ( $runmode ne 'search' ) {
 <h1><%== include 'elem/titleb' =%>
-(<%== $from %>-<%== $to %>/<%= $total %>)</h1>
+(<%= $from - $to == 1 ? $t->{PHOTO} : $t->{PHOTOS} %> <%== $from %>-<%== $to %>/<%= $total %>)</h1>
 % } else {
 %== include 'block/search';
 % }
 <% end %>
 %#
-<% content 'bextra' => begin %>
-<%= $total %> <%= $t->{'PHOTO'.($total==1?'':'A')} %>
-% if ( $runmode eq 'pair') { # we show date jump if more than one date
-%  if ( scalar @{ $jump2date } > 1 ) {
-<%= $sep %> <%= $t->{ONTHISPAGE} %>
-<select name="date" onchange="<%== include 'href/id', toid => 'this' %>">
-% foreach my $row ( @{ $jump2date } ) {
-% my $target = fullnum33( $row->[0], $row->[1] );
-%  if ( $id == $target ) {
-<option selected value="<%== $target %>"><%= dtexpand ( $row->[2], $lang ) %></option>
-%  } else {
-<option value="<%== $target %>"><%= dtexpand ( $row->[2], $lang ) %></option>
-%  }
-% }
-</select>
+<% content 'bextra' => begin %> 
+% if ( $pri ne 'folder' and $pri ne 'date' ) {
+<%= $t->{ONTHISPAGE} %> <%= dtexpand ( $latest, $lang ) %>
 %  if ( $earliest ne $latest ) {
--  <%= dtexpand ( $earliest, $lang ) %>
-%   }
-%  }
-% } else {
-%  if ( $pri ne 'folder' and $pri ne 'date' ) {
-<%= $sep %> <%= $t->{ONTHISPAGE} %> <%= dtexpand ( $latest, $lang ) %>
-%   if ( $earliest ne $latest ) {
 - <%= dtexpand ( $earliest, $lang ) %>
+%  }
+%  if ( $runmode ne 'search') { 
+%   if ( scalar @{ $jump2date } > 1 ) {
+<%= $sep %>
+<select name="date" onchange="<%== include 'href/id', toid => 'this' %>">
+<option selected value="<%== $id %>"><%= $t->{JUMP2DATE} %></option>
+%    foreach my $row ( @{ $jump2date } ) {
+% my $target = fullnum33( $row->[0], $row->[1] );
+<option value="<%== $target %>"><%= dtexpand ( $row->[2], $lang ) %></option>
+%    }
+</select>
 %   }
 %  }
 % }
@@ -53,6 +45,7 @@
 <%== include 'elem/argspath' %>
 % } else {
 <%= $t->{SEARCH} %> <%= $pathsep %>
+<%= fmt ( $total, $lang ) %> <%= $t->{'PHOTO'.($total==1?'':'A')} %>
 % }
 <% end %>  
 %#
@@ -74,7 +67,7 @@
 % if ( $page == ( $i + 1 ) ) {
 <option selected value="<%== $pin->[$i] %>"><%= $i+1 %></option>
 % } else {
-%  if ( ( $i < 100 ) or ( $i > $vol - 100 ) or ( ( $i + 1 ) % 10 == 0 ) or ( abs ( $i - $page ) < 50 ) ) { # limit the length of the list  
+%  if ( ( $i < 20 ) or ( $i > $vol - 20 ) or ( ( $i + 1 ) % 20 == 0 ) or ( abs ( $i - $page ) < 20 ) ) { # limit the length of the list  
 <option value="<%== $pin->[$i] %>"><%= $i+1 %></option>
 %  }
 % }
@@ -112,19 +105,32 @@
 </div>
 % }
 % }
-<h2><%== include 'elem/titlea' %></h2> 
-<%== fmt ( round ( ( ( $coverage_text / $total ) * 100 ), 1 ), $lang ) %>
-<%== fmt ( round ( ( ( $coverage_cat / $total ) * 100 ), 1 ), $lang ) %>
-<div>
-% my $i = 1;
+<div class="bar">
+<h2><%== include 'elem/titlea' %></h2>
+<div> 
+<%= $total %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> <%= $sep %>
+<%= dtexpand ( $ancient, $lang ) %>
+% if ( $fresh ne $ancient ) {
+- <%= dtexpand ( $fresh, $lang ) %>
+% }
+<%= $sep %> comment coverage <%== fmt ( round ( ( 100 - ( $coverage_text / $total ) * 100 ), 1 ), $lang ) %> % <%= $sep %> 
+<%== fmt ( $coverage_text, $lang ) %> uncommented photos <%= $sep %>  
+<%== fmt ( $coverage_cat, $lang ) %> photos with breed but no cat name
+</div></div>
+% if ( scalar keys %{ $texts } > 0 ) {
+% my $i = 0;
+<div class="bar">
+<h2><%= $t->{TEXTS} %></h2>
 % foreach my $th ( @{ $thumb } ) {
 % defined $texts->{$th->[0]} and do {
-% $i++ > 1 and do {
-<br>
-% };
+<div>
 % my $toid = fullnum33 ( $th->[1], $th->[2] ); 
-<a href="/<%== $lang %>/view/<%== $toid %>/"><%= $texts->{$th->[0]} %></a>                            
+<%= $t->{PHOTO} %> <%== $from + $i %> <%= $sep %> <a href="<%== include 'href/actionid', toaction => 'auto', toid => $toid %>"><%= $texts->{$th->[0]} %></a>
+</div>                            
 % };
+% $i++;
+% }
+</div>
 % }
 </div>
 %#

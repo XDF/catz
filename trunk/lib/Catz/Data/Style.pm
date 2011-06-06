@@ -41,7 +41,7 @@ $style->{size}->{normal} = 92;
 $style->{size}->{tiny} = round ( $style->{size}->{normal} * 0.70 );
 $style->{size}->{small} = round ( $style->{size}->{normal} * 0.86 );
 $style->{size}->{big} = round ( $style->{size}->{normal} * 1.35 );
-$style->{size}->{huge} = round ( $style->{size}->{normal} * 1.85 );
+$style->{size}->{huge} = round ( $style->{size}->{normal} * 1.60 );
 
 do { 
  $style->{size}->{$_} = $style->{size}->{$_} . '%';
@@ -74,7 +74,7 @@ $style->{color} = {
   
  dark => {
   back => '#000000',
-  shade => '#444444',
+  shade => '#454545',
   dim => '#a3a3a3',
   text => '#c9c9c9', 
   high => '#ffffff',
@@ -82,8 +82,8 @@ $style->{color} = {
  },
   
  neutral => {
-  back => '#b5b5b5',
-  shade => '#c7c7c7',
+  back => '#c7c7c7',
+  shade => '#a2a2a2',
   dim => '#666666',
   text => '#444444', 
   high => '#000000',

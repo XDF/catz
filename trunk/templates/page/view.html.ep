@@ -25,7 +25,7 @@
 % }
 <% end %> 
 %#
-<% content 'classtop' => begin %><%== $display ne 'full' ? '' : 'bar' %><% end %>
+<% content 'classtop' => begin %><%== $display eq 'full' ? 'bar' : 'aero' %><% end %>
 %#
 <% content 'btitle' => begin %>
 %#

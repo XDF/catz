@@ -85,9 +85,6 @@ sub all {
   '/' . $s->{langother} . '/' . $s->{action} . '/' .
   ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
 
-
- $s->{jump2date} = undef; # only for pairs
- 
 }
 
 sub pair {
@@ -111,27 +108,25 @@ sub pair {
   $self->encode( $trans ) ). '/' .
   ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
 
- # date jumps are only available in pair browsing
- $s->{jump2date} = $self->fetch ( 'related#jump2date', $s->{pri}, $s->{sec} );
-
 }
 
 sub pattern {
 
  my $self = shift; my $s = $self->{stash};
+  
+ $s->{pri} = undef; $s->{sec} = undef;
  
  $s->{what} = $self->param('what') // undef;
- 
+  
  if ( $s->{what} ) {
  
   ( $s->{what}, $s->{args_array} ) = search2args ( $s->{what} );
   $s->{args_count} = scalar @{ $s->{args_array} };
-  $s->{pri} = undef; $s->{sec} = undef;
 
  } else {
   $s->{args_array} = [];
   $s->{args_count} = 0;
-  $s->{pri} = undef; $s->{sec} = undef; $s->{what} = undef;
+  $s->{what} = undef;
  }
   
  $s->{runmode} = 'search';
@@ -142,8 +137,6 @@ sub pattern {
   '/' . $s->{langother} . '/' . $s->{action} . '/' .
   ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
 
- $s->{jump2date} = undef; # only for pairs
- 
 } 
 
 sub browseall { $_[0]->all; $_[0]->multi }
@@ -196,7 +189,7 @@ sub multi {
  
  ( 
   $s->{total}, $s->{page}, $s->{pages}, $s->{from}, 
-  $s->{to}, $s->{pin}, $s->{xs} 
+  $s->{to}, $s->{pin}, $s->{xs}, $s->{xfirst}, $s->{xlast} 
  ) = @{ $self->fetch( 
    $s->{runmode} . '#pager', $s->{x}, $s->{perpage}, @{ $s->{args_array} } 
   ) };
@@ -211,13 +204,32 @@ sub multi {
   @{ $self->fetch( 'photo#thumb', @{ $s->{xs} } ) };
 
  $s->{coverage_text} = 
-  $self->fetch ( "search#count", @{ $s->{args_array} }, 'has', '+text' );
+  $self->fetch ( "search#count", @{ $s->{args_array} }, 'has', '-text' );
 
  $s->{coverage_cat} = 
   $self->fetch ( "search#count", @{ $s->{args_array} }, 'has', '+bcode', 'has', '-cat' );
   
  $s->{texts} = $self->fetch ( 'photo#texts', @{ $s->{xs} } );
+  
+ # date jumps are only available for all and pair, not for search
+ if ( $s->{runmode} eq 'all' ) {
  
+  $s->{jump2date} = $self->fetch ( 'related#all2date' );
+ 
+ } elsif ( $s->{runmode} eq 'pair' ) {
+
+  # upper and lower x of the photos on this page are used to limit the dates so that there are no links dates on this page
+  $s->{jump2date} = $self->fetch ( 'related#pair2date', $s->{pri}, $s->{sec}, $s->{xs}->[0], $s->{xs}->[$#{$s->{xs}}] );
+
+ } else {
+ 
+  $s->{jump2date} = undef;
+ 
+ }
+ 
+ $s->{fresh} = $self->fetch ( 'related#date', $s->{xfirst} );
+ $s->{ancient} = $self->fetch ( 'related#date', $s->{xlast} );
+  
  $s->{related} = undef;
  
  # when on first page, more than 1 photos and just one pri-sec -pair
