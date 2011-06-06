@@ -30,6 +30,12 @@
 %#
 %# --------------------
 %#
+<% content 'setupadd' => begin %>
+<a href="<%== $t->{URL_FANPAGE} %>"><%= $t->{FANPAGE} %></a> <%= $sep %>
+<% end %>
+%#
+%# --------------------
+%#
 <% content 'sub' => begin %>
 <div class="bar find stripetop center"><h2 class="aero"><%= $t->{FIND} %></h2>
 <input class="aero" type="text" id="find" size="35">
