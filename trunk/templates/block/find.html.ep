@@ -1,6 +1,4 @@
-% use Catz::Util::String qw ( enurl );
-% my $i = 1;
-<div>
+% use Catz::Util::String qw ( enurl ); my $i = 1;
 % foreach my $sugg ( @{ $find } ) {
 % $i++ == 1 or do {
 <%== $sep %>
@@ -10,10 +8,6 @@
 % $out =~ s/($what)/<span class="match">$1<\/span>/ig; # this is a temporary solution -> special chars come to string -> bad
 <a class="tip" title="<%= $t->{uc($sugg->[0])} %> <%== $sep %> <%= $sugg->[1] %> <%== $sep %> <%= $sugg->[2] %> <%= $text %>" href="/<%= $lang %>/browse/<%== $sugg->[0] ne 'album' ? $sugg->[0] : 'folder' %>/<%== $sugg->[0] ne 'album' ? encode($sugg->[1]) : $map->{$sugg->[1]} %>/"><%== $out %></a>
 % }
-% ( scalar ( @$find ) == 0 ) and do { 
-<span class="enlarge"><%= $t->{FIND_NOTHING} %></div>
-% };
-</div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
