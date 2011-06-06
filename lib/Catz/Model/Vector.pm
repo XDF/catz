@@ -155,7 +155,7 @@ sub _pager { # create a vector and process it to usable for browsing
  my $res;
      
  my $svec = $self->array ( @args );
-    
+     
  my $xfrom = $self->bsearch( $svec, $x ); # search for the x
   
  $xfrom == -1 and return [ 0 ]; # not found -> total = 0
@@ -188,7 +188,7 @@ sub _pager { # create a vector and process it to usable for browsing
  # xs on this page         
  my $xs = [ map { $svec->[$_] } ( $xfrom .. $xto ) ];
    
- [ ( $total, $page, $pages, $from, $to , $pins, $xs ) ];
+ [ ( $total, $page, $pages, $from, $to , $pins, $xs, $svec->[0], $svec->[$#{$svec}] ) ];
       
 }
 

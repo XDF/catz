@@ -28,13 +28,22 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Catz::Model::Common';
 
-sub _jump2date {
+sub _all2date {
 
- my ( $self, $pri, $sec ) = @_;  my $lang = $self->{lang};
+ my $self = shift;
 
- $self->dball(qq{select min(s),min(n),substr(folder,1,8) from album natural join photo natural join _sid_x where sid=(select sid from sec_en where  pid=(select pid from pri where pri=?) and sec=?) group by substr(folder,1,8) order by substr(folder,1,8) desc},$pri,$sec);
+ $self->dball('select min(s),min(n),substr(folder,1,8) from album natural join photo group by substr(folder,1,8) order by substr(folder,1,8) desc');
+
+}
+
+sub _pair2date {
+
+ my ( $self, $pri, $sec, $lower, $upper ) = @_;
+
+ $self->dball('select min(s),min(n),substr(folder,1,8) from album natural join photo natural join _sid_x where sid=(select sid from sec_en where  pid=(select pid from pri where pri=?) and sec=?) and (substr(folder,1,8)>(select substr(folder,1,8) from photo natural join album where x=?) or substr(folder,1,8)<(select substr(folder,1,8) from photo natural join album where x=?)) group by substr(folder,1,8) order by substr(folder,1,8) desc',$pri,$sec,$lower,$upper);
 
 } 
+ 
 
 sub _coverage { # how many photos have the given pri defined
 
@@ -52,19 +61,12 @@ sub _common { # the most common subjects for the given pri
 
 }
 
-sub _basic { # first, last
+sub _date {
 
-
-
+ my ( $self, $x ) = @_;
+ 
+ $self->dbone('select substr(folder,1,8) from album natural join photo where x=?',$x);   
+ 
 }
-
-sub _dates {
-
- my ( $self, $pri, $sec ) = @_;  my $lang = $self->{lang}; 
-
- $self->dball(qq{select substr(folder,1,8),min(s),min(n) from album natural join photo natural join _sid_x where sid=(select sid from sec_$lang where pid=(select pid from pri where pri=?) and sec=?) group by substr(folder,1,8) order by substr(folder,1,8) desc}); # 2011-06-03 47 ms 
-
-}
-
 
 1;
