@@ -101,7 +101,7 @@ sub startup {
  
  $l->route( '/result',  )->to ( "main#result",  hold => 'dynamic' );
  
- $l->route( '/news/feed' )->to ( "news#feed", hold => 'dynamic' );
+ $l->route( '/feed' )->to ( "news#feed", hold => 'dynamic' );
  $l->route( '/news' )->to ( "news#all", hold => 'static' );
  
  $l->route( '/find' )->to ( "locate#find", hold => 'static' );

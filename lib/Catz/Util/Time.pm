@@ -27,14 +27,17 @@ package Catz::Util::Time;
 use strict;
 use warnings;
 
+no locale;
 use DateTime;
 use Memoize;
 use Time::localtime; 
-use POSIX qw( floor );
+use POSIX qw( floor mktime );
+use Email::Date::Format qw( email_gmdate );
 
 use parent 'Exporter';
 
-our @EXPORT_OK = qw( dtdate dttime dtexpand dt dtlang dtsplit thisyear );
+
+our @EXPORT_OK = qw( dtdate dttime dtexpand dt dtlang dtsplit thisyear dt2epoch epoch2rfc822 );
 
 #
 # expands timestamp from YYYYMMDD or YYYYMMDDHHMMSS into 
@@ -142,4 +145,17 @@ sub thisyear {
 sub dtdate { substr $_[0], 0, 8 }
 
 sub dttime { substr $_[0], 8, 6 }
+
+sub dt2epoch {
+
+ my $dt = shift;
+  
+ $dt =~ /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/;
+ 
+ mktime ( $6, $5, $4, $3, $2 - 1, $1 - 1900 );
+
+}
+
+sub epoch2rfc822 { email_gmdate ( $_[0] ) } 
+ 
 1;

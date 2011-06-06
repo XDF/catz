@@ -31,7 +31,9 @@ use parent 'Catz::Core::Ctrl';
 use XML::RSS;
 
 use Catz::Core::Conf;
-use Catz::Util::Time qw ( dt );
+use Catz::Util::String qw ( limit );
+use Catz::Util::Time qw ( dt2epoch epoch2rfc822 );
+
 
 sub all { # the list of all news
 
@@ -48,27 +50,28 @@ sub all { # the list of all news
 
 }
 
+
 sub feed { # RSS feed of news
 
- my $self = shift; my $stash = $self->{stash};
+ my $self = shift; my $s = $self->{stash};
  
- my $news = $self->fetch ( 'news' ); # edit this not in wiki stash vars!!!
-   
+ my $news = $self->fetch ( 'news#latest', 10 ); # max 10 news
+    
  my $rss = XML::RSS->new( version => '2.0' );
 
  $rss->channel(
-  title => $stash->{t}->{SITE},
-  link => 'http://' . $stash->{t}->{SITE} . '/',
-  lastBuildDate => dt,
-  managingEditor => $stash->{t}->{AUTHOR}
+  title => $s->{t}->{SITE},
+  link => 'http://' . $s->{t}->{SITE} . '/',
+  language => $s->{lang},
+  lastBuildDate => epoch2rfc822 dt2epoch $s->{version},
  );
   
  foreach my $item (@$news) {
   $rss->add_item(
-   title =>  $item->[2],
-   link => 'http://' . $stash->{t}->{SITE} . '/' . $stash->{lang} . '/news/#'.$item->[0],
-   description => $item->[3],
-   pubDate => $item->[1],
+   title =>  $item->[1],
+   link => 'http://' . $s->{t}->{SITE} . '/' . $s->{lang} . '/news/#'.$item->[0],
+   description => limit ( $item->[2], 160 ),
+   pubDate => epoch2rfc822 dt2epoch $item->[0],
   );
  }
  
