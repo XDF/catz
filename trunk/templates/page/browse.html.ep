@@ -29,7 +29,7 @@
 %  if ( $runmode ne 'search') { 
 %   if ( scalar @{ $jump2date } > 1 ) {
 <%= $sep %>
-<select name="date" onchange="<%== include 'href/id', toid => 'this' %>">
+<select name="date" class="shade" onchange="<%== include 'href/id', toid => 'this' %>">
 <option selected value="<%== $id %>"><%= $t->{JUMP2DATE} %></option>
 %    foreach my $row ( @{ $jump2date } ) {
 % my $target = fullnum33( $row->[0], $row->[1] );
@@ -50,7 +50,7 @@
 %#
 <% content 'pathadd' => begin %>
 % if ( $runmode ne 'search' ) {
-<%== include 'elem/argspath' %>
+<%== include 'elem/path' %>
 % } else {
 <%= $t->{SEARCH} %> <%= $pathsep %>
 <%= fmt ( $total, $lang ) %> <%= $t->{'PHOTO'.($total==1?'':'A')} %>
@@ -70,7 +70,7 @@
 <%= $label1 %></span> <%= $sep %> <%= $label2 %> 
 % }
 <%= $sep %> <%= $t->{PAGE} %>   
-<select name="page" onchange="<%== include 'href/id', toid => 'this' %>">
+<select name="page" class="shade" onchange="<%== include 'href/id', toid => 'this' %>">
 % my $vol = scalar @{ $pin };
 % foreach my $i ( 0 .. ( scalar @{ $pin } -1 ) ) {
 % if ( $page == ( $i + 1 ) ) {

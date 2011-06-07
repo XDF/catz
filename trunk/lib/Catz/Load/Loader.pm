@@ -107,22 +107,8 @@ my $sql = {
   
 };
 
-# these are the secondary SQL run at the end of the load
-
 my $run = [
-
- # delete leftover rows
- qq{delete from album where aid not in ( select aid from inalbum union select aid from inexif union select aid from inpos union select aid from photo )},
- qq{delete from inexif where sid_meta is null and sid_data is null and sid_file is null},
- qq{delete from sec where sid not in ( select sid from inalbum union select sid_meta from inexif union select sid_data from inexif union select sid_file from inexif union select sid from inpos )},
- 
- # deleting + inserting breeds according to bcode 
- qq{delete from inpos where rowid in (select inpos.rowid from inpos natural join sec where pid=(select pid from pri where pri='breed'))},
- qq{delete from sec where pid=(select pid from pri where pri='breed')},
- qq{insert into sec (pid,sec_en) select (select pid from pri where pri='breed'),breed_en from sec inner join mbreed on (sec_en=bcode) where pid=(select pid from pri where pri='bcode') and breed_en=breed_fi},
- qq{insert into sec (pid,sec_en,sec_fi) select (select pid from pri where pri='breed'),breed_en,breed_fi from sec inner join mbreed on (sec_en=bcode) where pid=(select pid from pri where pri='bcode') and breed_en<>breed_fi},
- qq{insert into inpos select aid,n,p,s2.sid from inpos i,sec s1,mbreed m,sec s2 where i.sid=s1.sid and s1.sec_en=m.bcode and m.breed_en=s2.sec_en and s1.pid=(select pid from pri where pri='bcode') and s2.pid=(select pid from pri where pri='breed')},
-
+  
  qq{drop table if exists _prim},
  qq{create table _prim (pid integer primary key not null,cntpri integer not null)},
  qq{insert into _prim select pid,count(*) from pri natural join sec where sid in ( select sid from inalbum union select sid from inexiff union select sid from inpos ) group by pid},
@@ -130,10 +116,10 @@ my $run = [
  # creating and populcatin sec-statistics table
  # we use special handling of time (moment) where we make sure that a null time doesn't affect the min/max results
  qq{drop table if exists _secm},
- qq{create table _secm (sid integer primary key not null,cntalbum integer not null,cntphoto integer not null, first integer not null, last integer not null)},
- qq{insert into _secm select sec.sid,count(distinct album.aid),count(distinct x),replace(min(substr(folder,1,8)||ifnull(moment,'999999')),'999999',''),replace(max(substr(folder,1,8)||ifnull(moment,'000000')),'000000','') from inalbum natural join photo natural join sec natural join pri natural join album where origin='album' group by sec.sid},
- qq{insert into _secm select inexiff.sid,count(distinct album.aid),count(distinct x),replace(min(substr(folder,1,8)||ifnull(moment,'999999')),'999999',''),replace(max(substr(folder,1,8)||ifnull(moment,'000000')),'000000','') from photo natural join inexiff natural join album where sid in ( select sid from inexiff ) group by sid},
- qq{insert into _secm select sec.sid,count(distinct album.aid),count(distinct x),replace(min(substr(folder,1,8)||ifnull(moment,'999999')),'999999',''),replace(max(substr(folder,1,8)||ifnull(moment,'000000')),'000000','') from inpos natural join photo natural join sec natural join pri natural join album where origin='pos' group by sec.sid},
+ qq{create table _secm (sid integer primary key not null,cntdate integer not null,cntphoto integer not null, first integer not null, last integer not null)},
+ qq{insert into _secm select sec.sid,count(distinct substr(folder,1,8)),count(distinct x),replace(min(substr(folder,1,8)||ifnull(moment,'999999')),'999999',''),replace(max(substr(folder,1,8)||ifnull(moment,'000000')),'000000','') from inalbum natural join photo natural join sec natural join pri natural join album where origin='album' group by sec.sid},
+ qq{insert into _secm select inexiff.sid,count(distinct substr(folder,1,8)),count(distinct x),replace(min(substr(folder,1,8)||ifnull(moment,'999999')),'999999',''),replace(max(substr(folder,1,8)||ifnull(moment,'000000')),'000000','') from photo natural join inexiff natural join album where sid in ( select sid from inexiff ) group by sid},
+ qq{insert into _secm select sec.sid,count(distinct substr(folder,1,8)),count(distinct x),replace(min(substr(folder,1,8)||ifnull(moment,'999999')),'999999',''),replace(max(substr(folder,1,8)||ifnull(moment,'000000')),'000000','') from inpos natural join photo natural join sec natural join pri natural join album where origin='pos' group by sec.sid},
 
  # instant find requires queries to respond as quick as possible
  # therefore we need these special tables for both languages
@@ -154,7 +140,8 @@ my $run = [
  qq{create table _sid_x (sid integer not null,x integer not null)},
  qq{insert into _sid_x select sid,x from photo natural join inalbum group by sid,x union select sid,x from photo natural join inexiff group by sid,x union select sid,x from photo natural join inpos group by sid,x},
  qq{create index _sid_x1 on _sid_x(sid)},
- qq{create index _sid_x2 on _sid_x(x)},  
+ qq{create index _sid_x2 on _sid_x(x)},
+   
 ]; 
 
 # defined the correct table truncation order
@@ -680,6 +667,28 @@ sub load_post {
  
  }
   
+ $dbc->do('delete from album where aid not in ( select aid from inalbum union select aid from inexif union select aid from inpos union select aid from photo )');
+ 
+ $dbc->do('delete from inexif where sid_meta is null and sid_data is null and sid_file is null');
+ 
+ $dbc->do('delete from sec where sid not in ( select sid from inalbum union select sid_meta from inexif union select sid_data from inexif union select sid_file from inexif union select sid from inpos)');
+
+ my @synth = qw ( natcode nation breed feat title );
+ 
+ do { $dbc->do(qq{delete from inpos where rowid in (select inpos.rowid from inpos natural join sec where pid=(select pid from pri where pri='$_'))}) } foreach @synth;
+ 
+ my $red = $dbc->fetchall_arrayref(qq{select sid,sec_en,natcode from sec inner join mbreeder on (sec_en=breeder) where pid=(select pid from pri where pri='breeder')});
+ 
+ my $pri = $dbc->fetchrow_array("select pri from pri where pid='natcode'"); 
+
+ foreach my $row ( @$red ) {
+ 
+  $dbc->do ( 'insert into sec (pid,
+ 
+ }
+ 
+ die; # !!!!!!!!!!!!!!!!!!!!!!!!!
+ 
  foreach my $do ( @$run ) { $dbc->do ( $do ); $i++; logadd ( '.' ) }
   
  logdone;

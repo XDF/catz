@@ -38,7 +38,7 @@ sub pre {
 
  my $self = shift; my $s = $self->{stash};
 
- # fetch folder<->album mappings
+ # fetch folder <-> album mappings
  $s->{map} = $self->fetch ( 'mapper#map' );
  
  # processes id parameter or resolves it from data
@@ -79,12 +79,14 @@ sub all {
  $s->{runmode} = 'all'; # set the runmode to all photos mode
  $s->{pri} = undef; $s->{sec} = undef; $s->{what} = undef;
  
- $self->pre;
+ $self->pre or return 0;
 
  $s->{urlother} =  
   '/' . $s->{langother} . '/' . $s->{action} . '/' .
   ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
 
+ return 1;
+ 
 }
 
 sub pair {
@@ -99,7 +101,7 @@ sub pair {
   
  $s->{runmode} = 'pair'; # set the runmode to pri-sec pair 
 
- $self->pre;
+ $self->pre or return 0;
  
  my $trans = $self->fetch('mapper#trans',$s->{pri}, $s->{sec});  
 
@@ -107,6 +109,8 @@ sub pair {
   '/' . ( join '/', $s->{langother} , $s->{action}, $s->{pri}, 
   $self->encode( $trans ) ). '/' .
   ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
+
+ return 1;
 
 }
 
@@ -131,7 +135,7 @@ sub pattern {
   
  $s->{runmode} = 'search';
  
- $s->{args_count} > 0 and $self->pre;
+ $s->{args_count} > 0 and ( $self->pre or return 0 );
  
  $s->{urlother} =  '/' . $s->{langother} . '/' . $s->{action};
  
@@ -152,28 +156,10 @@ sub pattern {
   $s->{urlother} .=  ( $s->{origin} eq 'id' ?  '/' . $s->{id} . '/' : '/' );
   
  }
+
+ return 1;
   
-} 
-
-sub browseall { $_[0]->all; $_[0]->multi }
-sub viewall { $_[0]->all; $_[0]->single }
-
-sub browse { $_[0]->pair; $_[0]->multi }
-sub view { $_[0]->pair; $_[0]->single }
-
-sub search { 
-
- my $self = shift; my $s = $self->{stash};
-
- $self->pattern; 
-
- if ( $s->{x} and $s->{id} ) { $self->multi
-  
-  } else { $self->guide } 
-
 }
-
-sub display { $_[0]->pattern; $_[0]->single }
 
 sub single {
 
@@ -183,7 +169,7 @@ sub single {
   $self->fetch( $s->{runmode} . '#pointer', $s->{x}, @{ $s->{args_array} } )
  };
      
- $s->{total} == 0 and $self->not_found and return;
+ $s->{total} == 0 and return 0;
 
  $s->{comment} =  $self->fetch( 'photo#text', $s->{x} );
    
@@ -196,6 +182,8 @@ sub single {
  result_prepare ( $self, $keys );
         
  $self->render( template => 'page/view' );
+ 
+ return 1;
 
 }
  
@@ -211,10 +199,10 @@ sub multi {
   ) };
                    
 # if no photos found                   
- $s->{total} == 0 and $self->not_found and return;   
+ $s->{total} == 0 and return 0;   
  
  # if no photos on this page
- scalar @{ $s->{xs} } == 0 and $self->not_found and return; 
+ scalar @{ $s->{xs} } == 0 and return 0; 
  
  ( $s->{thumb}, $s->{earliest}, $s->{latest} ) = 
   @{ $self->fetch( 'photo#thumb', @{ $s->{xs} } ) };
@@ -248,14 +236,9 @@ sub multi {
   
  $s->{related} = undef;
  
- # when on first page, more than 1 photos and just one pri-sec -pair
- # then fetch related information and send it to template
- #$s->{page} == 1 and $s->{total} > 1 and $s->{args_count} == 2 and  
- # $s->{related} = $self->fetch( 
- #  'locate#related', $s->{args_array}->[0], $s->{args_array}->[1] 
- # ); 
-             
  $self->render( template => 'page/browse' );
+ 
+ return 1;
 
 }
 
@@ -267,6 +250,63 @@ sub guide {
  
  $self->render( template => 'page/search' );
 
+ return 1;
+
+} 
+
+sub browseall { 
+
+ $_[0]->all or $_[0]->not_found and return; 
+ $_[0]->multi or $_[0]->not_found and return;
+ 
 }
+
+sub viewall { 
+
+ $_[0]->all or $_[0]->not_found and return;  
+ $_[0]->single or $_[0]->not_found and return;  
+
+}
+
+sub browse {
+ 
+ $_[0]->pair or $_[0]->not_found and return;  
+ $_[0]->multi or $_[0]->not_found and return;  
+
+}
+sub view { 
+
+ $_[0]->pair or $_[0]->not_found and return;  
+ $_[0]->single or $_[0]->not_found and return;  
+ 
+}
+
+sub search { 
+
+ my $self = shift; my $s = $self->{stash};
+
+ $self->pattern or $self->not_found and return; 
+
+ if ( $s->{x} and $s->{id} ) { 
+ 
+  $self->multi or $self->not_found and return; 
+  
+  } else { 
+  
+ $self->guide or $self->not_found and return;  
+
+ } 
+
+}
+
+sub display { 
+
+ $_[0]->pattern or $_[0]->not_found and return;
+ 
+ $_[0]->single or $_[0]->not_found and return 
+ 
+}
+
+
 
 1;

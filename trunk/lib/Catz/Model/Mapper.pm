@@ -35,6 +35,11 @@ sub _map {
  #  folder -> album
  #  breed -> bcode
  #  bcode -> breed
+ #  fcode -> feat
+ #  feat -> fcode
+ #  tcode -> title
+ #  title -> tcode
+ #  natcode 
 
  my $self = shift; my $lang = $self->{lang};
  

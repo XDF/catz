@@ -21,7 +21,7 @@
 %# --------------------
 %#
 <% content 'pathadd' => begin %>
-<%== include 'elem/argspath' %>
+<%== include 'elem/path' %>
 % if ( $display ne 'full' ) {
 %  if ( $runmode ne 'search' ) {
 <h1 class="mini"><%== include 'elem/titleb' %> (<%= $t->{PHOTO} %> <%== $pos %>/<%== $total %>)</h1>
@@ -55,7 +55,7 @@
 %#
 <% content 'pathadd' => begin %>
 % if ( $display ne 'full' ) {
-<%== include 'elem/argstitle' %> (<%= $t->{PHOTO} %> <%== $pos %>/<%== $total %>)
+<%== include 'elem/titleb' %> (<%= $t->{PHOTO} %> <%== $pos %>/<%== $total %>)
 % }
 <% end %>
 %#
