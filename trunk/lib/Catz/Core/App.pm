@@ -28,7 +28,8 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Mojolicious';
 
-use Catz::Core::Cache;
+use CHI;
+
 use Catz::Core::Conf;
 use Catz::Core::Text;
 use Catz::Data::List qw ( list_matrix );
@@ -37,6 +38,16 @@ use Catz::Util::File qw ( fileread findlatest pathcut );
 use Catz::Util::Time qw( dt dtdate dttime dtexpand dtlang thisyear );
 use Catz::Util::Number qw ( fmt fullnum33 round );
 use Catz::Util::String qw ( enurl decode encode limit );
+
+my $cache = CHI->new ( 
+ driver => 'File',
+ namespace => 'page',
+ root_dir => conf ( 'path_cache' ),
+ depth => conf ( 'cache_depth' )
+);
+
+my $CACHESEP = conf ( 'cache_sep' );
+my $CACHEON = conf ( 'cache_page' ); 
 
 sub startup {
 
@@ -173,12 +184,7 @@ sub before {
  $s->{flagbase} = conf ( 'base_flag' );
   
  my $url = $self->req->url;
- 
- #warn ".....";
- #warn $url;
- #warn $self->req->query_params->params;
- #warn $self->req->url->path->trailing_slash;
- 
+  
  #
  # require url to end with slash
  #
@@ -291,9 +297,9 @@ sub before {
  # not for static content
 ( $self->req->url->path->to_string  =~ /\..{2,4}$/ ) and return;   
  
- if ( conf('cache_page' ) ) {
+ $CACHEON and do {
   
-  if ( my $res = cache_get ( cachekey ( $self ) ) ) {
+  if ( my $res = $cache->get ( cachekey ( $self ) ) ) {
  
    $self->res->code(200);
    $self->res->headers->content_type( $res->[0] );
@@ -305,7 +311,7 @@ sub before {
   } else {
    #warn ( "CACHE MISS $s->{url}" );
   }
- }
+ };
      
 }
 
@@ -320,24 +326,26 @@ sub after {
  defined $s->{url} ) or return;
  
  my $age = 0;
- my $cac = 0;
+ my $chi = undef;
    
  given ( $s->{hold} ) {
  
-  when ( 'dynamic' ) { $age = 15; $cac = 14 } # 5 min on client, 4 min on server
+  # 15 min on client, 14 min on server
+  when ( 'dynamic' ) { $age = 15*60; $chi = '14 min' } 
   
-  when ( 'static' ) { $age = 15; $cac = -1 } # 15 min on client, inf on server
+  # 15 min on client, inf on server
+  when ( 'static' ) { $age = 15*60; $chi = 'never' } 
  
  }
  
- $self->res->headers->header('Cache-Control' => 'max-age=' . $age * 60 );
+ $self->res->headers->header('Cache-Control' => 'max-age=' . $age );
  
- $cac == 0 and return;
+ $chi or return;
  
  # no recaching: if the result came from the cache don't cache it again
  defined $s->{cached} and return;
  
- if ( conf('cache_page' ) ) {
+ $CACHEON and do {
  
   if ( $self->req->method eq 'GET' and $self->res->code == 200 ) {
    
@@ -347,20 +355,22 @@ sub after {
     \$self->res->body 
    ];
        
-   cache_set ( cachekey ( $self ), $set, $cac );
+   $cache->set ( cachekey ( $self ), $set, $chi );
   
   }
  }
+ ;
     
 }
 
-# we use version+úrl+setupkeys as key for pages
-# model and db caching use different key scheme to prevent collisions
+# we use version,url,setupkeys as key for pages
 
-sub cachekey {( 
- $_[0]->{stash}->{version},
- $_[0]->{stash}->{url}, 
- map { $_[0]->{stash}->{$_} } setup_keys
-)}
+sub cachekey {
+ join $CACHESEP, ( 
+  $_[0]->{stash}->{version},
+  $_[0]->{stash}->{url}, 
+  map { $_[0]->{stash}->{$_} } setup_keys
+ )
+}
 
 1;
