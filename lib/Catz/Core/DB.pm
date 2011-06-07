@@ -30,11 +30,19 @@ package Catz::Core::DB;
 use 5.10.0; use strict; use warnings;
 
 use DBI;
+use CHI;
 
-use Catz::Core::Cache;
 use Catz::Core::Conf;
 
-my $cacheon = conf ( 'cache_db' );
+my $cache = CHI->new ( 
+ driver => 'File',
+ namespace => 'db',
+ root_dir => conf ( 'path_cache' ),
+ depth => conf ( 'cache_depth' )
+);
+
+my $CACHESEP = conf ( 'cache_sep' );
+my $CACHEON = conf ( 'cache_db' ); 
 
 sub new {
 
@@ -45,7 +53,7 @@ sub new {
   undef, undef, { AutoCommit => 1, RaiseError => 1, PrintError => 1 }
  ) || die ( $DBI::errstr );
  
- my $self = { version => $version, db => $db, cache => -1 };
+ my $self = { version => $version, db => $db, expires => 'never' };
  
  bless ( $self, $class );
 
@@ -71,14 +79,13 @@ sub run {
  
  my $res;
  
- $cacheon and do {
+ $CACHEON and do {
  
   # try to get the requested result from the cache
   
-  # we use command+version+args+sql as key for models
-  # model and db caching use different key scheme to prevent collisions
+  # we use version,command,sql,args as key for db access
   
-  $res = cache_get ( $comm, $version, @args, $sql );
+  $res = $cache->get ( ( join $CACHESEP, ( $version, $comm, $sql, @args ) ) );
  
   $res and return $res; # if cache hit then done
  
@@ -116,7 +123,7 @@ sub run {
  
  }
 
- $cacheon and cache_set ( $comm, $version, @args, $sql, $res, $self->{cache} );
+ $CACHEON and $cache->set ( ( join $CACHESEP, ( $version, $comm, $sql, @args ) ), $res, $self->{expires} );
   
  return $res;
 

@@ -28,11 +28,20 @@ package Catz::Core::Model;
 
 use 5.10.0; use strict; use warnings;
 
-use Catz::Core::Cache;
+use CHI;
+
 use Catz::Core::Conf;
 use Catz::Core::DB;
 
-my $cacheon = conf ( 'cache_model' );
+my $cache = CHI->new ( 
+ driver => 'File',
+ namespace => 'model',
+ root_dir => conf ( 'path_cache' ),
+ depth => conf ( 'cache_depth' )
+);
+
+my $CACHESEP = conf ( 'cache_sep' );
+my $CACHEON = conf ( 'cache_model' ); 
 
 sub new {
 
@@ -44,7 +53,7 @@ sub new {
  
  bless ( $self, $class );
  
- $self->{cache} = $self->cachet;
+ $self->{expiress} = $self->cachet;
  
  return $self;
  
@@ -54,19 +63,13 @@ sub cachetime {
 
  my ( $self, $sub ) = @_;
  
- $self->{cache}->{$sub} and return $self->{cache}->{$sub};
+ $self->{expiress}->{$sub} and return $self->{expiress}->{$sub};
 
- return -1; # infinite
-
-}
-
-sub cachet {
-
- my $self = shift;
-
- {}
+ return 'never';
 
 }
+
+sub cachet { my $self = shift; {} }
 
 sub fetch { # the API for Controllers to access Models
 
@@ -101,13 +104,13 @@ sub AUTOLOAD {
   
  my $res;
   
- $cacheon and do { # try to get the requested result from the cache
+ $CACHEON and do { # try to get the requested result from the cache
  
-  # we use model+sub+version+lang+args as key for models
-  # model and db caching use different key scheme to prevent collisions
+  # we use version+model+sub+lang+args as key for models
 
-  $res = cache_get ( 
-   $self->{name}, $sub, $self->{db}->{version}, $self->{lang}, @args 
+  $res = $cache->get ( ( join $CACHESEP, ( 
+    $self->{db}->{version}, $self->{name}, $sub, $self->{lang}, @args
+   ) ) 
   );
  
   $res and return $res; # if cache hit then done
@@ -118,16 +121,14 @@ sub AUTOLOAD {
    
  { no strict 'refs'; $res = $self->$target( @args ) }
   
- $cacheon and cache_set ( 
-  $self->{name}, $sub, $self->{db}->{version}, $self->{lang}, 
-  @args, $res, $self->cachetime ( $sub ) 
+ $CACHEON and $cache->set ( ( join $CACHESEP, ( 
+   $self->{db}->{version}, $self->{name}, $sub, $self->{lang}, @args
+  ) ), $res, $self->cachetime ( $sub ) 
  );
  
  return $res;
 
 }
-
-
 
 sub dball { my $self = shift; $self->{db}->run ( 'all', @_ ) }
 

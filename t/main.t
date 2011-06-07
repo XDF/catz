@@ -82,9 +82,11 @@ $c += 7*3;
 # news
 $t->get_ok('/en/news/')->status_is(200);
 $t->get_ok('/fi/news/')->status_is(200);
+$t->get_ok('/en/feed/')->status_is(200);
+$t->get_ok('/fi/feed/')->status_is(200);
 $t->get_ok('/en/news')->status_is(301);
 $t->get_ok('/fi/news')->status_is(301);
-$c += 4*2;
+$c += 6*2;
 
 done_testing($c);
       

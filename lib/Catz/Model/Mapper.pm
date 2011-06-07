@@ -41,7 +41,7 @@ sub _map {
  my $base = $self->dball("select folder,sec from album natural join inalbum natural join sec_$lang natural join pri where pri='album' union all select bcode,breed_$lang from mbreed");
 
  my %res = ();
- 
+  
  # make both folder -> album and album -> folder mapping to same has
  do { $res{$_->[0]} = $_->[1]; $res{$_->[1]} = $_->[0] } foreach ( @$base );
   
