@@ -34,7 +34,7 @@
 %  if ( $mode eq $tom ) {
 <%== $t->{'MODE_'.uc($tom)} %>
 % $matrix->{$subject}->{dividers} and do {
-<select class="flip" name="page" onchange="location.href='<%== $url %>'+this.options[this.selectedIndex].value">
+<select class="shade" name="page" onchange="location.href='<%== $url %>'+this.options[this.selectedIndex].value">
 % my $i = 1;
 % foreach my $tab ( @$idx ) {
 %  if ( $i++ == 1) {

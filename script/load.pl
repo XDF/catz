@@ -97,7 +97,7 @@ SKIP_FOLDERS:
 # phase 2: load files
 
 my @metafiles =  qw ( 
- exifmeta newsmeta natmeta breedmeta breedermeta gallerymeta
+ exifmeta newsmeta natmeta breedmeta breedermeta featmeta titlemeta gallerymeta
 );
 
 logit ( 'verifying ' . scalar @metafiles  . ' files' );

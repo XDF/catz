@@ -55,11 +55,11 @@ sub cat {
   
   $code =~ /^([A-Z]{3,3})(\s+)?(.+)?$/ or die "malformed code (1) '$code'";
   
-  $d->{bcode} = $1;
+  $d->{breedcode} = $1;
   
-  $3 and $d->{app} = $3;
+  $3 and $d->{appcode} = $3;
  
-  defined $d->{app} and $d->{feat} = [ split / +/, $d->{app} ];
+  defined $d->{appcode} and $d->{featcode} = [ split / +/, $d->{appcode} ];
    
   $d->{code} = $code; # the original code in code
   
@@ -94,7 +94,7 @@ sub cat {
  ( $data =~ /^(.*)\{(.+?)\}(.*)$/ ) and do
   { $d->{breeder} = $2; $data = $1 . $2 . $3 };
   
- my @tcodes = ();
+ my @titlecodes = ();
  
  # collect pre-title codes and remove them from data
   
@@ -102,7 +102,7 @@ sub cat {
   
   $data = $3;           
   
-  push @tcodes, map {
+  push @titlecodes, map {
    
    trim $_;
       
@@ -121,11 +121,11 @@ sub cat {
   
   $data = $1;
   
-  push @tcodes, map { trim $_ } split /,/, $2;
+  push @titlecodes, map { trim $_ } split /,/, $2;
   
  }
   
- scalar ( @tcodes ) > 0 and $d->{tcode} = \@tcodes;
+ scalar ( @titlecodes ) > 0 and $d->{titlecode} = \@titlecodes;
   
  # store the cat itself, if any left
  
@@ -137,7 +137,7 @@ sub cat {
  # null characters are used to prevent incorrect title extractions
  # they can at this point appear anywhere but on titles
  
- do { $_ ne 'tcode' and $d->{$_} =~ s/\~//g } foreach ( keys %{ $d } );
+ do { $_ ne 'titlecode' and $d->{$_} =~ s/\~//g } foreach ( keys %{ $d } );
  
  return $d; # return the string output and fragments as hashref
 
