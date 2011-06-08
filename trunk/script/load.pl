@@ -69,7 +69,7 @@ lc($ARGV[0] // '') eq 'meta' and goto SKIP_FOLDERS;
 
 # phase 1: load folders
 
-my @folders =   
+my @folders =  
  grep { /\d{8}[a-z0-9]+$/ } finddirs ( conf ( 'path_photo' ) );
 
 logit ( 'verifying ' . scalar ( @folders ) . ' folders' );
@@ -97,7 +97,8 @@ SKIP_FOLDERS:
 # phase 2: load files
 
 my @metafiles =  qw ( 
- exifmeta newsmeta natmeta breedmeta breedermeta featmeta titlemeta gallerymeta
+ exifmeta newsmeta nationmeta breedmeta breedermeta featuremeta titlemeta 
+ gallerymeta
 );
 
 logit ( 'verifying ' . scalar @metafiles  . ' files' );
@@ -167,7 +168,8 @@ foreach my $head ( @metafiles ) {
  
 }
 
-$changes == 0 and goto SKIP_POST;
+#disable debug !!!!!!!!!!!
+#$changes == 0 and goto SKIP_POST;
 
 load_post;
 

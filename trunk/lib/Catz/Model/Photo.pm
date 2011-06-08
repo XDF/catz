@@ -74,7 +74,7 @@ sub _resultkey {
 
  my ( $self, $x ) = @_; my $lang = $self->{lang};
 
- my $loc = $self->dbone ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='loc'", $x ); # 0 ms / 2011-05-29
+ my $loc = $self->dbone ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='location'", $x ); # 0 ms / 2011-05-29
  
  my $date = $self->dbone ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='date'", $x ); # 0 ms / 2011-05-29
 
@@ -87,7 +87,7 @@ sub _resultkey {
  
   do {
 
-   push @cats, $self->dbone ( "select sec from pri natural join sec_$lang natural join inpos natural join photo where x=? and p=? and pri='cat'", $x, $_ ); # 0 ms / 2011-05-29
+   push @cats, $self->dbone ( "select sec from pri natural join sec_$lang natural join inpos natural join photo where x=? and p=? and pri='catname'", $x, $_ ); # 0 ms / 2011-05-29
 
   } foreach ( 1 .. $top );
   

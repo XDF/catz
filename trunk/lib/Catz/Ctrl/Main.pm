@@ -58,8 +58,8 @@ sub front {
  
  $s->{urlother} = '/' . $s->{langother} . '/';
  
- # fetch folder<->album mappings
- $s->{map} = $self->fetch ( 'mapper#map' );
+ $s->{maplink} = $self->fetch ( 'map#link' );
+ $s->{mapview} = $self->fetch ( 'map#view' );
  
  $s->{news} = $self->fetch ( 'news#latest', 8 );
  

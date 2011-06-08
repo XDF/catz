@@ -29,18 +29,18 @@ use 5.10.0; use strict; use warnings;
 use base 'Exporter';
 
 our @EXPORT_OK = qw( 
- body exifsort exif exid expmacro exptext fixgap lens loc org 
- plaincat textchoose textremove tolines topiles umb 
+ body exifsort exif exid expmacro exptext fixgap lens location organizer 
+ plaincat textchoose textremove tolines topiles umbrella 
 );
 
 use Memoize;
 
 use Catz::Core::Conf;
 use Catz::Util::File qw ( filenum );
+use Catz::Util::Image qw ( imageinfo );
 use Catz::Util::Number qw ( round );
 use Catz::Util::String qw ( clean trim ucclcc );
 use Catz::Util::Time qw ( dtexpand );
-
 
 memoize ( 'exifsort' );
 
@@ -50,7 +50,7 @@ sub exifsort {
 
  given ( $key ) {
  
-  when ( 'fnum' ) {  
+  when ( 'fnumber' ) {  
   
    $val =~ /^f\/(\d+).(\d+)?$/;
    
@@ -60,7 +60,7 @@ sub exifsort {
   
   }
   
-  when ( 'etime' ) {  
+  when ( 'exposuretime' ) {  
   
    $val =~ /^(.+) s$/;
    
@@ -71,13 +71,13 @@ sub exifsort {
    # works up to 999 seconds of exposure time due to
    # 1) padding length
    # 2)  behavior with sprintf (negative sign appears)
-   $res > 200 and die "etime exif processing doesn't support value '$res'"; 
+   $res > 200 and die "exposuretime exif processing doesn't support value '$res'"; 
    
    return sprintf ( "%010d", ( $res * 10_000_000 ) );
      
   }
   
-  when ( 'iso' ) {  
+  when ( 'sensitivity' ) {  
   
    $val =~ /^ISO (\d+)$/;
    
@@ -87,7 +87,7 @@ sub exifsort {
      
   }
   
-  when ( 'flen' ) {  
+  when ( 'focallength' ) {  
 
    $val =~ /^(\d+) mm$/;
    
@@ -399,7 +399,7 @@ sub exid {
     
     $val = round ( $1, 0 );
     
-    $o->{flen} = "$val mm"; 
+    $o->{focallength} = "$val mm"; 
    
    }
    
@@ -412,11 +412,11 @@ sub exid {
    
     if ( substr ( $val, 0, 2 ) eq 'f/' ) {
     
-     $o->{fnum} = $val;
+     $o->{fnumber} = $val;
     
     } else {
     
-     $o->{fnum} = "f/$val";
+     $o->{fnumber} = "f/$val";
     
     }
     
@@ -426,7 +426,7 @@ sub exid {
    
     $val =~ / s$/ or $val = "$val s";
    
-    $o->{etime} = $val; 
+    $o->{exposuretime} = $val; 
    
    }
    
@@ -434,7 +434,7 @@ sub exid {
    
     substr ( $val, 0, 4 ) eq 'ISO ' or $val = "ISO $val"; 
    
-    $o->{iso} = $val;
+    $o->{sensitivity} = $val;
     
    }
    
@@ -449,13 +449,13 @@ sub exid {
  }
  
  $lens and $lensflen->{$lens} and do {  
-  $o->{flen} = $lensflen->{$lens};
+  $o->{focallength} = $lensflen->{$lens};
  }; 
 
  if ( $lens and $lensname->{$lens} ) {
   $o->{lens} = $lensname->{$lens};
  } else {
-  die "lens '$lens' is giving trouble"; 
+  die "lens '$lens' is giving trouble at line '$_[0]'"; 
  } 
        
  return $o;
@@ -466,7 +466,7 @@ sub exif {
  
  my ( $album, $file ) = @_;
  
- my $i = ImageInfo ( $file ); 
+ my $i = imageinfo ( $file ); 
  
  my $o = {};
    
@@ -480,17 +480,17 @@ sub exif {
     
     # filter out unknown focal lengths reported by the body as 0 or 0.0
     $i->{ $key } ne '0' and $i->{ $key } ne '0.0' and
-     $o->{ flen } = round ( $i->{ $key }, 0 ) . ' mm'; 
+     $o->{focallength} = round ( $i->{ $key }, 0 ) . ' mm'; 
    
    }
    
-   when ( 'ExposureTime' ) { $o->{etime} = $i->{ $key } . ' s' } 
+   when ( 'ExposureTime' ) { $o->{exposuretime} = $i->{ $key } . ' s' } 
   
    when ( 'FNumber' ) {
    
     # filter out unknown aperture values reported by the body as 0 or 0.0
     $i->{ $key } ne '0' and  $i->{ $key } ne '0.0' and 
-     $o->{fnum} = 'f/' . $i->{ $key } 
+     $o->{fnumber} = 'f/' . $i->{ $key } 
    
    }
 
@@ -502,7 +502,7 @@ sub exif {
   
    }
   
-   when ( 'ISO' ) { $o->{iso} = 'ISO ' . $i->{ $key } }
+   when ( 'ISO' ) { $o->{sensitivity} = 'ISO ' . $i->{ $key } }
   
    when ( 'Model' ) {
     
@@ -519,14 +519,16 @@ sub exif {
  # resolve lens only for albums 2011 and beyond
  int ( substr ( $album, 0, 4 ) ) > 2010 and do {
  
+  $o->{lens} = lens ( $album, $o->{focallength}, $o->{fnumber} );
+ 
   $o->{lens} and $lensflen->{$o->{lens}} and do {  
-   $o->{flen} = $lensflen->{$o->{lens}};
+   $o->{focallength} = $lensflen->{$o->{lens}};
   }; 
 
   if ( $o->{lens} and $lensname->{$o->{lens}} ) {
    $o->{lens} = $lensname->{$o->{lens}};
   } else {
-   die "lens '".$o->{lens}."' is giving trouble"; 
+   die "lens '".$o->{lens}."' is giving trouble at file '$file'"; 
   } 
       
  };
@@ -587,9 +589,9 @@ my $location =  {
  riihimaki => 'riihimäki'
 };
   
-memoize ( 'loc' );
+memoize ( 'location' );
 
-sub loc {
+sub location {
 
  my $loc = shift;
   
@@ -599,9 +601,9 @@ sub loc {
      
 }
 
-memoize ( 'org' );
+memoize ( 'organizer' );
 
-sub org { 
+sub organizer { 
  
  given ( shift ) {
     
@@ -662,9 +664,9 @@ sub org {
   
 }
 
-memoize ( 'umb' );
+memoize ( 'umbrella' );
 
-sub umb { 
+sub umbrella { 
  
  given ( $_[0] ) {
   

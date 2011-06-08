@@ -31,7 +31,7 @@ use Image::ExifTool qw( :Public );
 
 use base 'Exporter';
 
-our @EXPORT_OK = qw( thumbfile widthheight );
+our @EXPORT_OK = qw( thumbfile widthheight imageinfo );
   
 #  
 # convert image file name to thumbnail file name
@@ -46,5 +46,7 @@ sub thumbfile { substr ( $_[0], 0, -4 ) . '_LR.JPG' }
 # out: width, height
 #
 sub widthheight { imgsize ( $_[0] ) }
+
+sub imageinfo { ImageInfo $_[0] }
 
 1;

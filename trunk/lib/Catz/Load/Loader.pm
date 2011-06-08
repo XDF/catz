@@ -107,7 +107,7 @@ my $sql = {
   
 };
 
-my $run = [
+my $secsql = [
   
  qq{drop table if exists _prim},
  qq{create table _prim (pid integer primary key not null,cntpri integer not null)},
@@ -279,6 +279,14 @@ sub load_exec {
  # default is not to return anything
 
 }
+
+sub load_do {
+
+ my $sql = shift;
+ 
+ $dbc->do ( $sql, undef, @_ );
+
+} 
 
 sub load_nomatch {
 
@@ -487,7 +495,7 @@ sub load_simple {
    # skip the photo URL that comes as third value
    when ( 'mbreeder' ) { @lines = ( $lines[0], $lines[1], $lines[3] ) };
    
-   when ( 'mnat' ) {
+   when ( 'mnation' ) {
    
     # verify that a flag file is present
     my $fflag = conf ( 'path_flag') . '/' . lc ( $lines[0] ) . '.gif'; 
@@ -560,7 +568,7 @@ sub load_complex {
  
  load_exec ( 'inalbum_ins', $aid, $sid ); 
 
- foreach my $key ( qw ( folder album loc org umb ) ) {
+ foreach my $key ( qw ( folder album location organizer umbrella ) ) {
  
   $sid = get_sid ( $key, 
    $d->{$key.'_en'}, $d->{$key.'_en'},
@@ -667,29 +675,51 @@ sub load_post {
  
  }
   
- $dbc->do('delete from album where aid not in ( select aid from inalbum union select aid from inexif union select aid from inpos union select aid from photo )');
+ load_do('delete from album where aid not in ( select aid from inalbum union select aid from inexif union select aid from inpos union select aid from photo )');
+ $i++; logadd ( '.' );
  
- $dbc->do('delete from inexif where sid_meta is null and sid_data is null and sid_file is null');
- 
- $dbc->do('delete from sec where sid not in ( select sid from inalbum union select sid_meta from inexif union select sid_data from inexif union select sid_file from inexif union select sid from inpos)');
+ load_do('delete from inexif where sid_meta is null and sid_data is null and sid_file is null');
+ $i++; logadd ( '.' );
 
- my @synth = qw ( natcode nation breed feat title );
+ load_do('delete from sec where sid not in ( select sid from inalbum union select sid_meta from inexif union select sid_data from inexif union select sid_file from inexif union select sid from inpos)');
+ $i++; logadd ( '.' );
  
- do { $dbc->do(qq{delete from inpos where rowid in (select inpos.rowid from inpos natural join sec where pid=(select pid from pri where pri='$_'))}) } foreach @synth;
+ # delete & insert nationcodes
  
- my $red = $dbc->fetchall_arrayref(qq{select sid,sec_en,natcode from sec inner join mbreeder on (sec_en=breeder) where pid=(select pid from pri where pri='breeder')});
- 
- my $pri = $dbc->fetchrow_array("select pri from pri where pid='natcode'"); 
+ load_do("delete from inpos where rowid in (select inpos.rowid from inpos natural join sec where pid=(select pid from pri where pri='nationcode'))");
+  
+ load_do("delete from sec where pid=(select pid from pri where pri='nationcode')");
+  
+ load_do("insert into sec (pid,sec_en) select (select pid from pri where pri='nationcode'),nationcode from sec inner join mbreeder on (sec_en=breeder) where pid=(select pid from pri where pri='breeder') group by nationcode");
+  
+ load_do("insert into inpos select aid,n,p,s2.sid from inpos i,sec s1,mbreeder m,sec s2 where i.sid=s1.sid and s1.sec_en=m.breeder and m.nationcode=s2.sec_en and s1.pid=(select pid from pri where pri='breeder') and s2.pid=(select pid from pri where pri='nationcode')"); 
 
- foreach my $row ( @$red ) {
+ $i++; logadd ( '.' );  
+
+ foreach my $synth ( qw ( nation breed feature title ) ) {
  
-  $dbc->do ( 'insert into sec (pid,
- 
+  # delete old values from inpos
+  
+  load_do(qq{delete from inpos where rowid in (select inpos.rowid from inpos natural join sec where pid=(select pid from pri where pri=?))},undef,$synth);
+
+  # delete old values from sec
+  load_do('delete from sec where pid=(select pid from pri where pri=?)',undef,$synth);
+
+  load_do("insert into sec (pid,sec_en) select (select pid from pri where pri='$synth'),".$synth."_en from sec inner join m".$synth." on (sec_en=".$synth."code) where pid=(select pid from pri where pri='".$synth."code') and ".$synth."_en=".$synth."_fi");
+
+  load_do("insert into sec (pid,sec_en,sec_fi) select (select pid from pri where pri='$synth'),".$synth."_en,".$synth."_fi from sec inner join m".$synth." on (sec_en=".$synth."code) where pid=(select pid from pri where pri='".$synth."code') and ".$synth."_en<>".$synth."_fi");
+  
+  load_do("insert into inpos select aid,n,p,s2.sid from inpos i,sec s1,m".$synth." m,sec s2 where i.sid=s1.sid and s1.sec_en=m.".$synth."code and m.".$synth."_en=s2.sec_en and s1.pid=(select pid from pri where pri='".$synth."code') and s2.pid=(select pid from pri where pri='".$synth."')");
+
+  $i++; logadd ( '.' );
+    
  }
  
- die; # !!!!!!!!!!!!!!!!!!!!!!!!!
+ logit ( 'X' );
+   
+ foreach my $do ( @$secsql ) { load_do ( $do ); $i++; logadd ( '.' ) }
  
- foreach my $do ( @$run ) { $dbc->do ( $do ); $i++; logadd ( '.' ) }
+ logit ( 'X' );
   
  logdone;
 

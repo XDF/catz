@@ -34,132 +34,129 @@ my $matrix = {
 
  album => {
   modes => [ qw ( date a2z top ) ],
-  dividers => 1,
-  related => [ qw ( cat breed breeder body lens ) ]  
+  dividers => 1  
  },
  
  # folder is not set
  
  date => {
   modes => [ qw ( date top ) ],
-  dividers => 1,
-  related => [ qw ( cat breed breeder body lens ) ],
-  coverage => [ qw ( text cat ) ],
+  dividers => 1
  },
  
- loc => {
+ location => {
    modes => [ qw ( a2z top first ) ],
-   dividers => 0,
-   related => [ qw ( date album org ) ]
+   dividers => 0
  },
  
- org => {
+ organizer => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0,
-  related => [ qw ( date album loc ) ]
+  dividers => 0
  },
  
- umb => {
+ umbrella => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0,
-  related => [ qw ( org ) ]
+  dividers => 0
  },
  
  # text is not set
  
- cat => {
+ catname => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 1,
-  related => [ qw ( tcode feat bcode app code ) ]
+  dividers => 1
  },
  
  breed => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0,
-  related => [ qw ( bcode app ) ]
+  dividers => 0
  },
  
  breeder => {
-  modes => [ qw ( a2z top first nat ) ],
-  dividers => 1,
-  related => [ qw ( breed bcode cat org umb ) ] 
+  modes => [ qw ( a2z top first ) ],
+  dividers => 1 
  },
  
- code => {
+ nation => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 1,
-  related => [ qw ( cat breeder ) ] 
+  dividers => 0
  },
 
- app => {
+ nationcode => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 1,
-  related => [ qw ( cat breeder ) ]
- },
- 
- bcode => {
-  modes => [ qw ( a2z top first ) ],
-  dividers => 0,
-  related => [ qw ( breeder feat ) ]
- },
- 
- feat => {
-  modes => [ qw ( a2z top first ) ],
-  dividers => 1,
-  related => [ qw ( feat app ) ] 
- },
- 
- nick => {
-  modes => [ qw ( a2z top first ) ],
-  dividers => 1,
-  related => [ qw ( cat breed bcode ) ]
+  dividers => 0
  },
 
- tcode => {
+ 
+ emscode => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 1,
-  related => [ qw ( tcode ) ]
+  dividers => 1 
+ },
+
+ facadecode => {
+  modes => [ qw ( a2z top first ) ],
+  dividers => 1
+ },
+ 
+ breedcode => {
+  modes => [ qw ( a2z top first ) ],
+  dividers => 0
+ },
+ 
+ feature => {
+  modes => [ qw ( a2z top first ) ],
+  dividers => 1 
+ },
+ 
+ featurecode => {
+  modes => [ qw ( a2z top first ) ],
+  dividers => 1
+ },
+
+ nickname => {
+  modes => [ qw ( a2z top first ) ],
+  dividers => 1
+ },
+
+ title => {
+  modes => [ qw ( a2z top first ) ],
+  dividers => 1
+ },
+
+ titlecode => {
+  modes => [ qw ( a2z top first ) ],
+  dividers => 1
  },
 
  lens => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0,
-  related => [ qw ( body ) ]
+  dividers => 0
  },
 
  body => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0,
-  related => [ qw ( lens ) ]
+  dividers => 0
  },
 
- fnum => {
+ fnumber => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0,
-  related => [ qw ( lens iso etime ) ]
+  dividers => 0
  },
 
- etime => {
+ exposuretime => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0,
-  related => [ qw ( lens iso fnum ) ]
+  dividers => 0
  },
 
- iso => {
+ sensitivity => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0,
-  related => [ qw ( body iso etime ) ]
+  dividers => 0
  },
 
- flen => {
+ focallength => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0,
-  related => [ qw ( lens ) ]
+  dividers => 0
  },
-
  
-
-  
 };
 
 sub list_matrix { $matrix }

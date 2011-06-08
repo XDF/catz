@@ -1,6 +1,6 @@
 % if ( $runmode eq 'pair' ) {
 %  if ( $pri eq 'folder' ) {
-<%= $t->{ALBUM} %> <%= $map->{$sec} %>
+<%= $t->{ALBUM} %> <%= $mapview->{$pri}->{$sec}->[1] %>
 %  } elsif ( $pri eq 'date' ) {
 <%= $t->{DATE} %> <%= dtexpand ( $sec, $lang ) %>
 %  } else {

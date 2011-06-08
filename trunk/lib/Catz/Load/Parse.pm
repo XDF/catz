@@ -33,7 +33,7 @@ our @EXPORT = qw ( parse_pile );
 use Data::Dumper;
 
 use Catz::Load::Data qw ( 
- exid expmacro exptext loc org plaincat tolines umb 
+ exid expmacro exptext location organizer plaincat tolines umbrella 
 );
 use Catz::Util::Log qw ( logit );
 use Catz::Util::String qw ( clean trim );
@@ -46,28 +46,28 @@ sub cat {
 
  my $d = {}; # collect the fragments to a hashref
  
- # collect code and remove it from data
+ # collect emscode and remove it from data
  if ( $data =~ /^(.*)\[(.+?)\](.*)$/ ) {
   
   $data = $1 . $3;
   
-  my $code = $2;
+  my $emscode = $2;
   
-  $code =~ /^([A-Z]{3,3})(\s+)?(.+)?$/ or die "malformed code (1) '$code'";
+  $emscode =~ /^([A-Z]{3,3})(\s+)?(.+)?$/ or die "malformed emscode (1) '$emscode'";
   
   $d->{breedcode} = $1;
   
-  $3 and $d->{appcode} = $3;
+  $3 and $d->{facadecode} = $3;
  
-  defined $d->{appcode} and $d->{featcode} = [ split / +/, $d->{appcode} ];
+  defined $d->{facadecode} and $d->{featurecode} = [ split / +/, $d->{facadecode} ];
    
-  $d->{code} = $code; # the original code in code
+  $d->{emscode} = $emscode; # the original code in code
   
-  length ( trim ( $code ) ) == 0 and die "malformed code (2) '$code'";
+  length ( trim ( $emscode ) ) == 0 and die "malformed emscode (2) '$emscode'";
      
  } else {
  
-  die "no code in cat data '$data'"
+  die "no emscode in cat data '$data'"
    
  }
   
@@ -79,7 +79,7 @@ sub cat {
 
   my @nicks = map { trim $_ } split /,/, $2;
    
-  $d->{nick} = \@nicks; 
+  $d->{nickname} = \@nicks; 
     
  }
  
@@ -131,7 +131,7 @@ sub cat {
  
  $data = trim ( $data );
  
- length ( $data ) > 0 and $d->{cat} = $data;
+ length ( $data ) > 0 and $d->{catname} = $data;
  
  # remove the null characters ~ from all cat data
  # null characters are used to prevent incorrect title extractions
@@ -250,7 +250,7 @@ sub parse_pile {
  $d->{folder_fi} = $album;
       
  $d->{origined} = $1; # albumn name starts with YYYYDDMM
- ( $d->{loc_en}, $d->{loc_fi} ) = loc ( $2 ); # location part follows
+ ( $d->{location_en}, $d->{location_fi} ) = location ( $2 ); # location part follows
  # $3 might be 1,2,3 ... to specify multiple albums but is not stored 
  
  shift @lines; # the second line in the pile is deprecated
@@ -263,10 +263,10 @@ sub parse_pile {
  
  # currently the model and the scripts support only one organization per album
  # the database is build proactively so that it could store multiples
- ( $d->{org_en}, $d->{org_fi} ) = org ( $d->{album_en} );
+ ( $d->{organizer_en}, $d->{organizer_fi} ) = organizer ( $d->{album_en} );
  
- defined $d->{org_en} and 
-  ( $d->{umb_en}, $d->{umb_fi} ) = umb ( $d->{org_en}, $album );
+ defined $d->{organizer_en} and 
+  ( $d->{umbrella_en}, $d->{umbrella_fi} ) = umbrella ( $d->{organizer_en}, $album );
    
  # skip descrption lines, they are deprecated
  shift @lines; shift @lines;
