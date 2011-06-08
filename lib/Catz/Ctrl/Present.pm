@@ -38,8 +38,9 @@ sub pre {
 
  my $self = shift; my $s = $self->{stash};
 
- # fetch folder <-> album mappings
- $s->{map} = $self->fetch ( 'mapper#map' );
+ $s->{maplink} = $self->fetch ( 'map#link' );
+ $s->{mapview} = $self->fetch ( 'map#view' );
+ $s->{mapdual} = $self->fetch ( 'map#dual' );
  
  # processes id parameter or resolves it from data
  # returns 1 in success, return 0 on reject
@@ -103,7 +104,7 @@ sub pair {
 
  $self->pre or return 0;
  
- my $trans = $self->fetch('mapper#trans',$s->{pri}, $s->{sec});  
+ my $trans = $self->fetch ( 'map#trans', $s->{pri}, $s->{sec} );  
 
  $s->{urlother} =  
   '/' . ( join '/', $s->{langother} , $s->{action}, $s->{pri}, 

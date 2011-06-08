@@ -15,11 +15,11 @@ foreach my $lang ( qw ( en fi ) ) {
    ->status_is(200)
    ->content_like(qr/\.JPG/);
 
-  $t->get_ok("/$lang/$mode/nick/Mikke/")
+  $t->get_ok("/$lang/$mode/nickname/Mikke/")
    ->status_is(200)
    ->content_like(qr/\.JPG/);
    
-  $t->get_ok("/$lang/$mode/cat/Peku/")
+  $t->get_ok("/$lang/$mode/catname/Peku/")
    ->status_is(200)
    ->content_like(qr/\.JPG/);
  
@@ -31,11 +31,11 @@ foreach my $lang ( qw ( en fi ) ) {
    ->status_is(200)
    ->content_like(qr/\.JPG/);
 
-  $t->get_ok("/$lang/$mode/nick/Mikke/157164/")
+  $t->get_ok("/$lang/$mode/nickname/Mikke/157164/")
    ->status_is(200)
    ->content_like(qr/\.JPG/);
    
-  $t->get_ok("/$lang/$mode/cat/Peku/046182/")
+  $t->get_ok("/$lang/$mode/catname/Peku/046182/")
    ->status_is(200)
    ->content_like(qr/\.JPG/);
 
@@ -43,16 +43,16 @@ foreach my $lang ( qw ( en fi ) ) {
   
   # 404
  
-  $t->get_ok("/$lang/$mode/nick/Mikke/789321/") # non-existsing id 
+  $t->get_ok("/$lang/$mode/nickname/Mikke/789321/") # non-existsing id 
    ->status_is(404);
 
-  $t->get_ok("/$lang/$mode/nick/Mikke/046182/") # non-existing id in a set 
+  $t->get_ok("/$lang/$mode/nickname/Mikke/046182/") # non-existing id in a set 
    ->status_is(404);
 
-  $t->get_ok("/$lang/$mode/cat/Peku/87/") # too short id
+  $t->get_ok("/$lang/$mode/catname/Peku/87/") # too short id
    ->status_is(404);
 
-  $t->get_ok("/$lang/$mode/cat/Peku/04618234/") # too long id
+  $t->get_ok("/$lang/$mode/catname/Peku/04618234/") # too long id
    ->status_is(404);
    
   $t->get_ok("/$lang/$mode/breeder/just_a_random_text/") # unknown breeder

@@ -93,7 +93,7 @@ sub list {
  my $self = shift; my $s = $self->{stash};
 
  $s->{matrix} = list_matrix;
- 
+  
  # verify that the subject is known
  $s->{matrix}->{$s->{subject}} or ( $self->not_found and return );
  
@@ -110,11 +110,13 @@ sub list {
  $s->{total} = $res->[0];
  $s->{idx} = $res->[1];
  $s->{sets} = $res->[2];
- 
- $s->{map} = $self->fetch ( 'mapper#map' );
-    
+
  $s->{total} > 0 or ( $self->not_found and return );
  
+ $s->{maplink} = $self->fetch ( 'map#link' );
+ $s->{mapview} = $self->fetch ( 'map#view' );
+ $s->{mapdual} = $self->fetch ( 'map#dual' );
+     
  $self->render(template => 'page/list');
  
 }

@@ -93,14 +93,8 @@
 %#
 %# --------------------
 %#
-%# special for nation mode lists: if first item and nation is defined then add the flag img
-%# note that $i++ gets executed first so $i increases even the conditions are not met
-%#
-% if ( $i++ == 1 and $mode eq 'nat' and $row->[7] ) {
-<img alt="<%= $set->[0] %>" class="flag" src="<%== $flagbase %>/<%== lc($row->[7]) %>.gif">
-% }
 % if ( $mode eq 'top' ) { # show the row number if displaying the top list 
-<%= $lang eq 'fi' ? $row->[6] : '#' . $row->[6] %> <%= $sep %>
+<%= $lang eq 'fi' ? $row->[6] . $sep : '#' . $row->[6] . " $sep" %>
 % }
 %#
 %# --------------------
@@ -109,7 +103,7 @@
 %#
 % my $topri = $row->[0];
 % my $tosec = $row->[1];
-% if ( $subject eq 'album' ) { $topri = 'folder'; $tosec = $map->{$tosec} }        
+% if ( $subject eq 'album' ) { $topri = $maplink->{$subject}->{$tosec}->[0]; $tosec = $maplink->{$subject}->{$tosec}->[1]; }        
 <a title="<%== $t->{uc($subject)} %> <%== $sep %> <%= $row->[1] %>" href="/<%= $lang %>/browse/<%== $topri %>/<%== encode($tosec) %>/"> 
 <%= $subject ne 'date' ? $row->[1] : dtexpand ( $row->[1], $lang ) %></a>
 %#
@@ -118,17 +112,17 @@
 %# add bcode to pair breed and breed to pair bcode
 %# 
 % if ( $subject eq 'bcode' or $subject eq 'breed' ) {
-<%= $sep %> <%= $map->{$row->[1]} %>
+<%= $sep %> <%= $mapdual->{$subject}->{$row->[1]} %>
 % }
 %#
 %# --------------------
 %#
-<%= $sep %> <%= $row->[3] %> <%= $row->[3] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>
+<%= $sep %> <%= fmt ( $row->[3], $lang ) %> <%= $row->[3] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>
 %#
 %# --------------------
 %# 
 % if ( $subject ne 'album' and $subject ne 'date' ) { # album and date are all in one album so don't print album count for them
-<%= $lang eq 'fi' ? '' : ' in ' %> <%= $row->[2] %> <%= $row->[2] == 1 ? $t->{ALBUMX} : $t->{ALBUMSX} %>
+<%= $sep %> <%= fmt ( $row->[2], $lang ) %> <%= $row->[2] == 1 ? $t->{DATE} : $t->{DATEA} %>
 % }
 %#
 %# --------------------

@@ -39,11 +39,11 @@ sub _full {
 
  my ( $self, $pri, $mode ) = @_; my $lang = $self->{lang};
  
- exists $matrix->{$pri} or return [ 0, undef, undef ];  
-       
- my $cols = "pri,sec,cntalbum,cntphoto,first,last,null";
+ exists $matrix->{$pri} or return [ 0, undef, undef ];
+        
+ my $cols = "pri,sec,cntdate,cntphoto,first,last,null";
  
- my $cols_first = "pri,sec,cntalbum,cntphoto,substr(first,1,8)||replace(substr(first,9,6),'','000000')),last,null";  
+ my $cols_first = "pri,sec,cntdate,cntphoto,substr(first,1,8)||replace(substr(first,9,6),'','000000')),last,null";  
  
  given ( $mode ) {
  
@@ -154,7 +154,7 @@ sub _full {
   
   when ( 'top' ) {
     
-   my $res = $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by cntphoto desc, cntalbum desc, sort asc}, $pri );
+   my $res = $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by cntphoto desc, cntdate desc, sort asc}, $pri );
        
    my @idx = (); my @sets = (); my @set = (); my $prev = ''; my $i = 0;
    
@@ -187,41 +187,7 @@ sub _full {
    return [ scalar @$res, \@idx, \@sets ];
   
   }
-  
-  when ( 'nat' ) {
-  
-   $pri ne 'breeder' and return [ 0, undef, undef ];
    
-   my $res = $self->dball( qq{select $cols,nat,nat_$lang from sec_$lang natural join _secm natural join pri inner join mbreeder on (sec=breeder) natural join mnat where pri=? order by nat_$lang,sort}, $pri );
-   
-   my @idx = (); my @sets = (); my @set = (); my $prev = ''; my $i = 1;
-   
-   foreach my $row ( @$res ) {
-   
-    $row->[6] = $i++;
-    
-    if ( $prev ne $row->[8] ) {
-    
-     push @idx, $row->[8];
-     
-     scalar @set > 0 and push @sets, [ $prev, [ @set ] ];
-     
-     @set = ();
-     
-     push @set, $row;
-     
-     $prev = $row->[8];
-    
-    } else { push @set, $row }
-   
-   }
-     
-   scalar @set > 0 and push @sets, [ $prev, [ @set ] ];
-   
-   return [ scalar @$res, \@idx, \@sets ];
-        
-  } 
- 
   default { return [ 0, undef, undef ]; } # unknown mode
  
  }
@@ -281,11 +247,11 @@ sub _lastshow {
  
  # find latest gallery having at least 10 photos with cat names
  
- my $latest = $self->dbone("select aid from album where folder=(select max(folder) from album where aid in ( select aid from inpos natural join sec natural join pri where pri='cat' group by aid having count(distinct n)>9 ))");
+ my $latest = $self->dbone("select aid from album where folder=(select max(folder) from album where aid in ( select aid from inpos natural join sec natural join pri where pri='catname' group by aid having count(distinct n)>9 ))");
  
  # the get the photos
  
- $self->dball("select s,photo.n,folder,file,sec_en from photo natural join album natural join inpos natural join sec natural join pri where p=1 and pri='cat' and album.aid=? order by photo.n asc",$latest); 
+ $self->dball("select s,photo.n,folder,file,sec_en from photo natural join album natural join inpos natural join sec natural join pri where p=1 and pri='catname' and album.aid=? order by photo.n asc",$latest); 
   
 }
 

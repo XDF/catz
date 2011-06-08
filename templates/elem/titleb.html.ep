@@ -1,12 +1,12 @@
 % if ( $runmode eq 'pair' ) {
 %  if ( $pri eq 'folder' ) {
-<%= $map->{$sec} %>
+<%= $mapview->{$pri}->{$sec}->[1] %>
 %  } elsif ( $pri eq 'date' ) {
 <%= dtexpand ( $sec, $lang ) %>
 %  } else {
 <%= $sec %>
 %   if ( $pri eq 'bcode' or $pri eq 'breed' ) {
-<span class="lean"><%= $map->{$sec} %></span>
+<span class="lean"><%= $mapview->{pri}->{$sec}->[1] %></span>
 %   } 
 %  }
 % } elsif ( $runmode eq 'search' ) {

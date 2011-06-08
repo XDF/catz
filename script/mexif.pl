@@ -73,25 +73,25 @@ sub wanted {
     
     if ( $data =~ /f\-number\/aukko\: (.+?)\,/ ) {
         
-     $out = $out . join "\n", ( $album, $n, 'fnum', "f/$1", "#\n" );
+     $out = $out . join "\n", ( $album, $n, 'fnumber', "f/$1", "#\n" );
      
     }
     
     if ( $data =~ /exposure time\/valotusaika\: (.+?)\,/ ) {
         
-     $out = $out . join "\n", ( $album, $n, 'etime', $1, "#\n" );
+     $out = $out . join "\n", ( $album, $n, 'exposuretime', $1, "#\n" );
      
     }  
 
     if ( $data =~ /sensitivity\/herkkyys: (.+?)\,/ ) {
         
-     $out = $out . join "\n", ( $album, $n, 'iso', $1, "#\n" );
+     $out = $out . join "\n", ( $album, $n, 'sensitivity', $1, "#\n" );
      
     }
         
     if ( $data =~ /focal length\/polttov.li\: (.+?)\,/ ) {
             
-     $out = $out . join "\n", ( $album, $n, 'flen', $1, "#\n" );
+     $out = $out . join "\n", ( $album, $n, 'focallength', $1, "#\n" );
      
     }
     
