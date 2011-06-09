@@ -48,17 +48,20 @@
 %#
 %# --------------------
 %#
-<div class="bar find roomy" id="found"></div>
+<div class="find bar" id="found"></div>
 %#
 %# --------------------
 %#
 <div class="bar">
+%#
 <a href="/<%== $lang %>/browseall/"><%= fmt ( $maxx, $lang )  %> <%== $t->{PHOTOA_CATSHOW} %></a>
+%#
 % foreach my $row ( @$pris ) {
 <%= $sep %> <a href="/<%= $lang %>/list/<%= $row->[0] %>/<%= $matrix->{$row->[0]}->{modes}->[0] %>/">
 <%= fmt ( $row->[1], $lang ) %>
 <%= $t->{uc($row->[0]).'A'} %></a>
 % }
+%#
 </div>
 %#
 %# --------------------
@@ -73,8 +76,8 @@
 %# --------------------
 %#
 <div class="bar"><h2><%= $t->{ALBUMS} %></h2> <%= $sep %> 
-% foreach my $row ( @$albums ) {
-<a title="<%= $row->[2] %> <%= $row->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%= $lang %>/browse/folder/<%== $row->[0] %>/"><%= $maplink->{album}->{$row->[0]} %></a> <%= $sep %>
+% foreach my $row ( @$folders ) {
+<a title="<%= $row->[1] %> <%= $row->[1] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%= $lang %>/browse/folder/<%== $row->[0] %>/"><%= $mapview->{folder}->{$row->[0]}->[1] %></a> <%= $sep %>
 % }
 <a href="/<%= $lang %>/list/album/date/"><%= $t->{ALBUMS_ALL} %></a>
 </div>

@@ -79,8 +79,7 @@ sub find {
  
  $self->process_what or ( $self->not_found and return );
  
- # fetch folder<->album mappings
- $s->{map} = $self->fetch ( 'mapper#map' );
+ $s->{maplink} = $self->fetch ( 'map#link' );
   
  $s->{find} = $self->fetch ( 'locate#find', $s->{what}, $s->{count_find} );
 
@@ -116,7 +115,7 @@ sub list {
  $s->{maplink} = $self->fetch ( 'map#link' );
  $s->{mapview} = $self->fetch ( 'map#view' );
  $s->{mapdual} = $self->fetch ( 'map#dual' );
-     
+      
  $self->render(template => 'page/list');
  
 }

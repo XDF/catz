@@ -194,28 +194,12 @@ sub _full {
  
 }
 
-sub _album {
+sub _folder {
 
- my $self = shift; my $lang = $self->{lang};
+ my ( $self, $n ) = @_; my $lang = $self->{lang};
 
- my $res;
-
- my $albums = $self->dball('select aid,folder from album order by s desc limit 8');
-          
- my @coll = ();
-    
- foreach my $row ( @{ $albums } ) {
-    
-  my $name = $self->dbone("select sec from inalbum natural join sec_$lang natural join pri where pri='album' and aid=?",$row->[0]);
-     
-  my $n = $self->dbone('select max(n) from photo where aid=?', $row->[0] );
-     
-  push @coll, ( [ $row->[1], $name, $n ] );
-    
- }
-    
- \@coll;
-
+ return $self->dball("select folder,max(n) from album natural join photo group by folder order by s desc limit $n");
+              
 }
 
 sub _pris { 

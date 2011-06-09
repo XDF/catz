@@ -6,7 +6,8 @@
 %#
 %# title is used twice so prepare it into a variable
 %#
-% my $titl = fmt ( $total, $lang ) . ' ' . ( $total == 1 ? $t->{uc($subject)} : $t->{uc($subject).'A'} ) . ' ' . $t->{'MODE_'.uc($mode)};
+% my $subj = $mapdual->{$subject} ? $mapdual->{$subject}->{ROOT} : $subject; 
+% my $titl = fmt ( $total, $lang ) . ' ' . ( $total == 1 ? $t->{uc($subj)} : $t->{uc($subj).'A'} ) . ' ' . $t->{'MODE_'.uc($mode)};
 %#
 %# --------------------
 %#
@@ -111,8 +112,8 @@
 %#
 %# add bcode to pair breed and breed to pair bcode
 %# 
-% if ( $subject eq 'bcode' or $subject eq 'breed' ) {
-<%= $sep %> <%= $mapdual->{$subject}->{$row->[1]} %>
+% if ( $mapdual->{$subject} and $mapdual->{$subject}->{$row->[1]} ) {
+<%= $sep %> <%= $mapdual->{$subject}->{$row->[1]}->[1] %>
 % }
 %#
 %# --------------------

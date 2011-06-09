@@ -58,12 +58,12 @@ sub front {
  
  $s->{urlother} = '/' . $s->{langother} . '/';
  
- $s->{maplink} = $self->fetch ( 'map#link' );
  $s->{mapview} = $self->fetch ( 'map#view' );
+ $s->{mapdual} = $self->fetch ( 'map#dual' );
  
  $s->{news} = $self->fetch ( 'news#latest', 8 );
  
- $s->{albums} = $self->fetch ( 'locate#album' );
+ $s->{folders} = $self->fetch ( 'locate#folder', 8 );
  
  $s->{pris} =  $self->fetch ( 'locate#pris' ); 
 
