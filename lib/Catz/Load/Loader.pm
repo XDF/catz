@@ -280,13 +280,7 @@ sub load_exec {
 
 }
 
-sub load_do {
-
- my $sql = shift;
- 
- $dbc->do ( $sql, undef, @_ );
-
-} 
+sub load_do { my $sql = shift; $dbc->do ( $sql, undef, @_ ) } 
 
 sub load_nomatch {
 
@@ -700,10 +694,10 @@ sub load_post {
  
   # delete old values from inpos
   
-  load_do(qq{delete from inpos where rowid in (select inpos.rowid from inpos natural join sec where pid=(select pid from pri where pri=?))},undef,$synth);
+  load_do(qq{delete from inpos where rowid in (select inpos.rowid from inpos natural join sec where pid=(select pid from pri where pri=?))},$synth);
 
   # delete old values from sec
-  load_do('delete from sec where pid=(select pid from pri where pri=?)',undef,$synth);
+  load_do('delete from sec where pid=(select pid from pri where pri=?)',$synth);
 
   load_do("insert into sec (pid,sec_en) select (select pid from pri where pri='$synth'),".$synth."_en from sec inner join m".$synth." on (sec_en=".$synth."code) where pid=(select pid from pri where pri='".$synth."code') and ".$synth."_en=".$synth."_fi");
 
@@ -714,13 +708,9 @@ sub load_post {
   $i++; logadd ( '.' );
     
  }
- 
- logit ( 'X' );
-   
+    
  foreach my $do ( @$secsql ) { load_do ( $do ); $i++; logadd ( '.' ) }
  
- logit ( 'X' );
-  
  logdone;
 
  logit ( "$i secondaries processed" ); 

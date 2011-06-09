@@ -28,6 +28,8 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Catz::Core::Model';
 
+my $ROOT = 'ROOT';
+
 sub _link { 
  
  # mappings for links as hashref
@@ -42,6 +44,7 @@ sub _link {
  my %res = ();
  
  foreach my $row ( @$base ) {
+  $res{$row->[0]}->{$ROOT} = $row->[2];
   $res{$row->[0]}->{$row->[1]} = [ $row->[2], $row->[3] ];
  }
 
@@ -62,6 +65,7 @@ sub _view {
  my %res = ();
  
  foreach my $row ( @$base ) {
+  $res{$row->[0]}->{$ROOT} = $row->[2];
   $res{$row->[0]}->{$row->[1]} = [ $row->[2], $row->[3] ];
  }
 
@@ -95,7 +99,9 @@ sub _dual {
  my %res = ();
   
  foreach my $row ( @$base ) {
+  $res{$row->[0]}->{$ROOT} = $row->[2];
   $res{$row->[0]}->{$row->[1]} = [ $row->[2], $row->[3] ];
+  $res{$row->[2]}->{$ROOT} = $row->[0];
   $res{$row->[2]}->{$row->[3]} = [ $row->[0], $row->[1] ]; 
  } 
   

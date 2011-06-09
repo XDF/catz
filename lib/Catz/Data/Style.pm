@@ -36,6 +36,8 @@ my $style = {}; # style config
 
 $style->{font} = 'Verdana, Arial, sans-serif';
 
+$style->{roundness} = '8px';
+
 $style->{size}->{normal} = 92;
 
 $style->{size}->{tiny} = round ( $style->{size}->{normal} * 0.70 );

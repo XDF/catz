@@ -100,6 +100,12 @@ option.setup { display: none; }
  border-bottom-color: <%== $st->{color}->{$palette}->{dim} %>;
 }
 
+.rounded {
+ -moz-border-radius: <%== $st->{roundness} %>;
+ -webkit-border-radius: <%== $st->{roundness} %>;
+ border-radius: <%== $st->{roundness} %>;
+}
+
 .outer { margin: 0 15% 0 15%; }
 
 .inner { margin: 0 20% 0 20%; }
