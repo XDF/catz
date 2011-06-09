@@ -77,11 +77,15 @@ sub _base {
             
  } else {
  
-  if ( ( index ( $sec, '%' ) > 0 ) or ( index ( $sec, '_' ) > 0 ) ) { # must like
+  if ( ( index ( $sec, '%' ) > -1 ) or ( index ( $sec, '_' ) > -1 ) ) { # must like
   
    if ( $pri eq 'any' ) {
+   
+    warn $sec;
+      
+    $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec where (sec_en like ? or sec_fi like ?))", $sec, $sec);
     
-    $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec where (sec_en like ? or sec_fi like ?))", $sec, $sec);   
+    warn scalar @$res;   
    
    } else {
    

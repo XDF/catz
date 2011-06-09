@@ -1,6 +1,6 @@
 <form name="search" action="/<%= $lang %>/search" method="get">
-% my $fieldlen = 40;
-% length ( $what ) > 35 and $fieldlen = length ( $what ) + 5;
+% my $fieldlen = 60;
+% length ( $what ) > 60 and $fieldlen = length ( $what ) + 5;
 % $fieldlen > 80 and $fieldlen = 80;
 <input type"=text" id="what" name="what" size="<%== $fieldlen %>" value="<%= $what // '' %>">
 <input type="submit" value="<%= $t->{SEARCH_SUBMIT} %>">

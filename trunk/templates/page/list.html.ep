@@ -6,8 +6,7 @@
 %#
 %# title is used twice so prepare it into a variable
 %#
-% my $subj = $mapdual->{$subject} ? $mapdual->{$subject}->{ROOT} : $subject; 
-% my $titl = fmt ( $total, $lang ) . ' ' . ( $total == 1 ? $t->{uc($subj)} : $t->{uc($subj).'A'} ) . ' ' . $t->{'MODE_'.uc($mode)};
+% my $titl = fmt ( $total, $lang ) . ' ' . ( $total == 1 ? $t->{uc($subject)} : $t->{uc($subject).'A'} ) . ' ' . $t->{'MODE_'.uc($mode)};
 %#
 %# --------------------
 %#
@@ -16,6 +15,15 @@
 %# --------------------
 %#
 <% content 'btitle' => begin %><h1><%= $titl %></h1><% end %>
+%#
+%# --------------------
+%#
+<% content 'bextra' => begin %>
+% if ( $mapdual->{$subject} ) {
+% my $tgt = $mapdual->{$subject}->{ROOT};
+<a href="/<%== $lang %>/list/<%== $tgt %>/<%== $matrix->{$tgt}->{modes}->[0] %>/"><%= $t->{uc($tgt).'S'} %></a>
+% }
+<% end %> 
 %#
 %# --------------------
 %#
@@ -62,10 +70,6 @@
 %#
 %# --------------------
 %#
-
-%#
-%# --------------------
-%#
 %# now the outer loop that is going thru all sets of a list from stash
 %#
 <div class="roomy">
@@ -104,16 +108,16 @@
 %#
 % my $topri = $row->[0];
 % my $tosec = $row->[1];
-% if ( $subject eq 'album' ) { $topri = $maplink->{$subject}->{$tosec}->[0]; $tosec = $maplink->{$subject}->{$tosec}->[1]; }        
+% if ( $maplink->{$topri}->{ROOT} ) { $topri = $maplink->{$subject}->{$tosec}->[0]; $tosec = $maplink->{$subject}->{$tosec}->[1]; }        
 <a title="<%== $t->{uc($subject)} %> <%== $sep %> <%= $row->[1] %>" href="/<%= $lang %>/browse/<%== $topri %>/<%== encode($tosec) %>/"> 
 <%= $subject ne 'date' ? $row->[1] : dtexpand ( $row->[1], $lang ) %></a>
 %#
 %# --------------------
 %#
-%# add bcode to pair breed and breed to pair bcode
+%# add explanation - code / code -explanation pairs
 %# 
 % if ( $mapdual->{$subject} and $mapdual->{$subject}->{$row->[1]} ) {
-<%= $sep %> <%= $mapdual->{$subject}->{$row->[1]}->[1] %>
+<%= $mapdual->{$subject}->{$row->[1]}->[1] %>
 % }
 %#
 %# --------------------

@@ -1,0 +1,80 @@
+% my $term = undef;
+<div class="bar">
+<h2>Superhaku</h2> on valokuvien hakukone niille käyttäjille, joille <a href="/<%== $lang %>/">etusivulta löytyvät</a> pikahaku ja luettelot eivät riitä. Superhaun käyttö vaatii opettelua, mutta sen avulla löydät täsmälleen ne kuvat, joita etsit. Superhaussa hakutermit kirjoitetaan peräkkäin hakukentään, jonka jälkeen painetaan ENTER tai <%= $t->{SEARCH_SUBMIT} %>-nappulaa. Välilyönti erottaa hakutermit, ja jos hakutermi sisältää välilöyntejä, on se ympäröitävä "lainausmerkein". Superhaku hakee aina sekä suomen- että englanninkielisestä sisällöstä eikä välitä siitä, käytätkö pieniä vai ISOJA kirjaimia.
+</div>
+<div class="bar">
+<div class="bar">
+% $term = 'mimosa';
+<a href="/<%== $lang %>/search?what=<%== enurl($term) %>"><%= $term %></a> hakee täsmällistä termiä <span class="lean"><%= $term %></span> ja se on sekä lempinimi että kissan nimi
+</div>
+<div class="bar">
+% $term = 'mimosan';
+<a href="/<%== $lang %>/search?what=<%== enurl($term) %>"><%= $term %></a> hakee täsmällistä termiä <span class="lean"><%= $term %></span> ja se on kasvattajanimi
+</div>
+<div class="bar">
+% $term = 'NFO n 22';
+<a href="/<%== $lang %>/search?what=<%== enurl($term) %>"><%= $term %></a> löytää paljon kuvia, koska mukana ovat kaikki kuvat, joissa on joko norski, ominaisuus n tai ominaisuuss 22.
+</div>
+<div class="bar">
+% $term = '"NFO n 22"';
+<a href="/<%== $lang %>/search?what=<%== enurl($term) %>"><%= $term %></a> löytää vain kuvat, joista löytyy täsmälleen termi <span class="lean"><%= $term %></span> ja tämä osuu vain kokonaiseen EMS-koodiin
+</div>
+</div>
+<div class="bar">
+Peräkkäiset hakutermit yhdistetään oletuksena tai-ehdolla (eli vähintään yhden hakutermin on löydyttävä kuvasta). Ja-haku tehdään siten, että hakumtermin eteen laitetaan plusmerkki. Tämä tarkoittaa, että hakutuloksessa ovat mukana vain ne kuvat, joissa hakuehto toteutuu. Ei-haku tehdään siten, että hakumtermin eteen laitetaan miinusmerkki. Tällöin sellaiset kuvat jäävät pois tuloksesta, joissa hakutehto toteutuu.
+</div>
+<div class="bar">
+<div class="bar">
+% $term = '+MCO d e f';
+<a href="/<%== $lang %>/search?what=<%== enurl($term) %>"><%= $term %></a> kaikki maine coon -kuvat, joissa on jokin ominaisuuksista d, e tai f.
+</div>
+<div class="bar">
+% $term = '+MCO d e f -22 -23';
+<a href="/<%== $lang %>/search?what=<%== enurl($term) %>"><%= $term %></a> kaikki maine coon -kuvat, joissa on jokin ominaisuuksista d, e tai f, mutta jättää pois ne kuvat, joissa on ominaisuus 22 tai 23.
+</div>
+<div class="bar">
+% $term = '-22 aby rag ben +n';
+<a href="/<%== $lang %>/search?what=<%== enurl($term) %>"><%= $term %></a> hakee kuvia kolmesta rodusta, joissa pitää olla ominaisuus n, mutta ei saa olla ominaisuutta 22
+</div>
+</div>
+<div class="bar">
+Oletuksena haetaan täsmällistä aina täsmällistä osumaa. Tämä sääntö poistuu, kun hakutermissä käytetään kysmysmerkkiä tai tähteä. Kysymysmerkki tarkoittaa mitä tahansa yhtä merkkiä ja tähti tarkoittaa mitä tahansa merkkijonoa, joka voi olla myös tyhjä.
+</div>
+<div class="bar">
+<div class="bar">
+% $term = 'b??';
+<a href="/<%== $lang %>/search?what=<%== enurl($term) %>"><%= $term %></a> hakee kaikki kuvat, joista löytyy kolmikirjaiminen termi, joka alkaa b-kirjaimella, ja tämä osuu b-alkuisiin rotukoodeihin
+</div>
+<div class="bar">
+% $term = '*mini*';
+<a href="/<%== $lang %>/search?what=<%== enurl($term) %>"><%= $term %></a> hakee kaikki kuvat, joista löytyy termi, jossa esiintyy teksti <span class="lean">mini</span> jossakin kohdassa, ja näitä löytyy mm. kisojen nimistä ja lempinimistä
+</div>
+<div class="bar">
+% $term = '"* mini*"';
+<a href="/<%== $lang %>/search?what=<%== enurl($term) %>"><%= $term %></a> hakee kaikki kuvat, joista löytyy termi, jossa esiintyy VÄLILYÖNNIN JÄLKEEN teksti <span class="lean">mini</span>
+</div>
+<div class="bar">
+% $term = '+*a??a* +A?? -AB?';
+<a href="/<%== $lang %>/search?what=<%== enurl($term) %>"><%= $term %></a> on haku, jota ihmetellessä voi vierähtää tovi, mutta se hakee käytännössä kuvat, joissa on A-alkuinen rotukoodi, jättä pois AB-alkuiset rotukoodit ja edellyttää, että jossakin termissä on merkkijono, jossa kahden a-kirjaimen välissä on kaksi mitä tahansa merkkiä
+</div></div>
+<div class="bar">
+Oletuksena haku kohdistuu mihin tahansa kuvaan liittyvään käsitteeseen. Käsitteitä on muutama kymmenen ja ne on kuvattu tällä sivulla oikealla. Usein on tarve rajata haku koskemaan vain yhtä käsitettä, kuten kissan nimeä, päivää, kissan kotimaata tai objektiivin nimeä.  
+</div>
+<div class="bar">
+<div class="bar">
+% $term = '+text="* panel*"';
+<a href="/<%== $lang %>/search?what=<%== enurl($term) %>"><%= $term %></a> hakee kaikki yleiskuvat paneeleista
+</div>  
+<div class="bar">
+% $term = '+lens=sigma* +organizer=surok +breedcode=rus';
+<a href="/<%== $lang %>/search?what=<%== enurl($term) %>"><%= $term %></a> hakee kaikki Sigman objektiiveilla SUROKin näyttelyissä venäjänsinisistä otetut kuvat
+</div>
+<div class="bar">
+% $term = '+breeder=Mi* date=2010* date=2009* date=2008*';
+<a href="/<%== $lang %>/search?what=<%== enurl($term) %>"><%= $term %></a> hakee kaikki Mi-alkuisten kasvattajien kissoista otetut kuvat vuosilta 2010, 2009 ja 2008 (superhaussa päivämäärät ovat muotoa VVVVKKPP) 
+</div>
+<div class="bar">
+% $term = '+has=breed -has=catname date=201011* date=2009* date=2008*';
+<a href="/<%== $lang %>/search?what=<%== enurl($term) %>"><%= $term %></a> hakee kaikki ne kuvat vuoden 2011 marraskuusta sekä vuosilta 2009 ja 2008, joissa on tunnistettu rotu mutta ei kissan nimeä, nimitietoja otetaan kiitäen vastaan
+</div>
+</div>

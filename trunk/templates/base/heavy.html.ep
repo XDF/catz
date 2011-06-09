@@ -21,14 +21,16 @@
 <%= content 'jsadd' %>
 %#
 %# --------------------
-%# 
-<meta meta="generator" content="<%== $t->{APPLICATION} %>">
-<meta meta="generated_at" content="<%== $now %>"> 
-<meta meta="data_version" content="<%== $version %>"> 
-<meta meta="author" content="<%== $t->{AUTHOR} %>"> 
-<meta meta="copyright" content="<%== $t->{COPYRIGHT} %>"> 
-<meta meta="technologies" content="<%== $t->{TECHNOLOGIES} %>"> 
-<meta meta="robots" content="<%==  ( $meta_index ? 'index' : 'noindex' ) . ',' . ( $meta_follow ? 'follow' : 'nofollow' ) %>">
+%#
+<meta http-equiv="content-type" content="text/html; charset=utf-8"> 
+<meta name="generator" content="<%== $t->{APPLICATION} %>">
+<meta name="author" content="<%== $t->{AUTHOR} %>">
+<meta name="copyright" content="<%== $t->{COPYRIGHT} %>"> 
+<meta name="fundamental_technologies" content="<%== $t->{FUNDTECH} %>">
+<meta name="fundamental_modules" content="<%== $t->{FUNDMODULE} %>">
+<meta name="generated_at" content="<%== $now %>"> 
+<meta name="data_version" content="<%== $version %>"> 
+<meta name="robots" content="<%==  ( $meta_index ? 'index' : 'noindex' ) . ',' . ( $meta_follow ? 'follow' : 'nofollow' ) %>">
 %#
 %# --------------------
 %#
@@ -65,7 +67,7 @@
 <td class="right"><%= content 'setup' => begin %><%= content 'setupadd' %>
 <%== include 'elem/setup', setupkey => 'palette' %><% end %> <%== $sep %>
 <a title="<%= $t->{LANGOTHER} %>" href="<%== $urlother %>"><%= $t->{LANGOTHER} %></a>
-</td></tr><table><table class="full"><tr>
+</td></tr></table><table class="full"><tr>
 %#
 %# --------------------
 %#

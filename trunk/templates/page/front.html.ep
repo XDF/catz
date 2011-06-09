@@ -30,9 +30,7 @@
 %#
 %# --------------------
 %#
-<% content 'setupadd' => begin %>
-<a href="<%== $t->{URL_FANPAGE} %>"><%= $t->{FANPAGE} %></a> <%= $sep %>
-<% end %>
+<% content 'bextra' => begin %><%== include 'elem/extra' %><% end %>
 %#
 %# --------------------
 %#
@@ -66,7 +64,7 @@
 %#
 %# --------------------
 %#
-<div class="bar"><h2><%= $t->{NEWS} %></h2><%== $sep %>
+<div class="bar"><h2><%= $t->{NEWS} %></h2>
 % foreach my $row ( @$news ) {
 <a href="/<%== $lang %>/news/#<%== $row->[0] %>"><%= dtexpand ( dtdate ( $row->[0] ), $lang ) %> <%= $row->[1] %></a> <%== $sep %>
 % } 
@@ -75,7 +73,7 @@
 %#
 %# --------------------
 %#
-<div class="bar"><h2><%= $t->{ALBUMS} %></h2> <%= $sep %> 
+<div class="bar"><h2><%= $t->{ALBUMS} %></h2> 
 % foreach my $row ( @$folders ) {
 <a title="<%= $row->[1] %> <%= $row->[1] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%= $lang %>/browse/folder/<%== $row->[0] %>/"><%= $mapview->{folder}->{$row->[0]}->[1] %></a> <%= $sep %>
 % }
@@ -91,9 +89,15 @@
 % my $titl = dtexpand ( dtdate ( $th->[3] ), $lang );
 % defined $texts->{$th->[0]} and $titl = "$titl $sep " . $texts->{$th->[0]}; 
 <a title="<%= $titl %>" href="/<%== $lang %>/viewall/<%== $id %>/">
-<img src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>">
+<img src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" alt="<%= $t->{PHOTO} %> <%= $id %>" width="<%== $width %>" height="<%== $thumbsize %>">
 </a>
 % }
+</div>
+%#
+%# --------------------
+%#
+<div class="bar">
+%== include 'content/intro';
 </div>
 %#
 %# --------------------

@@ -37,7 +37,7 @@ use Bit::Vector;
 sub _bits { # fetch a bit vector for a set of arguments
 
  my ( $self, @args ) = @_;
- 
+  
  my $size = $self->maxx + 1;
      
  # OR base vector is a completely empty vector
