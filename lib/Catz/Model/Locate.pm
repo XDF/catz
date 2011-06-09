@@ -49,7 +49,7 @@ sub _full {
  
   when ( 'a2z' ) {
     
-   my $res = $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by upper(sort)}, $pri );
+   my $res = $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by sort collate nocase}, $pri );
    
    my @idx = (); my @sets = (); my @set = (); my $prev = ''; my $i = 1;
    

@@ -68,13 +68,21 @@ sub result_prepare {
 
 sub result_pack {
                
- MIME::Base32::encode ( $eng->encrypt ( join '|', @_ ) );
+ my $key = MIME::Base32::encode ( $eng->encrypt ( join '|', @_ ) );
+  
+ $key = reverse $key; 
  
+ return $key;
+  
 }
 
-sub result_unpack { 
+sub result_unpack {
 
- split /\|/, $eng->decrypt ( MIME::Base32::decode ( $_[0] ) ); 
+ my $key = shift;
+ 
+ $key = reverse $key;
+ 
+ return split /\|/, $eng->decrypt ( MIME::Base32::decode ( $key ) ); 
 
 }
 

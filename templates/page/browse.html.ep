@@ -128,7 +128,7 @@
 %# --------------------
 %#
 <div class="bar">
-<div><h2><%== include 'elem/titlea' %></h2></div> 
+<h2><%== include 'elem/titlea' %></h2> 
 <%= $total %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> <%= $sep %>
 <%= dtexpand ( $ancient, $lang ) %>
 % if ( $fresh ne $ancient ) {
@@ -144,7 +144,7 @@
 % if ( scalar keys %{ $texts } > 0 ) {
 <div class="bar">
 % my $i = 0;
-<div><h2><%= $t->{TEXTS} %></h2></div> 
+<h2><%= $t->{TEXTS} %></h2> 
 <span class="shrink">
 % foreach my $th ( @{ $thumb } ) {
 % defined $texts->{$th->[0]} and do {
@@ -159,6 +159,11 @@
 %#
 %# --------------------
 %#
+% if ( $runmode eq 'search' and $page == 1 ) {
+<div class="stripetop">
+%== include 'content/search';
+</div>
+% }
 <% end %>
 %#
 %# --------------------

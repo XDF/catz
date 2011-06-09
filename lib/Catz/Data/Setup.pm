@@ -36,9 +36,9 @@ use Catz::Core::Conf;
 
 my $default = {
  display => 'full',
- palette => 'neutral',
+ palette => 'dark',
  photosize => 'fit',
- perpage => 20,
+ perpage => 15,
  thumbsize => 150,
  # peek is special default key in $default, not in $values
  peek => 0, # the forced data version

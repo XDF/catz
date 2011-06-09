@@ -58,12 +58,16 @@ sub pre {
   $s->{origin} = 'x'; # mark that the id was resolved
  
   $s->{x} = $self->fetch ( $s->{runmode} . '#first', @{ $s->{args_array} } );
-        
-  $s->{x} or return 0;
   
-  $s->{id} = $self->fetch ( $s->{runmode} . '#x2id', $s->{x} );
+  # allow the system to continue if search returns nothing
+  $s->{runmode} ne 'search' and (  $s->{x} or return 0 );            
   
-  $s->{id} or return 0; 
+  $s->{x} and do { 
+   $s->{id} = $self->fetch ( $s->{runmode} . '#x2id', $s->{x} ) 
+  };
+  
+  # allow the system to continue if search returns nothing
+  $s->{runmode} ne 'search' and (  $s->{id} or return 0 ); 
    
  }
  
@@ -198,8 +202,8 @@ sub multi {
  ) = @{ $self->fetch( 
    $s->{runmode} . '#pager', $s->{x}, $s->{perpage}, @{ $s->{args_array} } 
   ) };
-                   
-# if no photos found                   
+                    
+ # if no photos found                   
  $s->{total} == 0 and return 0;   
  
  # if no photos on this page

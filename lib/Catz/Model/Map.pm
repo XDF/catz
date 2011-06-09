@@ -30,6 +30,8 @@ use parent 'Catz::Core::Model';
 
 my $ROOT = 'ROOT';
 
+my @duals = qw ( breed feature title nation );
+
 sub _link { 
  
  # mappings for links as hashref
@@ -39,8 +41,16 @@ sub _link {
 
  my $self = shift; my $lang = $self->{lang};
  
- my $base = $self->dball ( qq{select 'album',sec,'folder',folder from album natural join inalbum natural join sec_$lang natural join pri where pri='album'});
+ my $sql = "select 'album',sec,'folder',folder from album natural join inalbum natural join sec_$lang natural join pri where pri='album'";
  
+ foreach my $tag ( @duals ) {
+ 
+  $sql .= " union all select '$tag',".$tag."_$lang,'".$tag."code',".$tag."code from m$tag"; 
+ 
+ }
+ 
+ my $base = $self->dball ( $sql );
+  
  my %res = ();
  
  foreach my $row ( @$base ) {
@@ -49,6 +59,7 @@ sub _link {
  }
 
  return \%res;
+ 
 }
 
 sub _view { 
@@ -72,8 +83,6 @@ sub _view {
  return \%res;  
 
 }
-
-my @duals = qw ( breed feature title nation );
 
 sub _dual {  
 

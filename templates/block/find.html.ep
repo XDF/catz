@@ -6,9 +6,9 @@
 <%== $sep %>
 %  };
 %  my $text = $sugg->[2] == 1 ? $t->{PHOTO} : $t->{PHOTOA};
-%  my $out = $sugg->[1]; 
+%  my $out = $sugg->[1];
 %  $out =~ s/($what)/<span class="match">$1<\/span>/ig; # this is a temporary solution -> special chars come to string -> bad
-<a class="tip" title="<%= $t->{uc($sugg->[0])} %> <%== $sep %> <%= $sugg->[1] %> <%== $sep %> <%= $sugg->[2] %> <%= $text %>" href="/<%= $lang %>/browse/<%== $sugg->[0] ne 'album' ? $sugg->[0] : 'folder' %>/<%== $sugg->[0] ne 'album' ? encode($sugg->[1]) : $maplink->{$sugg->[0]}->{$sugg->[1]}->[1] %>/"><%== $out %></a>
+<a class="tip" title="<%= $t->{uc($sugg->[0])} %> <%== $sep %> <%= $sugg->[1] %> <%== $sep %> <%= $sugg->[2] %> <%= $text %>" href="/<%== $lang %>/browse/<%== $maplink->{$sugg->[0]}->{ROOT} ? $maplink->{$sugg->[0]}->{$sugg->[1]}->[0] : $sugg->[0] %>/<%== $maplink->{$sugg->[0]}->{ROOT} ? $maplink->{$sugg->[0]}->{$sugg->[1]}->[1] : encode($sugg->[1]) %>/"><%== $out %></a>
 %  }
 </div>
 % }

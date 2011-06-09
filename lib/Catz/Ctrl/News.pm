@@ -34,7 +34,6 @@ use Catz::Core::Conf;
 use Catz::Util::String qw ( limit );
 use Catz::Util::Time qw ( dt2epoch epoch2rfc822 );
 
-
 sub all { # the list of all news
 
  my $self = shift; my $s = $self->{stash};

@@ -4,13 +4,16 @@
 <%== $t->{NEWS_ALL} %>
 <% end %>
 %#
-<% content 'setupadd' => begin %>
-<a href="/<%== $lang %>/feed/"><%= $t->{FEED} %></a> <%= $sep %>
-<% end %>
-%#
 <% content 'btitle' => begin %>
 <h1><%== $t->{NEWS_ALL} %></h1>
 <% end %>
+%#
+%#
+%# --------------------
+%#
+<% content 'bextra' => begin %><a href="/<%== $lang %>/feed/"><%= $t->{FEED} %></a> <%= $sep %> <%== include 'elem/extra' %><% end %>
+%#
+%# --------------------
 %#
 <%= content 'main' => begin %>
 % my $i = 1;

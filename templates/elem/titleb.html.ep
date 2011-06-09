@@ -5,8 +5,8 @@
 <%= dtexpand ( $sec, $lang ) %>
 %  } else {
 <%= $sec %>
-%   if ( $pri eq 'bcode' or $pri eq 'breed' ) {
-<span class="lean"><%= $mapview->{pri}->{$sec}->[1] %></span>
+%   if ( $mapdual->{$pri}->{ROOT} ) {
+<%= $mapdual->{$pri}->{$sec}->[1] %>
 %   } 
 %  }
 % } elsif ( $runmode eq 'search' ) {

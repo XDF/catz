@@ -23,15 +23,13 @@
 <% content 'pathadd' => begin %>
 <%= $t->{SEARCH} %> <%= $pathsep %>
 % if ( length ( $what ) > 0 ) {
-<%= $t->{SEARCH_NOTHING} %>
+<span class="error"><%= $t->{SEARCH_NOTHING} %></span>
 % }
 <% end %>
 %# --------------------
 %#
 <% content 'main' => begin %>
-%#
-%# --------------------
-%#
+%== include 'content/search';
 <% end %>
 %#
 %# --------------------

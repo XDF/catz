@@ -1,0 +1,7 @@
+% if ( $mapview->{$a} ) {
+<%=  $t->{uc($mapview->{$a}->{ROOT})} %>
+% } elsif ( $mapdual->{$a} ) {
+<%=  $t->{uc($mapdual->{$a}->{ROOT})} %>
+% } else {
+<%=  $t->{uc($a)} %>
+% }
