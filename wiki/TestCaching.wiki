@@ -27,4 +27,10 @@ The system tests (Files=6, Tests=1126) of an early version of the system were ru
 || 1 || 0 || 0 || 223 || 47 || 4.5x ||
 || 1 || 0 || 1 || 105 || 45 || 4.7x ||
 || 1 || 1 || 0 || 126 || 48 || 4.4x ||
-|| 1 || 1 || 1 || 108 || 43 || 5.0x || 
+|| 1 || 1 || 1 || 108 || 43 || 5.0x ||
+
+= Comparison between custom Memcached caching vs CHI with file backend =
+
+This compares Memcached caching against file-based caching. The system tests (350) were ran on dev, all caching on (page, model, db). Results: memcached first run 15 s second run 6 s, file (files on USB hd) first run 17 s second run 8 s. It appears that the difference is practically insignificant especially when considering the slow dev environment hd.
+
+ 
