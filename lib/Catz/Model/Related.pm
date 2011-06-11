@@ -71,4 +71,12 @@ sub _date {
  
 }
 
+sub _breedern { 
+
+ my ( $self, $breeder ) = @_;
+ 
+ $self->dbone('select nationcode from mbreeder where breeder=?', $breeder );
+ 
+}
+
 1;

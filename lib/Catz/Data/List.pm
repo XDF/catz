@@ -34,19 +34,24 @@ my $matrix = {
 
  album => {
   modes => [ qw ( date a2z top ) ],
-  dividers => 1  
+  dividers => 1,  
  },
  
- # folder is not set
+ folder => {
+  related => [ qw ( location organizer umbrella lens,drill body,drill ) ],
+ },
  
  date => {
   modes => [ qw ( date top ) ],
-  dividers => 1
+  dividers => 1,
+  related => [ qw ( album lens,drill body,drill ) ],
+  
  },
  
  location => {
    modes => [ qw ( a2z top first ) ],
-   dividers => 0
+   dividers => 0,
+   related => [ qw ( organizer,drill ) ],
  },
  
  organizer => {

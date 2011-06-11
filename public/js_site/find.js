@@ -90,9 +90,6 @@ $(document).ready(function() {
 
  // store the original formatting for restore
  catzCSSOrig = $('#find').css(catzCSSAttrib);
-
- // make the find visible when JavaScript enabled
- $('.find').show(); 
   
  // intial rendering when page loads, to bring possible
  // previous content back up when returning to page

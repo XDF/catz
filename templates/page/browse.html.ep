@@ -10,6 +10,11 @@
 %# --------------------
 %#
 <% content 'btitle' => begin %>
+% if ( $pri eq 'nationcode' ) {
+<%== include 'elem/flag', flag => $sec %>
+% } elsif ( $breedern ) {
+<a href="/<%== $lang %>/browse/nationcode/<%== $breedern %>/"><%== include 'elem/flag', flag => $breedern %></a>
+% }
 <h1><%== include 'elem/titleb' =%> (<%= $from - $to == 1 ? $t->{PHOTO} : $t->{PHOTOS} %> <%== $from %>-<%== $to %>/<%= $total %>)</h1>
 <% end %>
 %#
@@ -47,14 +52,14 @@
 % if ( $runmode ne 'search' ) {
 <%== include 'elem/path' %>
 % } else {
-<a href="/<%== $lang %>/search/"><%= $t->{SEARCH} %></a> <%= $pathsep %>
+<a href="/<%== $lang %>/search<%= length ( $what ) == 0 ? '/' : '?init='.enurl ( $what ) %>"><%= $t->{SEARCH} %></a> <%= $pathsep %>
 % }
 <% end %>  
 %#
 %# --------------------
 %#
 <% content 'sub' => begin %>
-% if ( $runmode eq 'search' ) {
+% if ( $runmode eq 'search' and $total == 0 ) {
 <div class="center bar stripetop">
 %== include 'block/search';
 </div>
@@ -149,6 +154,10 @@
 %#
 %# --------------------
 %#
+%== include 'block/explain';
+%#
+%# --------------------
+%#
 % if ( scalar keys %{ $texts } > 0 ) {
 <div class="bar">
 % my $i = 0;
@@ -167,11 +176,6 @@
 %#
 %# --------------------
 %#
-% if ( $runmode eq 'search' and $page == 1 ) {
-<div class="stripetop">
-%== include 'content/search';
-</div>
-% }
 <% end %>
 %#
 %# --------------------

@@ -1,0 +1,38 @@
+% if ( $runmode eq 'search' ) {
+<div class="bar"><h2><%== $t->{SEARCH_EXPLAIN} %></h2>
+%  for ( my $i = 0; $i < $args_count; $i=$i+2 ) {
+%  $i > 0 and do {
+<%= $sep %>
+%  };
+<%
+my $epri = $args_array->[$i];
+my $esec = $args_array->[$i+1];
+my $oper ='OR';
+if ( $epri =~ /^([+-])(.*)$/ ) {
+   $epri = $2;
+   $1 eq '-' and $oper='NOT';
+   $1 eq '+' and $oper='AND';
+}
+if ( $epri eq 'has' ) {
+%>
+<span class="heavy"><%= $t->{'SEARCH_'.$oper} %></span> <%= $t->{SEARCH_HAS} %>  <%= $t->{uc($esec)} %>
+<%
+} else {
+ my $mode = 'EXACT';
+ index(substr($esec,1,-1),'*')>-1 or index($esec,'?')>-1 and $mode = 'PATTERN';
+ my $where = '';
+ my $shw = $esec;
+ substr($esec,0,1) eq '*' and do { $where = '_END'; $shw = substr ( $esec, 1 ) };
+ if ( substr($esec,-1,1) eq '*' ) {
+  if ( $where eq '_END' ) {
+   $where = '_MIDDLE'; $shw = substr ( $esec, 1, -1 ); 
+  } else {
+   $where = '_BEGIN'; $shw = substr ( $esec, 0, -1 );
+  }  
+ }   
+ %>
+<span class="heavy"><%= $args_count == 2 ? '' : $t->{'SEARCH_'.$oper} %></span> <%= $t->{uc($epri)} %> <%= $t->{'SEARCH_'.$mode.$where} %> <span class="lean"><%= $shw %></span>
+% }
+% }
+% }
+</div>
