@@ -217,11 +217,9 @@ sub _find {
 
  my ( $self, $pattern, $count ) = @_; my $lang = $self->{lang};
  
- #$pattern =~ s/[^a-zA-Z0-9åöäÅÖÄ]/_/;
- 
  $pattern = '%' . $pattern . '%';
  
- $self->dball(qq{select pri,sec,cntphoto from sec_$lang natural join _secm natural join pri where sid in (select sid from _find_$lang where sec like ? collate nocase order by rowid limit $count) order by sort,cntphoto},$pattern);
+ $self->dball(qq{select pri,sec,cntphoto from sec_$lang natural join _secm natural join pri where sid in (select sid from _find_$lang where sec like ? order by rowid limit $count) order by sort,cntphoto},$pattern);
 
 }
 

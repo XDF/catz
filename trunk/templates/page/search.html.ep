@@ -5,8 +5,8 @@
 %# --------------------
 %#
 <% content 'ptitleadd' => begin %>
-% if ( length ( $what // '' ) > 0 ) { # if something is searches even no results
-<%= $t->{SEARCH_RESULT} %> <%= $what %>
+% if ( length ( $what // '' ) > 0 ) { 
+<%= $t->{SEARCH_NOTHING} %>
 % } else {
 <%= $t->{SEARCH} %>
 % }
@@ -14,18 +14,23 @@
 %#
 %# --------------------
 %#
-<% content 'btitle' => begin %>
-%== include 'block/search';
+<% content 'pathadd' => begin %>
+% if ( length ( $what // '' ) > 0 ) {
+<a href="/<%== $lang %>/search/"><%= $t->{SEARCH} %></a> <%= $pathsep %> 
+<h1 class="mini xtra"><%= $t->{SEARCH_NOTHING} %></h1>
+% } else {
+<h1 class="mini"><%= $t->{SEARCH} %></h1>
+% }
 <% end %>
 %#
 %# --------------------
 %#
-<% content 'pathadd' => begin %>
-<%= $t->{SEARCH} %> <%= $pathsep %>
-% if ( length ( $what ) > 0 ) {
-<span class="error"><%= $t->{SEARCH_NOTHING} %></span>
-% }
+<% content 'sub' => begin %>
+<div class="center bar stripetop">
+%== include 'block/search';
+</div>
 <% end %>
+%#
 %# --------------------
 %#
 <% content 'main' => begin %>

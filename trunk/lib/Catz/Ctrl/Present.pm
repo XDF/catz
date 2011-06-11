@@ -31,7 +31,7 @@ use parent 'Catz::Core::Ctrl';
 use List::MoreUtils qw ( any );
 
 use Catz::Data::Result;
-use Catz::Data::Search qw ( search2args );
+use Catz::Data::Search qw ( args2search search2args );
 use Catz::Util::String qw ( enurl );
 
 sub pre {
@@ -211,12 +211,31 @@ sub multi {
  
  ( $s->{thumb}, $s->{earliest}, $s->{latest} ) = 
   @{ $self->fetch( 'photo#thumb', @{ $s->{xs} } ) };
+  
+ $s->{cover_notext} = undef; $s->{url_notext} = undef;
+ $s->{cover_nocat} = undef; $s->{url_nocat} = undef;
+ 
+ if ( $s->{runmode} ne 'search' ) {
+  
+  my @extra = qw ( -has text );
 
- $s->{coverage_text} = 
-  $self->fetch ( "search#count", @{ $s->{args_array} }, 'has', '-text' );
+  $s->{cover_notext} = 
+   $self->fetch ( "search#count", @{ $s->{args_array} }, @extra );
+  
+  $s->{cover_notext} > 0 and
+  $s->{url_notext} =
+   args2search (  @{ $s->{args_array} }, @extra );
+  
+  @extra = qw ( +has breedcode -has catname );
+  
+  $s->{cover_nocat} = 
+   $self->fetch ( "search#count", @{ $s->{args_array} }, @extra );
 
- $s->{coverage_cat} = 
-  $self->fetch ( "search#count", @{ $s->{args_array} }, 'has', '+bcode', 'has', '-cat' );
+  $s->{cover_nocat} > 0 and
+  $s->{url_nocat} =
+   args2search (  @{ $s->{args_array} }, @extra );
+  
+ }
   
  $s->{texts} = $self->fetch ( 'photo#texts', @{ $s->{xs} } );
   

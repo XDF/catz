@@ -53,7 +53,7 @@ sub startup {
 
  my $self = shift;
  
- #$self->plugin('default_helpers');
+ #$self->renderer->encoding('ISO-8859-1');
  
  $self->renderer->root ( conf ( 'path_template' ) );
  $self->renderer->layout_prefix ( conf ( 'prefix_layout' ) );
@@ -91,7 +91,7 @@ sub startup {
 
  # if the site root is requested then detect the correct language
  $r->route('/')->to( "main#detect", hold => 'off' );
- 
+  
  $r->route( '/reroute',  )->to ( "reroute#get",  hold => 'off' );
 
  # stylesheets

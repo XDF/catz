@@ -52,15 +52,16 @@ sub _bits { # fetch a bit vector for a set of arguments
  
  for ( my $i = 0; $i <= $#args; $i = $i + 2 ) {
   
-  $args[$i+1] =~ /^(\+|\-)(.*)$/;
+  $args[$i] =~ /^(\+|\-)(.*)$/;
     
   my $oper = $1 // '0'; # the default operand is 0 = or
-  my $rest = $2 // $args[$i+1]; 
+  my $pri = $2 // $args[$i];
+  my $sec = $args[$i+1]; 
   
-  $rest =~ s/\?/\_/g; # user interface ? -> database interface _
-  $rest =~ s/\*/\%/g; # user interface * -> database interface %
-              
-  my $bvec = $self->base( $args[$i], $rest ); # make one vector by pass-thru
+  $sec =~ s/\?/\_/g; # user interface ? -> database interface _
+  $sec =~ s/\*/\%/g; # user interface * -> database interface %
+               
+  my $bvec = $self->base( $pri, $sec ); # make one vector by pass-thru
                 
   given ( $oper ) {
   

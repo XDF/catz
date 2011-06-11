@@ -30,13 +30,15 @@
 %#
 %# --------------------
 %#
-<% content 'bextra' => begin %><%== include 'elem/extra' %><% end %>
+<% content 'bextra' => begin %>
+<a href="/<%== $lang %>/search?what=<%= enurl('+has=breedcode -has=catname') %>"><%= $t->{HELP_CAT} %></a>
+<% end %>
 %#
 %# --------------------
 %#
 <% content 'sub' => begin %>
 <div class="bar find stripetop center"><h2 class="aero"><%= $t->{FIND} %></h2>
-<input class="aero" type="text" id="find" size="35">
+<input class="aero field" type="text" id="find" size="35">
 <a class="aero" href="/<%== $lang %>/search/"><%= $t->{SEARCH} %></a></div>
 <% end %>
 %#

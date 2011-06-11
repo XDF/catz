@@ -24,7 +24,16 @@
 <div class="bar stripetop">
 % } 
 <h2 id="<%== $row->[0] %>"><%=  dtexpand ( dtdate ( $row->[0] ), $lang ) %> <%= $row->[1] %></h2>
-<div class="bar"><%= $row->[2] %></div> 
+<div class="bar"><%= $row->[2] %></div>
+% if ( $row->[3] ) {
+<% 
+   my $tgt = $row->[3]; # if internal link then use the correct language
+   if ( substr ( $tgt, 0, 3 ) eq '/en' or substr ( $tgt, 0, 3 ) eq '/fi' ) {
+    $tgt = '/' .$lang . substr ( $lang, 3 );
+   }
+%>
+<div class="bar"><a href="<%== $row->[3] %>"><%= $row->[3] %></a></div>
+% } 
 <div class="shrink lean bar"><%=  dtexpand ( $row->[0], $lang ) %></div>
 </div>
 % }
