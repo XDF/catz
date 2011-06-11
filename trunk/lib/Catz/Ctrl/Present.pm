@@ -83,6 +83,7 @@ sub all {
  $s->{args_count} = 0;  # so the count of args is also 0
  $s->{runmode} = 'all'; # set the runmode to all photos mode
  $s->{pri} = undef; $s->{sec} = undef; $s->{what} = undef;
+ $s->{breedern} = undef;
  
  $self->pre or return 0;
 
@@ -103,6 +104,12 @@ sub pair {
  $s->{args_array} = [ $s->{pri}, $s->{sec} ];
  $s->{args_count} = 2;
  $s->{what} = undef;
+
+ $s->{breedern} = undef;
+ 
+ if ( $s->{pri} eq 'breeder' ) {
+  $s->{breedern} = $self->fetch ( "related#breedern", $s->{sec} );
+ }
   
  $s->{runmode} = 'pair'; # set the runmode to pri-sec pair 
 
@@ -124,9 +131,11 @@ sub pattern {
  my $self = shift; my $s = $self->{stash};
   
  $s->{pri} = undef; $s->{sec} = undef;
+ $s->{breedern} = undef;
  
  $s->{what} = $self->param('what') // undef;
-  
+ $s->{init} = $self->param('init') // undef;
+ 
  if ( $s->{what} ) {
  
   ( $s->{what}, $s->{args_array} ) = search2args ( $s->{what} );
@@ -155,6 +164,10 @@ sub pattern {
    $s->{urlother} .= '?what=' .  enurl ( $s->{what} );
   
   } 
+ 
+ } elsif ( $s->{init} ) {
+
+  $s->{urlother} .= '?init=' .  enurl ( $s->{init} );
  
  } else {
 
@@ -271,7 +284,7 @@ sub guide {
  my $self = shift; my $s = $self->{stash};
  
  $s->{total} = 0;
- 
+  
  $self->render( template => 'page/search' );
 
  return 1;

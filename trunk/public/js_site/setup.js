@@ -31,10 +31,3 @@ function catzSetupChange( key, val ) {
  });
 
 }
-
-$(document).ready(function() {
-
- // make the setup changing elements visible
- $('.setup').show(); 
-
-});

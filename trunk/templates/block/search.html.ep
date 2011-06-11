@@ -2,7 +2,7 @@
 % my $fieldlen = 80;
 % length ( $what ) > 80 and $fieldlen = length ( $what ) + 5;
 % $fieldlen > 100 and $fieldlen = 100;
-<input class="field" type"=text" id="what" name="what" size="<%== $fieldlen %>" value="<%= $what // '' %>">
+<input class="field" type"=text" id="what" name="what" size="<%== $fieldlen %>" value="<%= $what // $init // '' %>">
 <input type="submit" value="<%= $t->{SEARCH_SUBMIT} %>">
 <button type="button" onClick="$('#what').val('')"><%= $t->{SEARCH_CLEAR} %></button>
 </form>
