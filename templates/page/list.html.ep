@@ -99,7 +99,7 @@
 %# --------------------
 %#
 % if ( $mode eq 'top' ) { # show the row number if displaying the top list 
-<%= $lang eq 'fi' ? $row->[6] . $sep : '#' . $row->[6] . " $sep" %>
+<%= $lang eq 'fi' ? $row->[6] . $sep : '#' . $row->[6] %>
 % }
 %#
 %# --------------------

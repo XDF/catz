@@ -43,6 +43,7 @@ sub _bits {
 
  if ( 
   $pri eq 'has' or $pri eq 'any' or $sec eq 'text' or $sec eq 'album' or
+  $sec eq 'feature' or $sec eq 'nation' or $sec eq 'title' or $sec eq 'breed' or
   index ( $sec, '*' ) > -1 or index ( $sec, '?' ) > -1 
  ) { # reject
 

@@ -496,7 +496,11 @@ sub load_simple {
     -f $fflag or die "unable to locate flag file '$fflag' for '$lines[0]'"; 
     
    }
-    
+   
+   when ( 'mnews' ) { # set news URL to null if not given at all
+    $lines[5] or $lines[5] = undef; 
+   }
+         
   } 
   
   $stm->execute ( @lines );

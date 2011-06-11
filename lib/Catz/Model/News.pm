@@ -34,7 +34,7 @@ sub _all {
 
  my $self = shift; my $lang = $self->{lang};
       
- my $res = $self->dball( "select dt,title_$lang,text_$lang from mnews order by dt desc" );
+ my $res = $self->dball( "select dt,title_$lang,text_$lang,url from mnews order by dt desc" );
   
  return $res;
  

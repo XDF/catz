@@ -50,31 +50,24 @@ sub search2args { # covert a search parameter to argument list
  my @out = ();
   
  foreach my $arg ( @args ) {
- 
-  my $key = undef; my $val = undef;
+  
+  my $oper = ''; my $key = DEFAULT; my $val = undef; 
+  
+  if ( $arg =~ /^([+-])(.*)$/ ) { $oper = $1; $arg = $2 }
    
-  if ( $arg =~ /^([-+a-z0-9][a-z0-9]{2,}?)\=(.*)$/ ) {
+  if ( $arg =~ /^([a-z]{2,})\=(.*)$/ ) {
      
-   length $2 > 0 and do { $key = $1; $val = $2 }; 
+   $key = $1; $val = $2; 
  
-  } else { $key = DEFAULT; $val = $arg; }
+  } else {
   
+   $val = $arg; 
+
+  }
+    
   defined $key and defined $val and do {
- 
-   my $fkey = substr ( $key, 0, 1 );
-   my $fval = substr ( $val, 0, 1 );
-  
-   ( $fkey eq '+' or $fkey eq '-' ) and $fval ne '+' and $fval ne '-' and do {
-  
-    # if key begins with + or - and the value don't then move the char
-    # to the beginning of the val
-  
-    $key = substr ( $key, 1 );
-    $val = $fkey . $val;
-  
-   };
-   
-   push @out, $key; push @out, $val;
+     
+   push @out, "$oper$key"; push @out, $val;
    
   };
        
@@ -85,20 +78,13 @@ sub search2args { # covert a search parameter to argument list
 }
 
 sub args2search { # convert argument list to a search parameter
-
- my $args = shift;
  
- my @arr = @{ $args }; # we will mungle the array so we make a copy of it
-
  my $str = ''; my $c = 0;
  
- while ( scalar @arr > 0 ) { # consume the whole array
+ while ( scalar @_ > 0 ) { # consume the whole array
  
-  my $key = shift @arr; my $val = shift @arr;
+  my $key = shift @_; my $val = shift @_;
  
-  # values containing spaces are put into "s 
-  index ( $val, ' ' ) > -1 and $val = '"' . $val . '"';
-
   # if not the first param then put a space to separate from the previous param
   $c > 0 and $str = $str . ' '; 
   

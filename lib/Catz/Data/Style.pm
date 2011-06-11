@@ -81,6 +81,9 @@ $style->{color} = {
   text => '#c9c9c9', 
   high => '#ffffff',
   xtra => '#ff3333',
+  field_front => '#000000',  
+  field_back => '#FFFFFF',
+  
  },
   
  neutral => {
@@ -89,7 +92,9 @@ $style->{color} = {
   dim => '#666666',
   text => '#444444', 
   high => '#000000',
-  xtra => '#cc1515', 
+  xtra => '#cc1515',
+  field_front => '#000000',  
+  field_back => '#FFFFFF', 
  },
   
  bright => {
@@ -98,7 +103,9 @@ $style->{color} = {
   dim => '#585858',
   text => '#444444', 
   high => '#000000',
-  xtra => '#bb0909', 
+  xtra => '#bb0909',
+  field_front => '#000000',  
+  field_back => '#FFFFFF', 
  }
   
 };

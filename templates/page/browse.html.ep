@@ -10,12 +10,7 @@
 %# --------------------
 %#
 <% content 'btitle' => begin %>
-% if ( $runmode ne 'search' ) {
-<h1><%== include 'elem/titleb' =%>
-(<%= $from - $to == 1 ? $t->{PHOTO} : $t->{PHOTOS} %> <%== $from %>-<%== $to %>/<%= $total %>)</h1>
-% } else {
-%== include 'block/search';
-% }
+<h1><%== include 'elem/titleb' =%> (<%= $from - $to == 1 ? $t->{PHOTO} : $t->{PHOTOS} %> <%== $from %>-<%== $to %>/<%= $total %>)</h1>
 <% end %>
 %#
 %# --------------------
@@ -52,14 +47,18 @@
 % if ( $runmode ne 'search' ) {
 <%== include 'elem/path' %>
 % } else {
-<%= $t->{SEARCH} %> <%= $pathsep %>
-<%= fmt ( $total, $lang ) %> <%= $t->{'PHOTO'.($total==1?'':'A')} %>
+<a href="/<%== $lang %>/search/"><%= $t->{SEARCH} %></a> <%= $pathsep %>
 % }
 <% end %>  
 %#
 %# --------------------
 %#
 <% content 'sub' => begin %>
+% if ( $runmode eq 'search' ) {
+<div class="center bar stripetop">
+%== include 'block/search';
+</div>
+% }
 <div class="center stripetop">
 % my $label1 = $t->{PAGE_FIRST};
 % my $label2 = $t->{PAGE_PREV};
@@ -134,9 +133,18 @@
 % if ( $fresh ne $ancient ) {
 - <%= dtexpand ( $fresh, $lang ) %>
 % }
-<%= $sep %> comment coverage <%== fmt ( round ( ( 100 - ( $coverage_text / $total ) * 100 ), 1 ), $lang ) %> % <%= $sep %> 
-<%== fmt ( $coverage_text, $lang ) %> uncommented photos <%= $sep %>  
-<%== fmt ( $coverage_cat, $lang ) %> photos with breed but no cat name
+% if ( defined $cover_notext ) {
+<%= $sep %> <%= $t->{COVER_TEXT} %> <%== fmt ( round ( ( 100 - ( $cover_notext / $total ) * 100 ), 1 ), $lang ) %> %
+% }
+% if ( $cover_notext > 0 ) {
+<%= $sep %> <a href="/<%== $lang %>/search?what=<%== enurl ( $url_notext ) %>"><%== fmt ( $cover_notext, $lang ) %> <%= $cover_notext == 1 ? $t->{NOTEXT} :  $t->{NOTEXTA} %></a>
+% }
+% if ( defined $cover_notext ) {
+<%= $sep %> <%= $t->{COVER_CAT} %> <%== fmt ( round ( ( 100 - ( ( $cover_nocat + $cover_notext ) / $total ) * 100 ), 1 ), $lang ) %> %
+% }
+% if ( $cover_nocat > 0 ) { 
+<%= $sep %> <a href="/<%== $lang %>/search?what=<%== enurl ( $url_nocat ) %>"><%== fmt ( $cover_nocat, $lang ) %> <%= $cover_nocat == 1 ? $t->{NOCAT} :  $t->{NOCATA} %></a>
+% }
 </div>
 %#
 %# --------------------

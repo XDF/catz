@@ -46,14 +46,6 @@ body {
 /*  make the default to display all forms inline */
 form { display: inline; }
 
-/* 
-by default hide classed find and setup  
-JavaScript should set them visible for 
-JavaScript enabled browsers
-*/
-div.find { display: none; }
-option.setup { display: none; }
-
 /* text sizes */
 .shrink { font-size: 88%; }
 .shrinkmore { font-size: 68%; }
@@ -85,6 +77,12 @@ option.setup { display: none; }
 .top { vertical-align: top; }
 .middle { vertical-align: middle; }
 .bottom { vertical-align: middle; }
+
+/* form input fields */
+.field { 
+ color: <%== $st->{color}->{$palette}->{field_front} %>;
+ background-color: <%== $st->{color}->{$palette}->{field_back} %>;
+}
 
 /*  spacing */
 

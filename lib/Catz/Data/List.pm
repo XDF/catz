@@ -104,12 +104,12 @@ my $matrix = {
  
  feature => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 1 
+  dividers => 0 
  },
  
  featurecode => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 1
+  dividers => 0
  },
 
  nickname => {
