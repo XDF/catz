@@ -21,12 +21,12 @@
 %# --------------------
 %#
 <% content 'pathadd' => begin %>
-<%== include 'elem/path' %>
 % if ( $runmode ne 'search' ) {
-<h1 class="mini"><%== include 'elem/titleb' %> (<%= $t->{PHOTO} %> <%== $pos %>/<%== $total %>)</h1>
+<%== include 'elem/path' %>
 % } else {
-%== include 'block/search';
+<a href="/<%== $lang %>/search<%= length ( $what ) == 0 ? '/' : '?init='.enurl ( $what ) %>"><%= $t->{SEARCH} %></a> <%= $pathsep %>
 % }
+<h1 class="mini"><%== include 'elem/titleb' %> (<%= $t->{PHOTO} %> <%== $pos %>/<%== $total %>)</h1>
 <% end %>
 %#
 %# --------------------
