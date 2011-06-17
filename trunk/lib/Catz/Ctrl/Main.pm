@@ -78,7 +78,7 @@ sub front {
  $s->{texts} = $self->fetch ( 'photo#texts', @{ $samp } );
  
  # overriding the user's setting for the front page
- $s->{thumbsize} = setup_default ( 'thumbsize' );
+ $s->{thumbsize} = 100; # 100px
      
  $self->render( template => 'page/front' );
  
