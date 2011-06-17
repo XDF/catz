@@ -35,14 +35,20 @@ var catz_v09 = 'mai';
 var catz_v10 = 'fo';
 var catz_v11 = 'in';
 var catz_v12 = '@';
+var catz_v13 = 'title';
+var catz_v14 = '=';
+var catz_v15 = '?';
+var catz_v16 = 'subject';
+
 
 function catzInfo() {
 
  $(catz_v06+catz_v11+catz_v10).attr(
   catz_v00,catz_v09+catz_v08+catz_v07+catz_v11+catz_v10+catz_v12+
-  catz_v05+catz_v04+catz_v06+catz_v03+catz_v02+catz_v01
+  catz_v05+catz_v04+catz_v06+catz_v03+catz_v02+catz_v01+catz_v15+
+  catz_v16+catz_v14+$(catz_v06+catz_v11+catz_v10).attr(catz_v13)
  );
- 
+  
  $(catz_v06+catz_v11+catz_v10).html(
   catz_v11+catz_v10+catz_v12+catz_v05+catz_v04+catz_v06+catz_v03+
   catz_v02+catz_v01
