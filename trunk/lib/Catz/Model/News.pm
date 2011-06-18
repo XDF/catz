@@ -32,7 +32,7 @@ use Catz::Util::Time qw ( dtexpand );
 
 sub _all {
 
- my ( $self, $lang ) = @_;
+ my $self = shift; my $lang = $self->{lang};
       
  $self->dball( 
   "select dt,title_$lang,text_$lang,url from mnews order by dt desc" 
@@ -42,9 +42,9 @@ sub _all {
 
 sub _latest {
 
- my ( $self, $lang, $limit ) = @_;
+ my ( $self, $limit ) = @_;
       
- my $res = $self->all( $lang );
+ my $res = $self->all;
    
  # if less news than requested then downsize the request
  scalar @$res < $limit and $limit = scalar @$res;

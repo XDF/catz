@@ -57,7 +57,16 @@ sub cat {
   
   $d->{breedcode} = $1;
   
-  $3 and $d->{facadecode} = $3;
+  if ( $3 ) { $d->{facadecode} = $3 } else {
+
+   # add inherent blue facadecode for certain breeds
+
+   ( $d->{breedcode} eq 'CHA' or
+     $d->{breedcode} eq 'KOR' or
+     $d->{breedcode} eq 'RUS'
+   ) and $d->{facadecode} = 'a'; 
+
+  }
  
   defined $d->{facadecode} and $d->{featurecode} = [ split / +/, $d->{facadecode} ];
    
