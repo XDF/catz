@@ -69,7 +69,7 @@ sub _view {
  # values should be presented using the pri,sec -pair (arrayref)
  # found in the hashref
 
- my $self = shift;  my $lang = $self->{lang};
+ my $self = shift; my $lang = $self->{lang};
  
  my $base = $self->dball ( qq{select 'folder',folder,'album',sec from album natural join inalbum natural join sec_$lang natural join pri where pri='album'});
  
@@ -91,7 +91,7 @@ sub _dual {
  # value can presented with the pri,sec -pair (arrayref)
  # found in the hashref
  
- my ( $self, $lang ) = @_;
+ my $self = shift; my $lang = $self->{lang};
  
  my $sql = '';
  
@@ -123,7 +123,7 @@ sub _trans {
  # provides translations for any pri,sec -combination
  # returns the translated sec (that can be the same)
 
- my ( $self, $lang, $spri, $ssec ) = @_;
+ my ( $self, $spri, $ssec ) = @_;  my $lang = $self->{lang};
  
  my $gnal = $lang eq 'fi' ? 'en' : 'fi';
  

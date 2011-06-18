@@ -27,9 +27,11 @@ use 5.10.0; use strict; use warnings;
 use lib '../lib'; use lib '../libi';
 
 use Catz::Core::Conf;
+
 use Catz::Load::Loader;
 use Catz::Load::Parse;
 use Catz::Load::Data qw ( topiles );
+
 use Catz::Util::File qw ( 
  dnafolder filecopy fileread finddirs filewrite findlatest pathcut 
 );
@@ -49,21 +51,21 @@ logopen ( conf ( 'path_log' ) . "/$dt.log" );
 
 logit ( 'catz loader started at ' . dtexpand ( $dt ).' (dt '.$dt.')' );
 
-my $loaded = {}; # to store names of loaded folders and albums 
-
-my $olddb = findlatest ( conf ( 'path_db' ) , 'db' );
-
-defined $olddb or die "old database lookup failed";
-
-my $newdb = conf ( 'path_db' ) . "/$dt.db";
-
-logit ( "copying database '$olddb' to '$newdb'" );
-
-filecopy ( $olddb, $newdb );
-
 my $changes = 0; # flag that should be turned on if something has changed
 
-load_begin ( $dt, $newdb );
+my $loaded = {}; # to store names of loaded folders and albums
+
+my $db = conf ( 'path_db' ) . '/' . conf ( 'file_db' );
+
+my $back =  conf ( 'path_db' ) . "/$dt.db" ;
+
+logit ( "backing up '$db' to '$back'" );
+
+filecopy ( $db, $back );
+
+chmod ( 0664, $db ) || die $!;
+
+load_begin ( $dt, $db );
 
 lc($ARGV[0] // '') eq 'meta' and goto SKIP_FOLDERS;
 
@@ -177,8 +179,11 @@ SKIP_POST:
 
 load_end; # finish
 
+chmod ( 0444, $db ) || die $!;
+
 my $etime = time();
 
 logit ( 'catz loader finished at ' .  dtlang() . ' (' . ( $etime - $btime ) . ' seconds)' );
 
 logclose();
+

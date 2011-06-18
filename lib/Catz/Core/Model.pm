@@ -48,6 +48,8 @@ sub new {
  bless ( $self, $class );
  
  $self->{expire} = $self->expiry;
+
+ $self->{lang} = undef; # default
  
  return $self;
  
@@ -60,7 +62,10 @@ sub expiry { {} }
 
 sub fetch {
 
- my ( $self, $sub, @args ) = @_;
+ my ( $self, $sub, $lang, @args ) = @_;
+
+ # each call to this object sets the language
+ $self->{lang} = $lang;
        
  { no strict 'refs'; return $self->$sub( @args ) }
    
@@ -77,9 +82,9 @@ sub AUTOLOAD {
  our $AUTOLOAD; my $sub = $AUTOLOAD; $sub =~ s/.*://;
   
  substr ( $sub, 0, 1 ) eq '_' and 
-  die "recursive autoload short circuit with '$sub'";
+  die "recursive autoload prevented on '$sub'";
  
- my $res = cache_get ( $nspace, $self->{name}, $sub, @args ); 
+ my $res = cache_get ( $nspace, $self->{name}, $sub, $self->{lang}, @args ); 
  
  $res and return $res; # if cache hit then done
  
@@ -88,7 +93,7 @@ sub AUTOLOAD {
  { no strict 'refs'; $res = $self->$target( @args ) }
   
  cache_set ( 
-  $nspace, $self->{name}, $sub, @args, $res, 
+  $nspace, $self->{name}, $sub, $self->{lang}, @args, $res, 
   $self->cachetime ( $sub )
  );
  

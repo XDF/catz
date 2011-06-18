@@ -38,18 +38,20 @@ use Catz::Util::Number qw ( fmt round );
 
 my $langs = [ 'en', 'fi' ];
  
-my $acc = I18N::AcceptLanguage->new( defaultLangauge => 'en', strict => 0 );
+my $i18n = 
+ I18N::AcceptLanguage->new( defaultLangauge => 'en', strict => 0 );
 
-sub detect {
-  
+# the language detection based on the request headers
+sub detect { 
+ 
  my $self = shift;
-  
- my $lang = $acc->accepts(
-  $self->req->headers->accept_language, $langs
+ 
+ $self->redirect_temp( 
+  '/'.
+  $i18n->accepts( $self->req->headers->accept_language, $langs ),
+  '/'
  );
-  
- $self->redirect_temp( "/$lang/" ); 
-  
+
 }
 
 sub front {

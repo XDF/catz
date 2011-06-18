@@ -24,6 +24,10 @@
 
 package Catz::Core::App;
 
+#
+# The Catz Mojolicious application
+#
+
 use 5.10.0; use strict; use warnings;
 
 use parent 'Mojolicious';
@@ -31,8 +35,10 @@ use parent 'Mojolicious';
 use Catz::Core::Cache;
 use Catz::Core::Conf;
 use Catz::Core::Text;
+
 use Catz::Data::List qw ( list_matrix );
 use Catz::Data::Setup;
+
 use Catz::Util::File qw ( fileread findlatest pathcut );
 use Catz::Util::Time qw( dt dtdate dttime dtexpand dtlang thisyear );
 use Catz::Util::Number qw ( fmt fullnum33 round );
@@ -42,95 +48,125 @@ sub startup {
 
  my $self = shift;
  
- #$self->renderer->encoding('ISO-8859-1');
+ # template directory
+ $self->renderer->root ( $ENV{MOJO_HOME}.'/tmpl' );
  
- $self->renderer->root ( conf ( 'path_template' ) );
- $self->renderer->layout_prefix ( conf ( 'prefix_layout' ) );
- 
- $self->sessions->cookie_name( conf ( 'cookie_name' ) );
+ # cookie settings from config
+ $self->sessions->cookie_name( conf ('cookie_name' ) );
  $self->sessions->default_expiration( conf ( 'cookie_expir' ) );
-  
- # initialize the key for cookie signing 
- $self->secret( conf ( 'cookie_key' ) );
+
+ # map utility subs from different modules to Mojolicious helpers
+ # we use dynamically generated subs as bridges
+ foreach my $sub ( 
+  qw ( dtdate dttime dtexpand fmt enurl limit 
+  fullnum33 thisyear encode decode round ) 
+ ) {
+
+  $self->helper ( $sub => eval qq{ sub {
+    
+  # we do 'shift' to ditch 'self' that comes in first in helper calls 
+  shift;
+
+  return $sub \@\_; # the actual pass-thru call with rest of the arguments
+
+  } } );
+
+ }
  
- $self->helper ( dtdate => sub { shift; dtdate @_ } );
- $self->helper ( dttime => sub { shift; dttime @_ } );
- $self->helper ( dtexpand => sub { shift; dtexpand @_ } ); 
- $self->helper ( fmt => sub { shift; fmt @_ } );
- $self->helper ( enurl => sub { shift; enurl @_ } );
- $self->helper ( limit => sub { shift; limit @_ } );
- $self->helper ( fullnum33 => sub { shift; fullnum33 @_ } );
- $self->helper ( thisyear => sub { shift; thisyear @_ } );
- $self->helper ( encode => sub { shift; encode @_ } );
- $self->helper ( decode => sub { shift; decode @_ } );
- $self->helper ( round => sub { shift; round @_ } );
-      
+ # route definitions       
  my $r = $self->routes;
   
- # All controllers are in Catz::Ctrl 
+ # all controllers are Catz::Ctrl 
  $r->namespace( 'Catz::Ctrl' );
  
  #
- # hold controls both response cache headers & server side page cache
+ # 'hold' controls caching 
  #
- #  off = no caching
- #  dynamic = let the content to change dynamically fairly quickly
- #  static = static-type of content 
+ # it has an effect both on response headers and
+ # on the server side page cache
+ #
+ # 'off' = disable all caching
+ # 'dynamic' = content changes dynamically from time to time
+ # 'static' = static-type of content that changes only on data load 
  #
 
- # if the site root is requested then detect the correct language
+ # if the site's bare root is requested then pass to language detector
  $r->route('/')->to( "main#detect", hold => 'off' );
-  
- $r->route( '/reroute',  )->to ( "reroute#get",  hold => 'off' );
 
- # stylesheets
+ # the rerouting handler to handle requests of the old site  
+ $r->route( '/reroute' )->to ( "reroute#get",  hold => 'off' );
+
+ # the stylesheets
  $r->route( '/style/reset' )->to( 'main#reset', hold => 'static' );
  $r->route( '/style/:palette' )->to( 'main#base', hold => 'static' );
  
- # set user parameters
+ # set the user parameters
  $r->route( '/set' )->to( 'main#set', hold => 'off' );
  
- # classic lastshow interface
+ # the interface provided for catshow.fi service
+ # please note that although you can use this for your purposes
+ # the interface is subject to changes negotiated between
+ # catza.net and catshow.fi and thus can change anytime
  $r->route( '/lastshow' )->to( 'main#lastshow',  hold => 'static' );
 
- # all site content is found under /:lang where lang is 'en' or 'fi'
+ # all site's content is under /:lang where lang is 'en' or 'fi'
+ # so the content is provided in two languages
+ # in the future the will be no more languages
  my $l = $r->route ('/:lang', lang => qr/en|fi/ );
  
- # the front page is the root under language
+ # the front page is in the root under the language
  $l->route( '/' )->to( 'main#front', hold => 'dynamic' );
  
- $l->route( '/result',  )->to ( "main#result",  hold => 'dynamic' );
- 
- $l->route( '/feed' )->to ( "news#feed", hold => 'dynamic' );
- $l->route( '/news' )->to ( "news#all", hold => 'static' );
- 
- $l->route( '/find' )->to ( "locate#find", hold => 'static' );
-  
+ # the site's news
+ $l->route( '/news' )->to ( "news#all", hold => 'static' );  
+ $l->route( '/feed' )->to ( "news#feed", hold => 'static' );
+
+ # lists 
  $l->route( '/list/:subject/:mode' )->to('locate#list', hold => 'static' );
-  
+ 
+ # photo browsing and viewing - 3 different ways
+
+ # #1: browse all & view all
+ 
  my $a = $l->route( '/:action', action => qr/browseall|viewall/ )
-  ->to( controller => 'present', hold => 'static' );   
+  ->to( hold => 'static' );   
 
- $a->route( '/:id', id => qr/\d{6}/ )->to( ); 
- $a->route( '/' )->to( id => undef );
+ $a->route( '/:id', id => qr/\d{6}/ )->to( controller => 'present' ); 
+ 
+ $a->route( '/' )->to( controller => 'present', id => undef );
 
- # pair
+ # #2: pair browse & pair view
 
  my $p = $l->route( '/:action', action => qr/browse|view/ )
-  ->to( controller => 'present', hold => 'static' );   
+  ->to( hold => 'static' );   
 
- $p->route( ':pri/:sec/:id', id => qr/\d{6}/ )->to( ); 
- $p->route( ':pri/:sec/' )->to( id => undef );
+ $p->route( ':pri/:sec/:id', 
+  pri => qr/[A-ZA-z0-9_-]+/, sec => qr/[A-ZA-z0-9_-]+/, id => qr/\d{6}/ 
+ )->to( controller => 'present' );
+ 
+ $p->route( ':pri/:sec/', 
+  pri => qr/[A-ZA-z0-9_-]+/, sec => qr/[A-ZA-z0-9_-]+/ )->to( 
+   controller => 'present', id => undef 
+  );
 
- # search
+ # #3: search browse & seach viw
 
  my $s = $l->route( '/:action', action => qr/search|display/ )
-  ->to( controller => 'present', hold => 'static' );   
+  ->to( hold => 'static' );   
 
- $s->route( '/:id', id => qr/\d{6}/ )->to( ); 
- $s->route( '/' )->to( id => undef );
+ $s->route( '/:id', id => qr/\d{6}/ )->to( controller => 'present' ); 
+
+ $s->route( '/' )->to( controller => 'present', id => undef );
+
+ # the quick find AJAX interface 
+ $l->route( '/find' )->to ( "locate#find", hold => 'static' );
+
+ # the show result AJAX interface
+ # we set this to 'dynamic' since the data is provided by catshow.fi
+ # and we should re-read it regularly for any changes
+ $l->route( '/result' )->to ( "main#result",  hold => 'dynamic' );
       
- # add hooks to subs that are executed before and after the dispatch
+ # add hooks to subs that are to be executed before and after the dispatch
  $self->hook ( before_dispatch => \&before );  
  $self->hook ( after_dispatch => \&after );
  
@@ -139,178 +175,173 @@ sub startup {
 sub before {
 
  my $self = shift; my $s = $self->{stash};
+
+ # we skip all processing for static files
+ ( $self->req->url->path->to_string  =~ /\..{2,4}$/ ) and return;
  
+ # let some definitions to be globally available to all controllers
  $s->{matrix} = list_matrix;
+ $s->{setup_keys} = setup_keys;
+ $s->{setup_values} = setup_values;
    
- # default to "index,follow", actions may modify it as needed 
+ # default to meta robots "index,follow",
+ # controllers may modify these as needed 
  $s->{meta_index} = 1;
  $s->{meta_follow} = 1;
 
- # Google Analytics key to stash 
+ #
+ # require urls to end with slash when there is no query params
+ # require urls not to end with slash when there is query params
+ # you may ask why but I think this is cool
+ #
+ # the internals of Mojolicious was studied for this code
+ # and the mechanism for redirect was copied from there
+ #
 
- if ( $^O =~ /^MS/ ) {
- 
-  $s->{googlekey} = undef; # windows = dev = no analytics 
- 
- } else {
- 
-  $s->{googlekey} = conf ( 'google_key' );
+ if ( scalar @{ $self->req->query_params->params } > 0 ) { # has params
   
+  $self->req->url->path->trailing_slash and do {
+
+   $self->res->code(301); # a permanent redirect
+
+   $self->res->headers->location(
+    substr ( $self->req->url->path->to_string, -1 ) # without the last char
+   );
+   
+   $self->res->headers->content_length(0); 
+   $self->rendered;
+   return;
+
+  };
+
+ } else { # doesn't have params
+
+  $self->req->url->path->trailing_slash or do {
+
+   $self->res->code(301); # a permanent redirect
+
+   $self->res->headers->location(
+    $self->req->url->path->to_string.'/' # add a slash
+   );
+   
+   $self->res->headers->content_length(0); 
+   $self->rendered;
+   return;
+
+  };
+
  }
- 
- $s->{setup_keys} = setup_keys;
- $s->{setup_values} = setup_values;
- 
- # the layout separator character from conf to stash
- $s->{sep} = conf ( 'sep' );
 
- # the layout path separator character from conf to stash
- $s->{pathsep} = conf ( 'sep_path' );
+ $s->{lang} = 'en'; $s->{langother} = 'fi'; # default to English
 
- # the url where the images get fetched from
- $s->{photobase} = conf ( 'base_photo' );
- 
- $s->{flagbase} = conf ( 'base_flag' );
-  
- my $url = $self->req->url;
-  
- #
- # require url to end with slash
- #
- 
-  $self->req->url->path->trailing_slash or # a trailing slash 
-  scalar @{ $self->req->query_params->params } > 0 or # or query param(s) 
-  ( $self->req->url->path->to_string  =~ /\..{2,4}$/ ) # or static file request
-  or do {
-      
-  # this redirect code is a modified version from Mojolicious core
-  # and appears to work as expected
-       
-  my $res = $self->res;
-  $res->code(301); # a permanent redirect
+ $s->{url} = $self->req->url;  # let the url be in the stash also
 
-  my $headers = $res->headers;
-  
-  # add slash to the end of the path
-  $headers->location($self->req->url->path->to_string.'/'); 
-  # if there was query parameters, they get dropped on redirect
-  # since this code is not executed with query params, it is ok
-  
-  $headers->content_length(0); $self->rendered; return $self;
- 
+ length ( $s->{url} ) > 2 and ( substr( $s->{url}, 0, 3 ) eq '/fi' ) and do {
+   $s->{lang} = 'fi'; $s->{langother} = 'en'; # Finnish
  };
-  
- # the language detection
- # - detect correct langauge based on the beginning of URL
- # - store the language to stash
- # - prepare the URL for language change feature
 
- if ( length ( $url ) < 3 ) {
- 
-  # too short to detect language
-  # default to english
- 
-  $s->{lang} = 'en';
-  $s->{langother} = 'fi'; 
- 
- } elsif ( substr ( $url, 0, 3 ) eq '/fi' ) {
- 
-  $s->{lang} = 'fi'; $s->{langother} = 'en'; 
-  
- } elsif( substr ( $url, 0, 3 ) eq '/en' ) {
- 
-  $s->{lang} = 'fels'; $s->{langother} = 'fi';
+ # put Google Analytics key to stash if not on Windows (dev) and in production 
 
- } else { # default to english
+ $s->{googlekey} = undef;
+
+ if ( ( $ENV{MOJO_MODE} eq 'production' ) and not ( $^O =~ /^MS/ ) ) {
+       
+  $s->{googlekey} = conf ( 'google_key' ); 
  
-  $s->{lang} = 'fi'; $s->{langother} = 'en';
-  
  }
-
- # let the url be in the stash also
- $s->{url} = $url;
  
+ # the global layout separator characters
+ $s->{sep} = '.';
+ $s->{pathsep} = '>';
+
+ $s->{photobase} = conf ( 'base_photo' ); # the url where the all photos are
+ $s->{flagbase} = conf ( 'base_flag' );  # the url where the all flag gifs are
+   
  $s->{now} = dtlang ( $s->{lang} );
  
  # fetch texts for the current language and make them available to all
  # controller and templates as variable t 
- $s->{t} = text ( $s->{lang} // 'en' );
+ $s->{t} = text ( $s->{lang} );
  
-
- # VITAL STEP: process and populate session                                                                                  
+ # process and populate session with setup parameters                                                                                  
  setup_init ( $self );
       
  # attempt to fetch from cache
- 
- # not for static content
-( $self->req->url->path->to_string  =~ /\..{2,4}$/ ) and return;   
+ if ( my $res = cache_get ( cachekey ( $self ) ) ) {  # cache hit
+
+  $self->res->code(200);
+  $self->res->headers->content_type( $res->[0] );
+  $self->res->headers->content_length( $res->[1] );
+  $self->res->body( ${ $res->[2] } ); # scalar ref to prevent copying
+  $self->rendered;
+  $s->{cached} = 1; # mark that the content came from cache
+  return $self;
+
+ } else {
+
+  $s->{cached} = 0;
+
+ }
   
- if ( my $res = cache_get ( cachekey ( $self ) ) ) {
- 
-   $self->res->code(200);
-   $self->res->headers->content_type( $res->[0] );
-   $self->res->body( ${ $res->[2] } );
-   $self->rendered;
-   $s->{cached} = 1;
-   #warn ( "CACHE HIT $s->{url}" );
-   return $self;
-  } else {
-   #warn ( "CACHE MISS $s->{url}" );
-  }
-     
 }
 
 sub after {
 
  my $self = shift; my $s = $self->{stash};
  
- # don't touch static content
+ # we skip all processing for static files
  ( $self->req->url->path->to_string  =~ /\..{2,4}$/ ) and return;
-    
- ( defined $s->{controller} and defined $s->{action} and
- defined $s->{url} ) or return;
  
- my $age = 0;
- my $chi = undef;
+ # we require the basics to be available for further processing   
+ ( 
+  defined $s->{controller} and defined $s->{action} and defined $s->{url} 
+ ) or return;
+ 
+ my $age = 0; # lifetime in response headers, default to no lifetime 
+ my $cac = undef; # lifetime in server side page cache
    
  given ( $s->{hold} ) {
  
-  # 15 min on client, 14 min on server
-  when ( 'dynamic' ) { $age = 15*60; $chi = '14 min' } 
+  # 15 min on headers (for clients), 14 min on server
+  when ( 'dynamic' ) { $age = 15*60; $cac = '14 min' } 
   
-  # 15 min on client, inf on server
-  when ( 'static' ) { $age = 15*60; $chi = 'never' } 
+  # 15 min on headers (for clients), inf on server
+  when ( 'static' ) { $age = 15*60; $cac = 'never' } 
  
+  # 'off' or any other => NOP
+
  }
  
+ # set cache response header
  $self->res->headers->header('Cache-Control' => 'max-age=' . $age );
  
- $chi or return;
+ $cac or return; # continue only if server side page caching is needed
  
- # no recaching: if the result came from the cache don't cache it again
- defined $s->{cached} and return;
+ # no recaching: if the result came from the cache then don't cache it again
+ $s->{cached} and return;
  
- 
+ # we cache only GET and with 200 OK to be safe
  if ( $self->req->method eq 'GET' and $self->res->code == 200 ) {
-   
-   my $set = [ 
+
+  cache_set (
+   cachekey ( $self ),
+   [ 
     $self->res->headers->content_type,
     $self->res->headers->content_length,
-    \$self->res->body 
-   ];
-       
-   cache_set ( cachekey ( $self ), $set, $chi );
-  
-  }
+    \$self->res->body # scalar ref to prevent copying
+   ],
+   $cac
+  );
+   
+ }
     
 }
 
-sub cachekey {
- (
-  'page', 
-  $_[0]->{stash}->{url}, 
-  map { $_[0]->{stash}->{$_} } setup_keys
- )
-}
+# the key for page caching consists of namespace 'page', 
+# the url and all setup values in the order of their keys
+
+sub cachekey { (
+ 'page', $_[0]->{stash}->{url},  map { $_[0]->{stash}->{$_} } setup_keys
+) }
 
 1;
