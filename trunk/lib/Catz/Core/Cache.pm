@@ -22,35 +22,55 @@
 # THE SOFTWARE.
 #  
 
-package Catz::Model::News;
+package Catz::Core::Cache;
 
 use 5.10.0; use strict; use warnings;
 
-use parent 'Catz::Core::Model';
+use CHI;
 
-use Catz::Util::Time qw ( dtexpand );
+use parent 'Exporter';
 
-sub _all {
+our @EXPORT = qw ( cache_set cache_get );
 
- my ( $self, $lang ) = @_;
-      
- $self->dball( 
-  "select dt,title_$lang,text_$lang,url from mnews order by dt desc" 
+my $cacheon = $ENV{MOJO_MODE} eq 'production' ? 1 : 0;
+
+my $cache = {};
+
+foreach my $nspace ( qw ( db model page ) ) {
+
+ $cache->{$nspace} = CHI->new ( 
+  driver => 'File', namespace => $nspace,
+  root_dir => $ENV{MOJO_HOME}.'/cache', depth => 2
  );
-  
+
 }
 
-sub _latest {
+my $sep = '_';
 
- my ( $self, $lang, $limit ) = @_;
-      
- my $res = $self->all( $lang );
-   
- # if less news than requested then downsize the request
- scalar @$res < $limit and $limit = scalar @$res;
-  
- [ @{ $res } [ 0 .. $limit - 1 ] ];
+sub cache_set {
+
+ $cacheon or return;
+
+ my $space = shift; my $exp = pop; my $val = pop;
+
+ $cache->{$space} or return; 
+
+ my $key = join $sep, @_;
+
+ $cache->{$space}->set( $key, $val, $exp );
+
+}
+
+sub cache_get {
+
+ $cacheon or return; 
+
+ my $space = shift; 
+
+ $cache->{$space} or return; 
  
+ $cache->{$space}->get( join $sep, @_ );
+
 }
 
-1;
+1; 

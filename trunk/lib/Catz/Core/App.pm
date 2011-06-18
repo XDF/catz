@@ -28,8 +28,7 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Mojolicious';
 
-use CHI;
-
+use Catz::Core::Cache;
 use Catz::Core::Conf;
 use Catz::Core::Text;
 use Catz::Data::List qw ( list_matrix );
@@ -38,16 +37,6 @@ use Catz::Util::File qw ( fileread findlatest pathcut );
 use Catz::Util::Time qw( dt dtdate dttime dtexpand dtlang thisyear );
 use Catz::Util::Number qw ( fmt fullnum33 round );
 use Catz::Util::String qw ( enurl decode encode limit );
-
-my $cache = CHI->new ( 
- driver => 'File',
- namespace => 'page',
- root_dir => conf ( 'path_cache' ),
- depth => conf ( 'cache_depth' )
-);
-
-my $CACHESEP = conf ( 'cache_sep' );
-my $CACHEON = conf ( 'cache_page' ); 
 
 sub startup {
 
@@ -250,56 +239,13 @@ sub before {
 
  # VITAL STEP: process and populate session                                                                                  
  setup_init ( $self );
-    
- my $now = time();
- 
- if ( $self->session ( 'peek' ) ne '0' ) { # version is set in peek
-
-  # force use of the user's set version
-  $s->{version} = $self->session ( 'peek' );
-  
-  # reset session version & checked
-  $self->session ( version => 0 );
-  $self->session ( checked => 0 );
- 
- } else {
-
-  
-  if ( 
-   ( $now - $self->session('checked') ) > conf ( 'version_check_delay' )
-  ) { # check no often than every 'version_check_delay' seconds 
-   
-   # find the latest key file
-   my $file = findlatest ( conf ( 'path_db' ), 'txt' );
-   
-   # if key file not found then find the latest database file
-   $file or $file = findlatest ( conf ( 'path_db' ), 'db' );
-   
-   # key file or db file must be found else it is a fatal error
-   $file or die "tried twice but database not found";
-         
-   my $new = substr ( pathcut ( $file ), 0, 14 ); # get the datetime part
-    
-   $self->session ( version => $new ); $s->{version} = $new;
-
-   $self->session ( checked => $now );
-        
-  } else { # the check has not yet expired
-    
-   $s->{version} =  $self->session('version');
- 
-  }
- 
- }
-  
+      
  # attempt to fetch from cache
  
  # not for static content
 ( $self->req->url->path->to_string  =~ /\..{2,4}$/ ) and return;   
- 
- $CACHEON and do {
   
-  if ( my $res = $cache->get ( cachekey ( $self ) ) ) {
+ if ( my $res = cache_get ( cachekey ( $self ) ) ) {
  
    $self->res->code(200);
    $self->res->headers->content_type( $res->[0] );
@@ -311,7 +257,6 @@ sub before {
   } else {
    #warn ( "CACHE MISS $s->{url}" );
   }
- };
      
 }
 
@@ -345,9 +290,8 @@ sub after {
  # no recaching: if the result came from the cache don't cache it again
  defined $s->{cached} and return;
  
- $CACHEON and do {
  
-  if ( $self->req->method eq 'GET' and $self->res->code == 200 ) {
+ if ( $self->req->method eq 'GET' and $self->res->code == 200 ) {
    
    my $set = [ 
     $self->res->headers->content_type,
@@ -355,19 +299,15 @@ sub after {
     \$self->res->body 
    ];
        
-   $cache->set ( cachekey ( $self ), $set, $chi );
+   cache_set ( cachekey ( $self ), $set, $chi );
   
   }
- }
- ;
     
 }
 
-# we use version,url,setupkeys as key for pages
-
 sub cachekey {
- join $CACHESEP, ( 
-  $_[0]->{stash}->{version},
+ (
+  'page', 
   $_[0]->{stash}->{url}, 
   map { $_[0]->{stash}->{$_} } setup_keys
  )

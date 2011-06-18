@@ -35,11 +35,11 @@ use List::MoreUtils qw ( none );
 use Catz::Core::Conf;
 use Catz::Util::File qw ( findfiles );
 
-# automatic static preloading and instantiating of all models
+# automatic compile-time loading and instantiating of all models
 
 my $mpath =  conf ( 'path_model' );
 
-my @noload = qw ( Base Misc ); # skip these models
+my $noload = { 'Base' => 1, 'Common' => 1 }; # skip these models
 
 my $models = {}; # model instances are kept here
 
@@ -47,7 +47,7 @@ foreach my $mfile ( findfiles ( $mpath ) ) {
 
  my $class = $mfile; $class =~ s|$mpath/||; $class =~ s|\.pm$||;
   
- none { $class eq $_ } @noload and do {
+ $noload->{$class} or do {
  
   require $mfile;
     
@@ -114,14 +114,14 @@ sub fetch {
  # expects model and sub as 'model#sub' and an argument list
  
  my ( $self, $target, @args ) = @_; my $s = $self->{stash};
-    
+
  my ( $model, $sub ) = split /#/, $target;
  
- ( $model and $sub ) or die "unable to access target '$target'";
+ ( $model and $sub ) or die "illegal target '$target'";
  
  defined $models->{$model} or die "model '$model' is not bind";
   
- $models->{$model}->fetch( $s->{version}, $s->{lang}, $sub, @args );
+ $models->{$model}->fetch( $sub, $self->stash->{lang}, @args );
    
 }
 

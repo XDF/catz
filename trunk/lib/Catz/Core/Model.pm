@@ -28,20 +28,14 @@ package Catz::Core::Model;
 
 use 5.10.0; use strict; use warnings;
 
-use CHI;
+use DBI;
 
-use Catz::Core::Conf;
-use Catz::Core::DB;
+use Catz::Core::Cache;
 
-my $cache = CHI->new ( 
- driver => 'File',
- namespace => 'model',
- root_dir => conf ( 'path_cache' ),
- depth => conf ( 'cache_depth' )
-);
-
-my $CACHESEP = conf ( 'cache_sep' );
-my $CACHEON = conf ( 'cache_model' ); 
+my $db =  DBI->connect (
+ 'dbi:SQLite:dbname='.$ENV{MOJO_HOME}.'/db/master.db',
+ undef, undef, { AutoCommit => 1, RaiseError => 1, PrintError => 1 }
+) || die ( $DBI::errstr ); 
 
 sub new {
 
@@ -49,45 +43,26 @@ sub new {
  
  $class =~ /::(\w+)$/;
 
- my $self = { name => $1, db => undef, lang => undef };
+ my $self = { name => lc($1) };
  
  bless ( $self, $class );
  
- $self->{expiress} = $self->cachet;
+ $self->{expire} = $self->expiry;
  
  return $self;
  
 }
 
-sub cachetime {
+sub cachetime { $_[0]->{expire}->{$_[1]} ? $_[0]->{expire}->{$_[1]} : 'never' } 
 
- my ( $self, $sub ) = @_;
- 
- $self->{expiress}->{$sub} and return $self->{expiress}->{$sub};
+# override this sub to set caching times other than never
+sub expiry { {} }
 
- return 'never';
+sub fetch {
 
-}
-
-sub cachet { my $self = shift; {} }
-
-sub fetch { # the API for Controllers to access Models
-
- my ( $self, $version, $lang, $sub, @args ) = @_;
- 
- # check that DB is initialized and for this data version
- ( $self->{db} and $self->{db}->{version} eq $version ) or do {
- 
-  # if not, then switch to a fresh database instance
-  $self->{db} and $self->{db}->disconnect;
-  $self->{db} = Catz::Core::DB->new ( $version );
-  
- };
-     
- $self->{lang} = $lang;
-  
+ my ( $self, $sub, @args ) = @_;
+       
  { no strict 'refs'; return $self->$sub( @args ) }
- 
    
 }
 
@@ -95,48 +70,100 @@ sub DESTROY { }
 
 sub AUTOLOAD {
 
- my ( $self, @args ) = @_; our $AUTOLOAD;
-	
- my $sub = $AUTOLOAD; $sub =~ s/.*://;
+ my ( $self, @args ) = @_;
+
+ my $nspace = 'model'; 
+
+ our $AUTOLOAD; my $sub = $AUTOLOAD; $sub =~ s/.*://;
   
  substr ( $sub, 0, 1 ) eq '_' and 
   die "recursive autoload short circuit with '$sub'";
-  
- my $res;
-  
- $CACHEON and do { # try to get the requested result from the cache
  
-  # we use version+model+sub+lang+args as key for models
-
-  $res = $cache->get ( ( join $CACHESEP, ( 
-    $self->{db}->{version}, $self->{name}, $sub, $self->{lang}, @args
-   ) ) 
-  );
+ my $res = cache_get ( $nspace, $self->{name}, $sub, @args ); 
  
-  $res and return $res; # if cache hit then done
- 
- };
+ $res and return $res; # if cache hit then done
  
  my $target = '_' . $sub;
    
  { no strict 'refs'; $res = $self->$target( @args ) }
   
- $CACHEON and $cache->set ( ( join $CACHESEP, ( 
-   $self->{db}->{version}, $self->{name}, $sub, $self->{lang}, @args
-  ) ), $res, $self->cachetime ( $sub ) 
+ cache_set ( 
+  $nspace, $self->{name}, $sub, @args, $res, 
+  $self->cachetime ( $sub )
  );
  
  return $res;
 
 }
 
-sub dball { my $self = shift; $self->{db}->run ( 'all', @_ ) }
+sub db_run {
 
-sub dbrow { my $self = shift; $self->{db}->run ( 'row', @_ ) }
+ my ( $comm, $sql, @args ) = @_;
 
-sub dbcol { my $self = shift; $self->{db}->run ( 'col', @_ ) }
+ my $nspace = 'db';
+  
+ my $res = 
+  cache_get ( $nspace, $comm, $sql, @args );
+ 
+ $res and return $res; # if cache hit then done
 
-sub dbone { my $self = shift; $self->{db}->run ( 'one', @_ ) }
+ given ( $comm ) {
+  
+  when ( 'one' ) { 
+
+   my $arr = $db->selectrow_arrayref( $sql, undef, @args );
+  
+   $res = $arr->[0];
+  
+  }
+  
+  when ( 'row' ) {
+  
+   $res = $db->selectrow_arrayref( $sql, undef, @args );
+
+  }
+  
+  when ( 'col' ) {
+  
+   $res = $db->selectcol_arrayref( $sql, undef, @args );
+  
+  }
+  
+  when ( 'all' ) {
+  
+   $res = $db->selectall_arrayref( $sql, undef, @args );
+  
+  }
+
+  when ( 'hash' ) {
+  
+   my $kf = shift @args;
+
+   $res = $db->selectall_hashref( $sql, $kf, undef, @args );
+
+   unshift @args, $kf;
+  
+  }
+ 
+  default { die "unknown database command '$comm'" }
+ 
+ }
+
+ cache_set ( $nspace, $comm, $sql, @args, $res, 'never' );
+  
+ return $res;
+
+}
+
+sub dball { shift; db_run ( 'all', @_ ) }
+
+sub dbrow { shift; db_run ( 'row', @_ ) }
+
+sub dbcol { shift; db_run ( 'col', @_ ) }
+
+sub dbone { shift; db_run ( 'one', @_ ) }
+
+sub dbhash { shift; db_run ( 'hash', @_ ) }
 
 1;
 

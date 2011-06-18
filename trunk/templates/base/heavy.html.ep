@@ -29,7 +29,6 @@
 <meta name="fundamental_technologies" content="<%== $t->{FUNDTECH} %>">
 <meta name="fundamental_modules" content="<%== $t->{FUNDMODULE} %>">
 <meta name="generated_at" content="<%== $now %>"> 
-<meta name="data_version" content="<%== $version %>"> 
 <meta name="robots" content="<%==  ( $meta_index ? 'index' : 'noindex' ) . ',' . ( $meta_follow ? 'follow' : 'nofollow' ) %>">
 %#
 %# --------------------

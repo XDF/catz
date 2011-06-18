@@ -29,105 +29,21 @@ package Catz::Core::DB;
 
 use 5.10.0; use strict; use warnings;
 
+use parent 'Exporter';
+
+our @EXPORT = qw ( db_all db_col db_row db_one db_hash );
+
 use DBI;
-use CHI;
 
-use Catz::Core::Conf;
+use Catz::Core::Cache;
 
-my $cache = CHI->new ( 
- driver => 'File',
- namespace => 'db',
- root_dir => conf ( 'path_cache' ),
- depth => conf ( 'cache_depth' )
-);
 
-my $CACHESEP = conf ( 'cache_sep' );
-my $CACHEON = conf ( 'cache_db' ); 
 
-sub new {
+my $nspace = 'db';
 
- my ( $class, $version ) = @_;
-   
- my $db = DBI->connect (
-  'dbi:SQLite:dbname=' . conf ( 'path_db' ) . "/$version.db",
-  undef, undef, { AutoCommit => 1, RaiseError => 1, PrintError => 1 }
- ) || die ( $DBI::errstr );
- 
- my $self = { version => $version, db => $db, expires => 'never' };
- 
- bless ( $self, $class );
+my $stm = {};
 
- return $self;
- 
-}
 
-sub DESTROY { $_[0]->disconnect }
-
-sub disconnect {
-
- my $self = shift;
-
- $self->{db} and $self->{db}->disconnect;
-
-}
-
-sub run {
-
- my ( $self, $comm, $sql, @args ) = @_;
- 
- my $version = $self->{version}; 
- 
- my $res;
- 
- $CACHEON and do {
- 
-  # try to get the requested result from the cache
-  
-  # we use version,command,sql,args as key for db access
-  
-  $res = $cache->get ( ( join $CACHESEP, ( $version, $comm, $sql, @args ) ) );
- 
-  $res and return $res; # if cache hit then done
- 
- };
-
- given ( $comm ) {
-  
-  when ( 'one' ) { 
-
-   my $arr = $self->{db}->selectrow_arrayref( $sql, undef, @args );
-  
-   $res = $arr->[0];
-  
-  }
-  
-  when ( 'row' ) {
-  
-   $res = $self->{db}->selectrow_arrayref( $sql, undef, @args );
-
-  }
-  
-  when ( 'col' ) {
-  
-   $res = $self->{db}->selectcol_arrayref( $sql, undef, @args );
-  
-  }
-  
-  when ( 'all' ) {
-  
-   $res = $self->{db}->selectall_arrayref( $sql, undef, @args );
-  
-  }
- 
-  default { die "unknown database command '$comm'" }
- 
- }
-
- $CACHEON and $cache->set ( ( join $CACHESEP, ( $version, $comm, $sql, @args ) ), $res, $self->{expires} );
-  
- return $res;
-
-}
 
 
 

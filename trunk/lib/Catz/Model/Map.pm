@@ -91,7 +91,7 @@ sub _dual {
  # value can presented with the pri,sec -pair (arrayref)
  # found in the hashref
  
- my $self = shift; my $lang = $self->{lang};
+ my ( $self, $lang ) = @_;
  
  my $sql = '';
  
@@ -123,7 +123,7 @@ sub _trans {
  # provides translations for any pri,sec -combination
  # returns the translated sec (that can be the same)
 
- my ( $self, $spri, $ssec ) = @_; my $lang = $self->{lang};
+ my ( $self, $lang, $spri, $ssec ) = @_;
  
  my $gnal = $lang eq 'fi' ? 'en' : 'fi';
  
