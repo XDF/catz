@@ -1,5 +1,3 @@
-% if ( $runmode eq 'search' ) {
-<div class="bar"><h2><%== $t->{SEARCH_EXPLAIN} %></h2>
 %  for ( my $i = 0; $i < $args_count; $i=$i+2 ) {
 %  $i > 0 and do {
 <%= $sep %>
@@ -34,5 +32,3 @@ if ( $epri eq 'has' ) {
 <span class="heavy"><%= $args_count == 2 ? '' : $t->{'SEARCH_'.$oper} %></span> <%= $t->{uc($epri)} %> <%= $t->{'SEARCH_'.$mode.$where} %> <span class="lean"><%= $shw %></span>
 % }
 % }
-% }
-</div>

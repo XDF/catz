@@ -3,21 +3,21 @@
 %#
 %# --------------------
 %#
-<h2 class="block bar">K‰sitteet</h2>
+<h2 class="block bar">K√§sitteet</h2>
 <div class="bar">
-K‰site kirjoitetaan ennen hakutermi‰ ja sen ja hakutermin v‰liin tulee yht‰suurusmerkki. Jos k‰sitett‰ ei anneta, haetaan kaikista k‰sitteist‰.
+K√§site kirjoitetaan ennen hakutermi√§ ja sen ja hakutermin v√§liin tulee yht√§suurusmerkki. Jos k√§sitett√§ ei anneta, haetaan kaikista k√§sitteist√§.
 </div>
 %# --------------------
 %#
-<h2 class="block bar stripetop">Albumitason k‰sitteet</h2>
+<h2 class="block bar stripetop">Albumitason k√§sitteet</h2>
 %#
 %# --------------------
 %#
 <div class="bar">
 % $exa = 'album';
 % $exb = 'Kissaliiton Vuoden kissa 2009 -palkintogaala';
-<span class="lean"><%== $exa %></span> on albumin selv‰kielinen nimi, esim.
-<a href="/<%== $lang %>/search?what=<%== enurl(qq{$exa="$exb"}) %>"><%= $exb %></a> - huomaa etta albumien nimiin voi tulla p‰ivityksi‰, joten suositeltavampia k‰sitteit‰ ovat  <span class="lean">folder</span> ja  <span class="lean">date</span> 
+<span class="lean"><%== $exa %></span> on albumin selv√§kielinen nimi, esim.
+<a href="/<%== $lang %>/search?what=<%== enurl(qq{$exa="$exb"}) %>"><%= $exb %></a> - huomaa etta albumien nimiin voi tulla p√§ivityksi√§, joten suositeltavampia k√§sitteit√§ ovat  <span class="lean">folder</span> ja  <span class="lean">date</span> 
 </div>
 %#
 %# --------------------
@@ -34,7 +34,7 @@ K‰site kirjoitetaan ennen hakutermi‰ ja sen ja hakutermin v‰liin tulee yht‰suuru
 <div class="bar">
 % $exa = 'date';
 % $exb = '20081122';
-<span class="lean"><%== $exa %></span> on albumin p‰iv‰m‰‰r‰, joka on muotoa VVVVKKPP, esim.
+<span class="lean"><%== $exa %></span> on albumin p√§iv√§m√§√§r√§, joka on muotoa VVVVKKPP, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
 </div> 
 %#
@@ -43,7 +43,7 @@ K‰site kirjoitetaan ennen hakutermi‰ ja sen ja hakutermin v‰liin tulee yht‰suuru
 <div class="bar">
 % $exa = 'location';
 % $exb = 'Kuopio';
-<span class="lean"><%== $exa %></span> on n‰yttelyn paikkakunta, esim.
+<span class="lean"><%== $exa %></span> on n√§yttelyn paikkakunta, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
 </div>
 %#
@@ -52,7 +52,7 @@ K‰site kirjoitetaan ennen hakutermi‰ ja sen ja hakutermin v‰liin tulee yht‰suuru
 <div class="bar">
 % $exa = 'organizer';
 % $exb = 'POROK';
-<span class="lean"><%== $exa %></span> on n‰yttelyn j‰rjest‰neen yhdistyksen nimi, esim.
+<span class="lean"><%== $exa %></span> on n√§yttelyn j√§rjest√§neen yhdistyksen nimi, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
 </div>
 %#
@@ -61,20 +61,20 @@ K‰site kirjoitetaan ennen hakutermi‰ ja sen ja hakutermin v‰liin tulee yht‰suuru
 <div class="bar">
 % $exa = 'umbrella';
 % $exb = 'CFA';
-<span class="lean"><%== $exa %></span> on n‰yttelyn kattoj‰rjestˆn nimi, esim.
+<span class="lean"><%== $exa %></span> on n√§yttelyn kattoj√§rjest√∂n nimi, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
 </div>
 %#
 %# --------------------
 %#
-<h2 class="block bar stripetop">Kuvatason k‰sitteet</h2>
+<h2 class="block bar stripetop">Kuvatason k√§sitteet</h2>
 %#
 %# --------------------
 %#
 <div class="bar">
 % $exa = 'text';
 % $exb = '*ruusuk*';
-<span class="lean"><%== $exa %></span> on kuvan kuvateksti kokonaisuudessaan, ja kuvatekstist‰ haetaan usein jotain merkkijonoa, kuten esim.
+<span class="lean"><%== $exa %></span> on kuvan kuvateksti kokonaisuudessaan, ja kuvatekstist√§ haetaan usein jotain merkkijonoa, kuten esim.
 <a href="/<%== $lang %>/search?what=<%== enurl(qq{$exa=$exb}) %>"><%= $exb %></a>
 </div>
 %#
@@ -197,14 +197,14 @@ K‰site kirjoitetaan ennen hakutermi‰ ja sen ja hakutermin v‰liin tulee yht‰suuru
 %#
 %# --------------------
 %#
-<h2 class="block bar stripetop">Valokuvaustkeniikkaan liittyv‰t k‰sitteet</h2>
+<h2 class="block bar stripetop">Valokuvaustkeniikkaan liittyv√§t k√§sitteet</h2>
 %#
 %# --------------------
 %#
 <div class="bar">
 % $exa = 'lens';
 % $exb = 'Tokina 17mm f/3.5 AT-X Pro';
-<span class="lean"><%== $exa %></span> on kuvan ottamisessa k‰ytetyn objektiivin nimi, esim.
+<span class="lean"><%== $exa %></span> on kuvan ottamisessa k√§ytetyn objektiivin nimi, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
 </div>
 %#
@@ -213,7 +213,7 @@ K‰site kirjoitetaan ennen hakutermi‰ ja sen ja hakutermin v‰liin tulee yht‰suuru
 <div class="bar">
 % $exa = 'body';
 % $exb = 'Canon EOS 20D';
-<span class="lean"><%== $exa %></span> on kuvan ottamisessa k‰ytetyn kamerarungon nimi, esim.
+<span class="lean"><%== $exa %></span> on kuvan ottamisessa k√§ytetyn kamerarungon nimi, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
 </div>
 %#
@@ -222,7 +222,7 @@ K‰site kirjoitetaan ennen hakutermi‰ ja sen ja hakutermin v‰liin tulee yht‰suuru
 <div class="bar">
 % $exa = 'fnumber';
 % $exb = 'f/2.0';
-<span class="lean"><%== $exa %></span> on kuvan ottamisessa k‰ytetty aukkoasetus, esim.
+<span class="lean"><%== $exa %></span> on kuvan ottamisessa k√§ytetty aukkoasetus, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
 </div>
 %#
@@ -231,7 +231,7 @@ K‰site kirjoitetaan ennen hakutermi‰ ja sen ja hakutermin v‰liin tulee yht‰suuru
 <div class="bar">
 % $exa = 'exposuretime';
 % $exb = '1/200 s';
-<span class="lean"><%== $exa %></span> on kuvan ottamisessa k‰ytetty suljinaika, esim.
+<span class="lean"><%== $exa %></span> on kuvan ottamisessa k√§ytetty suljinaika, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
 </div>
 %#
@@ -249,21 +249,21 @@ K‰site kirjoitetaan ennen hakutermi‰ ja sen ja hakutermin v‰liin tulee yht‰suuru
 <div class="bar">
 % $exa = 'focallength';
 % $exb = '200 mm';
-<span class="lean"><%== $exa %></span> on se objektiivin polttov‰li, jolla kuva on otettu, esim.
+<span class="lean"><%== $exa %></span> on se objektiivin polttov√§li, jolla kuva on otettu, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
 </div>
 %# --------------------
 %#
-<h2 class="block bar stripetop">Erityisk‰sitteet</h2>
+<h2 class="block bar stripetop">Erityisk√§sitteet</h2>
 %#
 %# --------------------
 <div class="bar">
-<span class="lean">has</span> on k‰site, jonka avulla haku voidaan rajata niihin kuviin, jossa on jokin k‰site (tai ei ole), esim. haku 
-<a href="/<%== $lang %>/search?what=<%= enurl ( '-has=catname' ) %>">-has=catname</a> hakee ne kuvat, joissa ei ole kissan nime‰
+<span class="lean">has</span> on k√§site, jonka avulla haku voidaan rajata niihin kuviin, jossa on jokin k√§site (tai ei ole), esim. haku 
+<a href="/<%== $lang %>/search?what=<%= enurl ( '-has=catname' ) %>">-has=catname</a> hakee ne kuvat, joissa ei ole kissan nime√§
 </div>
 %#
 %# --------------------
 <div class="bar">
-<span class="lean">any</span> on k‰site, jota j‰restelm‰ k‰ytt‰‰ n‰kym‰ttˆm‰sti, jos hakutermille ei kiinnitet‰ k‰sitett‰, ja se tarkoittaa, ett‰ haetaan kaikista k‰sitteist‰, eli haut 
+<span class="lean">any</span> on k√§site, jota j√§restelm√§ k√§ytt√§√§ n√§kym√§tt√∂m√§sti, jos hakutermille ei kiinnitet√§ k√§sitett√§, ja se tarkoittaa, ett√§ haetaan kaikista k√§sitteist√§, eli haut 
 <a href="/<%== $lang %>/search?what=<%= enurl ( 'any=*agility*' ) %>">any=*agility*</a> ja <a href="/<%== $lang %>/search?what=<%= enurl ( '*agility*' ) %>">*agility*</a> tuottavat saman tuloksen
 </div>    

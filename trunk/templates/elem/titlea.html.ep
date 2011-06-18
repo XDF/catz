@@ -7,7 +7,7 @@
 <%= $t->{uc($pri)} %> <%= $sec %> 
 %  }
 % } elsif ( $runmode eq 'search' ) {
-<%= $t->{SEARCH_RESULT} %> <%= limit ( $what, 50 ) %>
+<%= $t->{SEARCH_RESULT} %> <%= limit ( $what, 100 ) %>
 % } else { # default to runmode 'all' 
 <%= $t->{ALL} %> <%= $t->{PHOTOS} %>
 % }

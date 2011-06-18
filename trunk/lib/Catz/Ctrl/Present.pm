@@ -83,7 +83,9 @@ sub all {
  $s->{args_count} = 0;  # so the count of args is also 0
  $s->{runmode} = 'all'; # set the runmode to all photos mode
  $s->{pri} = undef; $s->{sec} = undef; $s->{what} = undef;
- $s->{breedern} = undef;
+ $s->{refine} = undef;
+ $s->{breedernation} = undef;
+ $s->{breederurl} = undef;
  
  $self->pre or return 0;
 
@@ -104,13 +106,10 @@ sub pair {
  $s->{args_array} = [ $s->{pri}, $s->{sec} ];
  $s->{args_count} = 2;
  $s->{what} = undef;
-
- $s->{breedern} = undef;
+ $s->{refine} = undef;
+ $s->{breedernation} = undef;
+ $s->{breederurl} = undef;
  
- if ( $s->{pri} eq 'breeder' ) {
-  $s->{breedern} = $self->fetch ( "related#breedern", $s->{sec} );
- }
-  
  $s->{runmode} = 'pair'; # set the runmode to pri-sec pair 
 
  $self->pre or return 0;
@@ -122,6 +121,13 @@ sub pair {
   $self->encode( $trans ) ). '/' .
   ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
 
+ $s->{refine} = $self->fetch ('related#refines', $s->{pri}, $s->{sec}, @{ $s->{matrix}->{$s->{pri}}->{refine} } ); 
+
+ if ( $s->{pri} eq 'breeder' ) {
+  $s->{breedernation} = $self->fetch ( "related#breedernation", $s->{sec} );
+  $s->{breederurl} = $self->fetch ( "related#breederurl", $s->{sec} );
+ }
+ 
  return 1;
 
 }
@@ -131,7 +137,9 @@ sub pattern {
  my $self = shift; my $s = $self->{stash};
   
  $s->{pri} = undef; $s->{sec} = undef;
- $s->{breedern} = undef;
+ $s->{refine} = undef;
+ $s->{breedernation} = undef;
+ $s->{breederurl} = undef;
  
  $s->{what} = $self->param('what') // undef;
  $s->{init} = $self->param('init') // undef;
@@ -271,8 +279,6 @@ sub multi {
  $s->{fresh} = $self->fetch ( 'related#date', $s->{xfirst} );
  $s->{ancient} = $self->fetch ( 'related#date', $s->{xlast} );
   
- $s->{related} = undef;
- 
  $self->render( template => 'page/browse' );
  
  return 1;

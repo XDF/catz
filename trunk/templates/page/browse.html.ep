@@ -12,8 +12,8 @@
 <% content 'btitle' => begin %>
 % if ( $pri eq 'nationcode' ) {
 <%== include 'elem/flag', flag => $sec %>
-% } elsif ( $breedern ) {
-<a href="/<%== $lang %>/browse/nationcode/<%== $breedern %>/"><%== include 'elem/flag', flag => $breedern %></a>
+% } elsif ( $breedernation ) {
+<a href="/<%== $lang %>/browse/nationcode/<%== $breedernation %>/"><%== include 'elem/flag', flag => $breedernation %></a>
 % }
 <h1><%== include 'elem/titleb' =%> (<%= $from - $to == 1 ? $t->{PHOTO} : $t->{PHOTOS} %> <%== $from %>-<%== $to %>/<%= $total %>)</h1>
 <% end %>
@@ -117,24 +117,10 @@
 %#
 %# --------------------
 %#
-% if ( $related ) { # related info is provided by controller
-<div>
-<h2><%= $t->{uc($args_array->[0])} %> <%= $args_array->[1] %></h2>
-% foreach my $row ( @$related ) {
-<div class="aero unit">
-<%== $t->{uc($row->[0])} %>
-% foreach my $item ( @{ $row->[1] } ) {
-<%== $sep %> <a href="<%== include 'href/argsnoid', tokey => $row->[0], toval => $item %>"><%== $item %></a>
-% }
-</div>
-% }
-</div>
-% }
-%#
-%# --------------------
-%#
 <div class="bar">
-<h2><%== include 'elem/titlea' %></h2> 
+% if ( defined $breederurl ) {
+<a href="<%== $breederurl %>"><%= $breederurl %></a> <%= $sep %>
+% } 
 <%= $total %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> <%= $sep %>
 <%= dtexpand ( $ancient, $lang ) %>
 % if ( $fresh ne $ancient ) {
@@ -152,29 +138,26 @@
 % if ( $cover_nocat > 0 ) { 
 <%= $sep %> <a href="/<%== $lang %>/search?what=<%== enurl ( $url_nocat ) %>"><%== fmt ( $cover_nocat, $lang ) %> <%= $cover_nocat == 1 ? $t->{NOCAT} :  $t->{NOCATA} %></a>
 % }
+% if ( $runmode eq 'search' ) {
+<%= $sep %> <%== include 'block/explain' %>
+% }
 </div>
 %#
 %# --------------------
 %#
-%== include 'block/explain';
+% if ( $page == 1 ) { 
+%== include 'block/refines';
+% } else {
+%== include 'block/texts';
+% }
 %#
 %# --------------------
 %#
-% if ( scalar keys %{ $texts } > 0 ) {
-<div class="bar">
-% my $i = 0;
-<h2><%= $t->{TEXTS} %></h2> 
-<span class="shrink">
-% foreach my $th ( @{ $thumb } ) {
-% defined $texts->{$th->[0]} and do {
-% my $toid = fullnum33 ( $th->[1], $th->[2] ); 
-<%= $i++ > 0 ? $sep : '' %> <%= $t->{PHOTO} %> <%== $from + $i %> <a href="<%== include 'href/actionid', toaction => 'auto', toid => $toid %>"><%= $texts->{$th->[0]} %></a>
-% };
-% $i++;
+% if ( $page == 1 ) {
+%== include 'block/texts'; 
+% } else {
+%== include 'block/refines';
 % }
-</span></div>
-% }
-</div>
 %#
 %# --------------------
 %#
