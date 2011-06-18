@@ -41,8 +41,7 @@ sub all { # the list of all news
  $s->{fanpage} = conf ( 'url_fanpage' );
  
  $s->{urlother} = '/' . $s->{langother} . '/news/';
-  
- # edit this news is not listed in wiki!!! stash vars...
+
  $s->{news} = $self->fetch ( 'news#all' );
  
  $self->render( template => 'page/news' );
@@ -54,7 +53,7 @@ sub feed { # RSS feed of news
 
  my $self = shift; my $s = $self->{stash};
  
- my $news = $self->fetch ( 'news#latest', 10 ); # max 10 news
+ my $news = $self->fetch ( 'news#latest', 10 ); # max 10 latest
     
  my $rss = XML::RSS->new( version => '2.0' );
 

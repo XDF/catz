@@ -28,7 +28,9 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( setup_default setup_init setup_set setup_values setup_verify setup_keys );
+our @EXPORT = qw ( 
+ setup_default setup_init setup_set setup_values setup_verify setup_keys 
+);
 
 use List::MoreUtils qw ( any );
 
@@ -39,10 +41,7 @@ my $default = {
  palette => 'dark',
  photosize => 'fit',
  perpage => 15,
- thumbsize => 150,
- # peek is special default key in $default, not in $values
- peek => 0, # the forced data version
-  
+ thumbsize => 150  
 };
 
 my $values = {
@@ -53,34 +52,31 @@ my $values = {
  thumbsize => [ qw ( 100 125 150 175 200 ) ],
 };
 
-sub setup_default { $default->{$_[0]} }
-      
-sub setup_verify  {
+my $check = {};
 
- # check that a single value is ok, 1 = ok, 0 = not ok
- 
- my ( $key, $val ) = @_;
- 
- ( length $key > 50 or length $val > 50 ) and return 0; # preliminary check
- 
- if ( $key eq 'peek' ) { # peek gets special handling
- 
-  # if value is ok and such a database file is found then return 1 = ok
-  ( $val eq '0' or ( $val =~ /^\d{14}$/ and 
-   -f ( conf ( 'path_db' ) . "/$val.db" ) ) ) and return 1; 
-    
-  return 0; # 0 = not ok
- 
- } else { # standard handling for all the rest
- 
-  exists $values->{$key} and ( any { $val eq $_ } @{ $values->{$key} } )
-   and return 1;
-   
-  return 0; 
-  
- } 
+foreach my $key ( keys %{ $values } ) {
+
+ foreach my $val ( @{ $values->{$key} } ) {
+
+  $check->{$key}->{$val} = 1;
+
+ }
 
 }
+
+sub setup_default { $default->{$_[0]} }
+      
+sub setup_verify  { # check that a single value is ok, 1 = ok, 0 = not ok
+ 
+ my ( $key, $val ) = @_;
+
+ # preliminary checks 
+ length $key > 50 and return 0;
+ length $val > 50 and return 0; 
+
+ defined $check->{$key}->{$val} ? 1 : 0;
+  
+} 
 
 sub setup_init {
 
@@ -104,12 +100,7 @@ sub setup_init {
   } 
  
  }
- 
- # set version & checked to 0 if not at all set 
- $app->session ( version => $app->session ( 'version' ) // '0' );
- $app->session ( checked => $app->session ( 'checked' ) // '0' );
-  
-  
+     
 }
 
 sub setup_set {
