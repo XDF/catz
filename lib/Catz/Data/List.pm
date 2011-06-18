@@ -37,26 +37,20 @@ my $matrix = {
   dividers => 1,  
  },
  
- folder => {
-  related => [ qw ( location organizer umbrella lens,drill body,drill ) ],
- },
- 
  date => {
   modes => [ qw ( date top ) ],
-  dividers => 1,
-  related => [ qw ( album lens,drill body,drill ) ],
-  
+  dividers => 1
  },
  
  location => {
    modes => [ qw ( a2z top first ) ],
    dividers => 0,
-   related => [ qw ( organizer,drill ) ],
  },
  
  organizer => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0
+  dividers => 0,
+  refine => [ qw ( umbrella location ) ] 
  },
  
  umbrella => {
@@ -64,11 +58,14 @@ my $matrix = {
   dividers => 0
  },
  
- # text is not set
- 
+ folder => {
+  refine => [ qw ( location organizer umbrella lens body ) ] 
+ },
+
  catname => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 1
+  dividers => 1,
+  refine => [ qw ( breeder breedcode emscode location ) ] 
  },
  
  breed => {
@@ -78,7 +75,8 @@ my $matrix = {
  
  breeder => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 1 
+  dividers => 1,
+  refine => [ qw ( breedcode featurecode nationcode catname location ) ] 
  },
  
  nation => {

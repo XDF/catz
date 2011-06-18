@@ -177,7 +177,7 @@ sub macro {
    $fi =~ s/d/ p‰iv‰‰ /;
    $fi = trim ( $fi );
   
-   return qq("at the age of $en|ik‰: $fi");
+   return qq("at the age of $en|ik‰ $fi");
  
   }
  

@@ -191,31 +191,14 @@ sub before {
 
  #
  # require urls to end with slash when there is no query params
- # require urls not to end with slash when there is query params
  # you may ask why but I think this is cool
  #
  # the internals of Mojolicious was studied for this code
  # and the mechanism for redirect was copied from there
  #
 
- if ( scalar @{ $self->req->query_params->params } > 0 ) { # has params
+ if ( scalar @{ $self->req->query_params->params } == 0 ) {
   
-  $self->req->url->path->trailing_slash and do {
-
-   $self->res->code(301); # a permanent redirect
-
-   $self->res->headers->location(
-    substr ( $self->req->url->path->to_string, -1 ) # without the last char
-   );
-   
-   $self->res->headers->content_length(0); 
-   $self->rendered;
-   return;
-
-  };
-
- } else { # doesn't have params
-
   $self->req->url->path->trailing_slash or do {
 
    $self->res->code(301); # a permanent redirect

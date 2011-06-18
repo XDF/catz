@@ -63,7 +63,8 @@ logit ( "backing up '$db' to '$back'" );
 
 filecopy ( $db, $back );
 
-chmod ( 0664, $db ) || die $!;
+# on linux set read write
+$^O =~ /^MS/ or ( chmod ( 0664, $db ) || die $! );
 
 load_begin ( $dt, $db );
 
@@ -179,7 +180,8 @@ SKIP_POST:
 
 load_end; # finish
 
-chmod ( 0444, $db ) || die $!;
+# on linux set read only
+$^O =~ /^MS/ or ( chmod ( 0444, $db ) || die $! );
 
 my $etime = time();
 

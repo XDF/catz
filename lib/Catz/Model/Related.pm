@@ -28,6 +28,8 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Catz::Model::Common';
 
+use Catz::Data::Search;
+
 sub _all2date {
 
  my $self = shift;
@@ -55,11 +57,113 @@ sub _coverage { # how many photos have the given pri defined
 
 }
 
-sub _common { # the most common subjects for the given pri
+sub _refine {
 
- my ( $self, $pri, $sec, $target, $n ) = @_;  my $lang = $self->{lang}; 
+ my ( $self, $pri, $sec, $target ) = @_;  my $lang = $self->{lang}; 
 
- $self->dball(qq{select sec,cntphoto from sec_$lang natural join _secm where sid in (select s1.sid from sec_$lang s1,inpos i1,inpos i2,sec_en s2 where i1.aid=i2.aid and i1.n=i2.n and i1.p=i2.p and s1.sid=i1.sid and s2.sid=i2.sid and s1.pid=(select pid from pri where pri=?) and s2.sec=? and s2.pid=(select pid from pri where pri=?)) order by cntphoto desc limit $n},$target,$sec,$pri); # 2011-06-03 120 ms  
+ my $o1 = $self->dbone('select origin from pri where pri=?',$pri);
+ my $o2 = $self->dbone('select origin from pri where pri=?',$target);
+
+ my $n = 25; # maximum number of items
+
+ ( $o1 and $o2 ) or die "internal error in fetching sources for related";
+
+ my $join = undef;
+ my $tables = undef;
+
+ my $sql = "select sec from (select sec,sort from pri natural join sec_$lang natural join _secm where sid in ( ";
+
+ given ( $o1 ) {
+
+  when ( 'album' ) {
+
+   $join = 'i1.aid=i2.aid';
+   
+   if ( $o2 eq 'album' ) {
+
+    $tables = 'inalbum i1,inalbum i2';
+
+   } elsif ( $o2 eq 'exif' ) {
+
+    $tables = 'inalbum i1,inexiff i2';
+
+   } elsif ( $o2 eq 'pos' ) {
+    
+    $tables = 'inalbum i1,inpos i2';
+
+   }
+
+  }
+
+  when ( 'exif' ) {
+   
+   if ( $o2 eq 'album' ) {
+
+    $tables = 'inexiff i1,inalbum i2';
+    $join = 'i1.aid=i2.aid';
+
+   } elsif ( $o2 eq 'exif' ) {
+
+    $tables = 'indexiff i1,inexiff i2';
+    $join = 'i1.aid=i2.aid and i1.n=i2.n';
+
+   } elsif ( $o2 eq 'pos' ) {
+    
+    $tables = 'inexiff i1,inpos i2';
+    $join = 'i1.aid=i2.aid and i1.n=i2.n';
+
+   }
+
+  }
+
+  when ( 'pos' ) {
+
+   if ( $o2 eq 'album' ) {
+
+    $tables = 'inpos i1,inalbum i2';
+    $join = 'i1.aid=i2.aid';
+
+   } elsif ( $o2 eq 'exif' ) {
+
+    $tables = 'inpos i1,inexiff i2';
+    $join = 'i1.aid=i2.aid and i1.n=i2.n';
+
+   } elsif ( $o2 eq 'pos' ) {
+    
+    $tables = 'inpos i1,inpos i2';
+    $join = 'i1.aid=i2.aid and i1.n=i2.n and i1.p=i2.p';
+
+   }
+
+  }
+
+ }
+
+ ( $join and $tables ) or die "internal error in creating SQL for related";
+
+ $sql .= qq{select i2.sid from $tables where i1.sid in (select sid from sec_$lang natural join pri where pri=? and sec=?) and i2.sid in (select sid from sec_$lang natural join pri where pri=?) and $join};
+
+ $sql .= ") order by cntphoto desc limit $n) order by sort";
+
+ return $self->dbcol($sql,$pri,$sec,$target);
+
+}
+
+sub _refines {
+
+ my ( $self, $pri, $sec, @targets ) = @_;
+
+ my @res = ();
+ 
+ foreach my $target ( @targets ) {
+  
+  my $data = $self->refine($pri,$sec,$target);
+
+  push @res, [ $target, $data ]; 
+
+ }
+
+ return \@res;
 
 }
 
@@ -71,11 +175,19 @@ sub _date {
  
 }
 
-sub _breedern { 
+sub _breedernation { 
 
  my ( $self, $breeder ) = @_;
  
  $self->dbone('select nationcode from mbreeder where breeder=?', $breeder );
+ 
+}
+
+sub _breederurl { 
+
+ my ( $self, $breeder ) = @_;
+ 
+ $self->dbone('select url from mbreeder where breeder=?', $breeder );
  
 }
 

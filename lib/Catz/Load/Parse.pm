@@ -57,18 +57,25 @@ sub cat {
   
   $d->{breedcode} = $1;
   
-  if ( $3 ) { $d->{facadecode} = $3 } else {
+  $3 and $d->{facadecode} = $3;
+ 
+  if ( defined $d->{facadecode} ) { 
+   
+   $d->{featurecode} = 
+    [ map { /^\((.+)\)$/ ? $1 : $_ } split / +/, $d->{facadecode} ];
 
-   # add inherent blue facadecode for certain breeds
+  } else {
 
-   ( $d->{breedcode} eq 'CHA' or
+   # add features to certain breeds
+   # don't add if facadecode is defined
+   # add only to featurecode, not to facadecode
+
+   ( $d->{breedcode} eq 'CHA' or 
      $d->{breedcode} eq 'KOR' or
      $d->{breedcode} eq 'RUS'
-   ) and $d->{facadecode} = 'a'; 
+   ) and $d->{featurecode} = [ 'a' ]; 
 
   }
- 
-  defined $d->{facadecode} and $d->{featurecode} = [ split / +/, $d->{facadecode} ];
    
   $d->{emscode} = $emscode; # the original code in code
   
