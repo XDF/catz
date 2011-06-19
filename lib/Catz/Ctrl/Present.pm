@@ -31,7 +31,7 @@ use parent 'Catz::Core::Ctrl';
 use List::MoreUtils qw ( any );
 
 use Catz::Data::Result;
-use Catz::Data::Search qw ( args2search search2args );
+use Catz::Data::Search;
 use Catz::Util::String qw ( enurl );
 
 sub pre {
@@ -125,7 +125,7 @@ sub pair {
   $s->{refines} = $self->fetch ('related#refines', $s->{pri}, $s->{sec}, @{ $s->{matrix}->{$s->{pri}}->{refines} } ); 
 
  if ( $s->{pri} eq 'breeder' ) {
-  $s->{breedernation} = $self->fetch ( "related#breedernation", $s->{sec} );
+  $s->{breedernation} = $self->fetch ( "related#breedernat", $s->{sec} );
   $s->{breederurl} = $self->fetch ( "related#breederurl", $s->{sec} );
  }
  
@@ -248,7 +248,7 @@ sub multi {
   $s->{url_notext} =
    args2search (  @{ $s->{args_array} }, @extra );
   
-  @extra = qw ( +has breedcode -has catname );
+  @extra = qw ( +has breed -has cat );
   
   $s->{cover_nocat} = 
    $self->fetch ( "search#count", @{ $s->{args_array} }, @extra );

@@ -67,8 +67,8 @@ sub _refine {
  my $o1 = $self->dbone('select origin from pri where pri=?',$pri);
  my $o2 = $self->dbone('select origin from pri where pri=?',$target);
 
- # maximum number of items, default to 25
- my $n = $matrix->{$pri}->{limit}->{$target} // 25; 
+ # maximum number of items, default to 20
+ my $n = $matrix->{$pri}->{limit}->{$target} // 20; 
 
  ( $o1 and $o2 ) or die "internal error in fetching sources for related";
 
@@ -108,7 +108,7 @@ sub _refine {
 
    } elsif ( $o2 eq 'exif' ) {
 
-    $tables = 'indexiff i1,inexiff i2';
+    $tables = 'inexiff i1,inexiff i2';
     $join = 'i1.aid=i2.aid and i1.n=i2.n';
 
    } elsif ( $o2 eq 'pos' ) {
@@ -148,7 +148,7 @@ sub _refine {
  $sql .= qq{select i2.sid from $tables where i1.sid in (select sid from sec_$lang natural join pri where pri=? and sec=?) and i2.sid in (select sid from sec_$lang natural join pri where pri=?) and $join};
 
  $sql .= ") order by cntphoto desc limit $n) order by sort";
-
+  
  return $self->dbcol($sql,$pri,$sec,$target);
 
 }
@@ -179,11 +179,11 @@ sub _date {
  
 }
 
-sub _breedernation { 
+sub _breedernat { 
 
  my ( $self, $breeder ) = @_;
  
- $self->dbone('select nationcode from mbreeder where breeder=?', $breeder );
+ $self->dbone('select nat from mbreeder where breeder=?', $breeder );
  
 }
 

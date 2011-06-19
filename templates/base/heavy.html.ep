@@ -65,7 +65,7 @@
 %#
 <td class="right"><%= content 'setup' => begin %><%= content 'setupadd' %>
 <%== include 'elem/setup', setupkey => 'palette' %><% end %>
-<a title="<%= $t->{LANGOTHER} %>" href="<%== $urlother %>"><%= $t->{LANGOTHER} %></a>
+<%= $sep %> <a title="<%= $t->{LANGOTHER} %>" href="<%== $urlother %>"><%= $t->{LANGOTHER} %></a>
 </td></tr></table><table class="full"><tr>
 %#
 %# --------------------

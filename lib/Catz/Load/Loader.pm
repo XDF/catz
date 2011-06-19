@@ -109,11 +109,12 @@ my $sql = {
 
 my $secsql = [
   
+ # creating and populcating pri statistics table 
  qq{drop table if exists _prim},
  qq{create table _prim (pid integer primary key not null,cntpri integer not null)},
  qq{insert into _prim select pid,count(*) from pri natural join sec where sid in ( select sid from inalbum union select sid from inexiff union select sid from inpos ) group by pid},
 
- # creating and populcatin sec-statistics table
+ # creating and populcating sec statistics table
  # we use special handling of time (moment) where we make sure that a null time doesn't affect the min/max results
  qq{drop table if exists _secm},
  qq{create table _secm (sid integer primary key not null,cntdate integer not null,cntphoto integer not null, first integer not null, last integer not null)},
@@ -122,16 +123,16 @@ my $secsql = [
  qq{insert into _secm select sec.sid,count(distinct substr(folder,1,8)),count(distinct x),replace(min(substr(folder,1,8)||ifnull(moment,'999999')),'999999',''),replace(max(substr(folder,1,8)||ifnull(moment,'000000')),'000000','') from inpos natural join photo natural join sec natural join pri natural join album where origin='pos' group by sec.sid},
 
  # instant find requires queries to respond as quick as possible
- # therefore we need these special tables for both languages
- # speed tests were done 2011-05-30 and these tables are really needed
+ # therefore we need these special tables - speed tests were done 2011-05-30 
+ # and these tables are really needed
  qq{drop table if exists _find_en},
  qq{drop table if exists _find_fi},
  qq{create table _find_en (sid integer not null, sec text not null)},
  qq{create table _find_fi (sid integer not null, sec text not null)},
  # we use the special ability of SQLite so that we insert rows in certain order
  # and when we use order by rowid on query the order by doesn't cost anything
- qq{insert into _find_en select sid,sec from pri natural join _secm natural join sec_en where cntphoto is not null and cntphoto>0 and pri not in ( 'folder','text' ) order by cntphoto desc, sort asc},
- qq{insert into _find_fi select sid,sec from pri natural join _secm natural join sec_fi where cntphoto is not null and cntphoto>0 and pri not in ( 'folder','text' ) order by cntphoto desc, sort asc},
+ qq{insert into _find_en select sid,sec from ( select sid,sec,cntphoto,sort from pri natural join _secm natural join sec_en where cntphoto is not null and cntphoto>0 and pri not in ( 'album','folder','text' ) union all select sid,nat_en,cntphoto,nat_en from pri natural join _secm natural join sec_en,mnat where nat=sec and pri='nat' and cntphoto is not null and cntphoto>0 union all select sid,breed_en,cntphoto,breed_en from pri natural join _secm natural join sec_en,mbreed where breed=sec and pri='breed' and cntphoto is not null and cntphoto>0 union all select sid,title_en,cntphoto,title_en from pri natural join _secm natural join sec_en,mtitle where title=sec and pri='title' and cntphoto is not null and cntphoto>0 union all select sid,feat_en,cntphoto,feat_en from pri natural join _secm natural join sec_en,mfeat where feat=sec and pri='feat' and cntphoto is not null and cntphoto>0 ) order by cntphoto desc, sort asc},
+ qq{insert into _find_fi select sid,sec from ( select sid,sec,cntphoto,sort from pri natural join _secm natural join sec_fi where cntphoto is not null and cntphoto>0 and pri not in ( 'album','folder','text' ) union all select sid,nat_fi,cntphoto,nat_fi from pri natural join _secm natural join sec_fi,mnat where nat=sec and pri='nat' and cntphoto is not null and cntphoto>0 union all select sid,breed_fi,cntphoto,breed_fi from pri natural join _secm natural join sec_fi,mbreed where breed=sec and pri='breed' and cntphoto is not null and cntphoto>0 union all select sid,title_fi,cntphoto,title_fi from pri natural join _secm natural join sec_fi,mtitle where title=sec and pri='title' and cntphoto is not null and cntphoto>0 union all select sid,feat_fi,cntphoto,feat_fi from pri natural join _secm natural join sec_fi,mfeat where feat=sec and pri='feat' and cntphoto is not null and cntphoto>0 ) order by cntphoto desc, sort asc},
 
  # we use sid -> x mapping to execute both pri-sec pair fetches and advanced searches
  # we first look for sids by the pair or search and then map sids to xs with this table
@@ -489,7 +490,7 @@ sub load_simple {
    # skip the photo URL that comes as third value
    when ( 'mbreeder' ) { @lines = ( $lines[0], $lines[1], $lines[3] ) };
    
-   when ( 'mnation' ) {
+   when ( 'mnat' ) {
    
     # verify that a flag file is present
     my $fflag = conf ( 'path_flag') . '/' . lc ( $lines[0] ) . '.gif'; 
@@ -566,7 +567,7 @@ sub load_complex {
  
  load_exec ( 'inalbum_ins', $aid, $sid ); 
 
- foreach my $key ( qw ( folder album location organizer umbrella ) ) {
+ foreach my $key ( qw ( folder album loc org umb ) ) {
  
   $sid = get_sid ( $key, 
    $d->{$key.'_en'}, $d->{$key.'_en'},
@@ -682,36 +683,17 @@ sub load_post {
  load_do('delete from sec where sid not in ( select sid from inalbum union select sid_meta from inexif union select sid_data from inexif union select sid_file from inexif union select sid from inpos)');
  $i++; logadd ( '.' );
  
- # delete & insert nationcodes
+ # delete & insert nat
  
- load_do("delete from inpos where rowid in (select inpos.rowid from inpos natural join sec where pid=(select pid from pri where pri='nationcode'))");
+ load_do("delete from inpos where rowid in (select inpos.rowid from inpos natural join sec where pid=(select pid from pri where pri='nat'))");
   
- load_do("delete from sec where pid=(select pid from pri where pri='nationcode')");
+ load_do("delete from sec where pid=(select pid from pri where pri='nat')");
   
- load_do("insert into sec (pid,sec_en) select (select pid from pri where pri='nationcode'),nationcode from sec inner join mbreeder on (sec_en=breeder) where pid=(select pid from pri where pri='breeder') group by nationcode");
+ load_do("insert into sec (pid,sec_en) select (select pid from pri where pri='nat'),nat from sec inner join mbreeder on (sec_en=breeder) where pid=(select pid from pri where pri='breeder') group by nat");
   
- load_do("insert into inpos select aid,n,p,s2.sid from inpos i,sec s1,mbreeder m,sec s2 where i.sid=s1.sid and s1.sec_en=m.breeder and m.nationcode=s2.sec_en and s1.pid=(select pid from pri where pri='breeder') and s2.pid=(select pid from pri where pri='nationcode')"); 
+ load_do("insert into inpos select aid,n,p,s2.sid from inpos i,sec s1,mbreeder m,sec s2 where i.sid=s1.sid and s1.sec_en=m.breeder and m.nat=s2.sec_en and s1.pid=(select pid from pri where pri='breeder') and s2.pid=(select pid from pri where pri='nat')"); 
 
  $i++; logadd ( '.' );  
-
- foreach my $synth ( qw ( nation breed feature title ) ) {
- 
-  # delete old values from inpos
-  
-  load_do(qq{delete from inpos where rowid in (select inpos.rowid from inpos natural join sec where pid=(select pid from pri where pri=?))},$synth);
-
-  # delete old values from sec
-  load_do('delete from sec where pid=(select pid from pri where pri=?)',$synth);
-
-  load_do("insert into sec (pid,sec_en) select (select pid from pri where pri='$synth'),".$synth."_en from sec inner join m".$synth." on (sec_en=".$synth."code) where pid=(select pid from pri where pri='".$synth."code') and ".$synth."_en=".$synth."_fi");
-
-  load_do("insert into sec (pid,sec_en,sec_fi) select (select pid from pri where pri='$synth'),".$synth."_en,".$synth."_fi from sec inner join m".$synth." on (sec_en=".$synth."code) where pid=(select pid from pri where pri='".$synth."code') and ".$synth."_en<>".$synth."_fi");
-  
-  load_do("insert into inpos select aid,n,p,s2.sid from inpos i,sec s1,m".$synth." m,sec s2 where i.sid=s1.sid and s1.sec_en=m.".$synth."code and m.".$synth."_en=s2.sec_en and s1.pid=(select pid from pri where pri='".$synth."code') and s2.pid=(select pid from pri where pri='".$synth."')");
-
-  $i++; logadd ( '.' );
-    
- }
     
  foreach my $do ( @$secsql ) { load_do ( $do ); $i++; logadd ( '.' ) }
  

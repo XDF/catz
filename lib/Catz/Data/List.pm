@@ -41,22 +41,22 @@ my $matrix = {
  date => {
   modes => [ qw ( date top ) ],
   dividers => 1,
-  refines => [ qw ( location organizer umbrella lens body breedcode ) ] 
+  refines => [ qw ( loc org umb lens body breed ) ] 
  },
  
- location => {
+ loc => {
    modes => [ qw ( a2z top first ) ],
    dividers => 0,
-   refines => [ qw ( organizer umbrella ) ]
+   refines => [ qw ( org umb ) ]
  },
  
- organizer => {
+ org => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
-  refines => [ qw ( umbrella location ) ] 
+  refines => [ qw ( umb loc ) ] 
  },
  
- umbrella => {
+ umb => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0
   # no refines
@@ -65,13 +65,13 @@ my $matrix = {
  folder => {
   # no modes
   # no dividers
-  refines => [ qw ( location organizer umbrella lens body breedcode ) ] 
+  refines => [ qw ( loc org umb lens body breed ) ] 
  },
 
- catname => {
+ cat => {
   modes => [ qw ( a2z top first ) ],
   dividers => 1,
-  refines => [ qw ( nickname breedcode emscode breeder nationcode location ) ] 
+  refines => [ qw ( nick breed code breeder nat loc ) ] 
  },
  
  breed => {
@@ -83,97 +83,82 @@ my $matrix = {
  breeder => {
   modes => [ qw ( a2z top first ) ],
   dividers => 1,
-  refines => [ qw ( breedcode featurecode nationcode catname location ) ],
-  jump => { catname => 1 },
-  limit => { catname => 9999 } 
+  refines => [ qw ( breed feat nat cat loc ) ],
+  jump => { cat => 1 },
+  #limit => { cat => 9999 } 
  },
  
- nation => {
-  modes => [ qw ( a2z top first ) ],
-  dividers => 0
- },
-
- nationcode => {
+ nat => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0
  },
  
- emscode => {
+ code => {
   modes => [ qw ( a2z top first ) ],
   dividers => 1
  },
 
- facadecode => {
+ app => {
   modes => [ qw ( a2z top first ) ],
   dividers => 1,
-  refines => [ qw ( breedcode featurecode ) ],
+  refines => [ qw ( breed feat ) ],
   jump => { featurecode => 1 }
  },
  
- breedcode => {
+ breed => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
-  refines => [ qw ( facadecode featurecode ) ]
+  refines => [ qw ( app feat ) ]
  },
- 
- feature => {
+  
+ feat => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
- },
- 
- featurecode => {
-  modes => [ qw ( a2z top first ) ],
-  dividers => 0,
-  refines => [ qw ( breedcode facadecode ) ], 
+  refines => [ qw ( breed app ) ], 
   jump => { facadecode => 1 }
  },
 
- nickname => {
+ nick => {
   modes => [ qw ( a2z top first ) ],
   dividers => 1,
-  refines => [ qw ( catname ) ]
+  refines => [ qw ( cat ) ]
  },
 
  title => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 1
- },
-
- titlecode => {
-  modes => [ qw ( a2z top first ) ],
-  dividers => 1,
-  refines => [ qw ( breeder breedcode nationcode ) ],
+  dividers => 0,
+  refines => [ qw ( breeder breed nat ) ],
  },
 
  lens => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
-  refines => [ qw ( body fnumber ) ]
+  refines => [ qw ( body fnum ) ]
  },
 
  body => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
-  refines => [ qw ( lens sensitivity ) ]
+  refines => [ qw ( lens iso ) ]
  },
 
- fnumber => {
+ fnum => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0
  },
 
- exposuretime => {
+ etime => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0
  },
 
- sensitivity => {
+ iso => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
   refines => [ qw ( body ) ]
  },
 
- focallength => {
+ flen => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
   refines => [ qw ( lens ) ]

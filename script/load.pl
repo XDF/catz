@@ -68,9 +68,19 @@ $^O =~ /^MS/ or ( chmod ( 0664, $db ) || die $! );
 
 load_begin ( $dt, $db );
 
-lc($ARGV[0] // '') eq 'meta' and goto SKIP_FOLDERS;
+my %guide = ();
+
+foreach my $arg ( map { lc $_ } @ARGV ) { $guide{$arg} = 1 }
+
+scalar @ARGV == 0 and do {
+ $guide{'folder'} = 1; 
+ $guide{'meta'} = 1;
+ $guide{'post'} = 1;
+};
 
 # phase 1: load folders
+
+$guide{'folder'} or goto SKIP_FOLDER;
 
 my @folders =  
  grep { /\d{8}[a-z0-9]+$/ } finddirs ( conf ( 'path_photo' ) );
@@ -92,16 +102,16 @@ foreach my $folder ( @folders ) {
   $loaded->{ $album } = 1;  
  
  }
-
 }
 
-SKIP_FOLDERS:
+SKIP_FOLDER:
 
 # phase 2: load files
 
+$guide{'meta'} or goto SKIP_META;
+
 my @metafiles =  qw ( 
- exifmeta newsmeta nationmeta breedmeta breedermeta featuremeta titlemeta 
- gallerymeta
+ exifmeta newsmeta natmeta breedmeta breedermeta featmeta titlemeta gallerymeta
 );
 
 logit ( 'verifying ' . scalar @metafiles  . ' files' );
@@ -171,8 +181,11 @@ foreach my $head ( @metafiles ) {
  
 }
 
-#disable debug !!!!!!!!!!!
-#$changes == 0 and goto SKIP_POST;
+SKIP_META:
+
+# phase 3: postprocessing
+
+$guide{'post'} or goto SKIP_POST;
 
 load_post;
 

@@ -29,8 +29,8 @@ use 5.10.0; use strict; use warnings;
 use base 'Exporter';
 
 our @EXPORT_OK = qw( 
- body exifsort exif exid expmacro exptext fixgap lens location organizer 
- plaincat textchoose textremove tolines topiles umbrella 
+ body exifsort exif exid expmacro exptext fixgap lens loc org 
+ plaincat textchoose textremove tolines topiles umb 
 );
 
 use Memoize;
@@ -50,7 +50,7 @@ sub exifsort {
 
  given ( $key ) {
  
-  when ( 'fnumber' ) {  
+  when ( 'fnum' ) {  
   
    $val =~ /^f\/(\d+).(\d+)?$/;
    
@@ -60,7 +60,7 @@ sub exifsort {
   
   }
   
-  when ( 'exposuretime' ) {  
+  when ( 'etime' ) {  
   
    $val =~ /^(.+) s$/;
    
@@ -71,13 +71,13 @@ sub exifsort {
    # works up to 999 seconds of exposure time due to
    # 1) padding length
    # 2)  behavior with sprintf (negative sign appears)
-   $res > 200 and die "exposuretime exif processing doesn't support value '$res'"; 
+   $res > 200 and die "etime processing doesn't support value '$res'"; 
    
    return sprintf ( "%010d", ( $res * 10_000_000 ) );
      
   }
   
-  when ( 'sensitivity' ) {  
+  when ( 'iso' ) {  
   
    $val =~ /^ISO (\d+)$/;
    
@@ -87,7 +87,7 @@ sub exifsort {
      
   }
   
-  when ( 'focallength' ) {  
+  when ( 'flen' ) {  
 
    $val =~ /^(\d+) mm$/;
    
@@ -125,6 +125,7 @@ sub exptext {
   
  $text =~ s/\{(.+)\}/$1/g; # also remove breeder markers
  
+ $text =~ s/\$/\"/g; # convert $ to "
  $text =~ s/\~//g; # remove null characters ~
 
  $text =~ s/FIFE/FIFe/g;
@@ -246,9 +247,9 @@ memoize ( 'plaincat' );
 sub plaincat {
 
  # removes all freetext parts -> just cat data is left
-
+ 
  my $text = shift;
-
+ 
  $text =~ s/\".+?\"//g;
 
  return trim ( clean ( $text ) );
@@ -399,7 +400,7 @@ sub exid {
     
     $val = round ( $1, 0 );
     
-    $o->{focallength} = "$val mm"; 
+    $o->{flen} = "$val mm"; 
    
    }
    
@@ -412,11 +413,11 @@ sub exid {
    
     if ( substr ( $val, 0, 2 ) eq 'f/' ) {
     
-     $o->{fnumber} = $val;
+     $o->{fnum} = $val;
     
     } else {
     
-     $o->{fnumber} = "f/$val";
+     $o->{fnum} = "f/$val";
     
     }
     
@@ -426,7 +427,7 @@ sub exid {
    
     $val =~ / s$/ or $val = "$val s";
    
-    $o->{exposuretime} = $val; 
+    $o->{etime} = $val; 
    
    }
    
@@ -434,7 +435,7 @@ sub exid {
    
     substr ( $val, 0, 4 ) eq 'ISO ' or $val = "ISO $val"; 
    
-    $o->{sensitivity} = $val;
+    $o->{iso} = $val;
     
    }
    
@@ -449,7 +450,7 @@ sub exid {
  }
  
  $lens and $lensflen->{$lens} and do {  
-  $o->{focallength} = $lensflen->{$lens};
+  $o->{flen} = $lensflen->{$lens};
  }; 
 
  if ( $lens and $lensname->{$lens} ) {
@@ -480,17 +481,17 @@ sub exif {
     
     # filter out unknown focal lengths reported by the body as 0 or 0.0
     $i->{ $key } ne '0' and $i->{ $key } ne '0.0' and
-     $o->{focallength} = round ( $i->{ $key }, 0 ) . ' mm'; 
+     $o->{flen} = round ( $i->{ $key }, 0 ) . ' mm'; 
    
    }
    
-   when ( 'ExposureTime' ) { $o->{exposuretime} = $i->{ $key } . ' s' } 
+   when ( 'ExposureTime' ) { $o->{etime} = $i->{ $key } . ' s' } 
   
    when ( 'FNumber' ) {
    
     # filter out unknown aperture values reported by the body as 0 or 0.0
     $i->{ $key } ne '0' and  $i->{ $key } ne '0.0' and 
-     $o->{fnumber} = 'f/' . $i->{ $key } 
+     $o->{fnum} = 'f/' . $i->{ $key } 
    
    }
 
@@ -502,7 +503,7 @@ sub exif {
   
    }
   
-   when ( 'ISO' ) { $o->{sensitivity} = 'ISO ' . $i->{ $key } }
+   when ( 'ISO' ) { $o->{iso} = 'ISO ' . $i->{ $key } }
   
    when ( 'Model' ) {
     
@@ -522,7 +523,7 @@ sub exif {
   $o->{lens} = lens ( $album, $o->{focallength}, $o->{fnumber} );
  
   $o->{lens} and $lensflen->{$o->{lens}} and do {  
-   $o->{focallength} = $lensflen->{$o->{lens}};
+   $o->{flen} = $lensflen->{$o->{lens}};
   }; 
 
   if ( $o->{lens} and $lensname->{$o->{lens}} ) {
@@ -576,7 +577,7 @@ sub fixgap {
 
 }
 
-my $location =  {
+my $locs =  {
  myrskyla => 'myrskylä',
  hyvinkaa => 'hyvinkää',
  jamsa => 'jämsä',
@@ -589,21 +590,21 @@ my $location =  {
  riihimaki => 'riihimäki'
 };
   
-memoize ( 'location' );
+memoize ( 'loc' );
 
-sub location {
+sub loc {
 
  my $loc = shift;
   
- $location->{$loc} and $loc = $location->{$loc};
+ $locs->{$loc} and $loc = $locs->{$loc};
      
  return ucclcc($loc), ucclcc($loc);
      
 }
 
-memoize ( 'organizer' );
+memoize ( 'org' );
 
-sub organizer { 
+sub org { 
  
  given ( shift ) {
     
@@ -664,9 +665,9 @@ sub organizer {
   
 }
 
-memoize ( 'umbrella' );
+memoize ( 'umb' );
 
-sub umbrella { 
+sub umb { 
  
  given ( $_[0] ) {
   

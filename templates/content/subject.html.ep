@@ -3,9 +3,9 @@
 %#
 %# --------------------
 %#
-<h2 class="block bar">Käsitteet</h2>
+<h2 class="block bar">Aihe</h2>
 <div class="bar">
-Käsite kirjoitetaan ennen hakutermiä ja sen ja hakutermin väliin tulee yhtäsuurusmerkki. Jos käsitettä ei anneta, haetaan kaikista käsitteistä.
+Aihe kirjoitetaan ennen hakutermiä ja sen ja hakutermin väliin tulee yhtäsuurusmerkki. Jos käsitettä ei anneta, haetaan hakutermiä kaikista käsitteistä.
 </div>
 %# --------------------
 %#
@@ -41,7 +41,7 @@ Käsite kirjoitetaan ennen hakutermiä ja sen ja hakutermin väliin tulee yhtäs
 %# --------------------
 %#
 <div class="bar">
-% $exa = 'location';
+% $exa = 'loc';
 % $exb = 'Kuopio';
 <span class="lean"><%== $exa %></span> on näyttelyn paikkakunta, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
@@ -50,7 +50,7 @@ Käsite kirjoitetaan ennen hakutermiä ja sen ja hakutermin väliin tulee yhtäs
 %# --------------------
 %#
 <div class="bar">
-% $exa = 'organizer';
+% $exa = 'org';
 % $exb = 'POROK';
 <span class="lean"><%== $exa %></span> on näyttelyn järjestäneen yhdistyksen nimi, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
@@ -59,7 +59,7 @@ Käsite kirjoitetaan ennen hakutermiä ja sen ja hakutermin väliin tulee yhtäs
 %# --------------------
 %#
 <div class="bar">
-% $exa = 'umbrella';
+% $exa = 'umb';
 % $exb = 'CFA';
 <span class="lean"><%== $exa %></span> on näyttelyn kattojärjestön nimi, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
@@ -81,7 +81,7 @@ Käsite kirjoitetaan ennen hakutermiä ja sen ja hakutermin väliin tulee yhtäs
 %# --------------------
 %#
 <div class="bar">
-% $exa = 'catname';
+% $exa = 'cat';
 % $exb = 'Tatsutan Kaori Asmi-Apsaro';
 <span class="lean"><%== $exa %></span> on kissan nimi, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
@@ -99,16 +99,7 @@ Käsite kirjoitetaan ennen hakutermiä ja sen ja hakutermin väliin tulee yhtäs
 %# --------------------
 %#
 <div class="bar">
-% $exa = 'nation';
-% $exb = 'Kiina';
-<span class="lean"><%== $exa %></span> on kissan kasvattajan kansallisuus, esim.
-<a href="/<%== $lang %>/search?what=<%== enurl(qq{$exa=$exb}) %>"><%= $exb %></a>
-</div>
-%#
-%# --------------------
-%#
-<div class="bar">
-% $exa = 'nationcode';
+% $exa = 'nat';
 % $exb = 'US';
 <span class="lean"><%== $exa %></span> on kissan kasvattajan kansallisuuden maatunnus, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
@@ -117,7 +108,7 @@ Käsite kirjoitetaan ennen hakutermiä ja sen ja hakutermin väliin tulee yhtäs
 %# --------------------
 %#
 <div class="bar">
-% $exa = 'emscode';
+% $exa = 'code';
 % $exb = 'BEN n 24 33';
 <span class="lean"><%== $exa %></span> on kissan EMS-koodi kokonaan, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
@@ -127,15 +118,6 @@ Käsite kirjoitetaan ennen hakutermiä ja sen ja hakutermin väliin tulee yhtäs
 %#
 <div class="bar">
 % $exa = 'breed';
-% $exb = 'turkkilainen angora';
-<span class="lean"><%== $exa %></span> on kissan rotu, esim.
-<a href="/<%== $lang %>/search?what=<%== enurl(qq{$exa="$exb"}) %>"><%= $exb %></a>
-</div>
-%#
-%# --------------------
-%#
-<div class="bar">
-% $exa = 'breedcode';
 % $exb = 'AWS';
 <span class="lean"><%== $exa %></span> on kissan EMS-koodin rotuosa, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
@@ -144,7 +126,7 @@ Käsite kirjoitetaan ennen hakutermiä ja sen ja hakutermin väliin tulee yhtäs
 %# --------------------
 %#
 <div class="bar">
-% $exa = 'facadecode';
+% $exa = 'app';
 % $exb = 'g 09';
 <span class="lean"><%== $exa %></span> on kissan EMS-koodi ilman rotuosaa eli <%= $t->{uc($exa)} %>, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
@@ -153,16 +135,7 @@ Käsite kirjoitetaan ennen hakutermiä ja sen ja hakutermin väliin tulee yhtäs
 %# --------------------
 %#
 <div class="bar">
-% $exa = 'feature';
-% $exb = 'harlekiini';
-<span class="lean"><%== $exa %></span> on kissaa kuvaava piirre eli <%= $t->{uc($exa)} %>, esim.
-<a href="/<%== $lang %>/search?what=<%== enurl(qq{$exa=$exb}) %>"><%= $exb %></a>
-</div>
-%#
-%# --------------------
-%#
-<div class="bar">
-% $exa = 'featurecode';
+% $exa = 'feat';
 % $exb = 'x';
 <span class="lean"><%== $exa %></span> on kissan EMS-koodin yksi osanen eli <%= $t->{uc($exa)} %>, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
@@ -171,7 +144,7 @@ Käsite kirjoitetaan ennen hakutermiä ja sen ja hakutermin väliin tulee yhtäs
 %# --------------------
 %#
 <div class="bar">
-% $exa = 'nickname';
+% $exa = 'nick';
 % $exb = 'Vikke';
 <span class="lean"><%== $exa %></span> on kissan lempinimi, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
@@ -181,15 +154,6 @@ Käsite kirjoitetaan ennen hakutermiä ja sen ja hakutermin väliin tulee yhtäs
 %#
 <div class="bar">
 % $exa = 'title';
-% $exb = 'Supreme Champion';
-<span class="lean"><%== $exa %></span> on kissan saavuttama titteli, esim.
-<a href="/<%== $lang %>/search?what=<%== enurl(qq{$exa=$exb}) %>"><%= $exb %></a>
-</div>
-%#
-%# --------------------
-%#
-<div class="bar">
-% $exa = 'titlecode';
 % $exb = 'QGCA';
 <span class="lean"><%== $exa %></span> on saavuttama titteli koodimuodossa, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
@@ -220,7 +184,7 @@ Käsite kirjoitetaan ennen hakutermiä ja sen ja hakutermin väliin tulee yhtäs
 %# --------------------
 %#
 <div class="bar">
-% $exa = 'fnumber';
+% $exa = 'fnum';
 % $exb = 'f/2.0';
 <span class="lean"><%== $exa %></span> on kuvan ottamisessa käytetty aukkoasetus, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
@@ -229,7 +193,7 @@ Käsite kirjoitetaan ennen hakutermiä ja sen ja hakutermin väliin tulee yhtäs
 %# --------------------
 %#
 <div class="bar">
-% $exa = 'exposuretime';
+% $exa = 'etime';
 % $exb = '1/200 s';
 <span class="lean"><%== $exa %></span> on kuvan ottamisessa käytetty suljinaika, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
@@ -238,7 +202,7 @@ Käsite kirjoitetaan ennen hakutermiä ja sen ja hakutermin väliin tulee yhtäs
 %# --------------------
 %#
 <div class="bar">
-% $exa = 'sensitivity';
+% $exa = 'iso';
 % $exb = 'ISO 3200';
 <span class="lean"><%== $exa %></span> on se kameran kennon herkkyyden ISO-arvo, jolla kuva on otettu, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>
@@ -247,7 +211,7 @@ Käsite kirjoitetaan ennen hakutermiä ja sen ja hakutermin väliin tulee yhtäs
 %# --------------------
 %#
 <div class="bar">
-% $exa = 'focallength';
+% $exa = 'flen';
 % $exb = '200 mm';
 <span class="lean"><%== $exa %></span> on se objektiivin polttoväli, jolla kuva on otettu, esim.
 <a href="/<%== $lang %>/browse/<%== $exa %>/<%== encode $exb %>/"><%= $exb %></a>

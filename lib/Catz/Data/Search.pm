@@ -85,7 +85,7 @@ sub args2search { # convert argument list to a search parameter
  
   my $key = shift @_; my $val = shift @_;
   
-  # if value has spaces but use quotation marks around it
+  # if value has space(s) then put quotation marks around it
   index ( $val, ' ' ) > -1  and $val = qq{"$val"}; 
  
   # if not the first param then put a space to separate from the previous param

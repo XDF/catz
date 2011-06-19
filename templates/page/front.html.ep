@@ -52,7 +52,7 @@
 %#
 %# --------------------
 %#
-<div class="bar">
+<div class="bar"><h2><%= $t->{SUBJECTS} %></h2>
 %#
 <a href="/<%== $lang %>/browseall/"><%= fmt ( $maxx, $lang )  %> <%== $t->{PHOTOA_CATSHOW} %></a>
 %#
