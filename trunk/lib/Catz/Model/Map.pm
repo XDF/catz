@@ -30,24 +30,24 @@ use parent 'Catz::Core::Model';
 
 my $ROOT = 'ROOT';
 
-my @duals = qw ( breed feature title nation );
+my @duals = qw ( breed feat title nat );
 
 sub _link { 
  
  # mappings for links as hashref
- # if the hashref contains a mapping then all
- # links should use the pri,sec -pair (arrayref)
- # found in the hashref
+ #
+ # if the hashref contains a mapping then all links should 
+ # use the pri,sec -pair (arrayref) found in the hashref
 
  my $self = shift; my $lang = $self->{lang};
  
  my $sql = "select 'album',sec,'folder',folder from album natural join inalbum natural join sec_$lang natural join pri where pri='album'";
  
- foreach my $tag ( @duals ) {
+ #foreach my $tag ( @duals ) {
  
-  $sql .= " union all select '$tag',".$tag."_$lang,'".$tag."code',".$tag."code from m$tag"; 
+  #$sql .= " union all select '$tag',".$tag."_$lang,'".$tag."',".$tag." from m$tag"; 
  
- }
+ #}
  
  my $base = $self->dball ( $sql );
   
@@ -65,9 +65,9 @@ sub _link {
 sub _view { 
 
  # mappings for presentations
- # if the hashref contains a mapping then all
- # values should be presented using the pri,sec -pair (arrayref)
- # found in the hashref
+ #
+ # if the hashref contains a mapping then all values should be presented 
+ # using the pri,sec -pair (arrayref) found in the hashref
 
  my $self = shift; my $lang = $self->{lang};
  
@@ -99,7 +99,7 @@ sub _dual {
  
   length ( $sql ) > 0 and $sql .= ' union all ';
  
-  $sql .= "select '$tag',".$tag."_$lang,'".$tag."code',".$tag."code from m$tag"; 
+  $sql .= "select '$tag',".$tag."_$lang,'".$tag."',".$tag." from m$tag"; 
  
  }
  

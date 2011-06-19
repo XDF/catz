@@ -33,7 +33,7 @@ our @EXPORT = qw ( parse_pile );
 use Data::Dumper;
 
 use Catz::Load::Data qw ( 
- exid expmacro exptext location organizer plaincat tolines umbrella 
+ exid expmacro exptext loc org plaincat tolines umb 
 );
 use Catz::Util::Log qw ( logit );
 use Catz::Util::String qw ( clean trim );
@@ -43,7 +43,7 @@ sub cat {
  # parses single cat information into fragments
 
  my $data = shift;
-
+ 
  my $d = {}; # collect the fragments to a hashref
  
  # collect emscode and remove it from data
@@ -51,39 +51,39 @@ sub cat {
   
   $data = $1 . $3;
   
-  my $emscode = $2;
+  my $code = $2;
   
-  $emscode =~ /^([A-Z]{3,3})(\s+)?(.+)?$/ or die "malformed emscode (1) '$emscode'";
+  $code =~ /^([A-Z]{3,3})(\s+)?(.+)?$/ or die "malformed code (1) '$code'";
   
-  $d->{breedcode} = $1;
+  $d->{breed} = $1;
   
-  $3 and $d->{facadecode} = $3;
+  $3 and $d->{app} = $3;
  
-  if ( defined $d->{facadecode} ) { 
+  if ( defined $d->{app} ) { 
    
-   $d->{featurecode} = 
-    [ map { /^\((.+)\)$/ ? $1 : $_ } split / +/, $d->{facadecode} ];
+   $d->{feat} = 
+    [ map { /^\((.+)\)$/ ? $1 : $_ } split / +/, $d->{app} ];
 
   } else {
 
-   # add features to certain breeds
-   # don't add if facadecode is defined
-   # add only to featurecode, not to facadecode
+   # add inherent feats to certain breeds
+   # don't add if app is defined
+   # add only to feat, not to app
 
-   ( $d->{breedcode} eq 'CHA' or 
-     $d->{breedcode} eq 'KOR' or
-     $d->{breedcode} eq 'RUS'
-   ) and $d->{featurecode} = [ 'a' ]; 
+   ( $d->{breed} eq 'CHA' or 
+     $d->{breed} eq 'KOR' or
+     $d->{breed} eq 'RUS'
+   ) and $d->{feat} = [ 'a' ]; 
 
   }
    
-  $d->{emscode} = $emscode; # the original code in code
+  $d->{code} = $code; # the original code in code
   
-  length ( trim ( $emscode ) ) == 0 and die "malformed emscode (2) '$emscode'";
+  length ( trim ( $code ) ) == 0 and die "malformed code (2) '$code'";
      
  } else {
  
-  die "no emscode in cat data '$data'"
+  die "no code in cat data '$data'"
    
  }
   
@@ -95,7 +95,7 @@ sub cat {
 
   my @nicks = map { trim $_ } split /,/, $2;
    
-  $d->{nickname} = \@nicks; 
+  $d->{nick} = \@nicks; 
     
  }
  
@@ -110,7 +110,7 @@ sub cat {
  ( $data =~ /^(.*)\{(.+?)\}(.*)$/ ) and do
   { $d->{breeder} = $2; $data = $1 . $2 . $3 };
   
- my @titlecodes = ();
+ my @titles = ();
  
  # collect pre-title codes and remove them from data
   
@@ -118,7 +118,7 @@ sub cat {
   
   $data = $3;           
   
-  push @titlecodes, map {
+  push @titles, map {
    
    trim $_;
       
@@ -137,23 +137,30 @@ sub cat {
   
   $data = $1;
   
-  push @titlecodes, map { trim $_ } split /,/, $2;
+  push @titles, map { trim $_ } split /,/, $2;
   
  }
   
- scalar ( @titlecodes ) > 0 and $d->{titlecode} = \@titlecodes;
+ scalar ( @titles ) > 0 and $d->{title} = \@titles;
   
  # store the cat itself, if any left
  
  $data = trim ( $data );
  
- length ( $data ) > 0 and $d->{catname} = $data;
+ length ( $data ) > 0 and $d->{cat} = $data;
  
+ # convert $ to " on all cat data
  # remove the null characters ~ from all cat data
  # null characters are used to prevent incorrect title extractions
  # they can at this point appear anywhere but on titles
  
- do { $_ ne 'titlecode' and $d->{$_} =~ s/\~//g } foreach ( keys %{ $d } );
+ do {
+
+   $d->{$_} =~ s/\$/\"/g;
+  
+   $_ ne 'title' and $d->{$_} =~ s/\~//g;
+       
+  } foreach ( keys %{ $d } );
  
  return $d; # return the string output and fragments as hashref
 
@@ -182,8 +189,8 @@ sub comment {
  length ( $text ) > 0 and index ( $text, '[' ) > -1 and 
   index ( $text, ']' ) > -1  and do {
    
-  # if something is left and code is present 
- 
+  # if something is left and code is present
+     
   $d->[2] = cat ( $text );
   
  }; 
@@ -266,7 +273,7 @@ sub parse_pile {
  $d->{folder_fi} = $album;
       
  $d->{origined} = $1; # albumn name starts with YYYYDDMM
- ( $d->{location_en}, $d->{location_fi} ) = location ( $2 ); # location part follows
+ ( $d->{loc_en}, $d->{loc_fi} ) = loc ( $2 ); # location part follows
  # $3 might be 1,2,3 ... to specify multiple albums but is not stored 
  
  shift @lines; # the second line in the pile is deprecated
@@ -279,10 +286,10 @@ sub parse_pile {
  
  # currently the model and the scripts support only one organization per album
  # the database is build proactively so that it could store multiples
- ( $d->{organizer_en}, $d->{organizer_fi} ) = organizer ( $d->{album_en} );
+ ( $d->{org_en}, $d->{org_fi} ) = org ( $d->{album_en} );
  
- defined $d->{organizer_en} and 
-  ( $d->{umbrella_en}, $d->{umbrella_fi} ) = umbrella ( $d->{organizer_en}, $album );
+ defined $d->{org_en} and 
+  ( $d->{umb_en}, $d->{umb_fi} ) = umb ( $d->{org_en}, $album );
    
  # skip descrption lines, they are deprecated
  shift @lines; shift @lines;
