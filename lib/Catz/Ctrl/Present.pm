@@ -83,7 +83,7 @@ sub all {
  $s->{args_count} = 0;  # so the count of args is also 0
  $s->{runmode} = 'all'; # set the runmode to all photos mode
  $s->{pri} = undef; $s->{sec} = undef; $s->{what} = undef;
- $s->{refine} = undef;
+ $s->{refines} = undef;
  $s->{breedernation} = undef;
  $s->{breederurl} = undef;
  
@@ -106,7 +106,7 @@ sub pair {
  $s->{args_array} = [ $s->{pri}, $s->{sec} ];
  $s->{args_count} = 2;
  $s->{what} = undef;
- $s->{refine} = undef;
+ $s->{refines} = undef;
  $s->{breedernation} = undef;
  $s->{breederurl} = undef;
  
@@ -121,7 +121,8 @@ sub pair {
   $self->encode( $trans ) ). '/' .
   ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
 
- $s->{refine} = $self->fetch ('related#refines', $s->{pri}, $s->{sec}, @{ $s->{matrix}->{$s->{pri}}->{refine} } ); 
+ defined $s->{matrix}->{$s->{pri}}->{refines} and 
+  $s->{refines} = $self->fetch ('related#refines', $s->{pri}, $s->{sec}, @{ $s->{matrix}->{$s->{pri}}->{refines} } ); 
 
  if ( $s->{pri} eq 'breeder' ) {
   $s->{breedernation} = $self->fetch ( "related#breedernation", $s->{sec} );
@@ -137,7 +138,7 @@ sub pattern {
  my $self = shift; my $s = $self->{stash};
   
  $s->{pri} = undef; $s->{sec} = undef;
- $s->{refine} = undef;
+ $s->{refines} = undef;
  $s->{breedernation} = undef;
  $s->{breederurl} = undef;
  

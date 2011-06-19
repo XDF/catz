@@ -29,6 +29,9 @@ use 5.10.0; use strict; use warnings;
 use parent 'Catz::Model::Common';
 
 use Catz::Data::Search;
+use Catz::Data::List;
+
+my $matrix = list_matrix;
 
 sub _all2date {
 
@@ -64,7 +67,8 @@ sub _refine {
  my $o1 = $self->dbone('select origin from pri where pri=?',$pri);
  my $o2 = $self->dbone('select origin from pri where pri=?',$target);
 
- my $n = 25; # maximum number of items
+ # maximum number of items, default to 25
+ my $n = $matrix->{$pri}->{limit}->{$target} // 25; 
 
  ( $o1 and $o2 ) or die "internal error in fetching sources for related";
 

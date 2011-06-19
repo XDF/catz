@@ -105,7 +105,7 @@
 %#
 %# --------------------
 %#
-<div>
+<div class="bar">
 % foreach my $th ( @{ $thumb } ) {
 % my $toid = fullnum33 ( $th->[1], $th->[2] );
 % my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
@@ -141,23 +141,12 @@
 % if ( $runmode eq 'search' ) {
 <%= $sep %> <%== include 'block/explain' %>
 % }
+<%== include 'block/refines' %>
 </div>
 %#
 %# --------------------
 %#
-% if ( $page == 1 ) { 
-%== include 'block/refines';
-% } else {
 %== include 'block/texts';
-% }
-%#
-%# --------------------
-%#
-% if ( $page == 1 ) {
-%== include 'block/texts'; 
-% } else {
-%== include 'block/refines';
-% }
 %#
 %# --------------------
 %#
