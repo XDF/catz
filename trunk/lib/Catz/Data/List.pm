@@ -34,49 +34,58 @@ my $matrix = {
 
  album => {
   modes => [ qw ( date a2z top ) ],
-  dividers => 1,  
+  dividers => 1
+  # no refines  
  },
  
  date => {
   modes => [ qw ( date top ) ],
-  dividers => 1
+  dividers => 1,
+  refines => [ qw ( location organizer umbrella lens body breedcode ) ] 
  },
  
  location => {
    modes => [ qw ( a2z top first ) ],
    dividers => 0,
+   refines => [ qw ( organizer umbrella ) ]
  },
  
  organizer => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
-  refine => [ qw ( umbrella location ) ] 
+  refines => [ qw ( umbrella location ) ] 
  },
  
  umbrella => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0
+  # no refines
  },
  
  folder => {
-  refine => [ qw ( location organizer umbrella lens body ) ] 
+  # no modes
+  # no dividers
+  refines => [ qw ( location organizer umbrella lens body breedcode ) ] 
  },
 
  catname => {
   modes => [ qw ( a2z top first ) ],
   dividers => 1,
-  refine => [ qw ( breeder breedcode emscode location ) ] 
+  refines => [ qw ( nickname breedcode emscode breeder nationcode location ) ] 
  },
  
  breed => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0
+  # no refines
  },
  
  breeder => {
   modes => [ qw ( a2z top first ) ],
   dividers => 1,
-  refine => [ qw ( breedcode featurecode nationcode catname location ) ] 
+  refines => [ qw ( breedcode featurecode nationcode catname location ) ],
+  jump => { catname => 1 },
+  limit => { catname => 9999 } 
  },
  
  nation => {
@@ -88,36 +97,41 @@ my $matrix = {
   modes => [ qw ( a2z top first ) ],
   dividers => 0
  },
-
  
  emscode => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 1 
+  dividers => 1
  },
 
  facadecode => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 1
+  dividers => 1,
+  refines => [ qw ( breedcode featurecode ) ],
+  jump => { featurecode => 1 }
  },
  
  breedcode => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0
+  dividers => 0,
+  refines => [ qw ( facadecode featurecode ) ]
  },
  
  feature => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0 
+  dividers => 0,
  },
  
  featurecode => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0
+  dividers => 0,
+  refines => [ qw ( breedcode facadecode ) ], 
+  jump => { facadecode => 1 }
  },
 
  nickname => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 1
+  dividers => 1,
+  refines => [ qw ( catname ) ]
  },
 
  title => {
@@ -127,17 +141,20 @@ my $matrix = {
 
  titlecode => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 1
+  dividers => 1,
+  refines => [ qw ( breeder breedcode nationcode ) ],
  },
 
  lens => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0
+  dividers => 0,
+  refines => [ qw ( body fnumber ) ]
  },
 
  body => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0
+  dividers => 0,
+  refines => [ qw ( lens sensitivity ) ]
  },
 
  fnumber => {
@@ -152,12 +169,14 @@ my $matrix = {
 
  sensitivity => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0
+  dividers => 0,
+  refines => [ qw ( body ) ]
  },
 
  focallength => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0
+  dividers => 0,
+  refines => [ qw ( lens ) ]
  },
  
 };
