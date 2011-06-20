@@ -93,6 +93,8 @@ my $sql = {
  
  pid_one => 'select pid from pri where pri=?',
  
+ origin_one => 'select origin from pri where pri=?',
+ 
  seq_one => 'select seq_init(1)', # initialize sequence to 1
  
  album_null_upd => 'update album set s=null',
@@ -131,8 +133,8 @@ my $secsql = [
  qq{create table _find_fi (sid integer not null, sec text not null)},
  # we use the special ability of SQLite so that we insert rows in certain order
  # and when we use order by rowid on query the order by doesn't cost anything
- qq{insert into _find_en select sid,sec from ( select sid,sec,cntphoto,sort from pri natural join _secm natural join sec_en where cntphoto is not null and cntphoto>0 and pri not in ( 'album','folder','text' ) union all select sid,nat_en,cntphoto,nat_en from pri natural join _secm natural join sec_en,mnat where nat=sec and pri='nat' and cntphoto is not null and cntphoto>0 union all select sid,breed_en,cntphoto,breed_en from pri natural join _secm natural join sec_en,mbreed where breed=sec and pri='breed' and cntphoto is not null and cntphoto>0 union all select sid,title_en,cntphoto,title_en from pri natural join _secm natural join sec_en,mtitle where title=sec and pri='title' and cntphoto is not null and cntphoto>0 union all select sid,feat_en,cntphoto,feat_en from pri natural join _secm natural join sec_en,mfeat where feat=sec and pri='feat' and cntphoto is not null and cntphoto>0 ) order by cntphoto desc, sort asc},
- qq{insert into _find_fi select sid,sec from ( select sid,sec,cntphoto,sort from pri natural join _secm natural join sec_fi where cntphoto is not null and cntphoto>0 and pri not in ( 'album','folder','text' ) union all select sid,nat_fi,cntphoto,nat_fi from pri natural join _secm natural join sec_fi,mnat where nat=sec and pri='nat' and cntphoto is not null and cntphoto>0 union all select sid,breed_fi,cntphoto,breed_fi from pri natural join _secm natural join sec_fi,mbreed where breed=sec and pri='breed' and cntphoto is not null and cntphoto>0 union all select sid,title_fi,cntphoto,title_fi from pri natural join _secm natural join sec_fi,mtitle where title=sec and pri='title' and cntphoto is not null and cntphoto>0 union all select sid,feat_fi,cntphoto,feat_fi from pri natural join _secm natural join sec_fi,mfeat where feat=sec and pri='feat' and cntphoto is not null and cntphoto>0 ) order by cntphoto desc, sort asc},
+ qq{insert into _find_en select sid,sec from ( select sid,sec,cntphoto,sort from pri natural join _secm natural join sec_en where cntphoto is not null and cntphoto>0 and pri not in ( 'album','folder','text' ) union all select -sid,nat_en,cntphoto,nat_en from pri natural join _secm natural join sec_en,mnat where nat=sec and pri='nat' and cntphoto is not null and cntphoto>0 union all select -sid,breed_en,cntphoto,breed_en from pri natural join _secm natural join sec_en,mbreed where breed=sec and pri='breed' and cntphoto is not null and cntphoto>0 union all select -sid,title_en,cntphoto,title_en from pri natural join _secm natural join sec_en,mtitle where title=sec and pri='title' and cntphoto is not null and cntphoto>0 union all select -sid,feat_en,cntphoto,feat_en from pri natural join _secm natural join sec_en,mfeat where feat=sec and pri='feat' and cntphoto is not null and cntphoto>0 ) order by cntphoto desc, sort asc},
+ qq{insert into _find_fi select sid,sec from ( select sid,sec,cntphoto,sort from pri natural join _secm natural join sec_fi where cntphoto is not null and cntphoto>0 and pri not in ( 'album','folder','text' ) union all select -sid,nat_fi,cntphoto,nat_fi from pri natural join _secm natural join sec_fi,mnat where nat=sec and pri='nat' and cntphoto is not null and cntphoto>0 union all select -sid,breed_fi,cntphoto,breed_fi from pri natural join _secm natural join sec_fi,mbreed where breed=sec and pri='breed' and cntphoto is not null and cntphoto>0 union all select -sid,title_fi,cntphoto,title_fi from pri natural join _secm natural join sec_fi,mtitle where title=sec and pri='title' and cntphoto is not null and cntphoto>0 union all select -sid,feat_fi,cntphoto,feat_fi from pri natural join _secm natural join sec_fi,mfeat where feat=sec and pri='feat' and cntphoto is not null and cntphoto>0 ) order by cntphoto desc, sort asc},
 
  # we use sid -> x mapping to execute both pri-sec pair fetches and advanced searches
  # we first look for sids by the pair or search and then map sids to xs with this table
@@ -655,6 +657,90 @@ sub load_complex {
  
 }
 
+sub relate {
+
+ my ( $source, $target ) = @_;
+ 
+ my $o1 = load_exec('origin_one',$source);
+ my $o2 = load_exec('origin_one',$target);
+
+ ( $o1 and $o2 ) or die "internal error in fetching sources for related";
+
+ my $join = undef;
+ my $tables = undef;
+
+ given ( $o1 ) {
+
+  when ( 'album' ) {
+
+   $join = 'i1.aid=i2.aid';
+   
+   if ( $o2 eq 'album' ) {
+
+    $tables = 'inalbum i1,inalbum i2';
+
+   } elsif ( $o2 eq 'exif' ) {
+
+    $tables = 'inalbum i1,inexiff i2';
+
+   } elsif ( $o2 eq 'pos' ) {
+    
+    $tables = 'inalbum i1,inpos i2';
+
+   }
+
+  }
+
+  when ( 'exif' ) {
+   
+   $join = 'i1.aid=i2.aid and i1.n=i2.n';
+   
+   if ( $o2 eq 'album' ) {
+
+    $tables = 'inexiff i1,inalbum i2';
+    $join = 'i1.aid=i2.aid';
+
+   } elsif ( $o2 eq 'exif' ) {
+
+    $tables = 'inexiff i1,inexiff i2'; 
+
+   } elsif ( $o2 eq 'pos' ) {
+    
+    $tables = 'inexiff i1,inpos i2';
+   
+   }
+
+  }
+
+  when ( 'pos' ) {
+
+   if ( $o2 eq 'album' ) {
+
+    $tables = 'inpos i1,inalbum i2';
+    $join = 'i1.aid=i2.aid';
+
+   } elsif ( $o2 eq 'exif' ) {
+
+    $tables = 'inpos i1,inexiff i2';
+    $join = 'i1.aid=i2.aid and i1.n=i2.n';
+
+   } elsif ( $o2 eq 'pos' ) {
+    
+    $tables = 'inpos i1,inpos i2';
+    $join = 'i1.aid=i2.aid and i1.n=i2.n and i1.p=i2.p';
+
+   }
+
+  }
+
+ }
+
+ ( $join and $tables ) or die "internal error in creating SQL for related";
+
+ return qq{select i1.sid,i2.sid from $tables where i1.sid in (select sid from sec natural join pri where pri='$source') and i2.sid in (select sid from sec natural join pri where pri='$target') and $join group by i1.sid,i2.sid};
+  
+}
+
 sub load_post {
 
  logit ( 'processing secondaries' );
@@ -693,7 +779,31 @@ sub load_post {
   
  load_do("insert into inpos select aid,n,p,s2.sid from inpos i,sec s1,mbreeder m,sec s2 where i.sid=s1.sid and s1.sec_en=m.breeder and m.nat=s2.sec_en and s1.pid=(select pid from pri where pri='breeder') and s2.pid=(select pid from pri where pri='nat')"); 
 
- $i++; logadd ( '.' );  
+ $i++; logadd ( '.' ); 
+ 
+ # adding relations
+ 
+ my $matrix = list_matrix;
+ 
+ load_do('drop table if exists _relate');
+ load_do('create table _relate(source integer not null,target integer not null)');
+ 
+ foreach my $source ( grep { $matrix->{$_}->{refines} } keys %{ $matrix } ) {
+
+  foreach my $target ( @{ $matrix->{$source}->{refines} } ) {
+  
+   my $sql = relate ( $source, $target );
+     
+   load_do("insert into _relate $sql");
+  
+   $i++; logadd ( '.' ); 
+  
+  } 
+ 
+ }
+ 
+ load_do('create index _relate1 on _relate(source)');
+ load_do('create index _relate2 on _relate(target)');
     
  foreach my $do ( @$secsql ) { load_do ( $do ); $i++; logadd ( '.' ) }
  

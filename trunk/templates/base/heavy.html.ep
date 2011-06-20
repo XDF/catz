@@ -17,17 +17,17 @@
 %#
 %== include 'elem/js', jstype => 'lib', jsfile => 'jquery';
 %== include 'elem/js', jstype => 'lib', jsfile => 'jquery.urlencode';
-%== include 'elem/js', jstype => 'site', jsfile => 'setup'; 
+%== include 'elem/js', jstype => 'site', jsfile => 'setup';
+%== include 'elem/js', jstype => 'site', jsfile => 'info'; 
 <%= content 'jsadd' %>
 %#
 %# --------------------
 %#
 <meta http-equiv="content-type" content="text/html; charset=utf-8"> 
-<meta name="generator" content="<%== $t->{APPLICATION} %>">
+<meta name="generator" content="<%== $t->{GENERATOR} %>">
 <meta name="author" content="<%== $t->{AUTHOR} %>">
 <meta name="copyright" content="<%== $t->{COPYRIGHT} %>"> 
-<meta name="fundamental_technologies" content="<%== $t->{FUNDTECH} %>">
-<meta name="fundamental_modules" content="<%== $t->{FUNDMODULE} %>">
+<meta name="credits" content="<%== $t->{CREDITS} %>">
 <meta name="generated_at" content="<%== $now %>"> 
 <meta name="robots" content="<%==  ( $meta_index ? 'index' : 'noindex' ) . ',' . ( $meta_follow ? 'follow' : 'nofollow' ) %>">
 %#
@@ -63,7 +63,8 @@
 %#
 %# --------------------
 %#
-<td class="right"><%= content 'setup' => begin %><%= content 'setupadd' %>
+<td class="right"><noscript><%= $t->{NOSCRIPT} %> <%= $sep %></noscript>
+<%= content 'setup' => begin %><%= content 'setupadd' %>
 <%== include 'elem/setup', setupkey => 'palette' %><% end %>
 <%= $sep %> <a title="<%= $t->{LANGOTHER} %>" href="<%== $urlother %>"><%= $t->{LANGOTHER} %></a>
 </td></tr></table><table class="full"><tr>
@@ -81,8 +82,9 @@
 %# --------------------
 %#
 <div id="bottom" class="section center shade shrink clearbefore">
-<%= $t->{COPYRIGHT} %> <a href="<%== $t->{AUTHORURL} %>"><%= $t->{AUTHOR} %></a> <%== $t->{FIRSTYEAR} %>-<%== thisyear %>.
-<a href="<%== $t->{LICENCE_URL} %>"><%= $t->{LICENCE} %></a>.
+<a class="info" href=""></a> <%= $sep %> <%= $t->{COPYRIGHT} %> 
+<a href="<%== $t->{AUTHORURL} %>"><%= $t->{AUTHOR} %></a> <%== $t->{FIRSTYEAR} %>-<%== thisyear %> <%= $sep %>
+<a href="<%== $t->{LICENCE_URL} %>"><%= $t->{LICENCE} %></a>
 </div>
 %#
 %# --------------------

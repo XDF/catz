@@ -81,7 +81,7 @@ sub _data {
 
  my $res = $net->get($url)->res->body;
 
- $res and length ( $res ) > 3 and
+ $res and ( length ( $res ) > 3 ) and
   return ( result_process ( $res ) );
 
  return undef;

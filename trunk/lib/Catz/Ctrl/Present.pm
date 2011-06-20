@@ -84,7 +84,7 @@ sub all {
  $s->{runmode} = 'all'; # set the runmode to all photos mode
  $s->{pri} = undef; $s->{sec} = undef; $s->{what} = undef;
  $s->{refines} = undef;
- $s->{breedernation} = undef;
+ $s->{breedernat} = undef;
  $s->{breederurl} = undef;
  
  $self->pre or return 0;
@@ -107,7 +107,7 @@ sub pair {
  $s->{args_count} = 2;
  $s->{what} = undef;
  $s->{refines} = undef;
- $s->{breedernation} = undef;
+ $s->{breedernat} = undef;
  $s->{breederurl} = undef;
  
  $s->{runmode} = 'pair'; # set the runmode to pri-sec pair 
@@ -125,7 +125,7 @@ sub pair {
   $s->{refines} = $self->fetch ('related#refines', $s->{pri}, $s->{sec}, @{ $s->{matrix}->{$s->{pri}}->{refines} } ); 
 
  if ( $s->{pri} eq 'breeder' ) {
-  $s->{breedernation} = $self->fetch ( "related#breedernat", $s->{sec} );
+  $s->{breedernat} = $self->fetch ( "related#breedernat", $s->{sec} );
   $s->{breederurl} = $self->fetch ( "related#breederurl", $s->{sec} );
  }
  
@@ -139,7 +139,7 @@ sub pattern {
   
  $s->{pri} = undef; $s->{sec} = undef;
  $s->{refines} = undef;
- $s->{breedernation} = undef;
+ $s->{breedernat} = undef;
  $s->{breederurl} = undef;
  
  $s->{what} = $self->param('what') // undef;
@@ -205,7 +205,7 @@ sub single {
  $s->{image} =  $self->fetch( 'photo#image', $s->{x} );
  
  my $keys = $self->fetch ( 'photo#resultkey', $s->{x} );
-
+ 
  result_prepare ( $self, $keys );
         
  $self->render( template => 'page/view' );

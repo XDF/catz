@@ -79,8 +79,8 @@ sub find {
  
  $self->process_what or ( $self->not_found and return );
  
- $s->{maplink} = $self->fetch ( 'map#link' );
-  
+ $s->{mapdual} = $self->fetch ( 'map#dual' );
+   
  $s->{find} = $self->fetch ( 'locate#find', $s->{what}, $s->{count_find} );
 
  $self->render( template => 'block/find' );

@@ -43,15 +43,18 @@ my $eng = Crypt::CBC->new(
  -cipher => 'Blowfish'
 );
 
-my $results = { map { $_ => 1 } qw ( BIS BIV BOB BOX CAC CACE CACIB CACS CAGCIB CAGPIB CAP CAPE CAPIB CAPS CH DVM EC EP EX EX1 EX2 EX3 EX4 EX5 EX6 EX7 EX8 EX9 GIC GIP IC IP JW KM NOM PR SC SP ) };
+my $results = { map { $_ => 1 } qw ( 
+ BIS BIV BOB BOX CAC CACE CACIB CACS CAGCIB CAGPIB CAP CAPE CAPIB CAPS CH DVM
+ EC EP EX EX1 GIC GIP IC IP JW KM NOM PR SC SP 
+) };
 
 sub result_prepare {
 
  my $app = shift; my $s = $app->{stash}; my $keys = shift;
-
+ 
  my $date = dtexpand ( shift @$keys, 'en' );
  my $loc = shift @$keys;
-
+ 
  my @out = ();
 
  foreach my $i ( 1 .. scalar @$keys ) {
@@ -62,15 +65,17 @@ sub result_prepare {
 
  }
                  
- $s->{resultkey} = \@out; 
-
+ $s->{resultkey} = \@out;
+ 
 }
 
 sub result_pack {
                
  my $key = MIME::Base32::encode ( $eng->encrypt ( join '|', @_ ) );
-  
- $key = reverse $key; 
+ 
+ # we add Z to make sure that the key begins with a letter
+ # (requirement for HTML4 DOM object ids) 
+ $key = 'Z' . reverse $key;  
  
  return $key;
   
@@ -79,6 +84,8 @@ sub result_pack {
 sub result_unpack {
 
  my $key = shift;
+ 
+ $key = substr ( $key, 1 ); # remove Z from the beginning
  
  $key = reverse $key;
  
