@@ -10,10 +10,10 @@
 %# --------------------
 %#
 <% content 'btitle' => begin %>
-% if ( $pri eq 'nationcode' ) {
+% if ( $pri eq 'nat' ) {
 <%== include 'elem/flag', flag => $sec %>
-% } elsif ( $breedernation ) {
-<a href="/<%== $lang %>/browse/nationcode/<%== $breedernation %>/"><%== include 'elem/flag', flag => $breedernation %></a>
+% } elsif ( $breedernat ) {
+<a href="/<%== $lang %>/browse/nat/<%== $breedernat %>/"><%== include 'elem/flag', flag => $breedernat %></a>
 % }
 <h1><%== include 'elem/titleb' =%> (<%= $from - $to == 1 ? $t->{PHOTO} : $t->{PHOTOS} %> <%== $from %>-<%== $to %>/<%= $total %>)</h1>
 <% end %>
@@ -50,13 +50,7 @@
 %#
 %# --------------------
 %#
-<% content 'pathadd' => begin %>
-% if ( $runmode ne 'search' ) {
-<%== include 'elem/path' %>
-% } else {
-<a href="/<%== $lang %>/search<%= length ( $what ) == 0 ? '/' : '?init='.enurl ( $what ) %>"><%= $t->{SEARCH} %></a> <%= $pathsep %>
-% }
-<% end %>  
+<% content 'pathadd' => begin %><%== include 'elem/path' %><% end %>  
 %#
 %# --------------------
 %#
@@ -111,7 +105,7 @@
 % my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
 % my $titl = dtexpand ( dtdate ( $th->[3] ), $lang ); # get date from folder name
 % defined $texts->{$th->[0]} and $titl = "$titl $sep " . $texts->{$th->[0]};  
-<a title="<%= $titl %>" href="<%== include 'href/actionid', toaction => 'auto', toid => $toid %>"><img src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
+<a title="<%= $titl %>" href="<%== include 'href/actionid', toaction => 'auto', toid => $toid %>"><img alt="|<%= $t->{PHOTO} %> <%== $toid %>|" src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
 % }
 </div>
 %#

@@ -1,4 +1,6 @@
-% if ( $args_count == 0 ) {
+% if ( $runmode eq 'search' ) {
+<a href="/<%== $lang %>/search<%= length ( $what ) == 0 ? '/' : '?init='.enurl ( $what ) %>"><%= $t->{SEARCH} %></a> <%= $pathsep %>
+% } elsif ( $args_count == 0 ) {
 %# do nothing = use the default path
 % } elsif ( $args_count == 2 ) {
 %  if ( $args_array->[0] eq 'folder' ) {
@@ -7,6 +9,6 @@
 <a href="/<%== $lang %>/list/<%== $args_array->[0] %>/<%== $matrix->{$args_array->[0]}->{modes}->[0] %>/"><%= $t->{uc($args_array->[0]).'S'} %></a> <%= $pathsep %>
 %  }
 % } else {
-<a href="/<%= $lang %>/search?what=<%== 'unspecified in template' %>"><%= $t->{SEARCH} %></a> <%= $pathsep %>
+<a href="/<%== $lang %>/search<%= length ( $what ) == 0 ? '/' : '?init='.enurl ( $what ) %>"><%= $t->{SEARCH} %></a> <%= $pathsep %>
 % } 
  

@@ -66,7 +66,7 @@ Oletuksena haku kohdistuu mihin tahansa kuvaan liittyvään käsitteeseen. Käsi
 <a href="/<%== $lang %>/search?what=<%== enurl($term) %>"><%= $term %></a> hakee kaikki yleiskuvat paneeleista
 </div>  
 <div class="bar">
-% $term = '+lens=sigma* +organizer=surok +breedcode=rus';
+% $term = '+lens=sigma* +org=surok +breed=rus';
 <a href="/<%== $lang %>/search?what=<%== enurl($term) %>"><%= $term %></a> hakee kaikki Sigman objektiiveilla SUROKin näyttelyissä venäjänsinisistä otetut kuvat
 </div>
 <div class="bar">
@@ -74,7 +74,7 @@ Oletuksena haku kohdistuu mihin tahansa kuvaan liittyvään käsitteeseen. Käsi
 <a href="/<%== $lang %>/search?what=<%== enurl($term) %>"><%= $term %></a> hakee kaikki Mi-alkuisten kasvattajien kissoista otetut kuvat vuosilta 2010, 2009 ja 2008 (superhaussa päivämäärät ovat muotoa VVVVKKPP) 
 </div>
 <div class="bar">
-% $term = '+has=breed -has=catname date=201011* date=2009* date=2008*';
+% $term = '+has=breed -has=cat date=201011* date=2009* date=2008*';
 <a href="/<%== $lang %>/search?what=<%== enurl($term) %>"><%= $term %></a> hakee kaikki ne kuvat vuoden 2011 marraskuusta sekä vuosilta 2009 ja 2008, joissa on tunnistettu rotu mutta ei kissan nimeä, nimitietoja otetaan kiitäen vastaan
 </div>
 </div>

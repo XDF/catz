@@ -24,6 +24,18 @@
 
 package Catz::Data::List;
 
+#
+# This is the control module for lists and for presentation of subjects.
+# This affects to the system both on load time and runtime.
+#
+# Each subject has an entry here.
+#
+# modes - controls the modes available on lists
+# dividers - set dividers on and off on lists
+# refines - defines the pris and their order presented on browse for drill/jump 
+# jump - sets the drill to be a jump to subject rather than drill (search)
+#
+
 use 5.10.0; use strict; use warnings;
 
 use parent 'Exporter';
@@ -33,135 +45,159 @@ our @EXPORT = qw ( list_matrix list_node );
 my $matrix = {
 
  album => {
-  modes => [ qw ( date a2z top ) ],
-  dividers => 1
-  # no refines  
+  modes => [ qw ( cron a2z top ) ],
+  dividers => 1,
+  # no refines since this subject is never accessed directly
+  # no jump since no refines  
  },
  
  date => {
-  modes => [ qw ( date top ) ],
+  modes => [ qw ( cron top ) ],
   dividers => 1,
-  refines => [ qw ( loc org umb lens body breed ) ] 
+  refines => [ qw ( loc org umb breed breeder lens body ) ],
+  jump => { loc => 1, org => 1, umb => 1 },  
  },
  
  loc => {
    modes => [ qw ( a2z top first ) ],
    dividers => 0,
-   refines => [ qw ( org umb ) ]
+   refines => [ qw ( org umb ) ],
+   # no jump
  },
  
  org => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
-  refines => [ qw ( umb loc ) ] 
+  refines => [ qw ( umb loc ) ],
+  jump => { umb => 1 },  
  },
  
  umb => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0
-  # no refines
+  dividers => 0,
+  refines => [ qw ( org loc ) ],
+  # no jump
  },
  
  folder => {
-  # no modes
-  # no dividers
-  refines => [ qw ( loc org umb lens body breed ) ] 
+  # no modes since this subject is never accessed directly
+  # no dividers since no modes
+  refines => [ qw ( loc org umb breed breeder lens body ) ],
+  jump => { loc => 1, org => 1, umb => 1 },
  },
 
  cat => {
   modes => [ qw ( a2z top first ) ],
   dividers => 1,
-  refines => [ qw ( nick breed code breeder nat loc ) ] 
+  refines => [ qw ( nick code breed app breeder nat loc ) ],
+  jump => { 
+   nick => 1, code => 1, breed => 1, app => 1, breeder => 1, nat => 1 
+  }, 
  },
  
  breed => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0
-  # no refines
+  dividers => 0,
+  refines => [ qw ( code breeder nat loc ) ],
+  jump => { code => 1 },  
  },
  
  breeder => {
   modes => [ qw ( a2z top first ) ],
   dividers => 1,
-  refines => [ qw ( breed feat nat cat loc ) ],
-  jump => { cat => 1 },
-  #limit => { cat => 9999 } 
+  refines => [ qw ( breed feat app nat cat ) ],
+  jump => { cat => 1 }, 
  },
  
  nat => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0
+  dividers => 0,
+  refines => [ qw ( breeder breed ) ],
+  jump => { breeder => 1 },
  },
  
  code => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 1
+  dividers => 1 ,
+  refines => [ qw ( app feat breeder cat ) ],
+  jump => { app => 1, feat => 1, cat => 1 },  
  },
 
  app => {
   modes => [ qw ( a2z top first ) ],
   dividers => 1,
-  refines => [ qw ( breed feat ) ],
-  jump => { featurecode => 1 }
+  refines => [ qw ( breed feat breeder cat ) ],
+  jump => { feat => 1, cat => 1 },
  },
  
  breed => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
-  refines => [ qw ( app feat ) ]
+  refines => [ qw ( code feat breeder cat ) ],
+  jump => { code => 1, cat => 1 },
  },
   
  feat => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
-  refines => [ qw ( breed app ) ], 
-  jump => { facadecode => 1 }
+  refines => [ qw ( breed app breeder cat ) ], 
+  jump => { app => 1, cat => 1 },
  },
 
  nick => {
   modes => [ qw ( a2z top first ) ],
   dividers => 1,
-  refines => [ qw ( cat ) ]
+  refines => [ qw ( cat ) ],
+  jump => { cat => 1 },
  },
 
  title => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
-  refines => [ qw ( breeder breed nat ) ],
+  refines => [ qw ( breed breeder cat ) ],
+  jump => { cat => 1 },
  },
 
  lens => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
-  refines => [ qw ( body fnum ) ]
+  refines => [ qw ( body fnum ) ],
+  # no jump
  },
 
  body => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
-  refines => [ qw ( lens iso ) ]
+  refines => [ qw ( lens iso ) ],
+  # no jump
  },
 
  fnum => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0
+  dividers => 0,
+  refines => [ qw ( lens body ) ],
+  # no jump
  },
 
  etime => {
   modes => [ qw ( a2z top first ) ],
-  dividers => 0
+  dividers => 0,
+  refines => [ qw ( lens body ) ],
+  # no jump
  },
 
  iso => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
-  refines => [ qw ( body ) ]
+  refines => [ qw ( body ) ],
+  # no jump
  },
 
  flen => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
-  refines => [ qw ( lens ) ]
+  refines => [ qw ( lens ) ],
+  # no jump
  },
  
 };

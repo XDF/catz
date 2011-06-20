@@ -62,94 +62,14 @@ sub _coverage { # how many photos have the given pri defined
 
 sub _refine {
 
- my ( $self, $pri, $sec, $target ) = @_;  my $lang = $self->{lang}; 
+ my ( $self, $pri, $sec, $target ) = @_;  my $lang = $self->{lang};
+ 
+ # maximum number of items in a set, use 15 if not specific
+ my $n = $matrix->{$pri}->{limit}->{$target} // 15; 
 
- my $o1 = $self->dbone('select origin from pri where pri=?',$pri);
- my $o2 = $self->dbone('select origin from pri where pri=?',$target);
+ my $sql = qq{select sec from (select s2.sec,p2.disp,s2.sort from pri p1,sec_$lang s1,_secm m, _relate r,sec_$lang s2, pri p2 where p1.pri=? and p1.pid=s1.pid and s1.sec=? and s1.sid=m.sid and s1.sid=r.source and s2.sid=r.target and s2.pid=p2.pid and p2.pri=? order by cntphoto desc limit $n) order by sort}; 
 
- # maximum number of items, default to 20
- my $n = $matrix->{$pri}->{limit}->{$target} // 20; 
-
- ( $o1 and $o2 ) or die "internal error in fetching sources for related";
-
- my $join = undef;
- my $tables = undef;
-
- my $sql = "select sec from (select sec,sort from pri natural join sec_$lang natural join _secm where sid in ( ";
-
- given ( $o1 ) {
-
-  when ( 'album' ) {
-
-   $join = 'i1.aid=i2.aid';
-   
-   if ( $o2 eq 'album' ) {
-
-    $tables = 'inalbum i1,inalbum i2';
-
-   } elsif ( $o2 eq 'exif' ) {
-
-    $tables = 'inalbum i1,inexiff i2';
-
-   } elsif ( $o2 eq 'pos' ) {
-    
-    $tables = 'inalbum i1,inpos i2';
-
-   }
-
-  }
-
-  when ( 'exif' ) {
-   
-   if ( $o2 eq 'album' ) {
-
-    $tables = 'inexiff i1,inalbum i2';
-    $join = 'i1.aid=i2.aid';
-
-   } elsif ( $o2 eq 'exif' ) {
-
-    $tables = 'inexiff i1,inexiff i2';
-    $join = 'i1.aid=i2.aid and i1.n=i2.n';
-
-   } elsif ( $o2 eq 'pos' ) {
-    
-    $tables = 'inexiff i1,inpos i2';
-    $join = 'i1.aid=i2.aid and i1.n=i2.n';
-
-   }
-
-  }
-
-  when ( 'pos' ) {
-
-   if ( $o2 eq 'album' ) {
-
-    $tables = 'inpos i1,inalbum i2';
-    $join = 'i1.aid=i2.aid';
-
-   } elsif ( $o2 eq 'exif' ) {
-
-    $tables = 'inpos i1,inexiff i2';
-    $join = 'i1.aid=i2.aid and i1.n=i2.n';
-
-   } elsif ( $o2 eq 'pos' ) {
-    
-    $tables = 'inpos i1,inpos i2';
-    $join = 'i1.aid=i2.aid and i1.n=i2.n and i1.p=i2.p';
-
-   }
-
-  }
-
- }
-
- ( $join and $tables ) or die "internal error in creating SQL for related";
-
- $sql .= qq{select i2.sid from $tables where i1.sid in (select sid from sec_$lang natural join pri where pri=? and sec=?) and i2.sid in (select sid from sec_$lang natural join pri where pri=?) and $join};
-
- $sql .= ") order by cntphoto desc limit $n) order by sort";
-  
- return $self->dbcol($sql,$pri,$sec,$target);
+ return $self->dbcol( $sql, $pri, $sec, $target );
 
 }
 

@@ -81,7 +81,7 @@ sub _full {
         
   }
   
-  when ( 'date' ) {
+  when ( 'cron' ) {
   
    # special ordering where missing HHMMSS is assumed to be 000000 so is the first photo on that date  
    my $res = $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by  substr(first,1,8)||replace(substr(first,9,6),'','000000') desc}, $pri );
@@ -215,11 +215,11 @@ sub _pris {
 
 sub _find {
 
- my ( $self, $pattern, $count ) = @_; my $lang = $self->{lang};
+ my ( $self, $pattern, $limit ) = @_; my $lang = $self->{lang};
  
  $pattern = '%' . $pattern . '%';
- 
- $self->dball(qq{select pri,sec,cntphoto from sec_$lang natural join _secm natural join pri where sid in (select sid from _find_$lang where sec like ? order by rowid limit $count) order by sort,cntphoto},$pattern);
+  
+ $self->dball(qq{select pri,sec,cntphoto,sid from (select p.pri,s.sec,m.cntphoto,f.sid,s.sort from pri p,sec_fi s,_secm m,_find_$lang f where p.pid=s.pid and s.sid=m.sid and s.sid=abs(f.sid) and f.sec like ? order by f.rowid limit $limit) order by lower(sort),cntphoto},$pattern);
 
 }
 
