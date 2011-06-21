@@ -1,2 +1,2 @@
 % my $fn = lc($flag) . '.gif';
-<img class="flag" src="<%== $flagbase %>/<%== $fn %>" height="20" alt="<%= $t->{NATIONCODE} %> <%== uc($flag) %>">
+<img class="flag" src="<%== $flagbase %>/<%== $fn %>" height="20" alt="<%= $t->{NAT} %> <%== uc($flag) %>">

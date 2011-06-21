@@ -79,7 +79,7 @@
 % foreach my $row ( @$folders ) {
 <a title="<%= $row->[1] %> <%= $row->[1] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%= $lang %>/browse/folder/<%== $row->[0] %>/"><%= $mapview->{folder}->{$row->[0]}->[1] %></a> <%= $sep %>
 % }
-<a href="/<%= $lang %>/list/album/date/"><%= $t->{ALL} . ' ' . $t->{ALBUMS} %></a>
+<a href="/<%= $lang %>/list/album/cron/"><%= $t->{ALL} . ' ' . $t->{ALBUMS} %></a>
 </div>
 %#
 %# --------------------
@@ -100,6 +100,9 @@
 %#
 <div class="bar">
 %== include 'content/intro';
+</div>
+<div class="bar">
+%== include 'content/policy';
 </div>
 %#
 %# --------------------

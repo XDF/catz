@@ -76,7 +76,7 @@ my $matrix = {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
   refines => [ qw ( org loc ) ],
-  # no jump
+  jump => { org => 1 },
  },
  
  folder => {

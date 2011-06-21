@@ -1,0 +1,5 @@
+% if ( $lang eq 'fi' ) {
+<h2>kuvien käyttö</h2> asdfasdfa  adsf asdf asdf asd f 
+% } else {
+<h2>photo usage policy</h2> asdfasdfa  adsf asdf asdf asd f 
+% }  

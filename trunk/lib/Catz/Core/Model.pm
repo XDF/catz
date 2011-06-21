@@ -29,8 +29,13 @@ package Catz::Core::Model;
 use 5.10.0; use strict; use warnings;
 
 use DBI;
+use Time::HiRes qw ( time );
 
 use Catz::Core::Cache;
+use Catz::Util::Number qw ( round );
+
+my $time_model = 0;
+my $time_db = 0;
 
 my $db =  DBI->connect (
  'dbi:SQLite:dbname='.$ENV{MOJO_HOME}.'/db/master.db',
@@ -88,9 +93,19 @@ sub AUTOLOAD {
  
  $res and return $res; # if cache hit then done
  
+ my $start;
+ 
+ $time_model and $start = time();
+ 
  my $target = '_' . $sub;
    
  { no strict 'refs'; $res = $self->$target( @args ) }
+ 
+ my $end;
+ 
+ $time_model and $end = time();
+ 
+ $time_model and warn "MODEL $self->{name} $sub $self->{lang} " . ( join ',', @args ) . ' -> ' . round ( ( ( $end - $start ) * 1000 ), 0 ) . ' ms';
   
  cache_set ( 
   $nspace, $self->{name}, $sub, $self->{lang}, @args, $res, 
@@ -111,6 +126,10 @@ sub db_run {
   cache_get ( $nspace, $comm, $sql, @args );
  
  $res and return $res; # if cache hit then done
+ 
+ my $start;
+ 
+ $time_db and $start = time();
 
  given ( $comm ) {
   
@@ -153,6 +172,12 @@ sub db_run {
   default { die "unknown database command '$comm'" }
  
  }
+ 
+ my $end;
+ 
+ $time_db and $end = time();
+ 
+ $time_db and warn "DB $comm $sql " . ( join ',', @args ) . ' -> ' . round ( ( ( $end - $start ) * 1000 ), 0 ) . ' ms' ;
 
  cache_set ( $nspace, $comm, $sql, @args, $res, 'never' );
   

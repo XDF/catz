@@ -41,12 +41,14 @@ use constant DEFAULT => 'any';
 sub search2args { # covert a search parameter to argument list 
   
  my $str = clean trim shift;
-
+ 
  my $fixed = $str;
-    
+ 
+ $str =~ s|\'|\\\'|g; # ' can't be passed to Text::ParseWords without \ before
+     
  # smart split to words allowing quotation marks on the outer edges   
  my @args = quotewords ( ' ', 0, $str );
-   
+  
  my @out = ();
   
  foreach my $arg ( @args ) {

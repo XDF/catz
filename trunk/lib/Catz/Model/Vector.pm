@@ -73,7 +73,7 @@ sub _base {
       
  if ( $pri eq 'has' ) { # get all photos that have a subject of subject class  $sec defined
     
-  $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec where pid=(select pid from pri where pri=?))", $sec);
+  $res = $self->dbcol("select x from sec natural join _sid_x where pid=(select pid from pri where pri=?)", $sec);
             
  } else {
  
