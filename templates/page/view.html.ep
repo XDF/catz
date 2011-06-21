@@ -127,7 +127,7 @@
 </a>
 % };
 % }
-<%= $sep %> <%= $t->{PHOTO_ID} %> <%== fullnum33 ( $image->[0], $image->[1] ) %><span>
+<%= $sep %> <%= $t->{PHOTO_ID} %> <%== fullnum33 ( $image->[0], $image->[1] ) %></span>
 % }
 % if ( $display ne 'none' ) {
 </div>

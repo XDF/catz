@@ -58,7 +58,7 @@ sub process_width {
 sub process_what {
 
  my $self = shift;
- 
+  
  my $what = $self->param( 'what' ) // undef;
 
  $what or return 0;
@@ -118,40 +118,6 @@ sub list {
       
  $self->render(template => 'page/list');
  
-}
-
-sub search {
-
- my $self = shift; my $s = $self->{stash};
-   
- $s->{args_array} = [];
- $s->{args_count} = 0;
- $s->{found} = 0;
- $s->{args_string} = undef;
- $s->{thumb} = undef;
- 
- $self->process_what or $s->{what} = undef;
-     
- if ( $s->{what} ) {
- 
-  ( $s->{what}, $s->{args_array}, $s->{args_string} ) = search2args ( $s->{what} );
-  
-  $s->{args_count} = scalar ( @{ $s->{args_array} } );
-        
-  $s->{found} = $self->fetch ( 'vector#count', @{ $s->{args_array} } );
-  
-  my $samp = $self->fetch ( 'vector#array_rand_n', @{ $s->{args_array} }, 15 );
-   
-  my $th = $self->fetch ( 'photo#thumb', @{ $samp } );
-
-  $s->{thumbs} = $th->[0];
-       
-  $s->{texts} = $self->fetch ( 'photo#texts', @{ $samp } );
-   
- }
- 
- $self->render ( template => 'page/search' );
-
 }
 
 1;

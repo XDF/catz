@@ -141,12 +141,12 @@ sub pattern {
  $s->{refines} = undef;
  $s->{breedernat} = undef;
  $s->{breederurl} = undef;
- 
+  
  $s->{what} = $self->param('what') // undef;
  $s->{init} = $self->param('init') // undef;
  
  if ( $s->{what} ) {
- 
+   
   ( $s->{what}, $s->{args_array} ) = search2args ( $s->{what} );
   $s->{args_count} = scalar @{ $s->{args_array} };
 
@@ -157,7 +157,7 @@ sub pattern {
  }
   
  $s->{runmode} = 'search';
- 
+  
  $s->{args_count} > 0 and ( $self->pre or return 0 );
  
  $s->{urlother} =  '/' . $s->{langother} . '/' . $s->{action};
@@ -328,16 +328,16 @@ sub view {
 sub search { 
 
  my $self = shift; my $s = $self->{stash};
-
+ 
  $self->pattern or $self->not_found and return; 
 
  if ( $s->{x} and $s->{id} ) { 
  
   $self->multi or $self->not_found and return; 
   
-  } else { 
+ } else { 
   
- $self->guide or $self->not_found and return;  
+  $self->guide or $self->not_found and return;  
 
  } 
 

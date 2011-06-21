@@ -285,15 +285,18 @@ sub after {
    
  given ( $s->{hold} ) {
  
-  # 15 min on headers (for clients), 14 min on server
-  when ( 'dynamic' ) { $age = 15*60; $cac = '14 min' } 
+  # 30 min on headers (for clients), 29 min on server
+  when ( 'dynamic' ) { $age = 30*60; $cac = '29 min' } 
   
-  # 15 min on headers (for clients), inf on server
-  when ( 'static' ) { $age = 15*60; $cac = 'never' } 
+  # 30 min on headers (for clients), infinite on server
+  when ( 'static' ) { $age = 30*60; $cac = 'never' } 
  
   # 'off' or any other => NOP
 
  }
+ 
+ # set age back to 0 if not in production = disable browser's cache in dev
+ $ENV{MOJO_MODE} eq 'production' or $age = 0;
  
  # set cache response header
  $self->res->headers->header('Cache-Control' => 'max-age=' . $age );

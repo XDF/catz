@@ -41,7 +41,7 @@ sub _thumb {
  my $min = 99999999;
  my $max = 00000000; 
  
- my $thumbs = $self->dball( qq{select x,s,n,folder,file||'$LR',lwidth,lheight from album natural join photo where x in (} . ( join ',', @xs ) .  ') order by x' );
+ my $thumbs = $self->dball( qq{select x,s,n,folder,file||'$LR',lwidth,lheight from photo natural join album where x in (} . ( join ',', @xs ) .  ') order by x' );
 
  foreach my $row ( @$thumbs ) { 
   # extract date from the folder name (first eight characters) 
@@ -63,7 +63,7 @@ sub _detail {
   qq{select pri,sec from (
    select pri,disp,sec,sort from pri natural join sec_$lang natural join inalbum natural join photo where pri<>'album' and x=? union all
    select pri,disp,sec,sort from pri natural join sec_$lang natural join inexiff natural join photo where x=? union all
-   select pri,disp,sec,sort from pri natural join sec_$lang natural join inpos natural join photo where pri not in ('text','breed','feature','nation','title') and x=? union all
+   select pri,disp,sec,sort from pri natural join sec_$lang natural join inpos natural join photo where pri<>'text' and x=? union all
    select 'time','99',moment,moment from photo where x=? and moment is not null
   ) group by pri,sec order by disp,sort}, $x, $x, $x, $x 
  );
@@ -112,7 +112,7 @@ sub _texts {
  my ( $self, @xs ) = @_; my $lang = $self->{lang};
 
  my $res = $self->dball( 
-  qq{select x,sec from pri natural join sec_$lang natural join inpos natural join photo where pri='text' and x in (} . ( join ',', @xs ) .  ') order by x,p' # 0 ms / 2011-05-29   
+  qq{select x,sec from photo natural join pri natural join sec_$lang natural join inpos where pri='text' and x in (} . ( join ',', @xs ) .  ') order by x,p'    
  );
  
  my $texts = {};
