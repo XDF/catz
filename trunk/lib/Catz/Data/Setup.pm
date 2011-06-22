@@ -108,6 +108,10 @@ sub setup_set {
  # set one key-value -pair 
 
  my ( $app, $key, $val ) = @_;
+ 
+ # preliminary checks 
+ length $key > 50 and return 0;
+ length $val > 50 and return 0; 
 
  # if the pair verifies ok, then set session and return 1 = ok
  setup_verify ( $key, $val ) and do { $app->session( $key => $val ); return 1 };

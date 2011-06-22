@@ -254,7 +254,7 @@ sub before {
 
   $self->res->code(200);
   $self->res->headers->content_type( $res->[0] );
-  $self->res->headers->content_length( $res->[1] );
+  defined $res->[1] and $self->res->headers->content_length( $res->[1] );
   $self->res->body( ${ $res->[2] } ); # scalar ref to prevent copying
   $self->rendered;
   $s->{cached} = 1; # mark that the content came from cache
@@ -298,7 +298,6 @@ sub after {
  # set age back to 0 if not in production = disable browser's cache in dev
  $ENV{MOJO_MODE} eq 'production' or $age = 0;
  
-  
  # set cache response header
  $self->res->headers->header('Cache-Control' => 'max-age=' . $age );
  
@@ -311,10 +310,11 @@ sub after {
  if ( $self->req->method eq 'GET' and $self->res->code == 200 ) {
 
   cache_set (
+   
    cachekey ( $self ),
    [ 
     $self->res->headers->content_type,
-    $self->res->headers->content_length,
+    $self->res->headers->content_length // undef,
     \$self->res->body # scalar ref to prevent copying
    ],
    $cac
