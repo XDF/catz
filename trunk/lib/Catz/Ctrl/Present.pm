@@ -145,6 +145,11 @@ sub pattern {
  $s->{what} = $self->param('what') // undef;
  $s->{init} = $self->param('init') // undef;
  
+ # it appears that browsers typcially send UTF-8 encoded data
+ # when the origin page is UTF-8 -> we decode now
+ utf8::decode ( $s->{what} ); 
+ utf8::decode ( $s->{init} );
+ 
  if ( $s->{what} ) {
    
   ( $s->{what}, $s->{args_array} ) = search2args ( $s->{what} );
@@ -180,7 +185,9 @@ sub pattern {
  
  } else {
 
-  $s->{urlother} .=  ( $s->{origin} eq 'id' ?  '/' . $s->{id} . '/' : '/' );
+  $s->{urlother} .=  ( 
+   ( $s->{origin} and $s->{origin} eq 'id' ) ?  '/' . $s->{id} . '/' : '/' 
+  );
   
  }
 

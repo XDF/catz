@@ -48,8 +48,8 @@ sub detect {
  
  $self->redirect_temp( 
   '/'.
-  $i18n->accepts( $self->req->headers->accept_language, $langs ),
-  '/'
+  $i18n->accepts( $self->req->headers->accept_language, $langs )
+  .'/'
  );
 
 }

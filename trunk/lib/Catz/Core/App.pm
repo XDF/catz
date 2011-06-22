@@ -298,6 +298,7 @@ sub after {
  # set age back to 0 if not in production = disable browser's cache in dev
  $ENV{MOJO_MODE} eq 'production' or $age = 0;
  
+  
  # set cache response header
  $self->res->headers->header('Cache-Control' => 'max-age=' . $age );
  

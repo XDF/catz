@@ -97,8 +97,15 @@ sub wanted {
     
     if ( $data =~ /lens\/objektiivi\: (<.+?>)?(.*?)\</ ) {
     
-     defined $2 and length ( $2 ) > 0 and
-      $out = $out . join "\n", ( $album, $n, 'lens', $2, "#\n" );
+     defined $2 and length ( $2 ) > 0 and do {
+     
+      my $lens = $2;
+      
+      $lens =~ s|fisheye.kalansilm.|Fisheye|; 
+     
+      $out = $out . join "\n", ( $album, $n, 'lens', $lens, "#\n" );
+      
+      }
      
     }        
 

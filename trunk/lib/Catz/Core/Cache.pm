@@ -40,7 +40,7 @@ foreach my $nspace ( qw ( db model page ) ) {
 
  $cache->{$nspace} = CHI->new ( 
   driver => 'File', namespace => $nspace,
-  root_dir => $ENV{MOJO_HOME}.'/cache', depth => 2
+  root_dir => $ENV{MOJO_HOME}.'/cache', depth => 3
  );
 
 }

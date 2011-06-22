@@ -138,7 +138,7 @@
 % my $ttl = scalar @$comment > 0 ? join " $sep ", @$comment : '';   
 <div class="center" id="fitparent">
 <a href="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>">
-<img id="fittarget" title="<%= $ttl %>" alt="|<%= $t->{PHOTO} %> <%= $id %>|" src="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>"<%== $photosize ne 'fit'? ' width="'.$image->[4].'" height="'.$image->[5].'"' : '' %>></a>
+<img id="fittarget" title="<%= $ttl %>" alt="[<%= $t->{PHOTO} %> <%= $id %>]" src="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>"<%== $photosize ne 'fit'? ' width="'.$image->[4].'" height="'.$image->[5].'"' : '' %>></a>
 </div>
 %#
 %# --------------------

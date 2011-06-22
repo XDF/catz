@@ -35,53 +35,21 @@ use Catz::Data::List qw ( list_matrix );
 use Catz::Data::Search;
 use Catz::Util::Number qw ( round );
 
-sub process_width {
-
- my $self = shift; my $s = $self->{stash};
-
- my $width = $self->param( 'width' ) // 1200;
-
- $width =~ /^\d{3,4}$/ or $width = 1200;
-  
- $width > 599 or $width = 600;
- 
- $width < 2001 or $width = 2000;
-
- $s->{count_thumb} = 30 + 
-  round ( ( ( $width - 600 ) / ( 2000 - 600 ) ) * 50 );
-
- $s->{count_find} = $s->{count_thumb};
-
-}
-
-
-sub process_what {
-
- my $self = shift;
-  
- my $what = $self->param( 'what' ) // undef;
-
- $what or return 0;
- 
- length $what > 2000 and return 0;
- 
- $self->{stash}->{what} = $what;
- 
- return 1;
-
-}
-
 sub find {
 
  my $self = shift; my $s = $self->{stash};
 
- $self->process_width;
+ $s->{what} = $self->param( 'what' ) // undef;
+
+ length $s->{what} > 500 and $self->not_found and return;
  
- $self->process_what or ( $self->not_found and return );
- 
- $s->{mapdual} = $self->fetch ( 'map#dual' );
+ # it appears that browsers typcially send UTF-8 encoded data
+ # when the origin page is UTF-8 -> we decode now
+ utf8::decode ( $s->{what} );
    
- $s->{find} = $self->fetch ( 'locate#find', $s->{what}, $s->{count_find} );
+ $s->{mapdual} = $self->fetch ( 'map#dual' );
+    
+ $s->{find} = $self->fetch ( 'locate#find', $s->{what}, 50 );
 
  $self->render( template => 'block/find' );
 

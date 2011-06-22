@@ -44,6 +44,7 @@ sub search2args { # covert a search parameter to argument list
  
  my $fixed = $str;
  
+ $str =~ s|\"\"|\\\"|g; # " are input as "" and now converted to \"
  $str =~ s|\'|\\\'|g; # ' can't be passed to Text::ParseWords without \ before
      
  # smart split to words allowing quotation marks on the outer edges   
