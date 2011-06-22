@@ -1,0 +1,1 @@
+<%= $t->{SHARE} %> <a href="http://facebook.com/sharer.php?u=<%== enurl (  'http://' . $t->{SITE} . $fburi ) %>&t=<%== enurl ( $fbtext ) %>"><%= $t->{FB} %></a>

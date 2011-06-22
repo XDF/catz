@@ -1,0 +1,1 @@
+<%= $t->{SHARE} %> <a href="http://twitter.com/share?url=<%== enurl (  utf8::encode ( 'http://' . $t->{SITE} . $twuri ) ) %>&text=<%== enurl ( utf8::encode ( $twtext ) ) %>"><%= $t->{TWITTER} %></a>
