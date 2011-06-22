@@ -39,11 +39,13 @@ use Catz::Util::File qw ( findfiles );
 
 my $mpath =  conf ( 'path_model' );
 
-my $noload = { 'Base' => 1, 'Common' => 1 }; # skip these models
+my $noload = { 'Common' => 1, 'Vector' => 1 }; # skip these models
 
 my $models = {}; # model instances are kept here
 
 foreach my $mfile ( findfiles ( $mpath ) ) {
+
+ 
 
  my $class = $mfile; $class =~ s|$mpath/||; $class =~ s|\.pm$||;
   

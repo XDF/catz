@@ -111,21 +111,21 @@ sub set {
  foreach my $key ( @params ) {
 
   # attempt to set the parameter, increase accepted counter if success 
-  setup_set ( $self, $key, $self->param( $key ) ) and $i++;
+  setup_set ( $self, $key // '', $self->param( $key ) // '' ) and $i++;
  
  }
  
  # at least one set was done -> OK
  $i and do { 
-  $self->render( text => 'OK' ); 
+  $self->render( text => 'OK', format => 'txt' ); 
   return;
  };
   
- $self->render( text => 'FAILED' ); 
+ $self->render( text => 'FAILED', format => 'txt' ); 
  
 }
 
-use constant RESULT_NA => '';
+use constant RESULT_NA => '<!-- N/A -->';
 
 sub result {
 
@@ -133,19 +133,23 @@ sub result {
 
  my $key = $self->param( 'key' ) // undef;
 
- ( defined $key and length $key < 2000 and $key =~ /^[A-Z2-7]+$/ ) or
-  $self->render( text => RESULT_NA ) and return;
+ (
+   defined $key and length $key < 2000 
+   and $key =~ /^CATZ\-([A-Z2-7]+)\-([0-9A-F]{32,32})$/ 
+ ) or $self->render( text => RESULT_NA ) and return;
 
  my @keys = result_unpack ( $key );
-  
- scalar @keys == 3 or $self->render( text => RESULT_NA ) and return;
+   
+ scalar @keys == 3 or 
+  $self->render( text => RESULT_NA ) and return;
  
  my $count = $self->fetch ( 'net#count', $keys[0], $keys[1] ) // 0;
- 
- $count == 0 and $self->render( text => RESULT_NA ) and return;
+  
+ $count == 0 and 
+  $self->render( text => RESULT_NA ) and return;
 
  my $res = $self->fetch ( 'net#data', @keys );
-
+ 
  defined $res and do {
  
   $s->{result} = $res->[0];
@@ -156,7 +160,7 @@ sub result {
  };
  
  $self->render( text => RESULT_NA );
-
+ 
 }
 
 sub link {

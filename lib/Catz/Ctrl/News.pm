@@ -32,7 +32,7 @@ use XML::RSS;
 
 use Catz::Core::Conf;
 use Catz::Util::String qw ( limit );
-use Catz::Util::Time qw ( dt2epoch epoch2rfc822 );
+use Catz::Util::Time qw ( dt dt2epoch epoch2rfc822 );
 
 sub all { # the list of all news
 
@@ -61,7 +61,7 @@ sub feed { # RSS feed of news
   title => $s->{t}->{SITE},
   link => 'http://' . $s->{t}->{SITE} . '/',
   language => $s->{lang},
-  lastBuildDate => epoch2rfc822 dt2epoch $s->{version},
+  lastBuildDate => epoch2rfc822 dt2epoch dt,
  );
   
  foreach my $item (@$news) {

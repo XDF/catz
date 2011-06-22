@@ -33,6 +33,7 @@ our @EXPORT = qw ( result_prepare result_pack result_unpack result_process );
 use Crypt::Blowfish;
 use Crypt::CBC;
 use MIME::Base32 qw ( RFC );
+use Digest::HMAC_MD5 qw(hmac_md5_hex);
 
 use Catz::Core::Conf;
 use Catz::Util::String qw ( trim );
@@ -70,27 +71,45 @@ sub result_prepare {
 }
 
 sub result_pack {
+
+ # join the data, run it thru encrypter and encode
+ my $data = MIME::Base32::encode ( $eng->encrypt ( join '|', @_ ) );
+ 
+ # calculate md5 digest using the configured key, output as hex
+ my $dig = uc ( hmac_md5_hex ( $data, conf ( 'result_key' ) ) );
                
- my $key = MIME::Base32::encode ( $eng->encrypt ( join '|', @_ ) );
- 
- # we add Z to make sure that the key begins with a letter
- # (requirement for HTML4 DOM object ids) 
- $key = 'Z' . reverse $key;  
- 
+ # the outputted key contains 
+ # * a letter to make it HTML DOM id save
+ # * the encoded data
+ # * the digest key for data integrity verification               
+ my $key = "CATZ-$data-$dig";
+  
  return $key;
   
 }
 
 sub result_unpack {
 
- my $key = shift;
- 
- $key = substr ( $key, 1 ); # remove Z from the beginning
- 
- $key = reverse $key;
- 
- return split /\|/, $eng->decrypt ( MIME::Base32::decode ( $key ) ); 
+ # unpack the result key, return empty array in case of any error
 
+ my $key = shift;
+  
+ if ( $key =~ /^CATZ\-([A-Z2-7]+)\-([0-9A-F]{32,32})$/ ) {
+ 
+  my $data = $1; my $dig = $2;
+  
+  my $cmp = uc ( hmac_md5_hex ( $data, conf ( 'result_key' ) ) );
+   
+  $dig ne $cmp and return (); # data digest mismatch
+ 
+  return split /\|/, $eng->decrypt ( MIME::Base32::decode ( $data ) );  
+  
+ } else {
+ 
+  return ();
+ 
+ }
+  
 }
 
 sub result_process {

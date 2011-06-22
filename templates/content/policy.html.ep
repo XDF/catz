@@ -1,5 +1,5 @@
 % if ( $lang eq 'fi' ) {
-<h2>kuvien käyttö</h2> asdfasdfa  adsf asdf asdf asd f 
+<h2>kuvien käyttö</h2>Kaikki kuvat ovat heti käytettävissä sekä ei-kaupallisiin että kaupallisiin tarkoituksiin <a href="http://creativecommons.org/licenses/by/3.0/deed.fi">Creative Commons Nimeä 3.0 Yleisversio</a> -lisenssin mukaisesti. Nimenä on mainittava joko <span class="lean">Heikki Siltala</span>, <span class="lean">catza.net</span> tai <span class="lean">www.heikkisiltala.com</span>, voit valita vapaasti.
 % } else {
-<h2>photo usage policy</h2> asdfasdfa  adsf asdf asdf asd f 
+<h2>photo usage policy</h2>All photos are immediately available for both non-commercial and commercial uses under the <a href="http://creativecommons.org/licenses/by/3.0/deed.en">Creative Commons Attribution 3.0 Unported License</a>.  The attribution is <span class="lean">Heikki Siltala</span>, <span class="lean">catza.net</span> or <span class="lean">www.heikkisiltala.com</span> (feel free to choose). 
 % }  

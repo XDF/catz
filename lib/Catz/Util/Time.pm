@@ -111,7 +111,7 @@ sub dtexpand {
 }
 
 #
-# returns the systep time in a timestamp format YYYYMMDDHHMMSS
+# returns the system time in a timestamp format YYYYMMDDHHMMSS
 #
 sub dt {
  
@@ -139,8 +139,6 @@ sub thisyear {
  return $y + 1900;
  
 }
-#sub dtsplit { substr ( $_[0], 0, 8 ), substr ( $_[0], 8 ) }
-
 
 sub dtdate { substr $_[0], 0, 8 }
 
@@ -151,7 +149,7 @@ sub dt2epoch {
  my $dt = shift;
   
  $dt =~ /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/;
- 
+  
  mktime ( $6, $5, $4, $3, $2 - 1, $1 - 1900 );
 
 }

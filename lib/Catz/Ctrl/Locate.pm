@@ -40,16 +40,22 @@ sub find {
  my $self = shift; my $s = $self->{stash};
 
  $s->{what} = $self->param( 'what' ) // undef;
-
- length $s->{what} > 500 and $self->not_found and return;
  
  # it appears that browsers typcially send UTF-8 encoded data
  # when the origin page is UTF-8 -> we decode now
  utf8::decode ( $s->{what} );
-   
+
  $s->{mapdual} = $self->fetch ( 'map#dual' );
-    
- $s->{find} = $self->fetch ( 'locate#find', $s->{what}, 50 );
+ 
+ if ( length $s->{what} > 50 ) {
+ 
+  $s->{find} = [];
+ 
+ } else {
+     
+  $s->{find} = $self->fetch ( 'locate#find', $s->{what}, 50 );
+
+ }
 
  $self->render( template => 'block/find' );
 
