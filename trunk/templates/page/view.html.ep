@@ -1,5 +1,15 @@
 % use 5.10.0;
 % extends 'base/heavy';
+% my $ttl = scalar @$comment > 0 ? join " $sep ", @$comment : '';
+%#
+%# --------------------
+%#
+<% content 'metaadd' => begin %> 
+<link rel="image_src" href="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[6] %>">
+% if ( scalar @$comment > 0 ) {
+<meta name="description" content="<%= $ttl %>">
+% }
+<% end %>
 %#
 %# --------------------
 %#
@@ -127,15 +137,19 @@
 </a>
 % };
 % }
-<%= $sep %> <%= $t->{PHOTO_ID} %> <%== fullnum33 ( $image->[0], $image->[1] ) %></span>
-% }
+<%= $sep %> <%= $t->{PHOTO_ID} %> <%== fullnum33 ( $image->[0], $image->[1] ) %>
+%  if ( scalar ( @$comment ) > 0 ) {
+<%= $sep %> <%== include 'elem/fb', fburi => $url, fbtext => $ttl %>
+<%= $sep %> <%== include 'elem/twitter', twuri => $url, twtext => $ttl %> 
+%  }
+</span>
+% } 
 % if ( $display ne 'none' ) {
 </div>
 % }
 %#
 %# --------------------
 %#
-% my $ttl = scalar @$comment > 0 ? join " $sep ", @$comment : '';   
 <div class="center" id="fitparent">
 <a href="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>">
 <img id="fittarget" title="<%= $ttl %>" alt="[<%= $t->{PHOTO} %> <%= $id %>]" src="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>"<%== $photosize ne 'fit'? ' width="'.$image->[4].'" height="'.$image->[5].'"' : '' %>></a>
