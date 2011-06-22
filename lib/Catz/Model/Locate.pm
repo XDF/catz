@@ -218,7 +218,7 @@ sub _find {
  my ( $self, $pattern, $limit ) = @_; my $lang = $self->{lang};
  
  $pattern = '%' . $pattern . '%';
-  
+   
  $self->dball(qq{select pri,sec,cntphoto,sid from (select p.pri,s.sec,m.cntphoto,f.sid,s.sort from pri p,sec_fi s,_secm m,_find_$lang f where p.pid=s.pid and s.sid=m.sid and s.sid=abs(f.sid) and f.sec like ? order by f.rowid limit $limit) order by lower(sort),cntphoto},$pattern);
 
 }
@@ -229,7 +229,7 @@ sub _lastshow {
  
  # find latest gallery having at least 10 photos with cat names
  
- my $latest = $self->dbone("select aid from album where folder=(select max(folder) from album where aid in ( select aid from inpos natural join sec natural join pri where pri='catname' group by aid having count(distinct n)>9 ))");
+ my $latest = $self->dbone("select aid from album where folder=(select max(folder) from album where aid in ( select aid from inpos natural join sec natural join pri where pri='cat' group by aid having count(distinct n)>9 ))");
  
  # the get the photos
  

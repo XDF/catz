@@ -10,7 +10,7 @@
 %# --------------------
 %#
 <% content 'btitle' => begin %>
-% if ( $pri eq 'nat' ) {
+% if ( $pri and $pri eq 'nat' ) {
 <%== include 'elem/flag', flag => $sec %>
 % } elsif ( $breedernat ) {
 <a title="<%= $t->{NAT} %> <%== $breedernat %>" href="/<%== $lang %>/browse/nat/<%== $breedernat %>/"><%== include 'elem/flag', flag => $breedernat %></a>
@@ -21,7 +21,7 @@
 %# --------------------
 %#
 <% content 'bextra' => begin %> 
-% if ( $pri ne 'folder' and $pri ne 'date' ) {
+% if ( $pri and $pri ne 'folder' and $pri ne 'date' ) {
 <%= $t->{ONTHISPAGE} %> <%= dtexpand ( $latest, $lang ) %>
 %  if ( $earliest ne $latest ) {
 - <%= dtexpand ( $earliest, $lang ) %>
@@ -67,7 +67,7 @@
 <a href="<%== include 'href/id', toid => $pin->[0] %>"><%= $label1 %></a> <%= $sep %>
 <a href="<%== include 'href/id', toid => $pin->[$page-2] %>"><%= $label2 %></a>
 % } else { # first page -> passive first & back 
-<%= $label1 %></span> <%= $sep %> <%= $label2 %> 
+<%= $label1 %> <%= $sep %> <%= $label2 %> 
 % }
 <%= $sep %> <%= $t->{PAGE} %>   
 <select name="page" class="shade" onchange="<%== include 'href/id', toid => 'this' %>">
@@ -105,7 +105,7 @@
 % my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
 % my $titl = dtexpand ( dtdate ( $th->[3] ), $lang ); # get date from folder name
 % defined $texts->{$th->[0]} and $titl = "$titl $sep " . $texts->{$th->[0]};  
-<a title="<%= $titl %>" href="<%== include 'href/actionid', toaction => 'auto', toid => $toid %>"><img alt="|<%= $t->{PHOTO} %> <%== $toid %>|" src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
+<a title="<%= $titl %>" href="<%== include 'href/actionid', toaction => 'auto', toid => $toid %>"><img alt="[<%= $t->{PHOTO} %> <%== $toid %>]" src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
 % }
 </div>
 %#

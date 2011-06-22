@@ -106,7 +106,7 @@ my $matrix = {
   modes => [ qw ( a2z top first ) ],
   dividers => 1,
   refines => [ qw ( breed feat app nat cat ) ],
-  jump => { cat => 1 }, 
+  jump => { nat => 1, cat => 1 }, 
  },
  
  nat => {
