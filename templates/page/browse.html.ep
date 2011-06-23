@@ -2,6 +2,14 @@
 %#
 %# --------------------
 %#
+<% content 'metaadd' => begin %>
+% if ( $runmode eq 'pair' and $total > 9 ) {
+%== include 'block/ogmeta';
+% }
+<% end %>
+%#
+%# --------------------
+%#
 <% content 'ptitleadd' => begin %>
 %== include 'elem/titlea';
 (<%= $t->{PAGE} %> <%= $page %>/<%= $pages %>)
@@ -112,6 +120,7 @@
 %# --------------------
 %#
 <div class="bar">
+<%== include 'elem/titlea' %> <%== include 'elem/facebook' %> <%= $sep %>
 % if ( defined $breederurl ) {
 <a href="<%== $breederurl %>"><%= $breederurl %></a> <%= $sep %>
 % } 

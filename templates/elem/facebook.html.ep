@@ -1,0 +1,4 @@
+% if ( $runmode eq 'pair' and $total > 9 ) {
+% my $fburl = 'http://'.$t->{SITE}.'/'.$lang.'/browse/'.$pri.'/'.$sec.'/';
+<iframe class="facebook" src="http://www.facebook.com/plugins/like.php?url=<%== enurl ( $fburl ) %>&app_id=<%== $facebookkey %>&send=false&layout=button_count&width=50&show_faces=false&action=like&amp;colorscheme=dark&font=verdana&height=20" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
+% }

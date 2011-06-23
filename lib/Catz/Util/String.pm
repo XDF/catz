@@ -97,7 +97,7 @@ sub dna { md5_base64 ( $_[0] ) }
 
 memoize ( 'encode' );
 
-sub encode { join '', map { chrsolve( ord ( $_ ) ) } split //, $_[0] }
+sub encode { join '', map { chrsolve( ord ( $_ ) ) } split //, $_[0] // '' }
 
 #
 # url encodes a string

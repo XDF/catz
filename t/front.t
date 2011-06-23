@@ -25,14 +25,12 @@
 
 use 5.10.0; use strict; use warnings;
 
-use lib '../lib';
-
 use Test::More;
 use Test::Mojo;
 
 use Catz::Core::Text;
 
-use Catz::Util::String qw ( enurl );
+use Catz::Util::String qw ( encode enurl );
 
 my $t = Test::Mojo->new( app => 'Catz::Core::App' );
 
@@ -57,9 +55,10 @@ foreach my $lang ( qw ( en fi ) ) {
    ->element_exists('html body h1')
    ->content_like(qr/$txt->{NOSCRIPT}/)
    ->content_like(qr/href=\"\/$lang\/list\/breeder\/a2z\/\"/)
-   ->content_like(qr/alt="\[(kuva|photo) \d{6}\]"/);
+   ->content_like(qr/alt="\[(kuva|photo) \d{6}\]"/)
+   ->content_like(qr/\.JPG/);
    
- $c += 7;  
+ $c += 8;  
  
  # without slash should do perm redirect
  
@@ -122,6 +121,39 @@ foreach my $val ( 1 .. 19 ) {
  
  }
 
+}
+
+
+# stress with force
+ 
+foreach my $i ( 1 .. 100 ) {
+ 
+ my $elems = int(rand(30)) + 1;
+ 
+ my @patt = ();
+   
+ foreach ( 1 .. $elems ) {
+
+  my $c = 10 + int(rand(40));
+  
+  push @patt, 
+   ( join '', map { chr $_ } map { 33 + int(rand(95)) } ( 1 .. $c ) ); 
+  
+ }
+  
+ my $pata = join '/', map { enurl $_ } @patt;
+  
+ my $patb = join '/', map { encode $_ } @patt; 
+    
+ $t->get_ok("/$pata/")->status_is(404); $c += 2;
+ $t->get_ok("/en/$pata/")->status_is(404); $c += 2;
+ $t->get_ok("/fi/$pata/")->status_is(404); $c += 2;    
+
+ $t->get_ok("/$patb/")->status_is(404); $c += 2;
+ $t->get_ok("/en/$patb/")->status_is(404); $c += 2;
+ $t->get_ok("/fi/$patb/")->status_is(404); $c += 2;    
+
+ 
 }
 
 done_testing( $c );

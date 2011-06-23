@@ -140,7 +140,7 @@ sub _image {
 
  my ( $self, $x ) = @_;
  
- $self->dbrow(qq{select s,n,folder,file||'$HR',hwidth,hheight from album natural join photo where x=?},$x);
+ $self->dbrow(qq{select s,n,folder,file||'$HR',hwidth,hheight,file||'$LR' from album natural join photo where x=?},$x);
 
 }
 

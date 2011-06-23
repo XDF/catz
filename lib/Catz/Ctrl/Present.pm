@@ -86,7 +86,8 @@ sub all {
  $s->{refines} = undef;
  $s->{breedernat} = undef;
  $s->{breederurl} = undef;
- 
+ $s->{origin} = 'none';
+             
  $self->pre or return 0;
 
  $s->{urlother} =  
@@ -109,6 +110,7 @@ sub pair {
  $s->{refines} = undef;
  $s->{breedernat} = undef;
  $s->{breederurl} = undef;
+ $s->{origin} = 'none';
  
  $s->{runmode} = 'pair'; # set the runmode to pri-sec pair 
 
@@ -128,7 +130,7 @@ sub pair {
   $s->{breedernat} = $self->fetch ( "related#breedernat", $s->{sec} );
   $s->{breederurl} = $self->fetch ( "related#breederurl", $s->{sec} );
  }
- 
+  
  return 1;
 
 }
@@ -141,6 +143,7 @@ sub pattern {
  $s->{refines} = undef;
  $s->{breedernat} = undef;
  $s->{breederurl} = undef;
+ $s->{origin} = 'none';
   
  $s->{what} = $self->param('what') // undef;
  $s->{init} = $self->param('init') // undef;
