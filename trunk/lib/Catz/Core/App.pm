@@ -233,6 +233,8 @@ sub before {
  
  }
  
+ $s->{facebookkey} = conf ( 'facebook_key' );
+ 
  # the global layout separator characters
  $s->{sep} = '.';
  $s->{pathsep} = '>';
@@ -245,6 +247,7 @@ sub before {
  # fetch texts for the current language and make them available to all
  # controller and templates as variable t 
  $s->{t} = text ( $s->{lang} );
+ $s->{ten} = text ( 'en' );
  
  # process and populate session with setup parameters                                                                                  
  setup_init ( $self );

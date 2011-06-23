@@ -1,6 +1,7 @@
 % extends 'base/light';
-<% content 'ptitle' => begin %><%= $t->{NOT_FOUND} %><% end %>
-<% content 'main' => begin %><h1><%= $t->{NOT_FOUND} %></h1><% end %>
+% my $message = '404 resource not found'; 
+<% content 'ptitle' => begin %><%= $message %><% end %>
+<% content 'main' => begin %><h1><%= $message %><% end %>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

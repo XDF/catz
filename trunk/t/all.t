@@ -28,37 +28,69 @@ use 5.10.0; use strict; use warnings;
 use Test::More;
 use Test::Mojo;
 
-use Catz::Core::Text;
-
 my $t = Test::Mojo->new( app => 'Catz::Core::App' );
 
 my $c = 0;
 
-foreach my $lang ( qw ( en fi ) ) {
+my @ok = qw (
+ 001001 123095 062047 170077 061254 025072 137077 042279 099167 120046
+ 080121 028049 157077 153128 143160 097022 041235 144058 092351 065137
+);
 
- my $txt = text ( $lang );
+my @bad = qw (
+ 001600 002600 003600 888888 888000 000000 000001 001000 999000 000999 1 12 
+ 13 567 98798 12345 abcde a -123123 ===!!! $$~~ CRX TUV lens=Sigma* *he??o*
+); 
+
+foreach my $lang ( qw ( en fi ) ) {
  
- # news page
-   
- $t->get_ok("/$lang/news/")
-   ->status_is(200)
-   ->content_type_like(qr/text\/html/)
-   ->text_is('html body h1'=>$txt->{NEWS_ALL})
-   ->content_like(qr/$txt->{NOSCRIPT}/);
+ foreach my $mode ( qw ( browseall viewall ) ) {
  
- $c += 5;
- 
- # RSS feed
- 
- $t->get_ok("/$lang/feed/")
-   ->status_is(200)
-   ->content_type_like(qr/xml/)
-   ->element_exists('rss[version=2.0]')
-   ->text_is('title'=>$txt->{SITE})
-   ->element_exists('pubDate');
+  $t->get_ok("/$lang/$mode")->status_is(301); $c += 2;
     
- $c += 6;
+  $t->get_ok("/$lang/$mode/")
+    ->status_is(200)
+    ->content_type_like(qr/text\/html/)
+    ->content_like(qr/ alt=\"\[/)
+    ->content_like(qr/\.JPG/);
+    
+  $c += 5;
+  
+  foreach my $id ( @ok ) {
+
+   $t->get_ok("/$lang/$mode/$id")->status_is(301); $c += 2;
+  
+   $t->get_ok("/$lang/$mode/$id/")
+     ->status_is(200)
+     ->content_type_like(qr/text\/html/)
+     ->content_like(qr/ alt=\"\[/)
+     ->content_like(qr/\.JPG/);     
+    
+   $c += 5;
+  
+  }
+
+  foreach my $id ( @bad ) {
+  
+   $t->get_ok("/$lang/$mode/$id/")->status_is(404);
+   
+   $c += 2;
+  
+  }
  
+ 
+ }
+ 
+ my $mode = 'void';
+  
+ foreach my $id ( @ok ) {
+ 
+  $t->get_ok("/$lang/$mode/$id/")->status_is(404);
+  
+  $c += 2;
+  
+ }
+  
 }
 
-done_testing( $c );
+done_testing($c);

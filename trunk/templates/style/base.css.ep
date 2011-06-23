@@ -179,3 +179,12 @@ a:hover {
  margin-left: 3px;
  margin-right: 3px;
 }
+
+/* facebook like button's iframe */
+.facebook {
+ background-color: <%== $st->{color}->{$palette}->{back} %>;
+ border: none;
+ overflow: hidden; 
+ width: 50px; 
+ height: 20px;
+}

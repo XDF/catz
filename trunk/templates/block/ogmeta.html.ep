@@ -1,0 +1,24 @@
+<%
+my $ogtype = 'catz:'.$ten->{uc($pri)};
+my $ogtitle = $sec.' ('.$t->{uc($pri)}.')';
+given ( $pri ) {
+ when ( [ qw ( org umb breeder ) ] ) {  $ogtype = 'non_profit' }
+ when ( 'date' ) { 
+  $ogtitle = dtexpand ( $sec, $lang ).' ('.$t->{uc($pri)}.')'; 
+ }
+ when ( 'nat' ) { $ogtype = 'country' }
+ when ( 'loc' ) { $ogtype = 'city' }
+ when ( 'cat' ) { $ogtype = 'public_figure' }
+ when ( 'folder' ) { 
+  $ogtype = 'catz:album';
+  $ogtitle = $mapview->{$pri}->{$sec}->[1].' ('.$t->{uc('album')}.')' ; 
+ }
+}
+%>
+<meta name="og:type" content="<%= $ogtype %>">
+<meta name="og:title" content="<%= $ogtitle %>">
+<meta name="og:url" content="http://<%== $t->{SITE} %>/<%== $lang %>/browse/<%== $pri %>/<%== encode $sec %>/">
+% if ( $thumb->[0] ) {
+<meta name="og:image" content="<%== $photobase %>/<%== $thumb->[0]->[3] %>/<%== $thumb->[0]->[4] %>">
+% }
+<meta name="og:site_name" content="<%= $t->{SITE} %>">
