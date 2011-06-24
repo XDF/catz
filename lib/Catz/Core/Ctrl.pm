@@ -24,35 +24,43 @@
 
 package Catz::Core::Ctrl;
 
-# the base class for all Controllers
+# the base class for all controllers in the system
+# all controlles must inherit from this 
 
 use 5.10.0; use strict; use warnings;
- 
+
+# all controllers are of course also Mojolicious controllers 
 use parent 'Mojolicious::Controller';
 
 use List::MoreUtils qw ( none );
 
 use Catz::Core::Conf;
+
 use Catz::Util::File qw ( findfiles );
 
-# automatic compile-time loading and instantiating of all models
-
-my $mpath =  conf ( 'path_model' );
-
-my $noload = { 'Common' => 1, 'Vector' => 1 }; # skip these models
+# this is how we load and access models: when this module gets compiled
+# all models get loaded, instantiated and store to a static hashref  
 
 my $models = {}; # model instances are kept here
 
+# skip these models, this contains abstract models that
+# are not to be instantiated and accessed directly
+my $noload = { 'Common' => 1, 'Vector' => 1 }; 
+
+my $mpath =  conf ( 'path_model' );
+
+# we seek the model directory
 foreach my $mfile ( findfiles ( $mpath ) ) {
 
- 
-
- my $class = $mfile; $class =~ s|$mpath/||; $class =~ s|\.pm$||;
+ # process the filename to a plain class name
+ my $class = $mfile; $class =~ s|$mpath/||; $class =~ s|\.pm$||; 
   
  $noload->{$class} or do {
  
+  # load
   require $mfile;
-    
+
+  # instantiate, use lower case name as key    
   $models->{ lc ( $class ) } = "Catz::Model::$class"->new;  
  
  }; 

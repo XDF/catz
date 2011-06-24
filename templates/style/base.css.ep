@@ -185,6 +185,6 @@ a:hover {
  background-color: <%== $st->{color}->{$palette}->{back} %>;
  border: none;
  overflow: hidden; 
- width: 50px; 
+ width: 90px; 
  height: 20px;
 }

@@ -138,10 +138,6 @@
 % };
 % }
 <%= $sep %> <%= $t->{PHOTO_ID} %> <%== fullnum33 ( $image->[0], $image->[1] ) %>
-%  if ( scalar ( @$comment ) > 0 ) {
-<%= $sep %> <%== include 'elem/fb', fburi => $url, fbtext => $ttl %>
-<%= $sep %> <%== include 'elem/twitter', twuri => $url, twtext => $ttl %> 
-%  }
 </span>
 % } 
 % if ( $display ne 'none' ) {

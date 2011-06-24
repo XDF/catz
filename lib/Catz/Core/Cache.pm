@@ -26,50 +26,74 @@ package Catz::Core::Cache;
 
 use 5.10.0; use strict; use warnings;
 
-use CHI;
+# all caching is based on the awesome CHI module
+# CHI will allow backend changes without changing the code
+
+use CHI;  
 
 use parent 'Exporter';
 
+# the interface is simple, just set and get
 our @EXPORT = qw ( cache_set cache_get );
 
+# caching is activated only production mode
+# if not in production mode, cache_set and cache_get 
+# are still called but are NOP
 my $cacheon = $ENV{MOJO_MODE} eq 'production' ? 1 : 0;
 
+# we create a static set of CHI objects at compile and store them to hashref
 my $cache = {};
 
+# creating cache objects for our namespaces 
 foreach my $nspace ( qw ( db model page ) ) {
+
+ # we use file backend for the reason that every instance
+ # of the application should run completely under its base dir
+ # and this is true since we use SQLite + file-based caching
 
  $cache->{$nspace} = CHI->new ( 
   driver => 'File', namespace => $nspace,
-  root_dir => $ENV{MOJO_HOME}.'/cache', depth => 2
+  root_dir => $ENV{MOJO_HOME}.'/cache', depth => 3 
+  # depth 3 is based on preliminary tests, 2 was not enough
  );
 
 }
 
-my $sep = '_';
+my $sep = '_'; # the string that separates cache key parts
 
 sub cache_set {
 
- $cacheon or return;
+ $cacheon or return; # immediate NOP if not caching
 
+ # we expect: namespace, array of key parts, value, expire
  my $space = shift; my $exp = pop; my $val = pop;
 
- $cache->{$space} or return; 
+ # verify that the namespace exists
+ $cache->{$space} or die "unknown cache_set namespace '$space'";  
 
- my $key = join $sep, @_;
+ # we build the cache key by joining the key parts
+ # we also map undefined key parts to string 'undef' to be safe
+ my $key = join $sep, map { defined $_ ? $_ : 'undef' } @_;
 
+ # the actual set operation is just a call to CHI interface
  $cache->{$space}->set( $key, $val, $exp );
 
 }
 
 sub cache_get {
 
- $cacheon or return; 
+ $cacheon or return; # immediate NOP if not caching 
 
+ # we expect: namespace, array of key parts
  my $space = shift; 
 
- $cache->{$space} or return; 
+ # verify that the namespace exists
+ $cache->{$space} or die "unknown cache_get namespace '$space'";  
  
- $cache->{$space}->get( join $sep, @_ );
+ # the actual get operation is just a call to CHI interface
+ # we map undefined key parts to 'undef' to be safe
+ return
+  $cache->{$space}->get( join $sep, map { defined $_ ? $_ : 'undef' } @_ );
 
 }
 
