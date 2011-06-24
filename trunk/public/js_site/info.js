@@ -22,19 +22,23 @@
 // THE SOFTWARE.
 //
 
+// These variables contain all data needed to construct mailto
+// links when page is loaded. The data is obfuscated to prevent
+// spam bot harvesting as much as practically possible.
+
 var catz_v00 = 'href';
 var catz_v01 = 't';
-// var catz_v02 = 'e';
+
 var catz_v03 = 'n';
 var catz_v04 = 'a';
 var catz_v05 = 'catz';
 var catz_v06 = '.';
 var catz_v07 = ':';
-// var catz_v08 = 'lto';
+
 var catz_v09 = 'mai';
 var catz_v10 = 'fo';
 var catz_v11 = 'in';
-// var catz_v12 = '@';
+
 var catz_v13 = 'title';
 var catz_v14 = '=';
 var catz_v15 = '?';
@@ -42,23 +46,42 @@ var catz_v16 = 'subject';
 
 
 function catzInfo() {
+
+ // process elements that belong 
+ // to class info or infox
  
+ // set href of cat data mailto link
  $(catz_v06+catz_v11+catz_v10+'x').attr(
   catz_v00,catz_v09+'lto'+catz_v07+catz_v11+catz_v10+'@'+
   catz_v05+catz_v04+catz_v06+catz_v03+'e'+catz_v01+catz_v15+
-  catz_v16+catz_v14+$(catz_v06+catz_v11+catz_v10).attr(catz_v13)
+  catz_v16+catz_v14+$(catz_v06+catz_v11+catz_v10+'x').attr(catz_v13)
  );
-  
+
+ // set content of cat data mailto link 
  $(catz_v06+catz_v11+catz_v10+'x').html(
   catz_v11+catz_v10+'@'+catz_v05+catz_v04+catz_v06+catz_v03+
   'e'+catz_v01
  );
 
+ // change title of cat data mailto link
+ $(catz_v06+catz_v11+catz_v10+'x').attr(
+  catz_v13,catz_v11+catz_v10+'@'+catz_v05+
+  catz_v04+catz_v06+catz_v03+'e'+catz_v01
+ );
+
+ // set href of info mail link
  $(catz_v06+catz_v11+catz_v10).attr(
   catz_v00,catz_v09+'lto'+catz_v07+catz_v11+catz_v10+'@'+
   catz_v05+catz_v04+catz_v06+catz_v03+'e'+catz_v01
  );
 
+ // set title of info mailto link
+ $(catz_v06+catz_v11+catz_v10).attr(
+  catz_v13,catz_v11+catz_v10+'@'+catz_v05+
+  catz_v04+catz_v06+catz_v03+'e'+catz_v01
+ );
+
+ // set content of info mail link 
  $(catz_v06+catz_v11+catz_v10).html(
   catz_v11+catz_v10+'@'+catz_v05+catz_v04+catz_v06+catz_v03+
   'e'+catz_v01

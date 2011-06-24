@@ -608,13 +608,14 @@ sub org {
  
  given ( shift ) {
     
-  when ( /cornish rex/i ) {
+  when ( /cornish rex/i ) { 
+   return 'Cornish Rex Association','Cornish Rex -yhdistys' 
+  }
+
+  when ( /norwegian forest cat/i ) {
    return 'Norwegian Forest Cat Association','Norjalainen Metsäkissa -yhdistys' 
   }
-  
-  when ( /norwegian forest cat/i ) 
-   { return 'Cornish Rex Association','Cornish Rex -yhdistys' }
-  
+    
   when ( /american curl/i )  
    { return 'American Curl Association','American Curl -yhdistys' }
   

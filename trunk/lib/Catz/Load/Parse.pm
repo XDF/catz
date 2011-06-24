@@ -133,11 +133,11 @@ sub cat {
  }
 
  # collect post-title codes and remove them from data
- if ( $data =~ /^(.+), (([A-Z0-9 ]|,| )+)$/ ) {
+ while ( $data =~ /^(.+), (([A-Z0-9 ])+?)$/ ) {
   
   $data = $1;
-  
-  push @titles, map { trim $_ } split /,/, $2;
+
+  push @titles, trim $2;
   
  }
   
