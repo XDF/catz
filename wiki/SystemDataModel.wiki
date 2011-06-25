@@ -1,56 +1,25 @@
 #summary The data model of the system
 
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('album','album',1);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('folder','album',2);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('date','album',3);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('location','album',4);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('organizer','album',5);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('umbrella','album',6);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('text','pos',7);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('catname','pos',8);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('breeder','pos',9);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('nation','pos',10);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('nationcode','pos',11);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('emscode','pos',12);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('breed','pos',13);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('breedcode','pos',14);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('facadecode','pos',15);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('feature','pos',16);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('featurecode','pos',17);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('nickname','pos',18);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('title','pos',19);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('titlecode','pos',20);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('lens','exif',21);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('body','exif',22);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('fnumber','exif',23);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('exposuretime','exif',24);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('sensitivity','exif',25);
-INSERT INTO PRI (PRI,ORIGIN,DISP) VALUES ('focallength','exif',26);
- 
-
-|| *Technical code* || *Visible subject* || *Explanation* || *Source data level* || *Langauge dependent* || *Special handling* ||
-|| album || Album || The visible name of a photo album || album || X || used only in lists and in displayed forms for folders, converted to folder in URLs ||
-|| folder || Folder || The technical folder name of a photo album || album || - || not presented to the user, converted to album when viewed ||
-|| date || Date || The date of a photo album || album || - || in format YYYYMMDD (and so actually matches 8 first characters of folder), converted to YYYY-MM-DD in English and to D.M.YYYY in Finnish when displayed ||
-|| location || Location || The name of the geographical location of a photo album || album || X || ||
-|| organizer || Organizer || The organizer of the show || album || X || ||
-|| umbrella || Umbrella || The umbrella organization of the organizer of the show || album ||  X || ||
-|| text || Text || Photo comment || pos || X ||  ||
-|| catname || Cat || The name of the cat || pos || - || ||
-|| breeder || Breeder || The breeder name || pos || - || some breeders have a country data ||
-|| nation ||
-|| nationcode ||
-|| emscode || Code || The EMS code || pos || - || ||
-|| breed || Breed || The breed name || pos || X || ||
-|| breedcode || Breed code || The EMS code without the appearance part || pos || - || ||
-|| facadecode || Appearance || The EMS code without the breed part || pos || - || ||
-|| feature || Feature || A single atomic code in the EMS code excluding the breed part || pos || - || - ||      
-|| nickname || Nickname || The nickname of a cat || pos || - || ||
-|| title || Title || The title (achievement) code || pos || - || ||
-|| titlecode || Title || The title (achievement) code || pos || - || ||
-|| lens || Camera lens || The camera lens || exif || - || ||
-|| body || Camera body || The camera body || exif || - || ||
-|| fnumber || Aperture || The photographic aperture || exif || - || ||
-|| exposuretime || Exposure time || The photographic exposure time || exif || - || ||
-|| sensitivity || Sensitivity || The photographic sensitivity expressed as ISO || exif || - || ||
-|| focallength || Focal length || The photographic focal length || exif || - || ||  
+|| *Technical code* || *Visible text* || *Explanation* || *Source data level* || *Langauge dependent* ||
+|| album || album || The visible name of the album || album || X ||
+|| folder || folder || The folder name of the album || album || - ||
+|| date || day || The YYYYMMDD date of the album || album || - ||
+|| loc || location || The place where the album was shot || album || - ||
+|| org || organizer || The organizer of the show of the album || album || X ||
+|| umb || umbrella || The umbrella organization of the organizer of the show of the album || album || X ||
+|| text || text || Photo text (comment) || pos || X ||
+|| cat || cat || The name of the cat in the comment || pos || - ||
+|| breeder || breeder || The breeder name of the cat in the comment || pos || - |
+|| nat || nation || The nationality of the breeder of the cat in the comment || pos || - ||  
+|| code || code || The EMS code of the cat in the comment || pos || - ||
+|| breed || breed || The breed of the cat in the comment || pos || X || - ||
+|| app || appearance || The EMS code of the cat in the comment without the breed part || pos || - ||
+|| feat || feature || A single atomic code in the EMS code of the cat in the comment excluding the breed part || pos || - ||      
+|| nick || nickname || The nickname of the cat in the comment || pos || - ||
+|| title || title || The title (achievement) code of the cat in the comment || pos || - ||
+|| lens || lens || The camera lens of the photo || exif || - ||
+|| body || body || The camera body of the photo || exif || - ||
+|| fnum || aperture || The photographic aperture of the photo || exif || - ||
+|| etime || exposure time || The photographic exposure time of the photo || exif || - ||
+|| iso || sensitivity || The photographic sensitivity of the photo expressed as a ISO value || exif || - ||
+|| flen || focal length || The photographic focal length of the photo || exif || - || 
