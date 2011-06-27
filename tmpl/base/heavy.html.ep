@@ -24,12 +24,16 @@
 %#
 <meta http-equiv="content-type" content="text/html; charset=utf-8"> 
 <meta name="generator" content="<%== $t->{GENERATOR} %>">
+<meta name="timestamp" content="<%== $now %>">
 <meta name="author" content="<%== $t->{AUTHOR} %>">
-<meta name="copyright" content="<%== $t->{COPYRIGHT} %>"> 
+<meta name="copyright" content="<%== $t->{COPYRIGHT} %> <%== $t->{AUTHOR} %> <%== $t->{FIRSTYEAR} %>-<%== thisyear %>. <%= $t->{LICENCE} %>."> 
 <meta name="credits" content="<%== $t->{CREDITS} %>">
-<meta name="generated_at" content="<%== $now %>"> 
+<meta name="og:site_name" content="<%= $t->{SITE} %>"> 
 <meta name="robots" content="<%==  ( $meta_index ? 'index' : 'noindex' ) . ',' . ( $meta_follow ? 'follow' : 'nofollow' ) %>">
-<link rel="alternate" title="<%= $t->{TRANSLATE} %>" hreflang="<%== $langother %>" href="<%== $urlother %>"> 
+<link rel="alternate" title="<%= $t->{TRANSLATE} %>" lang="<%== $langother %>" hreflang="<%== $langother %>" href="<%== $urlother %>">
+<link rel="copyright" href="<%== $t->{LICENCE_URL} %>">
+<link rel="shortcut icon" href="/favicon.ico">
+<meta name="fb:app_id" content="<%== $facebookkey %>"> 
 <%= content 'metaadd' %>
 %#
 %# --------------------

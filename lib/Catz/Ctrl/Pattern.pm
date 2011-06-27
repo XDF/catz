@@ -43,7 +43,8 @@ sub pattern {
  $s->{refines} = undef;
  $s->{breedernat} = undef;
  $s->{breederurl} = undef;
- $s->{origin} = 'none';
+ $s->{origin} = 'none';  # to indiate that origin was not processed
+ $s->{trans} = undef;
  
  # defaults
  $s->{args_array} = [];

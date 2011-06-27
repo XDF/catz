@@ -1,13 +1,29 @@
 % extends 'base/heavy';
 %#
+%# --------------------
+%#
+<% content 'jsadd' => begin %><%== include 'elem/jstwitter' %><% end %>
+%#
+%# --------------------
+%#
 <% content 'ptitleadd' => begin %>
 <%== $t->{NEWS_ALL} %>
 <% end %>
+%#
+%# --------------------
 %#
 <% content 'btitle' => begin %>
 <h1><%== $t->{NEWS_ALL} %></h1>
 <% end %>
 %#
+%# --------------------
+%#
+<% content 'metaadd' => begin %>
+<meta name="og:title" content="<%= $t->{SITE} %> <%== $t->{NEWS_ALL} %>">
+<meta name="og:url" content="<%== $lang eq 'fi' ? $urlother : $url %>">
+<meta name="description" content="<%= $t->{NEWSING} %>">
+<meta name="og:description" content="<%= $t->{NEWSING} %>"> 
+<% end %>
 %#
 %# --------------------
 %#
@@ -18,12 +34,15 @@
 <%= content 'main' => begin %>
 % my $i = 1;
 % foreach my $row ( @$news ) {
-% if ( $i++ == 1 ) {
+% if ( $i == 1 ) {
 <div class="bar">
 % } else {
 <div class="bar stripetop">
 % } 
 <h2 id="<%== $row->[0] %>"><%=  dtexpand ( dtdate ( $row->[0] ), $lang ) %> <%= $row->[1] %></h2>
+% if ( $i < 4 ) {
+%== include 'elem/twitter', twurl => $url, twtext => $row->[1], twcounturl => $lang eq 'fi' ? $urlother : $url; 
+% }
 <div class="bar"><%= $row->[2] %></div>
 % if ( $row->[3] ) {
 <% 
@@ -34,8 +53,11 @@
 %>
 <div class="bar"><a href="<%== $row->[3] %>"><%= $row->[3] %></a></div>
 % } 
-<div class="shrink lean bar"><%=  dtexpand ( $row->[0], $lang ) %></div>
+<div class="shrink lean bar">
+<%=  dtexpand ( $row->[0], $lang ) %>
 </div>
+</div>
+% $i++;
 % }
 <% end %> 
 %#

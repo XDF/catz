@@ -4,16 +4,34 @@
 %#
 %# --------------------
 %#
-<% content 'metaadd' => begin %> 
-<link rel="image_src" href="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[6] %>">
-% if ( scalar @$comment > 0 ) {
-<meta name="description" content="<%= $ttl %>">
+<% content 'metaadd' => begin %>
+% if ( $runmode eq 'pair' ) {
+%  if ( $pri eq 'loc' ) {
+<meta name="og:locality" content="<%= $sec %>">
+<meta name="og:country-name" content="<%= $t->{COUNTRY} %>">
+%  } 
+% } 
+<link rel="start" href="<%== include 'href/id', toid => $pin->[0] %>">
+<link rel="index" href="<%== include 'href/action', toaction => 'auto' %>">
+% if ( $pos > 1 ) {
+<link rel="prev" href="<%== include 'href/id', toid => $pin->[1] %>">
 % }
+% if ( $pos < $total ) {
+<link rel="next" href="<%== include 'href/id', toid => $pin->[2] %>">
+% }
+<link rel="image_src" href="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[6] %>">
+<meta name="og:image" content="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[6] %>">
+<meta name="og:url" content="<%== $t->{URL_CATZA} %>en/viewall/<%== $id %>/">
+<link rel="canonical" content="<%== $t->{URL_CATZA} %><%== $lang %>/viewall/<%== $id %>/">
+% my $desc = $t->{PHOTO}." $id";
+% length ( $ttl ) > 0 and $desc = "$ttl ($desc)";
+<meta name="og:title" content="<%= $desc %>">   
 <% end %>
 %#
 %# --------------------
 %#
 <% content 'jsadd' => begin %>
+%== include 'elem/jstwitter';
 %== include 'elem/js', jstype => 'site', jsfile => 'result';
 % $photosize eq 'fit' and do {
 %== include 'elem/js', jstype => 'site', jsfile => 'fit';
@@ -31,6 +49,12 @@
 %#
 <% content 'pathadd' => begin %><%== include 'elem/path' %>
 <h1 class="mini"><%== include 'elem/titleb' %> (<%= $t->{PHOTO} %> <%== $pos %>/<%== $total %>)</h1>
+% if ( length ( $ttl ) > 0 ) {
+% my $desc = $t->{PHOTO}." $id"; 
+% my $turi = $t->{URL_CATZA}."en/viewall/$id/"; 
+%== include 'elem/twitter', twurl => $t->{URL_CATZA}."$lang/viewall/$id/", twtext => "$ttl ($desc)", twcounturl => $turi;
+%== include 'elem/facebook', fbhref => $turi, fbref => 'view';
+% }
 <% end %>
 %#
 %# --------------------

@@ -223,18 +223,20 @@ sub before {
    $s->{lang} = 'fi'; $s->{langother} = 'en'; # Finnish
  };
 
- # put Google Analytics key to stash if not on Windows (dev) and in production 
 
+ $s->{facebookkey} = conf ( 'key_facebook' );
+ $s->{twitterkey} = conf ( 'key_twitter' );
  $s->{googlekey} = undef;
 
- if ( ( $ENV{MOJO_MODE} eq 'production' ) and not ( $^O =~ /^MS/ ) ) {
+ # copy Google Analytics key to stash 
+ # if on linux (prod server) and in production 
+
+ if ( ( $ENV{MOJO_MODE} eq 'production' ) and conf ( 'lin' ) ) {
        
-  $s->{googlekey} = conf ( 'google_key' ); 
+  $s->{googlekey} = conf ( 'key_google' ); 
  
  }
- 
- $s->{facebookkey} = conf ( 'facebook_key' );
- 
+  
  # the global layout separator characters
  $s->{sep} = '.';
  $s->{pathsep} = '>';
@@ -283,16 +285,24 @@ sub after {
   defined $s->{controller} and defined $s->{action} and defined $s->{url} 
  ) or return;
  
+ #
+ # remove unnecessary newlines
+ # WARNING: SHOULD CONTENT-LENGTH TO BE SET AFTER THIS OPERATION ???
+ # my $cont = $self->res->body;
+ # $cont =~ s/\n+/\n/g;
+ # $self->res->body ( $cont );
+ #
+ 
  my $age = 0; # lifetime in response headers, default to no lifetime 
  my $cac = undef; # lifetime in server side page cache
    
  given ( $s->{hold} ) {
  
-  # 30 min on headers (for clients), 29 min on server
-  when ( 'dynamic' ) { $age = 30*60; $cac = '29 min' } 
+  # 5 min on headers (for clients), 4 min on server
+  when ( 'dynamic' ) { $age = 5*60; $cac = '4 min' } 
   
-  # 30 min on headers (for clients), infinite on server
-  when ( 'static' ) { $age = 30*60; $cac = 'never' } 
+  # 5 min on headers (for clients), infinite on server
+  when ( 'static' ) { $age = 5*60; $cac = 'never' } 
  
   # 'off' or any other => NOP
 

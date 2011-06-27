@@ -4,6 +4,14 @@
 %# The template for the advanced search with no search results
 %# --------------------
 %#
+<% content 'metaadd' => begin %>
+<meta name="og:url" content="<%== $lang eq 'fi' ? $urlother : $url %>">
+<meta name="description" content="<%= $t->{SEARCHING} %>">
+<meta name="og:description" content="<%= $t->{SEARCHING} %>"> 
+<% end %>
+%#
+%# --------------------
+%#
 <% content 'ptitleadd' => begin %>
 % if ( length ( $what // '' ) > 0 ) { 
 <%= $t->{SEARCH_NOTHING} %>

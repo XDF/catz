@@ -155,7 +155,7 @@ sub multi {
  scalar @{ $s->{xs} } == 0 and return 0; # no photos on this page 
  
  # fetch the thumbs and their included earliest - latest metadata
- ( $s->{thumb}, $s->{earliest}, $s->{latest} ) = 
+ ( $s->{thumbs}, $s->{earliest}, $s->{latest} ) = 
   @{ $self->fetch( 'photo#thumb', @{ $s->{xs} } ) };
 
  # generate converage counts and urls for coverage information displays
