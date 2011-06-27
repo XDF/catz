@@ -99,19 +99,11 @@ sub _date {
  
 }
 
-sub _breedernat { 
+sub _breedermeta { 
 
  my ( $self, $breeder ) = @_;
  
- $self->dbone('select nat from mbreeder where breeder=?', $breeder );
- 
-}
-
-sub _breederurl { 
-
- my ( $self, $breeder ) = @_;
- 
- $self->dbone('select url from mbreeder where breeder=?', $breeder );
+ $self->dbrow('select nat,url from mbreeder where breeder=?', $breeder );
  
 }
 

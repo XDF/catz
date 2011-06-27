@@ -38,12 +38,10 @@ use Catz::Util::String qw ( enurl trim clean );
 # the default pri key used if none is given in the query
 use constant DEFAULT => 'any';
 
-sub search2args { # covert a search parameter to argument list 
-  
- my $str = clean trim shift;
- 
- my $fixed = $str;
- 
+sub search2args { # covert a search parameter to argument list
+
+ my $str = shift; 
+   
  $str =~ s|\"\"|\\\"|g; # " are input as "" and now converted to \"
  $str =~ s|\'|\\\'|g; # ' can't be passed to Text::ParseWords without \ before
      
@@ -58,7 +56,7 @@ sub search2args { # covert a search parameter to argument list
   
   if ( $arg =~ /^([+-])(.*)$/ ) { $oper = $1; $arg = $2 }
    
-  if ( $arg =~ /^([a-z]{2,})\=(.*)$/ ) {
+  if ( $arg =~ /^([a-z]+?)\=(.+)$/ ) {
      
    $key = $1; $val = $2; 
  
@@ -76,7 +74,7 @@ sub search2args { # covert a search parameter to argument list
        
  }
   
- return $fixed, \@out;
+ return \@out;
 
 }
 

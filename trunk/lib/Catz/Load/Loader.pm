@@ -36,7 +36,6 @@ our @EXPORT = qw (
 use Data::Dumper;
 use DBI;
 
-use Catz::Core::Conf;
 use Catz::Data::List qw ( list_matrix );
 use Catz::Load::Data qw ( exifsort exif fixgap lens tolines topiles );
 use Catz::Load::Parse;
@@ -497,7 +496,7 @@ sub load_simple {
    when ( 'mnat' ) {
    
     # verify that a flag file is present
-    my $fflag = conf ( 'path_flag') . '/' . lc ( $lines[0] ) . '.gif'; 
+    my $fflag = '../../file/flag/' . lc ( $lines[0] ) . '.gif'; 
     -f $fflag or die "unable to locate flag file '$fflag' for '$lines[0]'"; 
     
    }

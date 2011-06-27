@@ -73,7 +73,7 @@ sub _base {
        
  if ( $pri eq 'has' ) { # get all photos that have a subject of subject class  $sec defined
     
-  $res = $self->dbcol("select x from sec natural join _sid_x where pid=(select pid from pri where pri=?)", $sec);
+  $res = $self->dbcol("select x from sec natural join _sid_x where pid=(select pid from pri where pri=?) group by x", $sec);
             
  } else {
  
@@ -82,12 +82,12 @@ sub _base {
   # we for some reason don't get it by using "collate nocase"
  
   if ( $pri eq 'any' ) {
-         
-   $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec where (sec_en like ? or sec_fi like ?))", $sec, $sec);
+           
+   $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec where (sec_en like ? or sec_fi like ?) group by sid) group by x", $sec, $sec);
    
   } else {
    
-   $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec where pid=(select pid from pri where pri=?) and (sec_en like ? or sec_fi like ?))", $pri, $sec,$sec);
+   $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec where pid=(select pid from pri where pri=?) and (sec_en like ? or sec_fi like ?) group by sid) group by x", $pri, $sec,$sec);
    
   }
     

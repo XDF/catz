@@ -47,7 +47,7 @@ my $models = {}; # model instances are kept here
 # are not to be instantiated and accessed directly
 my $noload = { 'Common' => 1, 'Vector' => 1 }; 
 
-my $mpath =  conf ( 'path_model' );
+my $mpath =  '../lib/Catz/Model';
 
 # we seek the model directory
 foreach my $mfile ( findfiles ( $mpath ) ) {

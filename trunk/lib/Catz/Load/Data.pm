@@ -295,13 +295,14 @@ sub lens {
 
  my ( $album, $flen, $fnum ) = @_;
    
- my $date = substr ( $album, 0, 8 ); # use only date
+ my $date = substr ( $album, 0, 8 ); # use only date part
+
  $flen =~ s/ mm$//g; # remove ' mm'
  $fnum =~ s/f\///; # remove 'f/'
  
  my $lens;
  
- given ( $flen ) { # substr -3 removes ' mm'
+ given ( $flen ) {
  
   when ( 17 )  { $lens = 'tokina17' }
   when ( 28 )  { $lens = 'sigma28' }
@@ -520,7 +521,7 @@ sub exif {
  # resolve lens only for albums 2011 and beyond
  int ( substr ( $album, 0, 4 ) ) > 2010 and do {
  
-  $o->{lens} = lens ( $album, $o->{focallength}, $o->{fnumber} );
+  $o->{lens} = lens ( $album, $o->{flen}, $o->{fnum} );
  
   $o->{lens} and $lensflen->{$o->{lens}} and do {  
    $o->{flen} = $lensflen->{$o->{lens}};

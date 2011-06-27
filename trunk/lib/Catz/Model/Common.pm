@@ -74,28 +74,4 @@ sub _xs2ids {
 
 }
 
-sub _origin {
-
- my ( $self, $pri, $sec ) = @_;
- 
- $self->dbone ( 'select origin from pri where pri=?', $pri ne 'has' ? $pri : $sec ); 
-
-}
-
-sub _pri_all { # list all pris in the system
-
- my $self = shift;
-
- $self->dbcol('select pri from pri order by disp');
-
-}
-
-sub _pri_relev { # list the relevant subset of pris in the system
-
- my $self = shift;
-
- $self->dbcol("select pri from pri where pri not in ('text','folder') order by disp");
-
-}
-
 1;

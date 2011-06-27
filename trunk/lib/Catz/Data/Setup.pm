@@ -40,6 +40,7 @@ my $default = {
  display => 'full',
  palette => 'dark',
  photosize => 'fit',
+ peek => 'off',
  perpage => 15,
  thumbsize => 150  
 };
@@ -47,6 +48,7 @@ my $default = {
 my $values = {
  display => [ qw ( none brief full ) ], 
  palette => [ qw ( dark neutral bright ) ],
+ peek => [ qw ( on off ) ],
  photosize => [ qw ( fit original ) ],
  perpage => [ qw( 10 15 20 25 30 35 40 45 50 ) ],
  thumbsize => [ qw ( 100 125 150 175 200 ) ],

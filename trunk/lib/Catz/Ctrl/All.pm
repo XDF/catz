@@ -2,7 +2,7 @@
 # Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
 # Licensed under The MIT License
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -20,56 +20,60 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-#  
+# 
 
-package Catz::Model::Pair;
-
-#
-# Get photos by pri-sec pair
-#
+package Catz::Ctrl::All;
 
 use 5.10.0; use strict; use warnings;
 
-use parent 'Catz::Model::Vector';
+use parent 'Catz::Ctrl::Present';
 
-use Bit::Vector;
+sub all {
 
-sub _bits { 
+ my $self = shift; my $s = $self->{stash};
 
- # create a bit vector of xs for a pri-sec pair
- # language dependent
+ $s->{runmode} = 'all';
 
- my ( $self, $pri, $sec ) = @_;
+ # browsing all photos so the args and their count are set to nil
+ $s->{args_array} = []; 
+ $s->{args_count} = 0; 
+ 
+ # setting to undef a lot of other params
+   
+ $s->{pri} = undef; $s->{sec} = undef; 
+ $s->{what} = undef;
+ $s->{refines} = undef; 
+ $s->{breedernat} = undef; $s->{breederurl} = undef;
+ $s->{origin} = 'none'; # to indiate that origin was not processed
+             
+ $self->pre or return 0;
 
- if ( 
-  $pri eq 'has' or $pri eq 'any' or $sec eq 'text' or $sec eq 'album'
-  or index ( $sec, '*' ) > -1 or index ( $sec, '?' ) > -1 
- ) { # reject
+ $s->{urlother} =  
+  '/' . $s->{langother} . '/' . $s->{action} . '/' .
+  ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
 
-  return Bit::Vector->new( $self->maxx + 1 ); # empty vector
-
- } else { # pass-thru
-
-  return $self->base( $pri, $sec );
-
- }
+ return 1;
+ 
 }
 
-sub verify {
 
- # verify a pri that it is an allowed pri-sec pri
+sub browseall { 
+
+ $_[0]->all or ( $_[0]->not_found and return );
+  
+ $_[0]->multi or ( $_[0]->not_found and return );
  
- my ( $self, $pri ) = @_;
- 
- defined $pri or return 0;
- 
- ( $pri eq 'album' or $pri eq 'text' ) and return 0;
- 
- $self->dbone('select 1 from pri where pri=?',$pri) ? 1 : 0;
+}
+
+sub viewall { 
+
+ $_[0]->all or ( $_[0]->not_found and return );
+   
+ $_[0]->single or ( $_[0]->not_found and return );  
 
 }
 
 1;
 
 
- 
+

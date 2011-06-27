@@ -42,7 +42,7 @@ use Catz::Data::Setup;
 use Catz::Util::File qw ( fileread findlatest pathcut );
 use Catz::Util::Time qw( dt dtdate dttime dtexpand dtlang thisyear );
 use Catz::Util::Number qw ( fmt fullnum33 round );
-use Catz::Util::String qw ( enurl decode encode limit );
+use Catz::Util::String qw ( clean enurl decode encode limit trim );
 
 sub startup {
 
@@ -58,7 +58,7 @@ sub startup {
  # map utility subs from different modules to Mojolicious helpers
  # we use dynamically generated subs as bridges
  foreach my $sub ( 
-  qw ( dtdate dttime dtexpand fmt enurl limit 
+  qw ( dtdate dttime dtexpand fmt clean enurl limit trim 
   fullnum33 thisyear encode decode round ) 
  ) {
 
@@ -131,9 +131,9 @@ sub startup {
  my $a = $l->route( '/:action', action => qr/browseall|viewall/ )
   ->to( hold => 'static' );   
 
- $a->route( '/:id', id => qr/\d{6}/ )->to( controller => 'present' ); 
+ $a->route( '/:id', id => qr/\d{6}/ )->to( controller => 'all' ); 
  
- $a->route( '/' )->to( controller => 'present', id => undef );
+ $a->route( '/' )->to( controller => 'all', id => undef );
 
  # #2: pair browse & pair view
 
@@ -142,21 +142,21 @@ sub startup {
 
  $p->route( ':pri/:sec/:id', 
   pri => qr/[A-ZA-z0-9_-]+/, sec => qr/[A-ZA-z0-9_-]+/, id => qr/\d{6}/ 
- )->to( controller => 'present' );
+ )->to( controller => 'pair' );
  
  $p->route( ':pri/:sec/', 
   pri => qr/[A-ZA-z0-9_-]+/, sec => qr/[A-ZA-z0-9_-]+/ )->to( 
-   controller => 'present', id => undef 
+   controller => 'pair', id => undef 
   );
 
- # #3: search browse & seach viw
+ # #3: search browse & seach view
 
  my $s = $l->route( '/:action', action => qr/search|display/ )
   ->to( hold => 'static' );   
 
- $s->route( '/:id', id => qr/\d{6}/ )->to( controller => 'present' ); 
+ $s->route( '/:id', id => qr/\d{6}/ )->to( controller => 'pattern' ); 
 
- $s->route( '/' )->to( controller => 'present', id => undef );
+ $s->route( '/' )->to( controller => 'pattern', id => undef );
 
  # the quick find AJAX interface 
  $l->route( '/find' )->to ( "locate#find", hold => 'static' );
