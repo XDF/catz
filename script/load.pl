@@ -26,6 +26,8 @@ use 5.10.0; use strict; use warnings;
 
 use lib '../lib'; use lib '../libi';
 
+use File::Path qw( remove_tree );
+
 use Catz::Core::Conf;
 
 use Catz::Load::Loader;
@@ -127,7 +129,7 @@ foreach my $head ( @metafiles ) {
  my $dna = dna ( $data );
  
  if ( load_nomatch ( 'file', $head, $dna ) ) { # loading required
- 
+  
   $changes++; 
  
   if ( $head eq 'metadata' ) { # complex loading
@@ -197,6 +199,12 @@ load_end; # finish
 conf ( 'lin' ) and ( chmod ( 0444, $db ) || die $! );
 
 my $etime = time();
+
+logit ( 'clearing cache file backend' );
+
+remove_tree( '../cache/db' );
+remove_tree( '../cache/model' );
+remove_tree( '../cache/page' );
 
 logit ( 'catz loader finished at ' .  dtlang() . ' (' . ( $etime - $btime ) . ' seconds)' );
 

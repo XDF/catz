@@ -2,14 +2,6 @@
 %#
 %# --------------------
 %#
-<% content 'jsadd' => begin %>
-% if ( $runmode eq 'pair' ) {
-%== include 'elem/jstwitter';
-% }
-<% end %>
-%#
-%# --------------------
-%#
 <% content 'metaadd' => begin %>
 % if ( $runmode eq 'pair' ) {
 %  my $ogtype = 'catz:'.$ten->{uc($pri)};
@@ -31,7 +23,7 @@
 % if ( $page > 1 ) {
 <link rel="prev" href="<%== include 'href/id', toid => $pin->[$page-2] %>">
 % }
-% if ( $page < $total ) {
+% if ( $page < $pages ) {
 <link rel="next" href="<%== include 'href/id', toid => $pin->[$page] %>">
 % }
 % if ( defined $thumbs->[0] ) {

@@ -49,7 +49,7 @@ do {
  $style->{size}->{$_} = $style->{size}->{$_} . '%';
 } foreach ( keys %{ $style->{size} } );
 
-$style->{space}->{x} = '0.3em';
+$style->{space}->{x} = '0.5em';
 $style->{space}->{y} = '0.8em';
  
 $style->{lineh}->{normal} = 145;
