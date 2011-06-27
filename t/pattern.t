@@ -161,7 +161,7 @@ foreach my $lang ( qw ( en fi ) ) {
     ->content_like(qr/$txt->{SEARCH_NOTHING}/);
  
   $c += 5;
-  
+
   $t->get_ok("/$lang/display?what=".enurl($what))
     ->status_is(404);
   
@@ -199,6 +199,10 @@ foreach my $lang ( qw ( en fi ) ) {
  # empty
  
  $t->get_ok("/$lang/search?what=")->status_is(200); $c += 2;    
+
+ # just spaces
+ 
+ $t->get_ok("/$lang/search?what=".enurl('    '))->status_is(200); $c += 2;    
  
  # huge
  
