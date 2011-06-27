@@ -24,199 +24,107 @@
 
 package Catz::Ctrl::Present;
 
+#
+# an abstract base class for all present-type of contollers
+# (controllers that provide photo browsing and present the large photos)  
+#
+
 use 5.10.0; use strict; use warnings;
 
 use parent 'Catz::Core::Ctrl';
-       
-use List::MoreUtils qw ( any );
-
+              
 use Catz::Data::Result;
 use Catz::Data::Search;
-use Catz::Util::String qw ( enurl );
 
 sub pre {
 
+ # general preparations
+
  my $self = shift; my $s = $self->{stash};
+ 
+ # read common mappings from model to stash
 
  $s->{maplink} = $self->fetch ( 'map#link' );
  $s->{mapview} = $self->fetch ( 'map#view' );
  $s->{mapdual} = $self->fetch ( 'map#dual' );
  
- # processes id parameter or resolves it from data
- # returns 1 in success, return 0 on reject
+ # processes incoming photo id parameter or resolves it from data
+ # returns 1 in success 
+ # returns 0 on reject
  
  if ( $s->{id} ) { 
 
-  $s->{origin} = 'id'; # mark that this was request had an id
-   
+  # mark that this request had an id
+  $s->{origin} = 'id';
+  
+  # fetch the x corresponding the id 
   $s->{x} = $self->fetch( $s->{runmode} . '#id2x', $s->{id} );
-    
+  
+  # should be found or if not it is an error  
   $s->{x} or return 0;
           
- } else { # no id given, must find the id of the first photo in the set
+ } else { 
  
-  $s->{origin} = 'x'; # mark that the id was resolved
+  # no id was given in the request
+  # must find the id of the first photo in the set
  
+  # mark that the id was resolved by software
+  $s->{origin} = 'x'; 
+ 
+  # fetch the first x of the photo set
   $s->{x} = $self->fetch ( $s->{runmode} . '#first', @{ $s->{args_array} } );
   
-  # allow the system to continue if search returns nothing
-  $s->{runmode} ne 'search' and (  $s->{x} or return 0 );            
-  
+  # if no first x then it is an error but
+  # allow the system to continue if a search returns no hit
+  $s->{runmode} ne 'search' and ( $s->{x} or return 0 );            
+ 
+  # fetch the id corresponding the x 
   $s->{x} and do { 
    $s->{id} = $self->fetch ( $s->{runmode} . '#x2id', $s->{x} ) 
   };
   
-  # allow the system to continue if search returns nothing
+  # if no id was found then it is an error but
+  # allow the system to continue if a search returns no hit
   $s->{runmode} ne 'search' and (  $s->{id} or return 0 ); 
    
  }
  
- return 1;
+ return 1; # ok
  
-}
-
-sub all {
-
- my $self = shift; my $s = $self->{stash};
-
- $s->{args_array} = []; # browsing all photos as default
- $s->{args_count} = 0;  # so the count of args is also 0
- $s->{runmode} = 'all'; # set the runmode to all photos mode
- $s->{pri} = undef; $s->{sec} = undef; $s->{what} = undef;
- $s->{refines} = undef;
- $s->{breedernat} = undef;
- $s->{breederurl} = undef;
- $s->{origin} = 'none';
-             
- $self->pre or return 0;
-
- $s->{urlother} =  
-  '/' . $s->{langother} . '/' . $s->{action} . '/' .
-  ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
-
- return 1;
- 
-}
-
-sub pair {
-
- my $self = shift; my $s = $self->{stash};
-   
- $s->{pri} and $s->{sec} or $self->not_found and return;
- $s->{sec} = $self->decode ( $s->{sec} );
- $s->{args_array} = [ $s->{pri}, $s->{sec} ];
- $s->{args_count} = 2;
- $s->{what} = undef;
- $s->{refines} = undef;
- $s->{breedernat} = undef;
- $s->{breederurl} = undef;
- $s->{origin} = 'none';
- 
- $s->{runmode} = 'pair'; # set the runmode to pri-sec pair 
-
- $self->pre or return 0;
- 
- my $trans = $self->fetch ( 'map#trans', $s->{pri}, $s->{sec} );  
-
- $s->{urlother} =  
-  '/' . ( join '/', $s->{langother} , $s->{action}, $s->{pri}, 
-  $self->encode( $trans ) ). '/' .
-  ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
-
- defined $s->{matrix}->{$s->{pri}}->{refines} and 
-  $s->{refines} = $self->fetch ('related#refines', $s->{pri}, $s->{sec}, @{ $s->{matrix}->{$s->{pri}}->{refines} } ); 
-
- if ( $s->{pri} eq 'breeder' ) {
-  $s->{breedernat} = $self->fetch ( "related#breedernat", $s->{sec} );
-  $s->{breederurl} = $self->fetch ( "related#breederurl", $s->{sec} );
- }
-  
- return 1;
-
-}
-
-sub pattern {
-
- my $self = shift; my $s = $self->{stash};
-  
- $s->{pri} = undef; $s->{sec} = undef;
- $s->{refines} = undef;
- $s->{breedernat} = undef;
- $s->{breederurl} = undef;
- $s->{origin} = 'none';
-  
- $s->{what} = $self->param('what') // undef;
- $s->{init} = $self->param('init') // undef;
- 
- # it appears that browsers typcially send UTF-8 encoded data
- # when the origin page is UTF-8 -> we decode now
- utf8::decode ( $s->{what} ); 
- utf8::decode ( $s->{init} );
- 
- if ( $s->{what} ) {
-   
-  ( $s->{what}, $s->{args_array} ) = search2args ( $s->{what} );
-  $s->{args_count} = scalar @{ $s->{args_array} };
-
- } else {
-  $s->{args_array} = [];
-  $s->{args_count} = 0;
-  $s->{what} = undef;
- }
-  
- $s->{runmode} = 'search';
-  
- $s->{args_count} > 0 and ( $self->pre or return 0 );
- 
- $s->{urlother} =  '/' . $s->{langother} . '/' . $s->{action};
- 
- if ( $s->{what} ) {
- 
-  if ( $s->{origin} eq 'id' ) {
-  
-   $s->{urlother} .= '/' . $s->{id} . '?what=' .  enurl ( $s->{what} );
-  
-  } else {
-  
-   $s->{urlother} .= '?what=' .  enurl ( $s->{what} );
-  
-  } 
- 
- } elsif ( $s->{init} ) {
-
-  $s->{urlother} .= '?init=' .  enurl ( $s->{init} );
- 
- } else {
-
-  $s->{urlother} .=  ( 
-   ( $s->{origin} and $s->{origin} eq 'id' ) ?  '/' . $s->{id} . '/' : '/' 
-  );
-  
- }
-
- return 1;
-  
 }
 
 sub single {
 
+ # presenet a large photo, returns
+ # returns 1 in success 
+ # returns 0 on reject
+ 
  my $self = shift; my $s = $self->{stash};
  
- ( $s->{total}, $s->{pos}, $s->{pin} ) = @{
-  $self->fetch( $s->{runmode} . '#pointer', $s->{x}, @{ $s->{args_array} } )
- };
+ ( $s->{total}, $s->{pos}, $s->{pin} ) = 
+  @{ 
+   $self->fetch( $s->{runmode} . '#pointer', 
+   $s->{x}, 
+   @{ $s->{args_array} })
+  };
      
- $s->{total} == 0 and return 0;
+ $s->{total} == 0 and return 0; # no photo found 
 
- $s->{comment} =  $self->fetch( 'photo#text', $s->{x} );
+ # fetch the photo metadata
+
+ $s->{comment} =  $self->fetch( 'photo#text', $s->{x} ); # comment(s)
    
- $s->{detail} = $self->fetch( 'photo#detail', $s->{x});
+ $s->{detail} = $self->fetch( 'photo#detail', $s->{x}); # details
  
- $s->{image} =  $self->fetch( 'photo#image', $s->{x} );
+ $s->{image} =  $self->fetch( 'photo#image', $s->{x} ); # the image itself
+ 
+ # fetch the result keys and prepare them to stash
  
  my $keys = $self->fetch ( 'photo#resultkey', $s->{x} );
  
  result_prepare ( $self, $keys );
+ 
+ # finally render the photo viewer page
         
  $self->render( template => 'page/view' );
  
@@ -226,141 +134,102 @@ sub single {
  
 sub multi {
 
+ # provide photo browsing as thumbnails
+ # returns 1 in success 
+ # returns 0 on reject
+ 
  my $self = shift; my $s = $self->{stash};
  
  ( 
   $s->{total}, $s->{page}, $s->{pages}, $s->{from}, 
   $s->{to}, $s->{pin}, $s->{xs}, $s->{xfirst}, $s->{xlast} 
  ) = @{ $self->fetch( 
-   $s->{runmode} . '#pager', $s->{x}, $s->{perpage}, @{ $s->{args_array} } 
+   $s->{runmode} . '#pager', 
+   $s->{x}, 
+   $s->{perpage}, 
+   @{ $s->{args_array} } 
   ) };
-                    
- # if no photos found                   
- $s->{total} == 0 and return 0;   
+                                     
+ $s->{total} == 0 and return 0; ; # no photos found 
+
+ scalar @{ $s->{xs} } == 0 and return 0; # no photos on this page 
  
- # if no photos on this page
- scalar @{ $s->{xs} } == 0 and return 0; 
- 
+ # fetch the thumbs and their included earliest - latest metadata
  ( $s->{thumb}, $s->{earliest}, $s->{latest} ) = 
   @{ $self->fetch( 'photo#thumb', @{ $s->{xs} } ) };
+
+ # generate converage counts and urls for coverage information displays
   
  $s->{cover_notext} = undef; $s->{url_notext} = undef;
  $s->{cover_nocat} = undef; $s->{url_nocat} = undef;
  
- if ( $s->{runmode} ne 'search' ) {
+ if ( $s->{runmode} ne 'search' ) { # coverage not provided in search results
+  
+  # 1/2: the textless photos
   
   my @extra = qw ( -has text );
 
+  # make a new search for those that have no text, get the count of photos
   $s->{cover_notext} = 
    $self->fetch ( "search#count", @{ $s->{args_array} }, @extra );
   
+  # if there where those then prepare the url to see them
   $s->{cover_notext} > 0 and
-  $s->{url_notext} =
-   args2search (  @{ $s->{args_array} }, @extra );
+  $s->{url_notext} = args2search (  @{ $s->{args_array} }, @extra );
+  
+  # 2/2: the photos with breed but without a cat
   
   @extra = qw ( +has breed -has cat );
   
+  # make a new search for those and get the count of photos
   $s->{cover_nocat} = 
    $self->fetch ( "search#count", @{ $s->{args_array} }, @extra );
-
+  
+  # if there where those then prepare the url to see them
   $s->{cover_nocat} > 0 and
   $s->{url_nocat} =
    args2search (  @{ $s->{args_array} }, @extra );
   
  }
-  
+ 
+ # fetch photo texts  
  $s->{texts} = $self->fetch ( 'photo#texts', @{ $s->{xs} } );
-  
- # date jumps are only available for all and pair, not for search
+
+ # generate date jumps  
+
  if ( $s->{runmode} eq 'all' ) {
  
   $s->{jump2date} = $self->fetch ( 'related#all2date' );
  
  } elsif ( $s->{runmode} eq 'pair' ) {
 
-  # upper and lower x of the photos on this page are used to limit the dates so that there are no links dates on this page
-  $s->{jump2date} = $self->fetch ( 'related#pair2date', $s->{pri}, $s->{sec}, $s->{xs}->[0], $s->{xs}->[$#{$s->{xs}}] );
+  # upper and lower x of the photos on this page are used to limit 
+  # the dates so that there are no links to dates on this page
+  $s->{jump2date} = $self->fetch ( 
+   'related#pair2date', 
+   $s->{pri}, $s->{sec}, 
+   $s->{xs}->[0], # first x 
+   $s->{xs}->[$#{$s->{xs}}] # last x 
+  );
 
  } else {
- 
+   
+  # date jumps are only available for all and pair, not for search
   $s->{jump2date} = undef;
  
  }
  
+ # fetch the latest and oldest date in this whole photoset
+ 
  $s->{fresh} = $self->fetch ( 'related#date', $s->{xfirst} );
  $s->{ancient} = $self->fetch ( 'related#date', $s->{xlast} );
+ 
+ # finally render the browsing page
   
  $self->render( template => 'page/browse' );
  
  return 1;
 
 }
-
-sub guide {
-
- my $self = shift; my $s = $self->{stash};
- 
- $s->{total} = 0;
-  
- $self->render( template => 'page/search' );
-
- return 1;
-
-} 
-
-sub browseall { 
-
- $_[0]->all or $_[0]->not_found and return; 
- $_[0]->multi or $_[0]->not_found and return;
- 
-}
-
-sub viewall { 
-
- $_[0]->all or $_[0]->not_found and return;  
- $_[0]->single or $_[0]->not_found and return;  
-
-}
-
-sub browse {
- 
- $_[0]->pair or $_[0]->not_found and return;  
- $_[0]->multi or $_[0]->not_found and return;  
-
-}
-sub view { 
-
- $_[0]->pair or $_[0]->not_found and return;  
- $_[0]->single or $_[0]->not_found and return;  
- 
-}
-
-sub search { 
-
- my $self = shift; my $s = $self->{stash};
- 
- $self->pattern or $self->not_found and return; 
-
- if ( $s->{x} and $s->{id} ) { 
- 
-  $self->multi or $self->not_found and return; 
-  
- } else { 
-  
-  $self->guide or $self->not_found and return;  
-
- } 
-
-}
-
-sub display { 
-
- $_[0]->pattern or $_[0]->not_found and return;
- 
- $_[0]->single or $_[0]->not_found and return 
- 
-}
-
-
 
 1;

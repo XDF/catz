@@ -84,4 +84,42 @@ sub _bits { # fetch a bit vector for a set of arguments
        
 }
 
+sub verify_args {
+
+ # verify a argument set that all pris are allowed search pris
+ # exit immediately with 0 when first non-allowed is found
+ 
+ my ( $self, @args ) = @_;
+  
+ for ( my $i = 0; $i <= $#args; $i += 2 ) {
+  
+  my $check = $args[$i];
+  
+  # strip + and - from the beginning
+  substr ( $check, 0, 1 ) eq '+' and $check = substr ( $check, 1 ); 
+  substr ( $check, 0, 1 ) eq '-' and $check = substr ( $check, 1 );
+    
+  if ( $check ne 'has' ) {
+   
+   my $res = $self->dbone('select 1 from pri where pri=?',$check);
+   
+   # should be an existing pri or 'any'
+   ( $res or $check eq 'any' ) or return 0;  
+    
+  } else {
+       
+   # when has then the sec should be a valid pri  
+   my $res = $self->dbone('select 1 from pri where pri=?',$args[$i+1]);
+   
+   $res or return 0;
+  
+  } 
+  
+ }
+ 
+ return 1;
+ 
+} 
+
 1;
+
