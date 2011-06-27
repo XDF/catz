@@ -52,12 +52,12 @@ sub pair {
  
  $self->pre or return 0;
  
- # get the translation to this pri-sec
- my $trans = $self->fetch ( 'map#trans', $s->{pri}, $s->{sec} );  
+ # get the translation for this pri-sec -pair
+ $s->{trans} = $self->fetch ( 'map#trans', $s->{pri}, $s->{sec} );  
 
  $s->{urlother} =  
   '/' . ( join '/', $s->{langother} , $s->{action}, $s->{pri}, 
-  $self->encode( $trans ) ). '/' .
+  $self->encode( $s->{trans} ) ). '/' .
   ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
 
  # if refines are defined for this pri then fetch them 

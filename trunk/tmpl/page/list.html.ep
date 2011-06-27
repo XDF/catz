@@ -10,6 +10,16 @@
 %#
 %# --------------------
 %#
+<% content 'metaadd' => begin %>
+% my $desc =  $t->{LISTING}.' '.$t->{uc($subject).'H'}.' '.$t->{'MODE_'.uc($mode)};
+<meta name="og:title" content="<%= $titl %>"> 
+<meta name="description" content="<%= $desc %>">
+<meta name="og:description" content="<%= $desc %>">
+<meta name="og:url" content="<%== $lang eq 'fi' ? $urlother : $url %>"> 
+<% end %>
+%#
+%# --------------------
+%#
 <% content 'ptitleadd' => begin %><%= $titl %><% end %>
 %#
 %# --------------------

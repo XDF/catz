@@ -10,6 +10,20 @@
 %#
 %# --------------------
 %#
+<% content 'metaadd' => begin %>
+<meta name="og:type" content="website">
+<meta name="og:url" content="<%== $t->{URL_CATZA} %>">
+<meta name="description" content="<%= $t->{SLOGAN} %>">
+<meta name="og:description" content="<%= $t->{SLOGAN} %>">
+<meta name="og:title" content="<%= $t->{SITE} %>">
+% if ( defined $thumbs->[0] ) {
+<link ref="image_src" href="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
+<meta name="og:image" value="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
+% } 
+<% end %>
+%#
+%# --------------------
+%#
 <% content 'ptitle' => begin %>
 <%= $t->{SITE} %> - <%== $t->{SLOGAN} %> 
 <% end %>
@@ -18,6 +32,7 @@
 %#
 <% content 'path' => begin %>
 <%== $t->{SLOGAN} %>
+%== include 'elem/facebook', fbhref => $t->{URL_CATZA}, fbref => 'front'; 
 <% end %>
 %#
 %# --------------------
@@ -25,7 +40,7 @@
 <% content 'btitle' => begin %>
 % my $stxt =  $t->{SITE};
 % $stxt =~ s|z|<span class="xtra">z</span>|g;
-<h1 class="giga"><%== $stxt %></h1> <%= $t->{AUTHORBY} %> <a href="<%== $t->{AUTHORURL} %>"><%= $t->{AUTHOR} %></a>
+<h1 class="giga"><%== $stxt %></h1>
 <% end %>
 %#
 %# --------------------

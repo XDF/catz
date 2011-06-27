@@ -2,10 +2,45 @@
 %#
 %# --------------------
 %#
-<% content 'metaadd' => begin %>
-% if ( $runmode eq 'pair' and $total > 9 ) {
-%== include 'block/ogmeta';
+<% content 'jsadd' => begin %>
+% if ( $runmode eq 'pair' ) {
+%== include 'elem/jstwitter';
 % }
+<% end %>
+%#
+%# --------------------
+%#
+<% content 'metaadd' => begin %>
+% if ( $runmode eq 'pair' ) {
+%  my $ogtype = 'catz:'.$ten->{uc($pri)};
+%  given ( $pri ) {
+%   when ( [ qw ( org umb breeder ) ] ) { $ogtype = 'non_profit' }
+%   when ( 'nat' ) { $ogtype = 'country' }
+%   when ( 'loc' ) { $ogtype = 'city' } 
+%  }
+<meta name="og:type" content="<%= $ogtype %>">
+%  if ( $pri eq 'loc' ) {
+<meta name="og:locality" content="<%= $sec %>">
+<meta name="og:country-name" content="<%= $t->{COUNTRY} %>">
+%  }
+% my $etg = $lang eq 'fi' ? $trans : $sec; 
+<meta name="og:url" content="<%== $t->{URL_CATZA} %>en/browse/<%== $pri %>/<%== encode $etg %>/">
+<meta name="og:title" content="<%= $sec %> (<%= $ten->{uc($pri)} %>)"> 
+% }
+<link rel="start" href="<%== include 'href/id', toid => $pin->[0] %>">
+% if ( $page > 1 ) {
+<link rel="prev" href="<%== include 'href/id', toid => $pin->[$page-2] %>">
+% }
+% if ( $page < $total ) {
+<link rel="next" href="<%== include 'href/id', toid => $pin->[$page] %>">
+% }
+% if ( defined $thumbs->[0] ) {
+<link ref="image_src" href="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
+<meta name="og:image" value="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
+% }
+% if ( $origin eq 'id' and ( defined $thumbs->[0] ) ) {
+<link rel="canonical" content="<%== include 'href/id', toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]) %>">
+% }  
 <% end %>
 %#
 %# --------------------
@@ -108,7 +143,7 @@
 %# --------------------
 %#
 <div class="bar">
-% foreach my $th ( @{ $thumb } ) {
+% foreach my $th ( @{ $thumbs } ) {
 % my $toid = fullnum33 ( $th->[1], $th->[2] );
 % my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
 % my $titl = dtexpand ( dtdate ( $th->[3] ), $lang ); # get date from folder name
@@ -119,8 +154,19 @@
 %#
 %# --------------------
 %#
+% if ( $runmode eq 'pair' ) {
+% my $etg = $lang eq 'fi' ? $trans : $sec; 
+% my $turi = $t->{URL_CATZA}."en/browse/$pri/$etg/";
 <div class="bar">
-<%== include 'elem/titlea' %> <%== include 'elem/facebook' %> <%= $sep %>
+<h2><%== include 'elem/titlea' %></h2>
+%== include 'elem/twitter', twurl => $t->{URL_CATZA}."$lang/browse/$pri/$etg/", twtext => "$sec (".$t->{uc($pri)}.')', twcounturl => $turi;
+%== include 'elem/facebook', fbhref => $turi, fbref => 'browse';
+</div>
+% }
+<div class="bar">
+% if ( $runmode ne 'pair' ) {
+<%== include 'elem/titlea' %> <%= $sep %>
+% }
 % if ( defined $breederurl ) {
 <a href="<%== $breederurl %>"><%= $breederurl %></a> <%= $sep %>
 % } 
