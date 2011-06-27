@@ -17,7 +17,8 @@ if ( $epri eq 'has' ) {
 <%
 } else {
  my $mode = 'EXACT';
- index(substr($esec,1,-1),'*')>-1 or index($esec,'?')>-1 and $mode = 'PATTERN';
+ 
+ index(substr($esec,1,-1),'*')>-1 or index($esec,'?')>-1 and $mode = 'PATTERN'; # bug here in some inputs?
  my $where = '';
  my $shw = $esec;
  substr($esec,0,1) eq '*' and do { $where = '_END'; $shw = substr ( $esec, 1 ) };

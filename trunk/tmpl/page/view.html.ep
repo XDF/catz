@@ -138,6 +138,9 @@
 % };
 % }
 <%= $sep %> <%= $t->{PHOTO_ID} %> <%== fullnum33 ( $image->[0], $image->[1] ) %>
+% if ( $peek eq 'on' ) {
+<%= $sep %> <%= $t->{PHOTO_REF} %> <%== $image->[2] %>:P<%== $image->[1] %> 
+% }
 </span>
 % } 
 % if ( $display ne 'none' ) {
