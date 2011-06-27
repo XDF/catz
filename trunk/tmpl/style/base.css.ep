@@ -182,9 +182,18 @@ a:hover {
 
 /* facebook like button's iframe */
 .facebook {
- background-color: <%== $st->{color}->{$palette}->{back} %>;
  border: none;
  overflow: hidden; 
  width: 90px; 
  height: 20px;
+ vertical-align: middle;
+}
+
+/* twitter tweet button's iframe */
+.twitter {
+ border: none;
+ overflow: hidden;
+ width: 55px;
+ height: 20px;
+ vertical-align: middle;
 }

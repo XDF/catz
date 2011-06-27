@@ -31,7 +31,6 @@
 %# --------------------
 %#
 <% content 'jsadd' => begin %>
-%== include 'elem/jstwitter';
 %== include 'elem/js', jstype => 'site', jsfile => 'result';
 % $photosize eq 'fit' and do {
 %== include 'elem/js', jstype => 'site', jsfile => 'fit';
@@ -63,7 +62,7 @@
 %#
 %# --------------------
 %#
-<% content 'topclass' => begin %><%== $display eq 'full' ? 'bar' : 'aero' %><% end %>
+<% content 'topclass' => begin %><%== $display ne 'none' ? 'bar' : 'aero' %><% end %>
 %#
 %# --------------------
 %#
