@@ -15,7 +15,7 @@
 || meta || generator || the long name of the service's application ||
 || meta || og:site_name || the name of the site in its most simple form ||
 || meta || robots || the standard robots tag to control the indexing of pages by search engines ||        
-|| meta || timestamp || the language specific format date and time when the page was generated (old value indicates that the page comes from some cache) 
+|| meta || timestamp || the language specific format date and time when the page was generated (old value indicates that the page comes from some cache) ||
 
 == Page type specific metadata ==
 
