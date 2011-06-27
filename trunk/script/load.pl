@@ -47,7 +47,7 @@ my $btime = time();
 
 my $dt = dt(); # the run is identified by YYYYMMSSHHMMSS
 
-logopen ( conf ( 'path_log' ) . "/$dt.log" );
+logopen ( "../log/$dt.log" );
 
 logit ( 'catz loader started at ' . dtexpand ( $dt ).' (dt '.$dt.')' );
 
@@ -55,16 +55,16 @@ my $changes = 0; # flag that should be turned on if something has changed
 
 my $loaded = {}; # to store names of loaded folders and albums
 
-my $db = conf ( 'path_db' ) . '/' . conf ( 'file_db' );
+my $db = '../db/master.db';
 
-my $back =  conf ( 'path_db' ) . "/$dt.db" ;
+my $back =  "../db/$dt.db" ;
 
 logit ( "backing up '$db' to '$back'" );
 
 filecopy ( $db, $back );
 
 # on linux set read write
-$^O =~ /^MS/ or ( chmod ( 0664, $db ) || die $! );
+conf ( 'lin' ) and ( chmod ( 0664, $db ) || die $! );
 
 load_begin ( $dt, $db );
 
@@ -83,7 +83,7 @@ scalar @ARGV == 0 and do {
 $guide{'folder'} or goto SKIP_FOLDER;
 
 my @folders =  
- grep { /\d{8}[a-z0-9]+$/ } finddirs ( conf ( 'path_photo' ) );
+ grep { /\d{8}[a-z0-9]+$/ } finddirs ( '../../file/photo' );
 
 logit ( 'verifying ' . scalar ( @folders ) . ' folders' );
 
@@ -111,7 +111,7 @@ SKIP_FOLDER:
 $guide{'meta'} or goto SKIP_META;
 
 my @metafiles =  qw ( 
- exifmeta newsmeta natmeta breedmeta breedermeta featmeta titlemeta gallerymeta
+ metaexif metanews metanat metabreed metabreeder metafeat metatitle metadata
 );
 
 logit ( 'verifying ' . scalar @metafiles  . ' files' );
@@ -120,7 +120,7 @@ foreach my $head ( @metafiles ) {
 
  my $file =  $head . '.txt'; # meta files extension is txt
  
- my $full = conf ( 'path_meta' ) . '/' . $file;
+ my $full = "../data/$file";
   
  my $data = fileread ( $full );
  
@@ -130,7 +130,7 @@ foreach my $head ( @metafiles ) {
  
   $changes++; 
  
-  if ( $head eq 'gallerymeta' ) { # complex loading
+  if ( $head eq 'metadata' ) { # complex loading
   
    # reverse makes the oldest gallery to load first and get the smallest S
    foreach my $pile ( reverse topiles ( $data ) ) {  
@@ -159,7 +159,7 @@ foreach my $head ( @metafiles ) {
   
    my $table;
  
-   $file =~ /^(.+)meta/;
+   $file =~ /^meta(.+)\./;
   
    $1 or die "unable to convert file name '$_[0]' to table name";
     
@@ -194,7 +194,7 @@ SKIP_POST:
 load_end; # finish
 
 # on linux set read only
-$^O =~ /^MS/ or ( chmod ( 0444, $db ) || die $! );
+conf ( 'lin' ) and ( chmod ( 0444, $db ) || die $! );
 
 my $etime = time();
 

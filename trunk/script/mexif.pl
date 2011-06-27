@@ -32,10 +32,11 @@ use Catz::Util::Number qw ( minnum );
 use Catz::Util::File qw ( fileread filewrite );
 
 #
-# a script to get exif data from current site's HTML - for one-time use 
+# a script to get exif data from current site's HTML pages
+# for one-time use 
 #
 
-my $output = '/www/galleries/0dat/exifmeta.txt';
+my $output = '../data/metaexif.txt';
 
 my $out = ''; 
 
