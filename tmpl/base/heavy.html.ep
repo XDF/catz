@@ -29,6 +29,7 @@
 <meta name="credits" content="<%== $t->{CREDITS} %>">
 <meta name="generated_at" content="<%== $now %>"> 
 <meta name="robots" content="<%==  ( $meta_index ? 'index' : 'noindex' ) . ',' . ( $meta_follow ? 'follow' : 'nofollow' ) %>">
+<link rel="alternate" title="<%= $t->{TRANSLATE} %>" hreflang="<%== $langother %>" href="<%== $urlother %>"> 
 <%= content 'metaadd' %>
 %#
 %# --------------------
