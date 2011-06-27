@@ -9,10 +9,10 @@
 || umb || umbrella || The umbrella organization of the organizer of the show of the album || album || X ||
 || text || text || Photo text (comment) || pos || X ||
 || cat || cat || The name of the cat in the comment || pos || - ||
-|| breeder || breeder || The breeder name of the cat in the comment || pos || - |
+|| breeder || breeder || The breeder name of the cat in the comment || pos || - ||
 || nat || nation || The nationality of the breeder of the cat in the comment || pos || - ||  
 || code || code || The EMS code of the cat in the comment || pos || - ||
-|| breed || breed || The breed of the cat in the comment || pos || X || - ||
+|| breed || breed || The breed of the cat in the comment || pos || X ||
 || app || appearance || The EMS code of the cat in the comment without the breed part || pos || - ||
 || feat || feature || A single atomic code in the EMS code of the cat in the comment excluding the breed part || pos || - ||      
 || nick || nickname || The nickname of the cat in the comment || pos || - ||
