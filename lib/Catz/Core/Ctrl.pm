@@ -131,7 +131,7 @@ sub fetch {
  
  defined $models->{$model} or die "model '$model' is not bind";
   
- $models->{$model}->fetch( $sub, $s->{lang}, @args );
+ $models->{$model}->fetch( $s->{version}, $s->{lang}, $sub, @args );
    
 }
 

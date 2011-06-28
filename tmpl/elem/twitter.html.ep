@@ -1,1 +1,2 @@
-<iframe class="twitter" src="http://platform.twitter.com/widgets/tweet_button.html?url=<%== enurl utf8::encode ($t->{URL_CATZA}.$twurl) %>&via=<%== enurl utf8::encode $twitterkey %>&text=<%== enurl utf8::encode $twtext %>&related=<%== enurl $twitterkey %>&count=none&lang=en&counturl=<%== enurl utf8::encode $twcounturl %>" allowtransparency="true" frameborder="0" scrolling="no"></iframe>
+% utf8::encode ( $twtext );
+<iframe class="twitter" src="http://platform.twitter.com/widgets/tweet_button.html?url=<%== enurl ($t->{URL_CATZA}.$twurl) %>&via=<%== enurl $twitterkey %>&text=<%== enurl $twtext %>&related=<%== enurl $twitterkey %>&count=none&lang=en&counturl=<%== enurl $twcounturl %>" allowtransparency="true" frameborder="0" scrolling="no"></iframe>

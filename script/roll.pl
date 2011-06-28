@@ -2,7 +2,7 @@
 # Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
 # Licensed under The MIT License
-#
+# 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -20,61 +20,56 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-# 
-
-package Catz::Ctrl::All;
+#
 
 use 5.10.0; use strict; use warnings;
 
-use parent 'Catz::Ctrl::Present';
+use lib '../lib'; use lib '../libi';
 
-sub all {
+use Catz::Util::File qw ( fileread filewrite fileremove findlatest pathcut );
 
- my $self = shift; my $s = $self->{stash};
+my $rolled = 0;
 
- $s->{runmode} = 'all';
+my $path = '../db';
 
- # browsing all photos so the args and their count are set to nil
- $s->{args_array} = []; 
- $s->{args_count} = 0; 
+# rolls to the latest database by updating the key file
+
+# latest key file
+my $keyold = findlatest ( $path, 'txt' );
+
+# current dt
+my $dtold = defined $keyold ? substr ( pathcut ( $keyold ), 0, 14 ) : undef;
+
+# latest database file
+my $dbnew = findlatest ( $path, 'db' );
+
+# new dt
+my $dtnew = defined $dbnew ? substr ( pathcut ( $dbnew ), 0, 14 ) : undef;
+
+if ( not defined $dtold ) {
+
+ # no old db, just make a key file
+ filewrite ( "$path/$dtnew.txt", "Catz database key file" );
  
- # setting to undef a lot of other params
-   
- $s->{pri} = undef; $s->{sec} = undef; 
- $s->{what} = undef;
- $s->{refines} = undef; 
- $s->{breedernat} = undef; $s->{breederurl} = undef;
- $s->{origin} = 'none'; # to indiate that origin was not processed
- $s->{trans} = undef;
-             
- $self->pre or return 0;
- 
- $s->{urlother} =  
-  '/' . $s->{langother} . '/' . $s->{action} . '/' .
-  ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
-
- return 1;
- 
-}
-
-
-sub browseall { 
-
- $_[0]->all or ( $_[0]->not_found and return );
+ say "rolled initially to '$dtnew'"; $rolled++;
   
- $_[0]->multi or ( $_[0]->not_found and return );
+} else {
+
+ if ( $dtold eq $dtnew ) { 
+
+  say "already at the latest dt '$dtold', no need to roll";
+  
+ } else {
+ 
+  filewrite ( "$path/$dtnew.txt", "Catz database key file" );
+
+  # remove the old key file
+  fileremove ( $keyold );
+
+  say "rolled from '$dtold' to '$dtnew'"; $rolled++; 
+ 
+ }
  
 }
-
-sub viewall { 
-
- $_[0]->all or ( $_[0]->not_found and return );
-   
- $_[0]->single or ( $_[0]->not_found and return );  
-
-}
-
-1;
-
 
 

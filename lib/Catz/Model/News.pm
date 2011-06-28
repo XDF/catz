@@ -34,7 +34,7 @@ sub _all {
 
  my $self = shift; my $lang = $self->{lang};
       
- $self->dball( 
+ return $self->dball( 
   "select dt,title_$lang,text_$lang,url from mnews order by dt desc" 
  );
   
@@ -42,15 +42,14 @@ sub _all {
 
 sub _latest {
 
- my ( $self, $limit ) = @_;
-      
- my $res = $self->all;
-   
- # if less news than requested then downsize the request
- scalar @$res < $limit and $limit = scalar @$res;
-  
- [ @{ $res } [ 0 .. $limit - 1 ] ];
+ my ( $self, $limit ) = @_; my $lang = $self->{lang};
  
+ ( $limit and $limit > 0 ) or $limit = 5; # default 
+      
+ return $self->dball( 
+  "select dt,title_$lang,text_$lang,url from mnews order by dt desc limit $limit" 
+ );
+        
 }
 
 1;

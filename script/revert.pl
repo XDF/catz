@@ -2,7 +2,7 @@
 # Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
 # Licensed under The MIT License
-#
+# 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -20,61 +20,52 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-# 
-
-package Catz::Ctrl::All;
+#
 
 use 5.10.0; use strict; use warnings;
 
-use parent 'Catz::Ctrl::Present';
+use lib '../lib'; use lib '../libi';
 
-sub all {
+use Catz::Util::File qw ( fileread filewrite fileremove findlatest pathcut );
 
- my $self = shift; my $s = $self->{stash};
+my $path = '../db';
 
- $s->{runmode} = 'all';
+# removes the latest database if nay after the one of the key file
+# so reverts effects of latest database loading after the last roll
 
- # browsing all photos so the args and their count are set to nil
- $s->{args_array} = []; 
- $s->{args_count} = 0; 
+# latest key file in database dir
+my $keyf = findlatest ( $path, 'txt' );
+
+# get dt from the key file
+my $dtold = defined $keyf ? substr ( pathcut ( $keyf ), 0, 14 ) : undef;
+
+if ( $dtold ) {
+
+ my $dbnew = findlatest ( $path, 'db' );
+ my $dtnew = defined $dbnew ? substr ( pathcut ( $dbnew ), 0, 14 ) : undef;
  
- # setting to undef a lot of other params
-   
- $s->{pri} = undef; $s->{sec} = undef; 
- $s->{what} = undef;
- $s->{refines} = undef; 
- $s->{breedernat} = undef; $s->{breederurl} = undef;
- $s->{origin} = 'none'; # to indiate that origin was not processed
- $s->{trans} = undef;
-             
- $self->pre or return 0;
+ if ( $dtnew ) {
  
- $s->{urlother} =  
-  '/' . $s->{langother} . '/' . $s->{action} . '/' .
-  ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
-
- return 1;
+  if ( $dtold eq $dtnew ) {
  
-}
-
-
-sub browseall { 
-
- $_[0]->all or ( $_[0]->not_found and return );
+   say "no new database found after '$dtold'";
+ 
+  } else {
+ 
+   unlink ( $dbnew );
+   say "reverted by removing unrolled database '$dtnew' '$dbnew'";
   
- $_[0]->multi or ( $_[0]->not_found and return );
+  }
+  
+ } else {
+ 
+  say "unable to locate the latest database file";
+ 
+ }
+ 
+ 
+} else {
+
+ say "key file not found, unable to revert";
  
 }
-
-sub viewall { 
-
- $_[0]->all or ( $_[0]->not_found and return );
-   
- $_[0]->single or ( $_[0]->not_found and return );  
-
-}
-
-1;
-
-
-

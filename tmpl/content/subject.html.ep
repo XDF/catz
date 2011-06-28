@@ -5,7 +5,7 @@
 %#
 <h2 class="block bar">Aihe</h2>
 <div class="bar">
-Aihe kirjoitetaan ennen hakutermiä ja sen ja hakutermin väliin tulee yhtäsuurusmerkki. Jos käsitettä ei anneta, haetaan hakutermiä kaikista käsitteistä.
+Aihe kirjoitetaan ennen hakutermiä ja sen ja hakutermin väliin tulee yhtäsuurusmerkki. Jos käsitettä ei anneta, haetaan hakutermiä kaikista käsitteistä. Aihe-termi -pareja voi olla yhdessä haussa korkeintaan 25.
 </div>
 %# --------------------
 %#

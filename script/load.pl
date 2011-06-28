@@ -57,16 +57,15 @@ my $changes = 0; # flag that should be turned on if something has changed
 
 my $loaded = {}; # to store names of loaded folders and albums
 
-my $db = '../db/master.db';
+my $olddb = findlatest ( '../db', 'db' );
 
-my $back =  "../db/$dt.db" ;
+defined $olddb or die "old database lookup failed";
 
-logit ( "backing up '$db' to '$back'" );
+my $db = "../db/$dt.db";
 
-filecopy ( $db, $back );
+logit ( "copying database '$olddb' to '$db'" );
 
-# on linux set read write
-conf ( 'lin' ) and ( chmod ( 0664, $db ) || die $! );
+filecopy ( $olddb, $db );
 
 load_begin ( $dt, $db );
 
@@ -195,16 +194,7 @@ SKIP_POST:
 
 load_end; # finish
 
-# on linux set read only
-conf ( 'lin' ) and ( chmod ( 0444, $db ) || die $! );
-
 my $etime = time();
-
-logit ( 'clearing cache file backend' );
-
-remove_tree( '../cache/db' );
-remove_tree( '../cache/model' );
-remove_tree( '../cache/page' );
 
 logit ( 'catz loader finished at ' .  dtlang() . ' (' . ( $etime - $btime ) . ' seconds)' );
 

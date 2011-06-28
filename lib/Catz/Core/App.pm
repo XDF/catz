@@ -32,6 +32,8 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Mojolicious';
 
+use Time::HiRes qw ( time );
+
 use Catz::Core::Cache;
 use Catz::Core::Conf;
 use Catz::Core::Text;
@@ -43,6 +45,12 @@ use Catz::Util::File qw ( fileread findlatest pathcut );
 use Catz::Util::Time qw( dt dtdate dttime dtexpand dtlang thisyear );
 use Catz::Util::Number qw ( fmt fullnum33 round );
 use Catz::Util::String qw ( clean enurl decode encode limit trim );
+
+my $time_page = 0;  # turns on timing on all HTTP requests
+
+my $ver = conf ( 'ver' ); # application version
+
+my $version = undef; # data version
 
 sub startup {
 
@@ -92,9 +100,6 @@ sub startup {
 
  # if the site's bare root is requested then pass to language detector
  $r->route('/')->to( "main#detect", hold => 'off' );
-
- # the rerouting handler to handle requests of the old site  
- $r->route( '/reroute' )->to ( "reroute#get",  hold => 'off' );
 
  # the stylesheets
  $r->route( '/style/reset' )->to( 'main#reset', hold => 'static' );
@@ -179,25 +184,35 @@ sub before {
  # we skip all processing for static files
  ( $self->req->url->path->to_string  =~ /\..{2,4}$/ ) and return;
  
- # let some definitions to be globally available to all controllers
- $s->{matrix} = list_matrix;
- $s->{setup_keys} = setup_keys;
- $s->{setup_values} = setup_values;
+ $time_page and $s->{time_start} = time();
+ 
+ my $dbp = $ENV{MOJO_HOME}.'/db';
+ 
+ ( defined $version and ( -f "$dbp/$version.txt" ) ) or do {
+ 
+  # version not detected earlier or no longer valid
+  
+  # fetch the latest key file
+  my $keyf = findlatest ( $dbp, 'txt' );
+  
+  defined $keyf and do {
+  
+   # we make it very safe: if anything is wrong we continue to run
+   # with the old database and data version
+  
+   my $newv = substr ( pathcut ( $keyf ), 0, 14 );
    
- # default to meta robots "index,follow",
- # controllers may modify these as needed 
- $s->{meta_index} = 1;
- $s->{meta_follow} = 1;
-
- #
- # require urls to end with slash when there is no query params
- # you may ask why but I think this is cool
- #
- # the internals of Mojolicious was studied for this code
- # and the mechanism for redirect was copied from there
- #
-
- if ( scalar @{ $self->req->query_params->params } == 0 ) {
+   -f "$dbp/$newv.db" and $version = $newv; 
+   
+  };   
+  
+ };
+ 
+ $s->{ver} = $ver; # application version
+ 
+ $s->{version} = $version; # data version
+ 
+  if ( scalar @{ $self->req->query_params->params } == 0 ) {
   
   $self->req->url->path->trailing_slash or do {
 
@@ -222,8 +237,45 @@ sub before {
  length ( $s->{url} ) > 2 and ( substr( $s->{url}, 0, 3 ) eq '/fi' ) and do {
    $s->{lang} = 'fi'; $s->{langother} = 'en'; # Finnish
  };
+  
+ # process and populate session with setup parameters                                                                                  
+ setup_init ( $self );
+  
+ # attempt to fetch from cache
+ if ( my $res = cache_get ( cachekey ( $self ) ) ) {  # cache hit
+ 
+  $self->res->code(200);
+  $self->res->headers->content_type( $res->[0] );
+  defined $res->[1] and $self->res->headers->content_length( $res->[1] );
+  $self->res->body( ${ $res->[2] } ); # scalar ref to prevent copying
+  $self->rendered;
+  $s->{cached} = 1; # mark that the content came from cache
+  return $self;
 
+ } else {
+ 
+  $s->{cached} = 0;
 
+ }
+      
+ # let some definitions to be globally available to all controllers
+ $s->{matrix} = list_matrix;
+ $s->{setup_keys} = setup_keys;
+ $s->{setup_values} = setup_values;
+   
+ # default to meta robots "index,follow",
+ # controllers may modify these as needed 
+ $s->{meta_index} = 1;
+ $s->{meta_follow} = 1;
+
+ #
+ # require urls to end with slash when there is no query params
+ # you may ask why but I think this is cool
+ #
+ # the internals of Mojolicious was studied for this code
+ # and the mechanism for redirect was copied from there
+ #
+ 
  $s->{facebookkey} = conf ( 'key_facebook' );
  $s->{twitterkey} = conf ( 'key_twitter' );
  $s->{googlekey} = undef;
@@ -250,27 +302,7 @@ sub before {
  # controller and templates as variable t 
  $s->{t} = text ( $s->{lang} );
  $s->{ten} = text ( 'en' );
- 
- # process and populate session with setup parameters                                                                                  
- setup_init ( $self );
-      
- # attempt to fetch from cache
- if ( my $res = cache_get ( cachekey ( $self ) ) ) {  # cache hit
-
-  $self->res->code(200);
-  $self->res->headers->content_type( $res->[0] );
-  defined $res->[1] and $self->res->headers->content_length( $res->[1] );
-  $self->res->body( ${ $res->[2] } ); # scalar ref to prevent copying
-  $self->rendered;
-  $s->{cached} = 1; # mark that the content came from cache
-  return $self;
-
- } else {
-
-  $s->{cached} = 0;
-
- }
-  
+   
 }
 
 sub after {
@@ -299,10 +331,10 @@ sub after {
  given ( $s->{hold} ) {
  
   # 5 min on headers (for clients), 4 min on server
-  when ( 'dynamic' ) { $age = 5*60; $cac = '4 min' } 
+  when ( 'dynamic' ) { $age = 5*60; $cac = 4*60; } 
   
   # 5 min on headers (for clients), infinite on server
-  when ( 'static' ) { $age = 5*60; $cac = 'never' } 
+  when ( 'static' ) { $age = 5*60; $cac = -1; } 
  
   # 'off' or any other => NOP
 
@@ -334,14 +366,19 @@ sub after {
   );
    
  }
-    
+ 
+ $time_page and $s->{time_end} = time();
+ 
+ $time_page and warn "PAGE $s->{url} -> " . round ( ( ( $s->{time_end} - $s->{time_start}  ) * 1000 ), 0 ) . ' ms' ;
+   
 }
 
 # the key for page caching consists of namespace 'page', 
 # the url and all setup values in the order of their keys
 
 sub cachekey { (
- 'page', $_[0]->{stash}->{url},  map { $_[0]->{stash}->{$_} } setup_keys
+ $_[0]->{stash}->{version}, 'page', $_[0]->{stash}->{url}, 
+ map { $_[0]->{stash}->{$_} } setup_keys
 ) }
 
 1;

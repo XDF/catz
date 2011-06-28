@@ -96,7 +96,8 @@ sub pattern {
   $s->{args_count} = scalar @{ $s->{args_array} };
   
   if ( 
-   $s->{args_count} > 0 and # there is args 
+   $s->{args_count} > 0 and # there is args
+   $s->{args_count} < 51 and # max 25 pairs accepted   
    $s->{args_count} % 2 == 0 and # args come in as pairs 
    $self->fetch('search#verify_args',@{$s->{args_array}}) # all pris are ok 
   ) {

@@ -70,24 +70,30 @@ sub _base {
  my ( $self, $pri, $sec ) = @_;
   
  my $res;
+ 
+ # sql statements returning photo x don't use distinct or group by to
+ # remove duplicats since it appears to faster to just pass them
+ # Bit::Vector Index_List_Store that doesn't mind the duplicats
        
- if ( $pri eq 'has' ) { # get all photos that have a subject of subject class  $sec defined
+ if ( $pri eq 'has' ) { 
+ 
+   # get all photos that have a subject of subject class $sec defined
     
-  $res = $self->dbcol("select x from sec natural join _sid_x where pid=(select pid from pri where pri=?) group by x", $sec);
+  $res = $self->dbcol("select x from sec natural join _sid_x where pid=(select pid from pri where pri=?)", $sec);
             
  } else {
  
   # we execute all searches as like instead of = since this appears to give us
-  # the wanted behavior of case-insensitivitiness with äÄ and öÖ
-  # we for some reason don't get it by using "collate nocase"
+  # the closest behavior of case-insensitivitiness with äÄ and öÖ without
+  # being sure why (collate nocase with = doesn't give the same result)
  
   if ( $pri eq 'any' ) {
            
-   $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec where (sec_en like ? or sec_fi like ?) group by sid) group by x", $sec, $sec);
+   $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec where (sec_en like ? or sec_fi like ?))", $sec, $sec);
    
   } else {
    
-   $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec where pid=(select pid from pri where pri=?) and (sec_en like ? or sec_fi like ?) group by sid) group by x", $pri, $sec,$sec);
+   $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec where pid=(select pid from pri where pri=?) and (sec_en like ? or sec_fi like ?))", $pri, $sec,$sec);
    
   }
     
