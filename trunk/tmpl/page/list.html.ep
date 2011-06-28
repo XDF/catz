@@ -11,7 +11,7 @@
 %# --------------------
 %#
 <% content 'metaadd' => begin %>
-% my $desc =  $t->{LISTING}.' '.$t->{uc($subject).'H'}.' '.$t->{'MODE_'.uc($mode)};
+% my $desc = $t->{LISTING}.' '.$t->{uc($subject).'H'}.' '.$t->{'MODE_'.uc($mode)};
 <meta name="og:title" content="<%= $titl %>"> 
 <meta name="description" content="<%= $desc %>">
 <meta name="og:description" content="<%= $desc %>">
@@ -40,7 +40,7 @@
 <% content 'sub' => begin %>
 %#
 %# add the mode changing bar by reading the modes from the list definition matrix provided by the stash
-%# alsoinclude the in-page navigation is required
+%# also include the in-page navigation is required
 %#
 %# --------------------
 %#

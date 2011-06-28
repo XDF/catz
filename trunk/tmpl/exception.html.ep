@@ -3,6 +3,7 @@
 <% content 'main' => begin %>
 <h1>500 application exception<br>500 sovelluspoikkeus</h1>
 <div><%= $exception->{message} %> (<%= $exception->{line} %>)</div>
+<br>
 <table>
 % foreach my $row ( @{ $exception->{frames} } ) {
 <tr>

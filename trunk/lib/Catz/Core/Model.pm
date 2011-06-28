@@ -34,13 +34,9 @@ use Time::HiRes qw ( time );
 use Catz::Core::Cache;
 use Catz::Util::Number qw ( round );
 
-my $time_model = 0;
-my $time_db = 0;
+my $time_model = 0; # turns on timing on all model access
 
-my $db =  DBI->connect (
- 'dbi:SQLite:dbname='.$ENV{MOJO_HOME}.'/db/master.db',
- undef, undef, { AutoCommit => 1, RaiseError => 1, PrintError => 1 }
-) || die ( $DBI::errstr ); 
+my $time_db = 0; # turns on timing on all database access
 
 sub new {
 
@@ -54,29 +50,55 @@ sub new {
  
  $self->{expire} = $self->expiry;
 
- $self->{lang} = undef; # default
- 
+ $self->{lang} = undef;
+ $self->{version} = 0;
+ $self->{db} = undef;
+   
  return $self;
  
 }
 
-sub cachetime { $_[0]->{expire}->{$_[1]} ? $_[0]->{expire}->{$_[1]} : 'never' } 
+sub cachetime { $_[0]->{expire}->{$_[1]} ? $_[0]->{expire}->{$_[1]} : -1 } 
 
 # override this sub to set caching times other than never
 sub expiry { {} }
 
 sub fetch {
 
- my ( $self, $sub, $lang, @args ) = @_;
+ my ( $self, $version, $lang, $sub, @args ) = @_;
 
- # each call to this object sets the language
  $self->{lang} = $lang;
+
+ if ( $self->{version} ne $version ) {
+ 
+   # version change -> change db
+   
+   defined $self->{db} and $self->{db}->disconnect;
+ 
+   $self->{db} = DBI->connect (
+    'dbi:SQLite:dbname='.$ENV{MOJO_HOME}."/db/$version.db",
+     undef, undef, { AutoCommit => 1, RaiseError => 1, PrintError => 1 }
+    ) || die ( $DBI::errstr ); 
+ 
+  $self->{version} = $version;
+ 
+ }
        
  { no strict 'refs'; return $self->$sub( @args ) }
    
 }
 
-sub DESTROY { }
+sub DESTROY { 
+
+ my $self = shift;
+
+ defined $self->{db} and do {
+  
+  $self->{db}->disconnect; $self->{db} = undef;
+   
+ };
+  
+}
 
 sub AUTOLOAD {
 
@@ -87,9 +109,11 @@ sub AUTOLOAD {
  our $AUTOLOAD; my $sub = $AUTOLOAD; $sub =~ s/.*://;
   
  substr ( $sub, 0, 1 ) eq '_' and 
-  die "recursive autoload prevented on '$sub'";
+  die "recursive autoload prevented when calling sub '$sub'";
  
- my $res = cache_get ( $nspace, $self->{name}, $sub, $self->{lang}, @args ); 
+ my $res = cache_get ( 
+  $self->{version}, $nspace, $self->{lang}, $self->{name}, $sub, @args 
+ ); 
  
  $res and return $res; # if cache hit then done
  
@@ -105,10 +129,10 @@ sub AUTOLOAD {
  
  $time_model and $end = time();
  
- $time_model and warn "MODEL $self->{name} $sub $self->{lang} " . ( join ',', @args ) . ' -> ' . round ( ( ( $end - $start ) * 1000 ), 0 ) . ' ms';
+ $time_model and warn "MODEL $self->{name} $sub -> " . round ( ( ( $end - $start ) * 1000 ), 0 ) . ' ms';
   
  cache_set ( 
-  $nspace, $self->{name}, $sub, $self->{lang}, @args, $res, 
+  $self->{version}, $nspace, $self->{lang}, $self->{name}, $sub, @args, $res,  
   $self->cachetime ( $sub )
  );
  
@@ -118,12 +142,11 @@ sub AUTOLOAD {
 
 sub db_run {
 
- my ( $comm, $sql, @args ) = @_;
+ my ( $self, $comm, $sql, @args ) = @_;
  
  my $nspace = 'db';
   
- my $res = 
-  cache_get ( $nspace, $comm, $sql, @args );
+ my $res = cache_get ( $self->{version}, $nspace, $comm, $sql, @args );
  
  $res and return $res; # if cache hit then done
  
@@ -135,7 +158,7 @@ sub db_run {
   
   when ( 'one' ) { 
 
-   my $arr = $db->selectrow_arrayref( $sql, undef, @args );
+   my $arr = $self->{db}->selectrow_arrayref( $sql, undef, @args );
   
    $res = $arr->[0];
   
@@ -143,19 +166,19 @@ sub db_run {
   
   when ( 'row' ) {
   
-   $res = $db->selectrow_arrayref( $sql, undef, @args );
+   $res = $self->{db}->selectrow_arrayref( $sql, undef, @args );
 
   }
   
   when ( 'col' ) {
   
-   $res = $db->selectcol_arrayref( $sql, undef, @args );
+   $res = $self->{db}->selectcol_arrayref( $sql, undef, @args );
   
   }
   
   when ( 'all' ) {
   
-   $res = $db->selectall_arrayref( $sql, undef, @args );
+   $res = $self->{db}->selectall_arrayref( $sql, undef, @args );
   
   }
 
@@ -163,7 +186,7 @@ sub db_run {
   
    my $kf = shift @args;
 
-   $res = $db->selectall_hashref( $sql, $kf, undef, @args );
+   $res = $self->{db}->selectall_hashref( $sql, $kf, undef, @args );
 
    unshift @args, $kf;
   
@@ -177,23 +200,24 @@ sub db_run {
  
  $time_db and $end = time();
  
- $time_db and warn "DB $comm $sql " . ( join ',', @args ) . ' -> ' . round ( ( ( $end - $start ) * 1000 ), 0 ) . ' ms' ;
+ $time_db and warn "DB $comm $sql -> " . round ( ( ( $end - $start ) * 1000 ), 0 ) . ' ms' ;
 
- cache_set ( $nspace, $comm, $sql, @args, $res, 'never' );
+ # at database level we currently use infinite caching 
+ cache_set (  $self->{version}, $nspace, $comm, $sql, @args, $res, -1 );
   
  return $res;
 
 }
 
-sub dball { shift; db_run ( 'all', @_ ) }
+sub dball { my $self = shift; $self->db_run ( 'all', @_ ) }
 
-sub dbrow { shift; db_run ( 'row', @_ ) }
+sub dbrow { my $self = shift; $self->db_run ( 'row', @_ ) }
 
-sub dbcol { shift; db_run ( 'col', @_ ) }
+sub dbcol { my $self = shift; $self->db_run ( 'col', @_ ) }
 
-sub dbone { shift; db_run ( 'one', @_ ) }
+sub dbone { my $self = shift; $self->db_run ( 'one', @_ ) }
 
-sub dbhash { shift; db_run ( 'hash', @_ ) }
+sub dbhash {my $self = shift; $self->db_run ( 'hash', @_ ) }
 
 1;
 

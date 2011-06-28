@@ -61,7 +61,7 @@
 %  if ( $earliest ne $latest ) {
 - <%= dtexpand ( $earliest, $lang ) %>
 %  }
-%  if ( $runmode ne 'search') { 
+%  if ( $runmode ne 'search' ) { 
 %   if ( scalar @{ $jump2date } > 1 ) {
 <%= $sep %>
 <select name="date" class="shade" onchange="<%== include 'href/id', toid => 'this' %>">

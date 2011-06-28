@@ -25,13 +25,15 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8"> 
 <meta name="generator" content="<%== $t->{GENERATOR} %>">
 <meta name="timestamp" content="<%== $now %>">
+<meta name="app_version" content="<%== $ver %>">
+<meta name="data_version" content="<%== $version %>">
 <meta name="author" content="<%== $t->{AUTHOR} %>">
 <meta name="copyright" content="<%== $t->{COPYRIGHT} %> <%== $t->{AUTHOR} %> <%== $t->{FIRSTYEAR} %>-<%== thisyear %>. <%= $t->{LICENCE} %>."> 
 <meta name="credits" content="<%== $t->{CREDITS} %>">
 <meta name="og:site_name" content="<%= $t->{SITE} %>"> 
 <meta name="robots" content="<%==  ( $meta_index ? 'index' : 'noindex' ) . ',' . ( $meta_follow ? 'follow' : 'nofollow' ) %>">
 <link rel="alternate" title="<%= $t->{TRANSLATE} %>" lang="<%== $langother %>" hreflang="<%== $langother %>" href="<%== $urlother %>">
-<link rel="copyright" href="<%== $t->{LICENCE_URL} %>">
+<link rel="copyright" href="<%== $t->{URL_LICENCE} %>">
 <link rel="shortcut icon" href="/favicon.ico">
 <meta name="fb:app_id" content="<%== $facebookkey %>"> 
 <%= content 'metaadd' %>
@@ -88,8 +90,8 @@
 %#
 <div id="bottom" class="section center shade shrink clearbefore">
 <a class="info" href=""></a> <%= $sep %> <%= $t->{COPYRIGHT} %> 
-<a href="<%== $t->{AUTHORURL} %>"><%= $t->{AUTHOR} %></a> <%== $t->{FIRSTYEAR} %>-<%== thisyear %> <%= $sep %>
-<a href="<%== $t->{LICENCE_URL} %>"><%= $t->{LICENCE} %></a>
+<a href="<%== $t->{URL_AUTHOR} %>"><%= $t->{AUTHOR} %></a> <%== $t->{FIRSTYEAR} %>-<%== thisyear %> <%= $sep %>
+<a href="<%== $t->{URL_LICENCE} %>"><%= $t->{LICENCE} %></a>
 </div>
 %#
 %# --------------------

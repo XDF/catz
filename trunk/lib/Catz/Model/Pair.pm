@@ -40,19 +40,9 @@ sub _bits {
  # language dependent
 
  my ( $self, $pri, $sec ) = @_;
+ 
+ return $self->base( $pri, $sec );
 
- if ( 
-  $pri eq 'has' or $pri eq 'any' or $sec eq 'text' or $sec eq 'album'
-  or index ( $sec, '*' ) > -1 or index ( $sec, '?' ) > -1 
- ) { # reject
-
-  return Bit::Vector->new( $self->maxx + 1 ); # empty vector
-
- } else { # pass-thru
-
-  return $self->base( $pri, $sec );
-
- }
 }
 
 sub verify {

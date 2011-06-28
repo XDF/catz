@@ -18,7 +18,7 @@ EOF
 
 $ENV{MOJO_APP} ||= 'Catz::Core::App';
 
-#$ENV{MOJO_HOME} = '/catz';
-#$ENV{MOJO_MODE} = 'development';
+$ENV{MOJO_HOME} = '/catz/dev';
+$ENV{MOJO_MODE} = 'development';
 
 Mojolicious::Commands->start;
