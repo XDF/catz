@@ -48,8 +48,6 @@ sub new {
  
  bless ( $self, $class );
  
- $self->{expire} = $self->expiry;
-
  $self->{lang} = undef;
  $self->{version} = 0;
  $self->{db} = undef;
@@ -58,10 +56,6 @@ sub new {
  
 }
 
-sub cachetime { $_[0]->{expire}->{$_[1]} ? $_[0]->{expire}->{$_[1]} : -1 } 
-
-# override this sub to set caching times other than never
-sub expiry { {} }
 
 sub fetch {
 
@@ -110,30 +104,35 @@ sub AUTOLOAD {
   
  substr ( $sub, 0, 1 ) eq '_' and 
   die "recursive autoload prevented when calling sub '$sub'";
+
+ my $start; my $end;
+ 
+ $time_model and $start = time();
  
  my $res = cache_get ( 
   $self->{version}, $nspace, $self->{lang}, $self->{name}, $sub, @args 
  ); 
  
- $res and return $res; # if cache hit then done
+ $res and do {
  
- my $start;
+  $time_model and $end = time();
  
- $time_model and $start = time();
- 
+  $time_model and warn "MODEL $self->{name} $sub -> " . round ( ( ( $end - $start ) * 1000 ), 0 ) . ' ms';
+   
+  return $res; # if cache hit then done
+  
+ };
+  
  my $target = '_' . $sub;
    
  { no strict 'refs'; $res = $self->$target( @args ) }
- 
- my $end;
- 
+  
  $time_model and $end = time();
  
  $time_model and warn "MODEL $self->{name} $sub -> " . round ( ( ( $end - $start ) * 1000 ), 0 ) . ' ms';
   
  cache_set ( 
-  $self->{version}, $nspace, $self->{lang}, $self->{name}, $sub, @args, $res,  
-  $self->cachetime ( $sub )
+  $self->{version}, $nspace, $self->{lang}, $self->{name}, $sub, @args, $res
  );
  
  return $res;
@@ -145,15 +144,23 @@ sub db_run {
  my ( $self, $comm, $sql, @args ) = @_;
  
  my $nspace = 'db';
+
+ my $start; my $end;
+ 
+ $time_db and $start = time();
   
  my $res = cache_get ( $self->{version}, $nspace, $comm, $sql, @args );
  
- $res and return $res; # if cache hit then done
+ $res and do {
  
- my $start;
+  $time_db and $end = time();
  
- $time_db and $start = time();
-
+  $time_db and warn "DB $comm $sql -> " . round ( ( ( $end - $start ) * 1000 ), 0 ) . ' ms' ;
+ 
+  return $res; # if cache hit then done
+  
+ };
+ 
  given ( $comm ) {
   
   when ( 'one' ) { 
@@ -195,15 +202,13 @@ sub db_run {
   default { die "unknown database command '$comm'" }
  
  }
- 
- my $end;
- 
+
  $time_db and $end = time();
  
  $time_db and warn "DB $comm $sql -> " . round ( ( ( $end - $start ) * 1000 ), 0 ) . ' ms' ;
 
  # at database level we currently use infinite caching 
- cache_set (  $self->{version}, $nspace, $comm, $sql, @args, $res, -1 );
+ cache_set (  $self->{version}, $nspace, $comm, $sql, @args, $res );
   
  return $res;
 

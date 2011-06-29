@@ -69,9 +69,17 @@ sub pair {
   ); 
 
  if ( $s->{pri} eq 'breeder' ) {
+ 
   # special services for breeders
-  ( $s->{breedernat}, $s->{breederurl} ) = 
-   @{ $self->fetch ( "related#breedermeta", $s->{sec} ) }; 
+  my $xm = $self->fetch ( "related#breedermeta", $s->{sec} );
+  
+  defined $xm and do {
+  
+   $s->{breedernat} = $xm->[0]; 
+   $s->{breederurl} = $xm->[1];
+   
+  }; 
+ 
  }
   
  return 1;
@@ -85,6 +93,7 @@ sub browse {
  $_[0]->multi or ( $_[0]->not_found and return );  
 
 }
+
 sub view { 
 
  $_[0]->pair or ( $_[0]->not_found and return );

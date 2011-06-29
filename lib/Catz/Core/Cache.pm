@@ -42,7 +42,7 @@ use Catz::Util::String qw ( encode );
 # can still be called as usual but are NOP
 my $cacheon = $ENV{MOJO_MODE} eq 'production' ? 1 : 0;
 
-# we create a static cache object at compile time
+# we create a static cache object at compile time and this works just fine
 my $cache = new Cache::Memcached::Fast { 
  servers => [ '127.0.0.1:11211' ], 
  connect_timeout => 0.1, 
@@ -69,11 +69,10 @@ sub cache_set {
  
  my @args = @_;
 
- # we expect array of key parts, value, expire in seconds
- my $exp = pop @args; 
+ # we expect val to be the last param 
  my $val = pop @args;
- 
- # put application id and applicaiton version to key 
+  
+ # put application id and application version to key 
  unshift @args, $app.$ver;
 
  # we build the cache key by joining the encoded key parts
@@ -82,17 +81,20 @@ sub cache_set {
  
  # shrink too long keys
  length $key > 250 and $key = shrink $key;
+  
+ {
  
- if ( $exp == -1 ) {
+  # the value to be cached may well be undef since it might
+  # come from an url that points to no real photos and so
+  # database access returns undef photo x or similar so
+  # we allow undef to go to cache without a warning
+   
+  no warnings qw( uninitialized );
  
-   $cache->set( $key, $val ); # infinite
+  $cache->set( $key, $val ); # we use no expirity -> infinite
+  
+ }
  
- } else {
- 
-  $cache->set( $key, $val, $exp ); # with expiry
- 
- }  
-
 }
 
 sub cache_get {
