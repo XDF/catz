@@ -6,5 +6,5 @@
 </div>
 % }
 <%== include 'content/guide' %></td>
-<td class="minor top"><div class="bar"><div class="bar rounded shade"><%== include 'content/subject' %></div></div></td>
+<td class="minor top"><div class="bar"><div class="bar rounded shade"><%== include 'content/concept' %></div></div></td>
 </tr></table>
