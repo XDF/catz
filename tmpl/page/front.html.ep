@@ -46,8 +46,9 @@
 %# --------------------
 %#
 <% content 'bextra' => begin %>
-<a href="/<%== $lang %>/search?what=<%= enurl('+has=breed -has=cat') %>"><%= $t->{DONATE_CAT} %></a>
-<% end %>
+<a href="/<%== $lang %>/search?what=<%= enurl('+has=breed -has=cat') %>"><%= $t->{DONATE_CAT} %></a> 
+<%= $sep %>
+<a href="<%== $t->{URL_YOUTUBE} %>"><%= $t->{VIDEOS} %></a><% end %>
 %#
 %# --------------------
 %#
@@ -77,7 +78,7 @@
 <%= $t->{uc($row->[0]).'A'} %></a>
 % }
 %#
-<%= $sep %> <a href="<%== $t->{URL_YOUTUBE} %>"><%= $t->{VIDEOS} %></a>
+<%= $sep %> <a href="/<%== $lang %>/lists/"><%= $t->{ALL} %> <%= $t->{LISTINGS} %></a>
 %#
 </div>
 %#
@@ -85,7 +86,7 @@
 %#
 <div class="bar"><h2><%= $t->{NEWS} %></h2>
 % foreach my $row ( @$news ) {
-<a href="/<%== $lang %>/news/#<%== $row->[0] %>"><%= dtexpand ( dtdate ( $row->[0] ), $lang ) %> <%= $row->[1] %></a> <%== $sep %>
+<a href="/<%== $lang %>/news/<%== $row->[0] %>/"><%= dtexpand ( dtdate ( $row->[0] ), $lang ) %> <%= $row->[1] %></a> <%== $sep %>
 % } 
 <a href="/<%== $lang %>/news/"><%= $t->{NEWS_ALL} %></a>
 </div>

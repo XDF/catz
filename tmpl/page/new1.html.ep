@@ -3,22 +3,34 @@
 %# --------------------
 %#
 <% content 'ptitleadd' => begin %>
-<%== $t->{NEWS_ALL} %>
+<%= dtexpand ( dtdate ( $new1->[0] ), $lang ) %> <%= $new1->[1] %>
+<% end %>
+%#
+%# --------------------
+%#
+<% content 'pathadd' => begin %>
+<a href="/<%== $lang %>/news/"><%= $t->{NEWS} %></a> <%= $pathsep %>
 <% end %>
 %#
 %# --------------------
 %#
 <% content 'btitle' => begin %>
-<h1><%== $t->{NEWS_ALL} %></h1>
+<h1> <%= dtexpand ( dtdate ( $new1->[0] ), $lang ) %> <%= $new1->[1] %></h1>
 <% end %>
 %#
 %# --------------------
 %#
 <% content 'metaadd' => begin %>
-<meta name="og:title" content="<%= $t->{SITE} %> <%== $t->{NEWS_ALL} %>">
-<meta name="og:url" content="<%== $lang eq 'fi' ? $urlother : $url %>">
-<meta name="description" content="<%= $t->{NEWSING} %>">
-<meta name="og:description" content="<%= $t->{NEWSING} %>"> 
+<meta name="og:title" content="<%= dtexpand ( dtdate ( $new1->[0] ), $lang ) %> <%= $new1->[1] %>">
+<meta name="og:url" content="<%== $url %>">
+<meta name="og:type" content="article">
+<link rel="index" href="/<%== $lang %>/news/">
+% if ( $prev ) {
+<link rel="prev" href="/<%== $lang %>/news/<%== $prev %>/">
+% }
+% if ( $next ) {
+<link rel="next" href="/<%== $lang %>/news/<%== $next %>/">
+% } 
 <% end %>
 %#
 %# --------------------
@@ -27,12 +39,40 @@
 %#
 %# --------------------
 %#
-<%= content 'main' => begin %>
-% foreach my $row ( @$news ) {
-<div class="bar inner"> 
-<h2 id="<%== $row->[0] %>"><%=  dtexpand ( dtdate ( $row->[0] ), $lang ) %></h2> <a href="/<%== $lang %>/news/<%== $row->[0] %>/"><%= $row->[1] %></a>
-</div>
+<% content 'sub' => begin %>
+<div class="center stripetop">
+% if ( $prev ) {
+<a href="/<%== $lang %>/news/<%== $prev %>/"><%= $t->{PREV_NEW1} %></a>
+% } else {
+<%= $t->{PREV_NEW1} %>
 % }
+<%= $sep %>
+<a href="/<%== $lang %>/news/"><%= $t->{NEWS_ALL} %></a>
+<%= $sep %>
+% if ( $next ) {
+<a href="/<%== $lang %>/news/<%== $next %>/"><%= $t->{NEXT_NEW1} %></a>
+% } else {
+<%= $t->{NEXT_NEW1} %>
+% }
+</div>
+<% end %>
+%#
+%# --------------------
+%#
+<%= content 'main' => begin %>
+<div class="bar"><%= $new1->[2] %></div>
+% if ( $new1->[3] ) {
+<div class="bar"><a href="<%== $new1->[3] %>"><%= $new1->[3] %></a></div>
+% } 
+<div class="bar">
+<%=  dtexpand ( $new1->[0], $lang ) %>
+% if ( ( dt2epoch ( dt ) - dt2epoch ( $new1->[0] ) ) < 60 * 60 * 24 * 30 ) {
+<span class="aero">
+%== include 'elem/twitter', twurl => $url, twtext => $new1->[1], twcounturl => $lang eq 'fi' ? $urlother : $url;
+</span>
+% }
+</div>
+</div>
 <% end %> 
 %#
 %# Catz - the world's most advanced cat show photo engine

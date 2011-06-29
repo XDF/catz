@@ -1,11 +1,4 @@
 % extends 'base/heavy';
-%#
-%# --------------------
-%# The template for all list pages
-%# --------------------
-%#
-%# title is used twice so prepare it into a variable
-%#
 % my $titl = fmt ( $total, $lang ) . ' ' . ( $total == 1 ? $t->{uc($subject)} : $t->{uc($subject).'A'} ) . ' ' . $t->{'MODE_'.uc($mode)};
 %#
 %# --------------------
@@ -20,6 +13,10 @@
 %#
 %# --------------------
 %#
+<% content 'pathadd' => begin %><a href="/<%== $lang %>/lists/"><%= $t->{LISTINGS} %></a> <%= $pathsep %><% end %>
+%#
+%# --------------------
+%#
 <% content 'ptitleadd' => begin %><%= $titl %><% end %>
 %#
 %# --------------------
@@ -28,19 +25,7 @@
 %#
 %# --------------------
 %#
-<% content 'bextra' => begin %>
-% if ( $mapdual->{$subject} ) {
-% my $tgt = $mapdual->{$subject}->{ROOT};
-<a href="/<%== $lang %>/list/<%== $tgt %>/<%== $matrix->{$tgt}->{modes}->[0] %>/"><%= $t->{uc($tgt).'S'} %></a>
-% }
-<% end %> 
-%#
-%# --------------------
-%#
 <% content 'sub' => begin %>
-%#
-%# add the mode changing bar by reading the modes from the list definition matrix provided by the stash
-%# also include the in-page navigation is required
 %#
 %# --------------------
 %#

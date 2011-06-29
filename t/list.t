@@ -41,6 +41,15 @@ my $c = 0;
 foreach my $lang ( qw ( en fi ) ) {
 
  my $txt = text ( $lang );
+
+ $t->get_ok("/$lang/lists")->status_is(301); $c += 2;
+
+ $t->get_ok("/$lang/lists/")
+   ->status_is(200)
+   ->content_type_like(qr/text\/html/)
+   ->content_like(qr/$txt->{LISTINGS}/);
+
+ $c += 4;
  
  foreach my $mode ( @{ $matrix->{album}->{modes} } ) {
  

@@ -30,13 +30,29 @@ use parent 'Catz::Core::Model';
 
 use Catz::Util::Time qw ( dtexpand );
 
-sub _all {
+sub _titles {
 
  my $self = shift; my $lang = $self->{lang};
       
  return $self->dball( 
-  "select dt,title_$lang,text_$lang,url from mnews order by dt desc" 
+  "select dt,title_$lang from mnews order by dt desc" 
  );
+  
+}
+
+sub _one {
+
+ my ( $self, $article ) = @_; my $lang = $self->{lang};
+      
+ my $res = $self->dbrow( 
+  "select dt,title_$lang,text_$lang,url from mnews where dt=?",$article 
+ );
+ 
+ my $prev = $self->dbone('select max(dt) from mnews where dt<?',$article);
+ 
+ my $next = $self->dbone('select min(dt) from mnews where dt>?',$article);
+ 
+ return [ $res, $prev, $next ];
   
 }
 
@@ -47,7 +63,7 @@ sub _latest {
  ( $limit and $limit > 0 ) or $limit = 5; # default 
       
  return $self->dball( 
-  "select dt,title_$lang,text_$lang,url from mnews order by dt desc limit $limit" 
+  "select dt,title_$lang from mnews order by dt desc limit $limit" 
  );
         
 }

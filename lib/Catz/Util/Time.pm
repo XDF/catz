@@ -29,7 +29,6 @@ use warnings;
 
 no locale;
 use DateTime;
-use Memoize;
 use Time::localtime; 
 use POSIX qw( floor mktime );
 use Email::Date::Format qw( email_gmdate );
@@ -46,9 +45,6 @@ our @EXPORT_OK = qw( dtdate dttime dtexpand dt dtlang dtsplit thisyear dt2epoch 
 # in: timestamp, language
 # out: timestamp converted to a human-readable form
 #
-
-# used a lot with limited set of values -> memoizing
-memoize ( 'dtexpand' ); 
 
 sub dtexpand {
  

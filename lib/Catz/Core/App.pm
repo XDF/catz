@@ -40,13 +40,11 @@ use Catz::Data::List qw ( list_matrix );
 use Catz::Data::Setup;
 
 use Catz::Util::File qw ( fileread findlatest pathcut );
-use Catz::Util::Time qw( dt dtdate dttime dtexpand dtlang thisyear );
+use Catz::Util::Time qw( dt dt2epoch dtdate dttime dtexpand dtlang thisyear );
 use Catz::Util::Number qw ( fmt fullnum33 round );
 use Catz::Util::String qw ( clean enurl decode encode limit trim );
 
 my $time_page = 0;  # turns on timing on all HTTP requests
-
-my $ver = conf ( 'ver' ); # application version
 
 my $version = undef; # data version
 
@@ -64,7 +62,7 @@ sub startup {
  # map utility subs from different modules to Mojolicious helpers
  # we use dynamically generated subs as bridges
  foreach my $sub ( 
-  qw ( dt dtdate dttime dtexpand fmt clean enurl limit trim 
+  qw ( dt dt2epoch dtdate dttime dtexpand fmt clean enurl limit trim 
   fullnum33 thisyear encode decode round ) 
  ) {
 
@@ -125,10 +123,14 @@ sub startup {
  $l->route( '/' )->to( 'main#front', hold => 1 );
  
  # the site's news
- $l->route( '/news' )->to ( "news#all", hold => 1 );  
+ $l->route( '/news' )->to ( "news#index", hold => 1 );
+ $l->route( '/news/:article', article => qr/\d{14}/ )->to ( "news#one", hold => 1 );  
  $l->route( '/feed' )->to ( "news#feed", hold => 1 );
 
- # lists 
+ # list of lists
+ $l->route( '/lists' )->to('locate#lists', hold => 1 );
+
+ # list 
  $l->route( '/list/:subject/:mode' )->to('locate#list', hold => 1 );
  
  # photo browsing and viewing - 3 different ways
@@ -207,9 +209,7 @@ sub before {
   };   
   
  };
- 
- $s->{ver} = $ver; # application version
- 
+  
  $s->{version} = $version; # data version
  
   if ( scalar @{ $self->req->query_params->params } == 0 ) {
