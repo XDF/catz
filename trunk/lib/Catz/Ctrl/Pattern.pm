@@ -57,7 +57,7 @@ sub pattern {
  $s->{what} and do {
  
   # sanity check
-  ( length $s->{what} > 4000 ) and return 0;
+  ( length $s->{what} > 1234 ) and return 0;
 
   # remove all unnecessary spaces   
   $s->{what} = clean trim $s->{what};
