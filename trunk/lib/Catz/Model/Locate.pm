@@ -240,4 +240,12 @@ sub _lastshow {
   
 }
 
+sub _prims {
+
+ my $self = shift;
+ 
+ return $self->dball("select pri,cntpri from pri natural join _prim where pri not in ('text','folder') order by disp");
+
+}
+
 1;

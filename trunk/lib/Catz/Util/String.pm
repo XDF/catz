@@ -29,19 +29,17 @@ use 5.10.0; use strict; use warnings;
 use base 'Exporter';
 
 our @EXPORT_OK = qw ( 
- clean decode deurl dna encode enurl 
- lcc limit nobreak trim ucc ucclcc
+ clean decode deurl dna encode enurl lcc limit 
+ nobreak trim ucc ucclcc implode explode
 ); 
 
 use Digest::MD5 qw ( md5_base64 );
-use Memoize;
+use MIME::Base32 qw( RFC );
 use URI::Escape::XS qw ( uri_escape uri_unescape );
 
 #
 # an internal utility function called by encode sub
 #
-
-memoize ( 'chrsolve' );
 
 sub chrsolve {
  
@@ -68,8 +66,6 @@ sub clean { $_ = shift; s/\s+/ /g; $_; }
 # A-039rdn-225n_Nau_Mau-039s -> A'rdnán Nau Mau's
 #
 
-memoize ( 'decode' );
-
 sub decode { $_ = $_[0]; s/\-(\d\d\d)/chr($1)/ge; s|_| |g; return $_; }
 
 #
@@ -94,8 +90,6 @@ sub dna { md5_base64 ( $_[0] ) }
 # This Ain't Jungle -> This_Ain-039t_Jungle
 # A'rdnán Nau Mau's -> A-039rdn-225n_Nau_Mau-039s
 #
-
-memoize ( 'encode' );
 
 sub encode { join '', map { chrsolve( ord ( $_ ) ) } split //, $_[0] // '' }
 

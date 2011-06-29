@@ -2,38 +2,42 @@
 %#
 %# --------------------
 %#
-<% content 'ptitleadd' => begin %>
-<%== $t->{NEWS_ALL} %>
-<% end %>
-%#
-%# --------------------
-%#
-<% content 'btitle' => begin %>
-<h1><%== $t->{NEWS_ALL} %></h1>
-<% end %>
-%#
-%# --------------------
-%#
 <% content 'metaadd' => begin %>
-<meta name="og:title" content="<%= $t->{SITE} %> <%== $t->{NEWS_ALL} %>">
-<meta name="og:url" content="<%== $lang eq 'fi' ? $urlother : $url %>">
-<meta name="description" content="<%= $t->{NEWSING} %>">
-<meta name="og:description" content="<%= $t->{NEWSING} %>"> 
+<meta name="og:title" content="<%= $t->{LISTINGS} %>"> 
+<meta name="og:url" content="<%== $lang eq 'fi' ? $urlother : $url %>"> 
 <% end %>
 %#
 %# --------------------
 %#
-<% content 'bextra' => begin %><a href="/<%== $lang %>/feed/"><%= $t->{FEED} %></a> <%= $sep %> <%== include 'elem/extra' %><% end %>
+<% content 'ptitleadd' => begin %><%= $t->{LISTINGS} %><% end %>
+%#
+%# --------------------
+%#
+<% content 'btitle' => begin %><h1><%= $t->{LISTINGS} %></h1><% end %>
 %#
 %# --------------------
 %#
 <%= content 'main' => begin %>
-% foreach my $row ( @$news ) {
+%#
+%# --------------------
+%#
+<div class="roomy">
+%#
+%# --------------------
+%#
+% foreach my $row ( @$prims ) {
 <div class="bar inner"> 
-<h2 id="<%== $row->[0] %>"><%=  dtexpand ( dtdate ( $row->[0] ), $lang ) %></h2> <a href="/<%== $lang %>/news/<%== $row->[0] %>/"><%= $row->[1] %></a>
+<h2><%= fmt ( $row->[1], $lang ) %> <%= $t->{uc($row->[0]).'A'} %></h2>
+% foreach my $mode ( @{ $matrix->{$row->[0]}->{modes} } ) {
+<%= $sep %>
+<a href="/<%== $lang %>/list/<%== $row->[0] %>/<%== $mode %>/"><%= $t->{'MODE_'.uc($mode)} %></a>
+% }
 </div>
 % }
-<% end %> 
+%#
+%# --------------------
+%#
+<% end %>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
@@ -56,4 +60,4 @@
 %# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 %# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 %# THE SOFTWARE.
-%#
+%# 

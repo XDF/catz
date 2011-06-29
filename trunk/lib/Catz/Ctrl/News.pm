@@ -34,7 +34,7 @@ use Catz::Core::Conf;
 use Catz::Util::String qw ( limit );
 use Catz::Util::Time qw ( dt dt2epoch epoch2rfc822 );
 
-sub all { # the list of all news
+sub index { # the list of all news articles
 
  my $self = shift; my $s = $self->{stash};
  
@@ -42,9 +42,24 @@ sub all { # the list of all news
  
  $s->{urlother} = '/' . $s->{langother} . '/news/';
 
- $s->{news} = $self->fetch ( 'news#all' );
+ $s->{news} = $self->fetch ( 'news#titles' );
  
  $self->render( template => 'page/news' );
+
+}
+
+sub one { # one news article
+
+ my $self = shift; my $s = $self->{stash};
+  
+ $s->{urlother} = '/' . $s->{langother} . '/news/' . $s->{article} .'/';
+
+ ( $s->{new1}, $s->{prev}, $s->{next} ) = 
+   @{ $self->fetch ( 'news#one', $s->{article} ) }; 
+ 
+ defined $s->{new1} or ( $self->not_found and return );
+ 
+ $self->render( template => 'page/new1' );
 
 }
 

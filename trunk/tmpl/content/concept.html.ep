@@ -1,0 +1,232 @@
+% my $exa = undef;
+% my $exb = undef;
+%#
+%# --------------------
+%#
+<h2 class="block bar">Käsitteet</h2>
+<div class="bar">
+Kun hakutermille määritellään käsite, johon haku kohdistuu, kirjoitetaan käsite ennen hakutermiä ja erotetaan hakutermistä yhtäsuuruusmerkillä.
+</div>
+%#
+%# --------------------
+%#
+<h2 class="block bar stripetop">Kuvatekstin käsitteet</h2>
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'app';
+% $exb = 'g 09';
+<span class="lean"><%== $exa %></span> on kuvassa olevan kissan EMS-koodi ilman koodin rotuosaa eli <%= $t->{uc($exa)} %>, esim.
+<a href="/<%== $lang %>/search?what=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+</div>
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'breed';
+% $exb = 'AWS';
+<span class="lean"><%== $exa %></span> on kuvassa olevan kissan EMS-koodin rotuosa eli <%= $t->{uc($exa)} %>, esim.
+<a href="/<%== $lang %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</div>
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'breeder';
+% $exb = 'Piupaws';
+<span class="lean"><%== $exa %></span> on kuvassa olevan kissan kasvattajan nimi eli <%= $t->{uc($exa)} %>, esim.
+<a href="/<%== $lang %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</div>
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'cat';
+% $exb = 'Tatsutan Kaori Asmi-Apsaro';
+<span class="lean"><%== $exa %></span> on kuvassa olevan kissan nimi ilman titteleitä, lempinimeä ja koodia eli <%= $t->{uc($exa)} %>, esim.
+<a href="/<%== $lang %>/search?what=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+</div>
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'code';
+% $exb = 'BEN n 24 33';
+<span class="lean"><%== $exa %></span> on kuvassa olevan kissan EMS-koodi kokonaisuudessaan, esim.
+<a href="/<%== $lang %>/search?what=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+</div>
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'feat';
+% $exb = 'x';
+<span class="lean"><%== $exa %></span> on kuvassa olevan kissan EMS-koodin osanen eli <%= $t->{uc($exa)} %> poislukien rotuosa, esim.
+<a href="/<%== $lang %>/search?what=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+</div>
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'nat';
+% $exb = 'US';
+<span class="lean"><%== $exa %></span> on kuvassa olevan kissan kasvattajan kansallisuuden maatunnus, esim.
+<a href="/<%== $lang %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</div>
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'nick';
+% $exb = 'Vikke';
+<span class="lean"><%== $exa %></span> on kuvassa olevan kissan lempinimi, esim.
+<a href="/<%== $lang %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</div>
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'text';
+% $exb = '*ruusukk*';
+<span class="lean"><%== $exa %></span> on kuvan kuvateksti kokonaisuudessaan, ja kuvatekstistä haetaan tavallisesti jotakin merkkijonoa, esim.
+<a href="/<%== $lang %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</div>
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'title';
+% $exb = 'QGCA';
+<span class="lean"><%== $exa %></span> on kuvassa olevan kissan saavuttama titteli, esim.
+<a href="/<%== $lang %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</div>
+%#
+%# --------------------
+%#
+<h2 class="block bar stripetop">Albumin käsitteet</h2>
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'album';
+% $exb = 'Kissaliiton Vuoden kissa 2009 -palkintogaala';
+<span class="lean"><%== $exa %></span> on albumin selväkielinen nimi, esim.
+<a href="/<%== $lang %>/search?what=<%== enurl(qq{$exa="$exb"}) %>"><%= $exb %></a>, mutta koska albumien nimiin voi tulla muutoksia, on parempi käyttää haussa käsitteitä <span class="lean">date</span>, <span class="lean">folder</span>, <span class="lean">loc</span> ja <span class="lean">org</span>.  
+</div>
+%#
+%# --------------------
+%#   
+<div class="bar">
+% $exa = 'folder';
+% $exb = '20100926loimaa';
+<span class="lean"><%== $exa %></span> on albumin kuvakansion tekninen nimi, esim. <a href="/<%== $lang %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a> ja tämä on tieto, joka ei koskaan muutu
+</div>
+%#
+%# --------------------
+%#   
+<div class="bar">
+% $exa = 'date';
+% $exb = '20081122';
+<span class="lean"><%== $exa %></span> on albumin päivämäärä, joka on aina muotoa VVVVKKPP, esim. <a href="/<%== $lang %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>, huomaa että <a href="/<%== $lang %>/"etusivun</a> pikahaku ei käytä tätä samaa muotoa, vaan siinä käytetään kielen mukaista muotoa
+</div> 
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'loc';
+% $exb = 'Kuopio';
+<span class="lean"><%== $exa %></span> on albumin näyttelyn paikkakunta, esim. <a href="/<%== $lang %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</div>
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'org';
+% $exb = 'POROK';
+<span class="lean"><%== $exa %></span> on albumin näyttelyn järjestäneen yhdistyksen nimi, esim. <a href="/<%== $lang %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</div>
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'umb';
+% $exb = 'CFA';
+<span class="lean"><%== $exa %></span> on albumin näyttelyn järjestäneen yhdistyksen kattojärjestön nimi, esim. <a href="/<%== $lang %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</div>
+%#
+%# --------------------
+%#
+<h2 class="block bar stripetop">Valokuvausteknologian käsitteet</h2>
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'lens';
+% $exb = 'Tokina 17mm f/3.5 AT-X Pro';
+<span class="lean"><%== $exa %></span> on kuvan ottamisessa käytetyn objektiivin nimi, esim. <a href="/<%== $lang %>/search?what=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+</div>
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'body';
+% $exb = 'Canon EOS 20D';
+<span class="lean"><%== $exa %></span> on kuvan ottamisessa käytetyn kamerarungon nimi, esim. <a href="/<%== $lang %>/search?what=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+</div>
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'fnum';
+% $exb = 'f/1.4';
+<span class="lean"><%== $exa %></span> on kuvan ottamisessa käytetty aukkoasetus, esim.
+<a href="/<%== $lang %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</div>
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'etime';
+% $exb = '1/250 s';
+<span class="lean"><%== $exa %></span> on kuvan ottamisessa käytetty suljinaika, esim.
+<a href="/<%== $lang %>/search?what=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+</div>
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'iso';
+% $exb = 'ISO 1600';
+<span class="lean"><%== $exa %></span> on kuvan ottamisessa käytetty kameran herkkyyden ISO-arvo, esim.
+<a href="/<%== $lang %>/search?what=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+</div>
+%#
+%# --------------------
+%#
+<div class="bar">
+% $exa = 'flen';
+% $exb = '200 mm';
+<span class="lean"><%== $exa %></span> on kuvan ottamisessa käytetyn objektiivin polttoväli, esim.
+<a href="/<%== $lang %>/search?what=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+</div>
+%# --------------------
+%#
+<h2 class="block bar stripetop">Erityiskäsitteet</h2>
+%#
+%# --------------------
+<div class="bar">
+% $exa = '+has=title';
+% $exb = '+has=breed -has=cat';
+<span class="lean">has</span> on käsite, jonka avulla haku voidaan rajata niihin kuviin, jossa on jokin käsite tai joissa sitä ei ole, esim. <a href="/<%== $lang %>/search?what=<%= enurl $exa %>"><%= $exa %></a> hakee kuvat, joissa kissalla on ainakin yksi ilmoitettu titteli, ja <a href="/<%== $lang %>/search?what=<%= enurl $exb %>"><%= $exb %></a> hakee kuvat, joihin on ilmoitettu rotu mutta ei kissan nimeä
+</div>
+%#
+%# --------------------
+<div class="bar">
+% $exa = 'Iltavilli';
+% $exb = 'any=Iltavilli';
+<span class="lean">any</span> on käsite, jota superhaku käyttää huomaamattasi silloin kun hakutermille ei ole määritelty käsitettä, ja se tarkoittaa, että haetaan kaikista käsitteistä, eli haut
+<a href="/<%== $lang %>/search?what=<%= enurl $exa %>"><%= $exa %></a> ja
+<a href="/<%== $lang %>/search?what=<%= enurl $exb %>"><%= $exb %></a>
+tuottavat saman tuloksen 
+</div>    

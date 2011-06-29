@@ -94,4 +94,19 @@ sub list {
  
 }
 
+sub lists {
+
+ my $self = shift; my $s = $self->{stash};
+
+ $s->{matrix} = list_matrix;
+    
+ $s->{urlother} =  
+  '/' . $s->{langother} . '/' . $s->{action} . '/';
+   
+ $s->{prims} = $self->fetch( 'locate#prims' );
+        
+ $self->render(template => 'page/lists');
+ 
+}
+
 1;
