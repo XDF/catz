@@ -24,9 +24,7 @@
 
 package Catz::Core::App;
 
-#
 # The Catz Mojolicious application
-#
 
 use 5.10.0; use strict; use warnings;
 
@@ -66,7 +64,7 @@ sub startup {
  # map utility subs from different modules to Mojolicious helpers
  # we use dynamically generated subs as bridges
  foreach my $sub ( 
-  qw ( dtdate dttime dtexpand fmt clean enurl limit trim 
+  qw ( dt dtdate dttime dtexpand fmt clean enurl limit trim 
   fullnum33 thisyear encode decode round ) 
  ) {
 
@@ -90,29 +88,33 @@ sub startup {
  #
  # 'hold' controls caching 
  #
- # it has an effect both on response headers and
- # on the server side page cache
+ # it has an effect both on response headers and on the server side page cache
  #
- # 'off' = disable all caching
- # 'dynamic' = content changes dynamically from time to time
- # 'static' = static-type of content that changes only on data load 
+ # 0 = disable all caching
+ # 1 = enable caching both on server and on client
  #
 
  # if the site's bare root is requested then pass to language detector
- $r->route('/')->to( "main#detect", hold => 'off' );
-
- # the stylesheets
- $r->route( '/style/reset' )->to( 'main#reset', hold => 'static' );
- $r->route( '/style/:palette' )->to( 'main#base', hold => 'static' );
+ $r->route('/')->to( "main#detect", hold => 0 );
  
+ # the stylesheets
+ $r->route( '/style/reset' )->to( 'main#reset', hold => 1 );
+ $r->route( '/style/:palette' )->to( 'main#base', hold => 1 );
+  
  # set the user parameters
- $r->route( '/set' )->to( 'main#set', hold => 'off' );
+ $r->route( '/set' )->to( 'main#set', hold => 0 );
+
+ # the database verifier service
+ $r->route( '/verify' )->to( 'main#verify', hold => 0 );
  
  # the interface provided for catshow.fi service
  # please note that although you can use this for your purposes
  # the interface is subject to changes negotiated between
  # catza.net and catshow.fi and thus can change anytime
- $r->route( '/lastshow' )->to( 'main#lastshow',  hold => 'static' );
+ $r->route( '/lastshow' )->to( 'main#lastshow',  hold => 1 );
+ 
+ # the database verifier service
+ $r->route( '/verify' )->to( 'main#verify', hold => 0 );
 
  # all site's content is under /:lang where lang is 'en' or 'fi'
  # so the content is provided in two languages
@@ -120,21 +122,21 @@ sub startup {
  my $l = $r->route ('/:lang', lang => qr/en|fi/ );
  
  # the front page is in the root under the language
- $l->route( '/' )->to( 'main#front', hold => 'dynamic' );
+ $l->route( '/' )->to( 'main#front', hold => 1 );
  
  # the site's news
- $l->route( '/news' )->to ( "news#all", hold => 'static' );  
- $l->route( '/feed' )->to ( "news#feed", hold => 'static' );
+ $l->route( '/news' )->to ( "news#all", hold => 1 );  
+ $l->route( '/feed' )->to ( "news#feed", hold => 1 );
 
  # lists 
- $l->route( '/list/:subject/:mode' )->to('locate#list', hold => 'static' );
+ $l->route( '/list/:subject/:mode' )->to('locate#list', hold => 1 );
  
  # photo browsing and viewing - 3 different ways
 
  # #1: browse all & view all
  
  my $a = $l->route( '/:action', action => qr/browseall|viewall/ )
-  ->to( hold => 'static' );   
+  ->to( hold => 1 );   
 
  $a->route( '/:id', id => qr/\d{6}/ )->to( controller => 'all' ); 
  
@@ -143,7 +145,7 @@ sub startup {
  # #2: pair browse & pair view
 
  my $p = $l->route( '/:action', action => qr/browse|view/ )
-  ->to( hold => 'static' );   
+  ->to( hold => 1 );   
 
  $p->route( ':pri/:sec/:id', 
   pri => qr/[A-ZA-z0-9_-]+/, sec => qr/[A-ZA-z0-9_-]+/, id => qr/\d{6}/ 
@@ -157,19 +159,17 @@ sub startup {
  # #3: search browse & seach view
 
  my $s = $l->route( '/:action', action => qr/search|display/ )
-  ->to( hold => 'static' );   
+  ->to( hold => 1 );   
 
  $s->route( '/:id', id => qr/\d{6}/ )->to( controller => 'pattern' ); 
 
  $s->route( '/' )->to( controller => 'pattern', id => undef );
 
  # the quick find AJAX interface 
- $l->route( '/find' )->to ( "locate#find", hold => 'static' );
+ $l->route( '/find' )->to ( "locate#find", hold => 1 );
 
  # the show result AJAX interface
- # we set this to 'dynamic' since the data is provided by catshow.fi
- # and we should re-read it regularly for any changes
- $l->route( '/result' )->to ( "main#result",  hold => 'dynamic' );
+ $l->route( '/result' )->to ( "main#result",  hold => 1 );
       
  # add hooks to subs that are to be executed before and after the dispatch
  $self->hook ( before_dispatch => \&before );  
@@ -247,9 +247,15 @@ sub before {
   $self->res->code(200);
   $self->res->headers->content_type( $res->[0] );
   defined $res->[1] and $self->res->headers->content_length( $res->[1] );
-  $self->res->body( ${ $res->[2] } ); # scalar ref to prevent copying
+  defined $res->[2] and $self->res->headers->header( 'Cache-Control' => $res->[2] );
+  $self->res->body( ${ $res->[3] } ); # scalar ref to prevent copying
   $self->rendered;
   $s->{cached} = 1; # mark that the content came from cache
+  
+  $time_page and $s->{time_end} = time();
+ 
+  $time_page and warn "PAGE $s->{url} -> " . round ( ( ( $s->{time_end} - $s->{time_start}  ) * 1000 ), 0 ) . ' ms' ;
+  
   return $self;
 
  } else {
@@ -317,29 +323,18 @@ sub after {
   defined $s->{controller} and defined $s->{action} and defined $s->{url} 
  ) or return;
  
- #
- # remove unnecessary newlines
- # WARNING: SHOULD CONTENT-LENGTH TO BE SET AFTER THIS OPERATION ???
- # my $cont = $self->res->body;
- # $cont =~ s/\n+/\n/g;
- # $self->res->body ( $cont );
- #
- 
- my $age = 0; # lifetime in response headers, default to no lifetime 
- my $cac = undef; # lifetime in server side page cache
-   
- given ( $s->{hold} ) {
- 
-  # 5 min on headers (for clients), 4 min on server
-  when ( 'dynamic' ) { $age = 5*60; $cac = 4*60; } 
-  
-  # 5 min on headers (for clients), infinite on server
-  when ( 'static' ) { $age = 5*60; $cac = -1; } 
- 
-  # 'off' or any other => NOP
 
- }
+ my $age = 0; # lifetime in response headers, default to no lifetime 
+ my $cac = 0; # server side caching  
  
+ if ( $s->{hold} ) {
+   
+   $age = 5*60; # 5 min on headers
+   
+   $cac = 1; # server side caching on
+  
+ }
+  
  # set age back to 0 if not in production = disable browser's cache in dev
  $ENV{MOJO_MODE} eq 'production' or $age = 0;
  
@@ -360,9 +355,9 @@ sub after {
    [ 
     $self->res->headers->content_type,
     $self->res->headers->content_length // undef,
+    $self->res->headers->header('Cache-Control') // undef,
     \$self->res->body # scalar ref to prevent copying
-   ],
-   $cac
+   ]
   );
    
  }

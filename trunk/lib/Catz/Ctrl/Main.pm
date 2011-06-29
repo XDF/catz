@@ -190,4 +190,20 @@ sub lastshow {
  
 }
 
+sub verify {
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ # verify possible only in peek mode
+ 
+ if ( $s->{peek} eq 'on' ) {
+
+  my $out = $self->fetch ( 'tool#verify' );   
+  
+  $self->render( text => $out, format => 'txt' );
+ 
+ } else { $self->redirect_perm('/') } 
+
+}
+
 1;

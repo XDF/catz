@@ -9,6 +9,8 @@ use lib join '/', File::Spec->splitdir(dirname(__FILE__)), 'libi';
 use lib join '/', File::Spec->splitdir(dirname(__FILE__)), '..', 'lib';
 use lib join '/', File::Spec->splitdir(dirname(__FILE__)), '..', 'libi';
 
+use Catz::Core::Conf;
+
 eval 'use Mojolicious::Commands';
 
 die <<EOF if $@;
@@ -18,7 +20,11 @@ EOF
 
 $ENV{MOJO_APP} ||= 'Catz::Core::App';
 
-$ENV{MOJO_HOME} = '/catz/dev';
-$ENV{MOJO_MODE} = 'development';
+conf ( 'win' ) and do {
 
+ $ENV{MOJO_HOME} = '/catz/dev';
+ $ENV{MOJO_MODE} = 'development';
+ 
+};
+ 
 Mojolicious::Commands->start;

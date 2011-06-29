@@ -232,20 +232,12 @@ sub _lastshow {
  
  # find latest gallery having at least 10 photos with cat names
  
- my $latest = $self->dbone("select aid from album where folder=(select max(folder) from album where aid in ( select aid from inpos natural join sec natural join pri where pri='cat' group by aid having count(distinct n)>9 ))");
+ my $aid = $self->dbone("select aid from album where s=(select max(s) from album where aid in (select aid from inpos natural join sec natural join pri where pri='cat' group by aid having count(distinct n)>9))");
  
- # the get the photos
+ # then get the photos
  
- $self->dball("select s,photo.n,folder,file,sec_en from photo natural join album natural join inpos natural join sec natural join pri where p=1 and pri='catname' and album.aid=? order by photo.n asc",$latest); 
+ $self->dball("select s,photo.n,folder,file,sec_en from photo natural join album natural join inpos natural join sec natural join pri where p=1 and pri='cat' and album.aid=? order by photo.n asc",$aid); 
   
-}
-
-sub _verify  {
-
- my ( $self, $folder ) = @_;
- 
- $self->dbone('select n from album where folder=?', $folder );
-
 }
 
 1;

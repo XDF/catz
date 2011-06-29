@@ -1,9 +1,7 @@
-% use Catz::Util::Number qw ( fullnum33 );
-% use Catz::Util::Time qw ( dt dtexpand );
 % my $date = dtexpand ( dt, 'en' );
 # list generated at <%== $date %> folder <%== $list->[0]->[2] %> <%== scalar @$list %> rows
 % foreach my $row ( @$list ) {
-<%== $photobase %>/<%== $row->[2] %>/<%== $row->[3] %>.JPG|<%== $site %>fi/view?folder=<%== $row->[2] %>&id=<%== fullnum33 ( $row->[0], $row->[1] ) %>|<%== $row->[4] %>  
+<%== $photobase %>/<%== $row->[2] %>/<%== $row->[3] %>.JPG|<%== $site %>fi/view/folder/<%== $row->[2] %>/<%== fullnum33 ( $row->[0], $row->[1] ) %>/|<%== $row->[4] %>  
 % } 
 %#
 %# Catz - the world's most advanced cat show photo engine
