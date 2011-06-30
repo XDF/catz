@@ -21,109 +21,319 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 #
- 
-package Catz::Data::Setup;
 
-use 5.10.0; use strict; use warnings;
+use strict; use warnings; use 5.10.0;
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( 
- setup_default setup_init setup_set setup_values setup_verify setup_keys 
-);
+use Bit::Vector;
 
-use List::MoreUtils qw ( any );
+use POSIX qw ( ceil );
 
-use Catz::Core::Conf;
+# The external interface is prodecural method calls
 
-my $default = {
- display => 'full',
- palette => 'dark',
- photosize => 'fit',
- peek => 'off',
- perpage => 15,
- thumbsize => 150  
-};
+our @EXPORT = qw ( setup_init setup_change setup_list );
 
-my $values = {
- display => [ qw ( none brief full ) ], 
- palette => [ qw ( dark neutral bright ) ],
- peek => [ qw ( on off ) ],
- photosize => [ qw ( fit original ) ],
- perpage => [ qw( 10 15 20 25 30 35 40 45 50 ) ],
- thumbsize => [ qw ( 100 125 150 175 200 ) ],
-};
+#
+# the system configuration array that should be 
+# edited only very seldom and with a MAXIMUM care
+#
+# changing any values within the existing array leads to random 
+# configuration mixups on web users and the only exclusion to
+# this rule is to changing the default values
+#
+# adding more configuration sets to the end of the array should
+# be ok since they change only the end of the configuration
+# bit vector and so don't affect the bits of the old configuration
+#
+# each set consists of 
+#  configuration key, possible values and the default value
+# 
+my $conf = [
+ [ 'display', [ qw ( none brief full ) ], 'full' ],
+ [ 'palette', [ qw ( dark neutral bright ) ], 'dark' ],
+ [ 'perpage', [ qw( 10 15 20 25 30 35 40 45 50 ) ], '15' ], 
+ [ 'photosize', [ qw ( original fit ) ], 'fit' ],
+ [ 'terpage', [ qw( 50 100 200 500 ) ], '100' ], 
+ [ 'thumbsize', [ qw ( 100 125 150 175 200 ) ], '150' ],
+ # ... if sometimes needed, add new set(s) here ...
+];
 
-my $check = {};
+# the integer value to character representation conversion array
+# you should most likely NEVER modify the base32-compliant string
+my $int2char = [ split //, '0123456789abcdefghjkmnpqrstvwxyz' ];
 
-foreach my $key ( keys %{ $values } ) {
+# the character representation to integer value conversion hash
+my $char2int = {};
 
- foreach my $val ( @{ $values->{$key} } ) {
+my $i = 0;
 
-  $check->{$key}->{$val} = 1;
+do { $char2int->{$_} = $i++ } foreach @$int2char;
 
+# we use base32 that means a fixed 5 bits per a character
+my $bitcnt = 5;
+
+my $setkeys = (); # a prepared array of keys
+
+my $def = {}; # detailed definitions
+
+my $elen = 0; # length of bit vector (effective bits) 
+
+foreach my $set ( @$conf ) {
+
+ # collect an array of keys
+ push @{ $setkeys }, $set->[0];
+
+ # calculate the required lenght in bits for this key
+ my $len = ceil sqrt ( scalar @{ $set->[1] } - 1 );
+ 
+ # storing the start position in bit vector for this key
+ $def->{$set->[0]}->{from} = $elen;
+ 
+ $elen += $len;
+ 
+ # storing the end position in bet vector for this key
+ $def->{$set->[0]}->{to} = $elen - 1;
+ 
+ # storing the length of bits of this key's values
+ $def->{$set->[0]}->{len} = 
+  $def->{$set->[0]}->{to} - $def->{$set->[0]}->{from} + 1; 
+ 
+ # generate mappings from integers to strings and vice versa
+ my $i = 0;
+ 
+ foreach my $val ( @ { $set->[1] } ) {
+ 
+  $def->{$set->[0]}->{toint}->{$val} = $i;
+    
+  $def->{$set->[0]}->{tostr}->{$i} = $val;
+  
+  $i++;
+ 
  }
+ 
+ # default string value
+ 
+ $def->{$set->[0]}->{defstr} = $set->[2];
+ 
+ exists $def->{$set->[0]}->{toint}->{$set->[2]}
+  or die "unable to locate default '$set->[2]' in '$set->[0]'";
+ 
+ # default integer value
+ $def->{$set->[0]}->{defint} = $def->{$set->[0]}->{toint}->{$set->[2]};
+ 
+ # list of possible values in correct order
+ $def->{$set->[0]}->{set} = $set->[1]; 
+
+}
+# length of configuration strings
+my $slen = ceil ( $elen / $bitcnt ); 
+
+# practical bit vector length, we use this value in vector creation 
+my $blen = $slen * $bitcnt;
+
+# we prepare an empty vector that can easily be cloned when new vectors are needed
+my $empty = Bit::Vector->new ( $blen );
+
+# we prepare a mask of least significant bits
+my $mask = $empty->Clone;
+
+$mask->Interval_Fill( 0, $bitcnt - 1 );
+
+# we prepare bitmasks for all keys beforehand and store them into def
+# they are handy when prosessing the configurations at runtime
+  
+foreach my $key ( @{ $setkeys } ) {
+
+ my $v = Bit::Vector->new( $blen );
+ 
+ $v->Interval_Fill(
+  $def->{$key}->{from},
+  $def->{$key}->{to}
+ );
+
+ $def->{$key}->{mask} = $v;
+  
+}
+
+sub char2bit { # conversion from characters to bits
+
+ my $r = $empty->Clone;
+ 
+ my $i = 1; 
+
+ # iterate char by char in reversed order
+ foreach my $char ( split //, shift ) {
+ 
+  # this has no effect on first round but 
+  # is most important on other rounds
+  $r->Move_Left( $bitcnt );
+  
+  my $v = $empty->Clone;
+    
+  $v->from_Dec ( $char2int->{ $char } ); 
+ 
+  $r->Or ( $r, $v ); # collect results with OR 
+ 
+ }
+ 
+ return $r;
 
 }
 
-sub setup_default { $default->{$_[0]} }
-      
-sub setup_verify  { # check that a single value is ok, 1 = ok, 0 = not ok
+sub bit2char { # conversion from bits to characters
+
+ my $r = shift;
  
- my ( $key, $val ) = @_;
-
- # preliminary checks 
- length $key > 50 and return 0;
- length $val > 50 and return 0; 
-
- defined $check->{$key}->{$val} ? 1 : 0;
+ my $out = '';
+ 
+ foreach ( 1 .. $slen ) {
+ 
+  my $v = $mask->Clone;
   
-} 
+  $v->And ( $r, $v );
+  
+  $out = $int2char->[ $v->to_Dec ] . $out; # build the output char by char
+  
+  $r->Move_Right ( $bitcnt ); # discard already processed bits from right
+ 
+ }
+ 
+ return $out;
 
-sub setup_init {
+}
 
- # check that session values are ok and if needed populate them with defaults
+sub bit2arr { # explode a bit representation into arrayref of key,value,key,value...
+
+ my $r = shift;
+
+ my @out = ();
+ 
+ foreach my $key ( @{ $setkeys } ) {
+ 
+  my $v = $def->{$key}->{mask}->Clone;
+  
+  $v->And ( $r, $v );
+  
+  $v->Move_Right ( $def->{$key}->{from} );
+  
+  push @out, $key;
+  
+  push @out, $def->{$key}->{tostr}->{ $v->to_Dec };
+
+ }
+ 
+ return \@out;
+
+}
+
+sub arr2bit { # implode a key,value,key,value array into bits
+
+ my $arr = shift;
+ 
+ my $r = $empty->Clone();
+  
+ for ( my $i = 0; $i < scalar( @$arr ); $i = $i + 2 ) {
+ 
+  # key now in $arr->[$i], value in $arr->[$i+1]
+  
+  my $v = $empty->Clone();
+  
+  $v->from_Dec ( 
+   $def->{ $arr->[$i] }->{toint}->{ $arr->[$i+1] }
+  );
+  
+  # copy these new bits to the result bits
+  
+  $r->Interval_Substitute(
+   $v,
+   $def->{ $arr->[$i] }->{from},
+   $def->{ $arr->[$i] }->{len},
+   0,
+   $def->{ $arr->[$i] }->{len}
+  );
+  
+ }
+ 
+ return $r; 
+ 
+}
+
+# prepare a default string representation
+
+my $default = 
+ bit2char arr2bit ( [ map { $_, $def->{$_}->{defstr} } @$setkeys ] );
+
+sub setup_change { # change one value on the fly, return the new char repres
+
+ my ( $chars, $key, $value ) = @_;
+ 
+ my $r = char2bit $chars;
+  
+ my $v = $empty->Clone();
+   
+ $v->from_Dec ( $def->{ $key }->{toint}->{ $value } );
+
+ $r->Interval_Substitute(
+  $v, $def->{ $key }->{from}, $def->{ $key }->{len},
+  0, $def->{ $key }->{len}
+ );
+ 
+ return bit2char $r;
+   
+}
+
+sub setup_init { # initialize the setup to application stash
 
  my $app = shift;
+ my $key = shift // $default; # if undef then use the default key
  
- foreach my $key ( keys %{ $default } ) {
- 
-  my $val = $app->session ( $key ) // ''; # read from session
+ my $pairs = bit2arr char2bit $key;
   
-  if ( setup_verify ( $key, $val ) ) { # if key-value -pair is ok...
+ for ( my $i = 0; $i < scalar @{ $pairs }; $i = $i + 2 ) {
   
-   $app->stash->{$key} = $val; # ...copy to stash
-  
-  } else {
-  
-   $app->session ( $key => $default->{$key} ); # set the default...
-   $app->stash->{$key} = $default->{$key}; # ...and also stash
-  
-  } 
- 
+  # copy key-value -pairs to stash
+  $app->{stash}->{ $pairs->[ $i ] } = $pairs->[ $i + 1 ];
+   
  }
-     
+ 
+ # modifies $app object, returns nothing
+  
 }
 
-sub setup_set {
- 
- # set one key-value -pair 
+sub setup_list { 
 
- my ( $app, $key, $val ) = @_;
- 
- # preliminary checks 
- length $key > 50 and return 0;
- length $val > 50 and return 0; 
+ # generates a list of setup values and change targets
+ # uses directly application stash variable $langa
 
- # if the pair verifies ok, then set session and return 1 = ok
- setup_verify ( $key, $val ) and do { $app->session( $key => $val ); return 1 };
+ my ( $langa, $key ) = @_;
+ 
+ my $lang = substr ( $langa, 0, 2 );
+   
+ my $chars = length ( $langa ) > 2 ? substr ( $langa, 2 ) : '';
   
- return 0; # = not ok
-
+ my @out = ();
+ 
+ foreach my $t ( @{ $def->{$key}->{set} } ) {
+ 
+  my $new = setup_change ( $chars, $key, $t );
+   
+  $new eq $default and $new = '';
+ 
+  push @out, [ $t, "$lang$new" ];
+  
+ }
+ 
+ return \@out;
+  
 }
-  
-sub setup_keys { keys %{ $values } } # return all key names as array
 
-sub setup_values { $values } # return hashref of all possible values 
 
-1;
+use Data::Dumper;
+
+say Dumper setup_list ( "fi$default", 'perpage' );
+
+#say Dumper $def;
+
+
+1; 
