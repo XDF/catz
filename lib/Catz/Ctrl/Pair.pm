@@ -94,6 +94,14 @@ sub browse {
 
 }
 
+sub text { 
+
+ $_[0]->pair or ( $_[0]->not_found and return );
+   
+ $_[0]->text or ( $_[0]->not_found and return );  
+
+}
+
 sub view { 
 
  $_[0]->pair or ( $_[0]->not_found and return );

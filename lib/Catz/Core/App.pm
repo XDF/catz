@@ -40,9 +40,11 @@ use Catz::Data::List qw ( list_matrix );
 use Catz::Data::Setup;
 
 use Catz::Util::File qw ( fileread findlatest pathcut );
-use Catz::Util::Time qw( dt dt2epoch dtdate dttime dtexpand dtlang thisyear );
+use Catz::Util::Time qw( 
+ dt dt2epoch dtdate dttime dtexpand dtlang epoch2http thisyear 
+);
 use Catz::Util::Number qw ( fmt fullnum33 round );
-use Catz::Util::String qw ( clean enurl decode encode limit trim );
+use Catz::Util::String qw ( clean enurl etag decode encode limit trim );
 
 my $time_page = 0;  # turns on timing on all HTTP requests
 
@@ -76,104 +78,141 @@ sub startup {
   } } );
 
  }
- 
- # route definitions       
+        
  my $r = $self->routes;
-  
- # all controllers are Catz::Ctrl 
- $r->namespace( 'Catz::Ctrl' );
+   
+ $r->namespace( 'Catz::Ctrl' ); # all controllers live at Catz::Ctrl
  
  #
- # 'hold' controls caching 
+ # 'hold' stash var controls caching so that it sets max-age HTTP header
+ #  to the number of minutes the hold tells it to
  #
- # it has an effect both on response headers and on the server side page cache
- #
- # 0 = disable all caching
- # 1 = enable caching both on server and on client
+ #  0 disables HTTP caching and also server side page caching 
  #
 
- # if the site's bare root is requested then pass to language detector
+ ###
+ ### the site's bare root gets passed to language detection mechanism
+ ###
+
  $r->route('/')->to( "main#detect", hold => 0 );
  
- # the stylesheets
- $r->route( '/style/reset' )->to( 'main#reset', hold => 1 );
- $r->route( '/style/:palette' )->to( 'main#base', hold => 1 );
+ ###
+ ### the stylesheets 
+ ### 
+ 
+ # reset
+ $r->route( '/style/reset' )->to( 'main#reset', hold => 60 * 24 );
+ 
+ # the single stylesheet contains all style definitions
+ # it's color settings are dependent on the palette 
+ $r->route( '/style/:palette' )->to( 'main#base', hold => 60 );
+ 
+ ###
+ ### www.catshow.fi itegration
+ ###
   
- # set the user parameters
- $r->route( '/set' )->to( 'main#set', hold => 0 );
-
- # the database verifier service
- $r->route( '/verify' )->to( 'main#verify', hold => 0 );
+ # the interface provided for the purposes of www.catshow.fi
+ # please note that although this can be used to other purposes
+ # the interface is subject to changes and cannot be relied on
+ $r->route( '/lastshow' )->to( 'main#lastshow',  hold => 60 );
  
- # the interface provided for catshow.fi service
- # please note that although you can use this for your purposes
- # the interface is subject to changes negotiated between
- # catza.net and catshow.fi and thus can change anytime
- $r->route( '/lastshow' )->to( 'main#lastshow',  hold => 1 );
+ ###
+ ### tools
+ ###
  
- # the database verifier service
- $r->route( '/verify' )->to( 'main#verify', hold => 0 );
+ # the database verifier service (simple non-destructive routine)
+ $r->route( '/verify/:auth', auth => qr/[a-z0-9]{8}/ )
+  ->to( 'main#verify', hold => 0 );
 
- # all site's content is under /:lang where lang is 'en' or 'fi'
- # so the content is provided in two languages
- # in the future the will be no more languages
- my $l = $r->route ('/:lang', lang => qr/en|fi/ );
+ # all site's true content is under /:langa where langa is 'en' or 'fi'
+ # and it can be extended by magic code defining the user settings
+ #
+ # the language code sets the content language
+ #
+  my $l = $r->route ( 
+   '/:langa', langa => qr/en|EN|en[a-z0-9]{3}|fi|FI|fi[a-z0-9]{3}/ 
+  );
  
- # the front page is in the root under the language
- $l->route( '/' )->to( 'main#front', hold => 1 );
+ # the front page is at the root under the language
+ $l->route( '/' )->to( 'main#front', hold => 30 );
  
- # the site's news
- $l->route( '/news' )->to ( "news#index", hold => 1 );
- $l->route( '/news/:article', article => qr/\d{14}/ )->to ( "news#one", hold => 1 );  
- $l->route( '/feed' )->to ( "news#feed", hold => 1 );
-
- # list of lists
- $l->route( '/lists' )->to('locate#lists', hold => 1 );
-
- # list 
- $l->route( '/list/:subject/:mode' )->to('locate#list', hold => 1 );
+ ###
+ ### the news service
+ ###
  
- # photo browsing and viewing - 3 different ways
-
- # #1: browse all & view all
+ # the index page of all articles
+ $l->route( '/news' )->to ( "news#index", hold => 15 );
  
- my $a = $l->route( '/:action', action => qr/browseall|viewall/ )
-  ->to( hold => 1 );   
+ # single article
+ $l->route( '/news/:article', article => qr/\d{14}/ )
+  ->to ( "news#one", hold => 30 );
 
+ # RSS feed    
+ $l->route( '/feed' )->to ( "news#feed", hold => 15 );
+
+ ###
+ ### the lists
+ ###
+
+ # the list of lists (list index)
+ $l->route( '/lists' )->to('locate#lists', hold => 30 );
+
+ # a single list 
+ $l->route( '/list/:subject/:mode' )->to('locate#list', hold => 30 );
+ 
+ ###
+ ### photo browsing and viewing - 3 different ways
+ ###
+ 
+ ### #1: browse all & text all & view all
+ 
+ my $a = $l->route( '/:action', action => qr/browseall|textall|viewall/ )
+  ->to( hold => 30 );
+  
+ # with photo id
  $a->route( '/:id', id => qr/\d{6}/ )->to( controller => 'all' ); 
  
+ # without photo id
  $a->route( '/' )->to( controller => 'all', id => undef );
 
- # #2: pair browse & pair view
+ ### #2: pair browse & pair text & pair view
 
- my $p = $l->route( '/:action', action => qr/browse|view/ )
-  ->to( hold => 1 );   
-
+ my $p = $l->route( '/:action', action => qr/browse|text|view/ )
+  ->to( hold => 30 );
+  
+ # with photo id
  $p->route( ':pri/:sec/:id', 
-  pri => qr/[A-ZA-z0-9_-]+/, sec => qr/[A-ZA-z0-9_-]+/, id => qr/\d{6}/ 
+  pri => qr/[a-z]{1,50}/, sec => qr/[A-ZA-z0-9_-]+/, id => qr/\d{6}/ 
  )->to( controller => 'pair' );
  
+ # without photo id
  $p->route( ':pri/:sec/', 
-  pri => qr/[A-ZA-z0-9_-]+/, sec => qr/[A-ZA-z0-9_-]+/ )->to( 
+  pri => qr/[a-z]{1,50}/, sec => qr/[A-ZA-z0-9_-]+/ )->to( 
    controller => 'pair', id => undef 
   );
 
- # #3: search browse & seach view
+ ### #3: search browse & search text & seach view
 
- my $s = $l->route( '/:action', action => qr/search|display/ )
-  ->to( hold => 1 );   
+ my $s = $l->route( '/:action', action => qr/search|catalog|display/ )
+  ->to( hold => 30 );   
 
+ # with photo id
  $s->route( '/:id', id => qr/\d{6}/ )->to( controller => 'pattern' ); 
 
+ # without photo id
  $s->route( '/' )->to( controller => 'pattern', id => undef );
+ 
+ ###
+ ### AJAX interface(s)
+ ###
 
  # the quick find AJAX interface 
- $l->route( '/find' )->to ( "locate#find", hold => 1 );
+ $l->route( '/find' )->to ( "locate#find", hold => 30 );
 
  # the show result AJAX interface
- $l->route( '/result' )->to ( "main#result",  hold => 1 );
+ $l->route( '/result' )->to ( "main#result",  hold => 60 );
       
- # add hooks to subs that are to be executed before and after the dispatch
+ # add hooks to methods that are to be executed before and after the dispatch
  $self->hook ( before_dispatch => \&before );  
  $self->hook ( after_dispatch => \&after );
  
@@ -211,6 +250,14 @@ sub before {
  };
   
  $s->{version} = $version; # data version
+ 
+ #
+ # require urls to end with slash when there is no query params
+ # you may ask why but I think this is cool
+ #
+ # the internals of Mojolicious was studied for this code
+ # and the mechanism for redirect was copied from there
+ #
  
   if ( scalar @{ $self->req->query_params->params } == 0 ) {
   
@@ -269,31 +316,14 @@ sub before {
  $s->{setup_keys} = setup_keys;
  $s->{setup_values} = setup_values;
    
- # default to meta robots "index,follow",
- # controllers may modify these as needed 
+ # default is meta robots "index,follow",
+ # controllers may modify these as needed
+ # by setting to false sets noindex,nofollow respectively 
  $s->{meta_index} = 1;
  $s->{meta_follow} = 1;
-
- #
- # require urls to end with slash when there is no query params
- # you may ask why but I think this is cool
- #
- # the internals of Mojolicious was studied for this code
- # and the mechanism for redirect was copied from there
- #
  
  $s->{facebookkey} = conf ( 'key_facebook' );
  $s->{twitterkey} = conf ( 'key_twitter' );
- $s->{googlekey} = undef;
-
- # copy Google Analytics key to stash 
- # if on linux (prod server) and in production 
-
- if ( ( $ENV{MOJO_MODE} eq 'production' ) and conf ( 'lin' ) ) {
-       
-  $s->{googlekey} = conf ( 'key_google' ); 
- 
- }
   
  # the global layout separator characters
  $s->{sep} = '.';
@@ -322,7 +352,12 @@ sub after {
  ( 
   defined $s->{controller} and defined $s->{action} and defined $s->{url} 
  ) or return;
+
+ $self->res->headers->header(
+  'Last-Modified' => epoch2http ( dt2epoch ( $s->{version} ) )  
+ );
  
+ $self->res->headers->header ( 'ETag' => etag ( $self->res->body ) );  
 
  my $age = 0; # lifetime in response headers, default to no lifetime 
  my $cac = 0; # server side caching  

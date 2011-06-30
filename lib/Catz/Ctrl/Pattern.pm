@@ -180,6 +180,20 @@ sub search {
 
 }
 
+sub catalog {
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ $self->pattern or ( $self->not_found and return );
+
+ if ( $s->{x} and $s->{id} ) { # we have results
+  
+  $self->text or ( $self->not_found and return ); 
+  
+ } else { $self->not_found and return }
+
+}
+
 sub display {
  
  my $self = shift; my $s = $self->{stash};

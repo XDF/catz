@@ -66,6 +66,14 @@ sub browseall {
  
 }
 
+sub textall { 
+
+ $_[0]->all or ( $_[0]->not_found and return );
+   
+ $_[0]->text or ( $_[0]->not_found and return );  
+
+}
+
 sub viewall { 
 
  $_[0]->all or ( $_[0]->not_found and return );

@@ -29,11 +29,11 @@ use 5.10.0; use strict; use warnings;
 use base 'Exporter';
 
 our @EXPORT_OK = qw ( 
- clean decode deurl dna encode enurl lcc limit 
- nobreak trim ucc ucclcc implode explode
+ clean decode deurl dna encode enurl etag lcc limit 
+ nobreak trim ucc ucclcc
 ); 
 
-use Digest::MD5 qw ( md5_base64 );
+use Digest::MD5 qw ( md5_base64 md5_hex );
 use MIME::Base32 qw( RFC );
 use URI::Escape::XS qw ( uri_escape uri_unescape );
 
@@ -133,5 +133,7 @@ sub ucc { $_ = $_[0]; tr|üåäö|ÜÅÄÖ|; uc }
 # converts "string" to "String", manages also some umlaut chars
 #
 sub ucclcc { ucc ( substr ( $_[0], 0, 1 ) ) . lcc ( substr ( $_[0], 1 ) ) }
+
+sug etag { lc md5_hex $_[0] }
 
 1;

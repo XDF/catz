@@ -27,16 +27,18 @@ package Catz::Util::Time;
 use strict;
 use warnings;
 
-no locale;
 use DateTime;
-use Time::localtime; 
-use POSIX qw( floor mktime );
 use Email::Date::Format qw( email_gmdate );
+use HTTP::Date;
+use POSIX qw( floor mktime );
+use Time::localtime; 
 
 use parent 'Exporter';
 
-
-our @EXPORT_OK = qw( dtdate dttime dtexpand dt dtlang dtsplit thisyear dt2epoch epoch2rfc822 );
+our @EXPORT_OK = qw(
+ dtdate dttime dtexpand dt dtlang dtsplit 
+ thisyear dt2epoch epoch2rfc822 epoch2http 
+);
 
 #
 # expands timestamp from YYYYMMDD or YYYYMMDDHHMMSS into 
@@ -150,6 +152,8 @@ sub dt2epoch {
 
 }
 
-sub epoch2rfc822 { email_gmdate ( $_[0] ) } 
+sub epoch2rfc822 { email_gmdate ( $_[0] ) }
+
+sub epoch2http { time2str $_[0] } 
  
 1;

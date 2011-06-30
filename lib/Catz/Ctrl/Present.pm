@@ -232,4 +232,20 @@ sub multi {
 
 }
 
+sub text {
+
+ # provide photo browsing as text
+ # returns 1 in success 
+ # returns 0 on reject
+ 
+ my $self = shift; my $s = $self->{stash};
+
+  
+ $self->render( template => 'page/text' );
+ 
+ return 1;
+
+
+}
+
 1;
