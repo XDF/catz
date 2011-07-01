@@ -92,7 +92,7 @@ sub base {
 
  my $self = shift; my $s = $self->{stash};
 
- setup_verify ( 'palette', $s->{palette} ) or ( $self->not_found and return );
+ #setup_verify ( 'palette', $s->{palette} ) or ( $self->not_found and return );
  
  $s->{st} = style_get; # copy style hashref to stash for stylesheet processing
   

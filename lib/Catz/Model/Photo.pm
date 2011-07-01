@@ -135,6 +135,16 @@ sub _texts {
  
 }
 
+sub _catalog {
+
+ my ( $self, @xs ) = @_; my $lang = $self->{lang};
+
+ return $self->dball( 
+  qq{select s,n from photo natural join album where x in (} . ( join ',', @xs ) .  ') order by s,n'    
+ );
+
+}
+
 
 sub _image {
 

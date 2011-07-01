@@ -234,12 +234,30 @@ sub multi {
 
 sub text {
 
- # provide photo browsing as text
+ # provide photo browsing as pages text
  # returns 1 in success 
  # returns 0 on reject
  
  my $self = shift; my $s = $self->{stash};
 
+ ( 
+  $s->{total}, $s->{page}, $s->{pages}, $s->{from}, 
+  $s->{to}, $s->{pin}, $s->{xs}, $s->{xfirst}, $s->{xlast} 
+ ) = @{ $self->fetch( 
+   $s->{runmode} . '#pager', 
+   $s->{x}, 
+   $s->{terpage}, 
+   @{ $s->{args_array} } 
+  ) };
+  
+ $s->{total} == 0 and return 0; ; # no photos found 
+
+ scalar @{ $s->{xs} } == 0 and return 0; # no photos on this page
+ 
+ # fetch photo data
+ $s->{catalog} = $self->fetch ( 'photo#catalog', @{ $s->{xs} } );
+ 
+ warn scalar  @{ $s->{catalog} };  
   
  $self->render( template => 'page/text' );
  

@@ -121,7 +121,7 @@ sub startup {
  ###
  
  # the database verifier service (simple non-destructive routine)
- $r->route( '/verify/:auth', auth => qr/[a-z0-9]{8}/ )
+ $r->route( '/tools/verify/:auth', auth => qr/[a-z0-9]{8}/ )
   ->to( 'main#verify', hold => 0 );
 
  # all site's true content is under /:langa where langa is 'en' or 'fi'
@@ -227,6 +227,12 @@ sub before {
  
  $time_page and $s->{time_start} = time();
  
+ # default is meta robots "index,follow",
+ # controllers may modify these as needed
+ # by setting to false sets noindex,nofollow respectively 
+ $s->{meta_index} = 1;
+ $s->{meta_follow} = 1;
+
  my $dbp = $ENV{MOJO_HOME}.'/db';
  
  ( defined $version and ( -f "$dbp/$version.txt" ) ) or do {
@@ -277,17 +283,45 @@ sub before {
 
  }
 
- $s->{lang} = 'en'; $s->{langother} = 'fi'; # default to English
-
  $s->{url} = $self->req->url;  # let the url be in the stash also
 
- length ( $s->{url} ) > 2 and ( substr( $s->{url}, 0, 3 ) eq '/fi' ) and do {
-   $s->{lang} = 'fi'; $s->{langother} = 'en'; # Finnish
- };
+ $s->{lang} = 'en'; $s->{langother} = 'fi'; # default to English
+ 
+ $s->{peek} = 0;
   
- # process and populate session with setup parameters                                                                                  
- setup_init ( $self );
+ if ( $s->{url} =~ /^\/(fi)([a-z0-9]{3})?/ ) {
+              
+  #$s->{langa} = 'fi';
+    
+  # process and populate stash with setup data                                                                                  
+  setup_init ( $self, $s->{langa} );
+    
+  given ( $1 ) {
+ 
+   when ( 'fi' ) { 
+    $s->{lang} = 'fi'; $s->{langother} = 'en'; # Finnish
+   }
+   
+   when ( 'FI' ) {
+    
+    $s->{lang} = 'fi'; $s->{langother} = 'en'; # Finnish
+    
+    $s->{peek} = 1;
+    
+   }
+   
+   when ( 'EN' ) { 
+
+    $s->{lang} = 'en'; $s->{langother} = 'fi';
+    
+    $s->{peek} = 1;
+   
+   }  
   
+  }
+  
+ }
+      
  # attempt to fetch from cache
  if ( my $res = cache_get ( cachekey ( $self ) ) ) {  # cache hit
  
@@ -295,7 +329,9 @@ sub before {
   $self->res->headers->content_type( $res->[0] );
   defined $res->[1] and $self->res->headers->content_length( $res->[1] );
   defined $res->[2] and $self->res->headers->header( 'Cache-Control' => $res->[2] );
-  $self->res->body( ${ $res->[3] } ); # scalar ref to prevent copying
+  defined $res->[3] and $self->res->headers->header( 'ETag' => $res->[3] );
+  defined $res->[4] and $self->res->headers->header( 'Last-Modified' => $res->[4] );
+  $self->res->body( ${ $res->[5] } ); # scalar ref to prevent copying
   $self->rendered;
   $s->{cached} = 1; # mark that the content came from cache
   
@@ -312,17 +348,15 @@ sub before {
  }
       
  # let some definitions to be globally available to all controllers
- $s->{matrix} = list_matrix;
- $s->{setup_keys} = setup_keys;
- $s->{setup_values} = setup_values;
-   
- # default is meta robots "index,follow",
- # controllers may modify these as needed
- # by setting to false sets noindex,nofollow respectively 
- $s->{meta_index} = 1;
- $s->{meta_follow} = 1;
  
+ $s->{matrix} = list_matrix;
+ 
+ $s->{setup_keys} = setup_keys;
+ 
+ $s->{setup_values} = setup_values ( $s->{langa} );
+     
  $s->{facebookkey} = conf ( 'key_facebook' );
+ 
  $s->{twitterkey} = conf ( 'key_twitter' );
   
  # the global layout separator characters
@@ -362,11 +396,11 @@ sub after {
  my $age = 0; # lifetime in response headers, default to no lifetime 
  my $cac = 0; # server side caching  
  
- if ( $s->{hold} ) {
+ if ( $s->{hold} > 0 ) {
    
-   $age = 5*60; # 5 min on headers
+   $age = $s->{hold}*60; # convert minutes to seconds
    
-   $cac = 1; # server side caching on
+   $cac = 1; # set server side page caching on
   
  }
   
@@ -391,6 +425,8 @@ sub after {
     $self->res->headers->content_type,
     $self->res->headers->content_length // undef,
     $self->res->headers->header('Cache-Control') // undef,
+    $self->res->headers->header('ETag') // undef,
+    $self->res->headers->header('Last-Modified') // undef,
     \$self->res->body # scalar ref to prevent copying
    ]
   );

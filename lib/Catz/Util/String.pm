@@ -134,6 +134,6 @@ sub ucc { $_ = $_[0]; tr|üåäö|ÜÅÄÖ|; uc }
 #
 sub ucclcc { ucc ( substr ( $_[0], 0, 1 ) ) . lcc ( substr ( $_[0], 1 ) ) }
 
-sug etag { lc md5_hex $_[0] }
+sub etag { lc md5_hex $_[0] }
 
 1;
