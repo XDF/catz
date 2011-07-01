@@ -312,7 +312,7 @@ sub setup_values {
  
  my $lang = substr ( $langa, 0, 2 );
    
- my $chars = length ( $langa ) > 2 ? substr ( $langa, 2 ) : '';
+ my $chars = length ( $langa ) == 6 ? substr ( $langa, 3 ) : '';
   
  my $out = {};
  
@@ -326,7 +326,7 @@ sub setup_values {
    
    $new eq $default and $new = '';
  
-   push @pile, [ $t, "$lang$new" ];
+   push @pile, [ $t, ( $lang eq '' ? '' : $lang . '_' ) . $new ];
    
   }
   
@@ -337,6 +337,8 @@ sub setup_values {
  return $out;
 
 }
+
+warn $default;
 
 sub setup_verify { $def->{$_[0]}->{toint}->{$_[1]} ? 1 : 0 }
  

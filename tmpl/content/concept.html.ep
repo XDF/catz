@@ -5,7 +5,7 @@
 %#
 <h2 class="block bar">Käsitteet</h2>
 <div class="bar">
-Kun hakutermille määritellään käsite, johon haku kohdistuu, kirjoitetaan käsite ennen hakutermiä ja erotetaan hakutermistä yhtäsuuruusmerkillä.
+Kun hakutermille määritellään käsite, johon haku kohdistuu, kirjoitetaan käsite ennen hakutermiä ja se erotetaan hakutermistä yhtäsuuruusmerkillä.
 </div>
 %#
 %# --------------------

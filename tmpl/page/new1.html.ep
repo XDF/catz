@@ -62,7 +62,7 @@
 <%= content 'main' => begin %>
 <div class="bar outer"><%= $new1->[2] %></div>
 % if ( $new1->[3] ) {
-<div class="bar"><a href="<%== $new1->[3] %>"><%= $new1->[3] %></a></div>
+<div class="bar outer"><a href="<%== $new1->[3] %>"><%= $new1->[3] %></a></div>
 % } 
 <div class="bar outer">
 <%=  dtexpand ( $new1->[0], $lang ) %>
