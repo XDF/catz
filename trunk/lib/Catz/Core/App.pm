@@ -60,6 +60,9 @@ sub startup {
  # cookie settings from config
  $self->sessions->cookie_name( conf ('cookie_name' ) );
  $self->sessions->default_expiration( conf ( 'cookie_expir' ) );
+ 
+  # initialize the key for cookie signing 
+ $self->secret( conf ( 'cookie_key' ) );
 
  # map utility subs from different modules to Mojolicious helpers
  # we use dynamically generated subs as bridges
@@ -130,7 +133,8 @@ sub startup {
  # the language code sets the content language
  #
   my $l = $r->route ( 
-   '/:langa', langa => qr/en|EN|en[a-z0-9]{3}|fi|FI|fi[a-z0-9]{3}/ 
+   '/:dummy', 
+   dummy => qr/[a-z0-9_]+/ 
   );
  
  # the front page is at the root under the language
@@ -161,12 +165,12 @@ sub startup {
  $l->route( '/list/:subject/:mode' )->to('locate#list', hold => 30 );
  
  ###
- ### photo browsing and viewing - 3 different ways
+ ### photo browsing and viewing - 3 ways
  ###
  
- ### #1: browse all & text all & view all
+ ### #1: browse all & view all
  
- my $a = $l->route( '/:action', action => qr/browseall|textall|viewall/ )
+ my $a = $l->route( '/:action', action => qr/browseall|viewall/ )
   ->to( hold => 30 );
   
  # with photo id
@@ -175,9 +179,9 @@ sub startup {
  # without photo id
  $a->route( '/' )->to( controller => 'all', id => undef );
 
- ### #2: pair browse & pair text & pair view
+ ### #2: pair browse & pair view
 
- my $p = $l->route( '/:action', action => qr/browse|text|view/ )
+ my $p = $l->route( '/:action', action => qr/browse|view/ )
   ->to( hold => 30 );
   
  # with photo id
@@ -191,9 +195,9 @@ sub startup {
    controller => 'pair', id => undef 
   );
 
- ### #3: search browse & search text & seach view
+ ### #3: search browse & search view
 
- my $s = $l->route( '/:action', action => qr/search|catalog|display/ )
+ my $s = $l->route( '/:action', action => qr/search|display/ )
   ->to( hold => 30 );   
 
  # with photo id
@@ -227,12 +231,6 @@ sub before {
  
  $time_page and $s->{time_start} = time();
  
- # default is meta robots "index,follow",
- # controllers may modify these as needed
- # by setting to false sets noindex,nofollow respectively 
- $s->{meta_index} = 1;
- $s->{meta_follow} = 1;
-
  my $dbp = $ENV{MOJO_HOME}.'/db';
  
  ( defined $version and ( -f "$dbp/$version.txt" ) ) or do {
@@ -286,41 +284,60 @@ sub before {
  $s->{url} = $self->req->url;  # let the url be in the stash also
 
  $s->{lang} = 'en'; $s->{langother} = 'fi'; # default to English
+ $s->{langa} = 'en'; $s->{langaother} = 'fi';
+
+ # default is meta robots "index,follow",
+ # controllers may modify these as needed
+ # by setting to false sets noindex,nofollow respectively 
+ $s->{meta_index} = 1;
+ $s->{meta_follow} = 1;
  
+ # peek mode off by default
  $s->{peek} = 0;
-  
- if ( $s->{url} =~ /^\/(fi)([a-z0-9]{3})?/ ) {
-              
-  #$s->{langa} = 'fi';
-    
-  # process and populate stash with setup data                                                                                  
-  setup_init ( $self, $s->{langa} );
-    
-  given ( $1 ) {
  
+ my @urip = split m|/|, $s->{url};
+ 
+ #warn $urip[1];
+ 
+ if ( $urip[1] ) {
+ 
+  #$s->{langa} = $urip[1];
+  
+  given ( substr( $urip[1], 0, 2 ) ) {
+   
    when ( 'fi' ) { 
     $s->{lang} = 'fi'; $s->{langother} = 'en'; # Finnish
+    #$s->{langa} = 'fi'; $s->{langaother} = 'en';
    }
    
-   when ( 'FI' ) {
+  when ( 'if' ) {
     
-    $s->{lang} = 'fi'; $s->{langother} = 'en'; # Finnish
+   $s->{lang} = 'fi'; $s->{langother} = 'en'; # Finnish
+   #$s->{langa} = 'fi'; $s->{langaother} = 'en';
     
-    $s->{peek} = 1;
+   $s->{peek} = 1;
+   $s->{meta_index} = 0;
+   $s->{meta_follow} = 0;
     
-   }
-   
-   when ( 'EN' ) { 
-
-    $s->{lang} = 'en'; $s->{langother} = 'fi';
-    
-    $s->{peek} = 1;
-   
-   }  
-  
   }
-  
+   
+  when ( 'ne' ) { 
+
+   $s->{lang} = 'en'; $s->{langother} = 'fi';
+   #$s->{langa} = 'en'; $s->{langaother} = 'fi';
+     
+   $s->{peek} = 1;
+   $s->{meta_index} = 0;
+   $s->{meta_follow} = 0;
+       
+   }  
+ 
+  }
  }
+    
+ # process and populate stash with setup data                                                                                  
+ setup_init ( $self, $s->{langa} );
+    
       
  # attempt to fetch from cache
  if ( my $res = cache_get ( cachekey ( $self ) ) ) {  # cache hit

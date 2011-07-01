@@ -40,8 +40,18 @@ body {
 }
 
 .full { width: 100%; }
-.major { width: 66%; }
-.minor { width: 34%; }
+
+ul {
+ margin-top: 0.2em;
+ margin-bottom: 0.2em;
+}
+
+li {
+ margin-left: 2.5em;
+ margin-top: 0.5em;
+ margin-bottom: 0.5em; 
+ list-style: square outside;
+}
 
 /*  all forms are displayed inline */
 form { display: inline; }

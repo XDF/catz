@@ -26,7 +26,7 @@
 %# --------------------
 %#
 % foreach my $row ( @$prims ) {
-<div class="bar inner"> 
+<div class="bar outer"> 
 <h2><%= fmt ( $row->[1], $lang ) %> <%= $t->{uc($row->[0]).'A'} %></h2>
 % foreach my $mode ( @{ $matrix->{$row->[0]}->{modes} } ) {
 <%= $sep %>

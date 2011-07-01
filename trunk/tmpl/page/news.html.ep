@@ -29,7 +29,7 @@
 %#
 <%= content 'main' => begin %>
 % foreach my $row ( @$news ) {
-<div class="bar inner"> 
+<div class="bar outer"> 
 <h2 id="<%== $row->[0] %>"><%=  dtexpand ( dtdate ( $row->[0] ), $lang ) %></h2> <a href="/<%== $lang %>/news/<%== $row->[0] %>/"><%= $row->[1] %></a>
 </div>
 % }

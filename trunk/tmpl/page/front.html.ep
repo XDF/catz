@@ -116,12 +116,11 @@
 %#
 %# --------------------
 %#
-<div class="bar">
-%== include 'content/intro';
-</div>
-<div class="bar">
-%== include 'content/policy';
-</div>
+<div class="bar"><%== include 'content/intro' %></div>
+%#
+%# --------------------
+%#
+<div class="bar"><h2><%= $t->{POLICY} %></h2> <%== include 'content/policy' %></div>
 %#
 %# --------------------
 %#      
