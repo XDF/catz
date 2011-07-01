@@ -32,7 +32,7 @@ use POSIX qw ( ceil );
 
 # The external interface is prodecural method calls
 
-our @EXPORT = qw ( setup_init setup_change setup_list );
+our @EXPORT = qw ( setup_init setup_keys setup_values setup_verify );
 
 #
 # the system configuration array that should be 
@@ -293,7 +293,7 @@ sub setup_init { # initialize the setup to application stash
  for ( my $i = 0; $i < scalar @{ $pairs }; $i = $i + 2 ) {
   
   # copy key-value -pairs to stash
-  $app->{stash}->{ $pairs->[ $i ] } = $pairs->[ $i + 1 ];
+ $app->{stash}->{ $pairs->[ $i ] } = $pairs->[ $i + 1 ];
    
  }
  
@@ -301,39 +301,44 @@ sub setup_init { # initialize the setup to application stash
   
 }
 
-sub setup_list { 
+sub setup_keys { $setkeys };
 
- # generates a list of setup values and change targets
+sub setup_values { 
+
+ # generates lists of setup values and change targets
  # uses directly application stash variable $langa
 
- my ( $langa, $key ) = @_;
+ my $langa = shift;
  
  my $lang = substr ( $langa, 0, 2 );
    
  my $chars = length ( $langa ) > 2 ? substr ( $langa, 2 ) : '';
   
- my @out = ();
+ my $out = {};
  
- foreach my $t ( @{ $def->{$key}->{set} } ) {
+ foreach my $key ( @{ $setkeys } ) {
  
-  my $new = setup_change ( $chars, $key, $t );
+  my @pile = ();
+  
+  foreach my $t ( @{ $def->{$key}->{set} } ) { 
+
+   my $new = setup_change ( $chars, $key, $t );
    
-  $new eq $default and $new = '';
+   $new eq $default and $new = '';
  
-  push @out, [ $t, "$lang$new" ];
+   push @pile, [ $t, "$lang$new" ];
+   
+  }
+  
+  $out->{$key} = \@pile;
   
  }
  
- return \@out;
-  
+ return $out;
+
 }
 
-
-use Data::Dumper;
-
-say Dumper setup_list ( "fi$default", 'perpage' );
-
-#say Dumper $def;
-
+sub setup_verify { $def->{$_[0]}->{toint}->{$_[1]} ? 1 : 0 }
+ 
 
 1; 

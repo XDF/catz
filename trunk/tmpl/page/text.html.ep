@@ -26,13 +26,13 @@
 % if ( $page < $pages ) {
 <link rel="next" href="<%== include 'href/id', toid => $pin->[$page] %>">
 % }
-% if ( defined $thumbs->[0] ) {
-<link ref="image_src" href="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
-<meta name="og:image" value="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
-% }
-% if ( $origin eq 'id' and ( defined $thumbs->[0] ) ) {
-<link rel="canonical" content="<%== include 'href/id', toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]) %>">
-% }  
+%# if ( defined $thumbs->[0] ) {
+%#<link ref="image_src" href="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
+%#<meta name="og:image" value="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
+%# }
+%# if ( $origin eq 'id' and ( defined $thumbs->[0] ) ) {
+%#<link rel="canonical" content="<%== include 'href/id', toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]) %>">
+%# }  
 <% end %>
 %#
 %# --------------------
@@ -55,32 +55,8 @@
 %#
 %# --------------------
 %#
-<% content 'bextra' => begin %> 
-% if ( $pri and $pri ne 'folder' and $pri ne 'date' ) {
-<%= $t->{ONTHISPAGE} %> <%= dtexpand ( $latest, $lang ) %>
-%  if ( $earliest ne $latest ) {
-- <%= dtexpand ( $earliest, $lang ) %>
-%  }
-%  if ( $runmode ne 'search' ) { 
-%   if ( scalar @{ $jump2date } > 1 ) {
-<%= $sep %>
-<select name="date" class="shade" onchange="<%== include 'href/id', toid => 'this' %>">
-<option selected value="<%== $id %>"><%= $t->{JUMP2DATE} %></option>
-%    foreach my $row ( @{ $jump2date } ) {
-% my $target = fullnum33( $row->[0], $row->[1] );
-<option value="<%== $target %>"><%= dtexpand ( $row->[2], $lang ) %></option>
-%    }
-</select>
-%   }
-%  }
-% }
-<% end %>
-%#
-%# --------------------
-%#
 <% content 'setupadd' => begin %>
-<%== include 'elem/setup', setupkey => 'perpage' %>
-<%== include 'elem/setup', setupkey => 'thumbsize' %>
+<%== include 'elem/setup', setupkey => 'terpage' %>
 <% end %>
 %#
 %# --------------------
@@ -95,7 +71,8 @@
 %== include 'block/search';
 </div>
 % }
-<div class="center stripetop">
+<div class="stripetop">
+<table class="full"><tr><td class="center">
 % my $label1 = $t->{PAGE_FIRST};
 % my $label2 = $t->{PAGE_PREV};
 % if ( $page > 1 ) { # not first page -> active first & back
@@ -125,6 +102,14 @@
 % } else { 
 <%= $label1 %> <%= $sep %> <%= $label2 %>
 % }
+</td><td class="right">
+<span class="aero">
+<select name="way" class="shade" onchange="<%== include 'href/id', toid => 'this' %>">
+<option value="x">pikkukuvat</option>
+<option value="x">iso kuva</option>
+<option selected value="x">teksti</option>
+</select></span>
+</td></tr></table>
 </div>
 <% end %>
 %#
@@ -135,59 +120,17 @@
 %# --------------------
 %#
 <div class="bar">
-% foreach my $th ( @{ $thumbs } ) {
-% my $toid = fullnum33 ( $th->[1], $th->[2] );
-% my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
-% my $titl = dtexpand ( dtdate ( $th->[3] ), $lang ); # get date from folder name
-% defined $texts->{$th->[0]} and $titl = "$titl $sep " . $texts->{$th->[0]};  
-<a title="<%= $titl %>" href="<%== include 'href/actionid', toaction => 'auto', toid => $toid %>"><img alt="[<%= $t->{PHOTO} %> <%== $toid %>]" src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
+% foreach my $c ( @{ $catalog } ) {
+<div><%= $c->[0] %> <%= $c->[1] %></div>
 % }
 </div>
 %#
 %# --------------------
 %#
-% if ( $runmode eq 'pair' ) {
-% my $etg = $lang eq 'fi' ? $trans : $sec; 
-% my $turi = $t->{URL_CATZA}."en/browse/$pri/$etg/";
-<div class="bar">
-<h2><%== include 'elem/titlea' %></h2>
-%== include 'elem/twitter', twurl => $t->{URL_CATZA}."$lang/browse/$pri/$etg/", twtext => "$sec (".$t->{uc($pri)}.')', twcounturl => $turi;
-%== include 'elem/facebook', fbhref => $turi, fbref => 'browse';
-</div>
-% }
-<div class="bar">
-% if ( $runmode ne 'pair' ) {
-<%== include 'elem/titlea' %> <%= $sep %>
-% }
-% if ( defined $breederurl ) {
-<a href="<%== $breederurl %>"><%= $breederurl %></a> <%= $sep %>
-% } 
-<%= $total %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> <%= $sep %>
-<%= dtexpand ( $ancient, $lang ) %>
-% if ( $fresh ne $ancient ) {
-- <%= dtexpand ( $fresh, $lang ) %>
-% }
-% if ( defined $cover_notext ) {
-<%= $sep %> <%= $t->{COVER_TEXT} %> <%== fmt ( round ( ( 100 - ( $cover_notext / $total ) * 100 ), 1 ), $lang ) %> %
-%  if ( $cover_notext > 0 ) {
-<%= $sep %> <a href="/<%== $lang %>/search?what=<%== enurl ( $url_notext ) %>"><%== fmt ( $cover_notext, $lang ) %> <%= $cover_notext == 1 ? $t->{NOTEXT} :  $t->{NOTEXTA} %></a>
-%  }
-% }
-% if ( defined $cover_nocat ) {
-<%= $sep %> <%= $t->{COVER_CAT} %> <%== fmt ( round ( ( 100 - ( ( $cover_nocat + $cover_notext ) / $total ) * 100 ), 1 ), $lang ) %> %
-%  if ( $cover_nocat > 0 ) { 
-<%= $sep %> <a href="/<%== $lang %>/search?what=<%== enurl ( $url_nocat ) %>"><%== fmt ( $cover_nocat, $lang ) %> <%= $cover_nocat == 1 ? $t->{NOCAT} :  $t->{NOCATA} %></a>
-%  }
-% }
-% if ( $runmode eq 'search' ) {
-<%= $sep %> <%== include 'block/explain' %>
-% }
-<%== include 'block/refines' %>
 </div>
 %#
 %# --------------------
 %#
-%== include 'block/texts';
 %#
 %# --------------------
 %#

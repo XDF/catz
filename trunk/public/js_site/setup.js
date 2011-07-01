@@ -22,12 +22,16 @@
 // THE SOFTWARE.
 //
 
-function catzSetupChange( key, val ) {
+function catzSetupChange( key ) {
+
+ var catzOldPath = $(location).attr('pathname').toString();
  
- $.ajax ({
-  url: '/set?' + key + '=' + val, 
-  async: false, cache: false,
-  success: function(){ location.reload(); }  
- });
+ var mtc = catzOldPath.match('/(en|EN|fi|FI)(([a-z0-9]{3}|fi|FI|fi[a-z0-9]{3})?)(.*)');
+ 
+ var catzNewPath = '/' + mtc[0] + key + '/' + mtc[3];
+ 
+ alert ( catzNewPath );   
+
+ document.location = catzNewPath; 
 
 }

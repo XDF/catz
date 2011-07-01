@@ -1,9 +1,9 @@
 % my $arg1 = qq{'$setupkey'}; 
-<select id="setup_<%= $setupkey %>" class="shade" onChange="catzSetupChange(<%== $arg1 %>,$('#setup_<%== $setupkey %>').val())">
-% foreach my $val ( @{ $setup_values->{$setupkey} } ) {
+<select id="setup_<%= $setupkey %>" class="shade" onChange="catzSetupChange($('#setup_<%== $setupkey %>').val())">
+% foreach my $row ( @{ $setup_values->{$setupkey} } ) {
 % my $selected = ' ';
-% $val eq stash ( $setupkey ) and $selected = ' selected ';
-<option<%= $selected %>value="<%== $val %>"><%= $t->{'SETUP_'.$setupkey.'_'.$val} %></option>
+% $row->[0] eq stash ( $setupkey ) and $selected = ' selected ';
+<option<%= $selected %>value="<%== $row->[1] %>"><%= $t->{'SETUP_'.$setupkey.'_'.$row->[0]} %></option>
 % }
 </select> 
 %#
