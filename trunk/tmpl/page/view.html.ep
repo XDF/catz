@@ -124,7 +124,7 @@
 % };
 % if ( index ( $comm, '[' ) == 0 ) { # must be just a code
 <%= $comm %> 
-<span class="shrink"><%= $t->{NO_CAT_A} %> <%== $id %> <%= $t->{NO_CAT_B} %> <a class="infox" title="<%== enurl($t->{CAT_INFO}.' '.$id) %>" href=""></a></span>
+<span class="shrink"><%= $t->{NO_CAT_A} %> <%== $id %> <%= $t->{NO_CAT_B} %> <a class="infox" title="<%= $t->{MAILTO_HEAD} %> <%== $id %>" href=""></a></span>
 % } else { # not just a code, has more data
 <%= $comm %>
 % } 
@@ -135,7 +135,7 @@
 %   }
 %  }
 % } else { # no comments
-<span class="shrink"><%= $t->{NO_COMMENT_A} %> <%== $id %> <%= $t->{NO_COMMENT_B} %> <a class="infox" title="<%== enurl($t->{CAT_INFO}.' '.$id) %>" href=""></a></span>
+<span class="shrink"><%= $t->{NO_COMMENT_A} %> <%== $id %> <%= $t->{NO_COMMENT_B} %> <a class="infox" title="<%= $t->{MAILTO_HEAD} %> <%== $id %>" href=""></a></span>
 % }
 % }
 % if ( $display eq 'full' ) { # detailed info only when full display

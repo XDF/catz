@@ -48,7 +48,7 @@ use Catz::Util::String qw (
  clean enurl etag decode encode limit trim urirest 
 );
 
-my $time_page = 0;  # turns on timing on all HTTP requests
+my $time_page = 1;  # turns on timing on all HTTP requests
 
 my $version = undef; # data version
 
@@ -106,7 +106,7 @@ sub startup {
  ### 
  
  # reset
- $r->route( '/style/reset' )->to( 'main#reset', hold => 60 * 24 );
+ $r->route( '/style/reset' )->to( 'main#reset', hold => 120 );
  
  # the single stylesheet contains all style definitions
  # it's color settings are dependent on the palette 
@@ -217,6 +217,11 @@ sub startup {
 
  # the show result AJAX interface
  $l->route( '/result' )->to ( "main#result",  hold => 60 );
+ 
+ # the info base data provided AJAX interface
+ 
+ $l->route( '/info/:cont', cont => qr/std/ )
+  ->to ( "main#info", hold => 120 );
       
  # add hooks to methods that are to be executed before and after the dispatch
  $self->hook ( before_dispatch => \&before );  
@@ -402,7 +407,7 @@ sub after {
  $ENV{MOJO_MODE} eq 'production' or $age = 0;
  
  # set cache response header
- $self->res->headers->header('Cache-Control' => 'max-age=' . $age );
+ $self->res->headers->header('Cache-Control' => 'max-age=' . $age . ', public' );
  
  $cac or return; # continue only if server side page caching is needed
  
@@ -438,7 +443,6 @@ sub after {
 
 sub cachekey { (
  $_[0]->{stash}->{version}, 'page', $_[0]->{stash}->{url}, 
- map { $_[0]->{stash}->{$_} } setup_keys
-) }
+ ) }
 
 1;

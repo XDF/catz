@@ -75,7 +75,7 @@ sub list {
   or ( $self->not_found and return );
   
  $s->{urlother} =  
-  '/' . $s->{langother} . '/' . $s->{action} . '/' . 
+  '/' . $s->{langaother} . '/' . $s->{action} . '/' . 
   $s->{subject} . '/' . $s->{mode} . '/';
    
  my $res = $self->fetch( 'locate#full', $s->{subject}, $s->{mode} );
@@ -101,7 +101,7 @@ sub lists {
  $s->{matrix} = list_matrix;
     
  $s->{urlother} =  
-  '/' . $s->{langother} . '/' . $s->{action} . '/';
+  '/' . $s->{langaother} . '/' . $s->{action} . '/';
    
  $s->{prims} = $self->fetch( 'locate#prims' );
         

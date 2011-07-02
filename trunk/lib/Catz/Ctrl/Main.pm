@@ -58,7 +58,7 @@ sub front {
 
  my $self = shift; my $s = $self->{stash};
  
- $s->{urlother} = '/' . $s->{langother} . '/';
+ $s->{urlother} = '/' . $s->{langaother} . '/';
  
  $s->{mapview} = $self->fetch ( 'map#view' );
  $s->{mapdual} = $self->fetch ( 'map#dual' );
@@ -204,6 +204,37 @@ sub verify {
  
  } else { $self->redirect_perm('/') } 
 
+}
+
+my $cset = [ (
+ ( 0 .. 9 ),
+ ( 'a' .. 'z' ),
+ ( 'Z' .. 'Z' ),
+ qw ( ! @ $ % & ? . ; : - _ ),
+ ' '
+) ];
+
+sub info {
+
+ my $self = shift; my $s = $self->{stash}; my $base = undef;
+ 
+ if ( $s->{cont} eq 'std' ) { $base = $s->{t}->{MAILTO_TEXT} }
+   
+  else { $self->not_found and return }
+  
+  # the 0th element
+  my $out = $cset->[ rand @{ $cset } ];
+    
+  foreach my $key ( split //, $base ) {
+ 
+   do { $out .= $cset->[ rand @{ $cset } ] } foreach ( 1 .. 6 );
+     
+   $out .= $key;
+    
+  }
+ 
+ $self->render_text ( text => $out, format => 'txt' ); 
+ 
 }
 
 1;

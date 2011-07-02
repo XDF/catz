@@ -40,7 +40,7 @@ sub index { # the list of all news articles
  
  $s->{fanpage} = conf ( 'url_fanpage' );
  
- $s->{urlother} = '/' . $s->{langother} . '/news/';
+ $s->{urlother} = '/' . $s->{langaother} . '/news/';
 
  $s->{news} = $self->fetch ( 'news#titles' );
  
@@ -52,7 +52,7 @@ sub one { # one news article
 
  my $self = shift; my $s = $self->{stash};
   
- $s->{urlother} = '/' . $s->{langother} . '/news/' . $s->{article} .'/';
+ $s->{urlother} = '/' . $s->{langaother} . '/news/' . $s->{article} .'/';
 
  ( $s->{new1}, $s->{prev}, $s->{next} ) = 
    @{ $self->fetch ( 'news#one', $s->{article} ) }; 

@@ -138,11 +138,9 @@ sub etag { lc md5_hex $_[0] }
 
 sub urirest { # remove the beginning of uri (the language/config part)
 
- my @parts = split /\//, $_[0];
+ $_[0] =~ /^\/(?:en(?:[1-9]{6})?|fi(?:[1-9]{6})?)(.*)$/;
  
- shift @parts; shift @parts;
- 
- return '/' . ( join '/', @parts );
+ $1 ? $1 : undef;
  
 }
 

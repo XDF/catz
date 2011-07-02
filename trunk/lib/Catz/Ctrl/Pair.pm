@@ -56,7 +56,7 @@ sub pair {
  $s->{trans} = $self->fetch ( 'map#trans', $s->{pri}, $s->{sec} );  
 
  $s->{urlother} =  
-  '/' . ( join '/', $s->{langother} , $s->{action}, $s->{pri}, 
+  '/' . ( join '/', $s->{langaother} , $s->{action}, $s->{pri}, 
   $self->encode( $s->{trans} ) ). '/' .
   ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
 

@@ -23,14 +23,14 @@
 %#
 %# --------------------
 %#
-<% content 'bextra' => begin %><a href="/<%== $lang %>/feed/"><%= $t->{FEED} %></a> <%= $sep %> <%== include 'elem/extra' %><% end %>
+<% content 'bextra' => begin %><a href="/<%== $langa %>/feed/"><%= $t->{FEED} %></a> <%= $sep %> <%== include 'elem/extra' %><% end %>
 %#
 %# --------------------
 %#
 <%= content 'main' => begin %>
 % foreach my $row ( @$news ) {
 <div class="bar outer"> 
-<h2 id="<%== $row->[0] %>"><%=  dtexpand ( dtdate ( $row->[0] ), $lang ) %></h2> <a href="/<%== $lang %>/news/<%== $row->[0] %>/"><%= $row->[1] %></a>
+<h2 id="<%== $row->[0] %>"><%=  dtexpand ( dtdate ( $row->[0] ), $lang ) %></h2> <a href="/<%== $langa %>/news/<%== $row->[0] %>/"><%= $row->[1] %></a>
 </div>
 % }
 <% end %> 
