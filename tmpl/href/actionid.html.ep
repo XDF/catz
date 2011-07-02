@@ -15,25 +15,25 @@ $toaction eq 'auto' and do {
 % if ( $toid eq 'this' ) {
 %  given ( $runmode ) {
 %   when ( 'pair' ) { 
-location.href='/<%== $lang %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/'+this.options[this.selectedIndex].value+'/'
+location.href='/<%== $langa %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/'+this.options[this.selectedIndex].value+'/'
 %   } 
 %   when ( 'search' ) {
-location.href='/<%== $lang %>/<%== $toaction %>/'+this.options[this.selectedIndex].value+'/?what=<%== enurl($what) %>'
+location.href='/<%== $langa %>/<%== $toaction %>/'+this.options[this.selectedIndex].value+'/?what=<%== enurl($what) %>'
 %   } 
 %   default  { 
-location.href='/<%== $lang %>/<%== $toaction %>/'+this.options[this.selectedIndex].value+'/'
+location.href='/<%== $langa %>/<%== $toaction %>/'+this.options[this.selectedIndex].value+'/'
 %   }
 %  }   
 % } else {
 %  given ( $runmode ) {
 %   when ( 'pair' ) { 
-/<%== $lang %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/<%== $toid %>/
+/<%== $langa %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/<%== $toid %>/
 %   } 
 %   when ( 'search' ) {
-/<%== $lang %>/<%== $toaction %>/<%== $toid %>?what=<%== enurl($what) %>
+/<%== $langa %>/<%== $toaction %>/<%== $toid %>?what=<%== enurl($what) %>
 %   } 
 %   default  { 
-/<%== $lang %>/<%== $toaction %>/<%== $toid %>/
+/<%== $langa %>/<%== $toaction %>/<%== $toid %>/
 %   }
 %  }
 % }

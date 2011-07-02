@@ -1,5 +1,5 @@
 %# Create link to same path but different args
-/<%== $lang %>/<%== $action %>?<%== enurl ( $tokey ) %>=<%== enurl ( $toval ) %><%== $origin eq 'id' ? $idparam : '' %>
+/<%== $langa %>/<%== $action %>?<%== enurl ( $tokey ) %>=<%== enurl ( $toval ) %><%== $origin eq 'id' ? $idparam : '' %>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
