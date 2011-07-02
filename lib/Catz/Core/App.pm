@@ -106,11 +106,12 @@ sub startup {
  ### 
  
  # reset
- $r->route( '/style/reset' )->to( 'main#reset', hold => 120 );
+ $r->route( '/style/reset' )->to( 'main#reset', hold => 8*60 );
  
  # the single stylesheet contains all style definitions
  # it's color settings are dependent on the palette 
- $r->route( '/style/:palette' )->to( 'main#base', hold => 60 );
+ $r->route( '/style/:palette', palette => qr/dark|neutral|bright/ )
+  ->to( 'main#base', hold => 2*60 );
  
  ###
  ### www.catshow.fi itegration
@@ -119,7 +120,7 @@ sub startup {
  # the interface provided for the purposes of www.catshow.fi
  # please note that although this can be used to other purposes
  # the interface is subject to changes and cannot be relied on
- $r->route( '/lastshow' )->to( 'main#lastshow',  hold => 60 );
+ $r->route( '/lastshow' )->to( 'main#lastshow',  hold => 30 );
  
  ###
  ### tools
@@ -164,7 +165,11 @@ sub startup {
  $l->route( '/lists' )->to('locate#lists', hold => 30 );
 
  # a single list 
- $l->route( '/list/:subject/:mode' )->to('locate#list', hold => 30 );
+ $l->route( 
+  '/list/:subject/:mode', 
+  subject => qr/[a-z]{1,25}/,
+  mode => qr/[a-z0-9]{1,25}/, 
+ )->to('locate#list', hold => 30 );
  
  ###
  ### photo browsing and viewing - 3 ways
@@ -216,10 +221,13 @@ sub startup {
  $l->route( '/find' )->to ( "locate#find", hold => 30 );
 
  # the show result AJAX interface
- $l->route( '/result' )->to ( "main#result",  hold => 60 );
+ $l->route( '/result' )->to ( "main#result",  hold => 9 );
+ # when 9 is combined to maximum of 10 on model cache
+ # and to the fact that page cache is bypassed
+ # it is 19 and so it can be said that results are no
+ # older than 20 minutes
  
  # the info base data provided AJAX interface
- 
  $l->route( '/info/:cont', cont => qr/std/ )
   ->to ( "main#info", hold => 120 );
       
@@ -431,6 +439,9 @@ sub after {
  # no recaching: if the result came from server side the cache 
  # then don't cache it again
  $s->{cached} and return;
+
+ # as a special case we bypass page cache for show results
+ $s->{action} eq 'result' and return; 
  
  # we cache only GET and with 200 OK to be safe
  if ( $self->req->method eq 'GET' and $self->res->code == 200 ) {

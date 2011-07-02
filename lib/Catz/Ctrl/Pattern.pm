@@ -74,7 +74,7 @@ sub pattern {
  $s->{init} and do {
  
   # sanity check
-  ( length $s->{init} > 4000 ) and return 0;
+  ( length $s->{init} > 1234 ) and return 0;
 
   # remove all unnecessary spaces   
   $s->{init} = clean trim $s->{init};
@@ -96,8 +96,8 @@ sub pattern {
   $s->{args_count} = scalar @{ $s->{args_array} };
   
   if ( 
-   $s->{args_count} > 0 and # there is args
-   $s->{args_count} < 51 and # max 25 pairs accepted   
+   $s->{args_count} > 0 and # there are args
+   $s->{args_count} <= 50 and # max 25 pairs accepted   
    $s->{args_count} % 2 == 0 and # args come in as pairs 
    $self->fetch('search#verify_args',@{$s->{args_array}}) # all pris are ok 
   ) {
@@ -167,8 +167,6 @@ sub search {
  $self->pattern or ( $self->not_found and return );
  
  if ( $s->{x} and $s->{id} ) { # we have results 
-
-  #warn 'SEARCH ' . ( join '/', @{ $s->{args_array} } );  
  
   $self->multi or ( $self->not_found and return ); 
   
@@ -180,20 +178,6 @@ sub search {
 
 }
 
-sub catalog {
-
- my $self = shift; my $s = $self->{stash};
- 
- $self->pattern or ( $self->not_found and return );
-
- if ( $s->{x} and $s->{id} ) { # we have results
-  
-  $self->text or ( $self->not_found and return ); 
-  
- } else { $self->not_found and return }
-
-}
-
 sub display {
  
  my $self = shift; my $s = $self->{stash};
@@ -202,8 +186,6 @@ sub display {
  
  if ( $s->{x} and $s->{id} ) { # we have results
  
-  #warn 'DISPLAY ' . ( join '/', @{ $s->{args_array} } ); 
-  
   $self->single or ( $self->not_found and return ); 
   
  } else { $self->not_found and return }
