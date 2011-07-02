@@ -107,8 +107,17 @@ sub cat {
   
  # collect breeder and remove breeder marters
   
- ( $data =~ /^(.*)\{(.+?)\}(.*)$/ ) and do
-  { $d->{breeder} = $2; $data = $1 . $2 . $3 };
+ ( $data =~ /^(.*)\{(.+?)\}(.*)$/ ) and do { 
+ 
+  $d->{breeder} = $2; $data = $1 . $2 . $3;
+  
+  ( 
+   index ( $d->{breeder}, '’' ) > -1 or
+   index ( $d->{breeder}, '´' ) > -1 or
+   index ( $d->{breeder}, '`' ) > -1 
+  ) and die "illegal characters in breeder '$d->{breeder}'"; 
+  
+ };
   
  my @titles = ();
  

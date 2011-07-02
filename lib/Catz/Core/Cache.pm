@@ -54,10 +54,6 @@ my $cache = new Cache::Memcached::Fast {
 
 my $sep = ' '; # the string that separates cache key parts
 
-my $app = conf ( 'app' ); # the application id
-
-my $ver = conf ( 'ver' ); # the application version
-
 # force the cache key to be 250 characters or less (Memcached limit)
 # all characters after 218 are hashed to md5 hash in hex encoding
 # so the final key is 218 + 32 = 250 characters
@@ -72,9 +68,6 @@ sub cache_set {
  # we expect val to be the last param 
  my $val = pop @args;
   
- # put application id and application version to key 
- unshift @args, $app.$ver;
-
  # we build the cache key by joining the encoded key parts
  # we map undefined key parts to string 'undef' to be safe
  my $key = encode join $sep, map { defined $_ ? $_ : 'undef' } @args;
@@ -102,9 +95,6 @@ sub cache_get {
  $cacheon or return; # immediate NOP if not caching
  
  my @args = @_;
- 
- # put application id and applicaiton version to key 
- unshift @args, $app.$ver;
  
  # we build the cache key by joining the encoded key parts
  # we map undefined key parts to string 'undef' to be safe 

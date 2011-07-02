@@ -40,7 +40,7 @@ use Catz::Util::String qw ( trim );
 use Catz::Util::Time qw ( dtexpand );
 
 my $eng = Crypt::CBC->new( 
- -key => conf ( 'result_key' ),
+ -key => conf ( 'key_result' ),
  -cipher => 'Blowfish'
 );
 
