@@ -23,6 +23,8 @@
 %#
 <meta http-equiv="content-type" content="text/html; charset=utf-8"> 
 <meta name="generator" content="<%== $t->{GENERATOR} %>">
+<meta name="generated_at" content="<%== $now %>">
+<meta name="loaded_at" content="<%== dtexpand ( $version, $lang ) %>">
 <meta name="author" content="<%== $t->{AUTHOR} %>">
 <meta name="copyright" content="<%== $t->{COPYRIGHT} %> <%== $t->{AUTHOR} %> <%== $t->{FIRSTYEAR} %>-<%== thisyear %>. <%= $t->{LICENCE} %>."> 
 <meta name="credits" content="<%== $t->{CREDITS} %>">

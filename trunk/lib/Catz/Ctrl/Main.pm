@@ -92,7 +92,7 @@ sub base {
 
  my $self = shift; my $s = $self->{stash};
 
- #setup_verify ( 'palette', $s->{palette} ) or ( $self->not_found and return );
+ setup_verify ( 'palette', $s->{palette} ) or ( $self->not_found and return );
  
  $s->{st} = style_get; # copy style hashref to stash for stylesheet processing
   
@@ -194,15 +194,11 @@ sub verify {
 
  my $self = shift; my $s = $self->{stash};
  
- # verify possible only in peek mode
- 
- if ( $s->{peek} eq 'on' ) {
+ $s->{auth} eq conf ( 'key_tools' ) or ( $self->not_found and return );
 
-  my $out = $self->fetch ( 'tool#verify' );   
+ my $out = $self->fetch ( 'tool#verify' );   
   
-  $self->render( text => $out, format => 'txt' );
- 
- } else { $self->redirect_perm('/') } 
+ $self->render( text => $out, format => 'txt' );
 
 }
 

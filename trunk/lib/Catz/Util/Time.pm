@@ -37,7 +37,7 @@ use parent 'Exporter';
 
 our @EXPORT_OK = qw(
  dtdate dttime dtexpand dt dtlang dtsplit 
- thisyear dt2epoch epoch2rfc822 epoch2http 
+ thisyear dt2epoch epoch2rfc822 epoch2http http2epoch 
 );
 
 #
@@ -154,6 +154,8 @@ sub dt2epoch {
 
 sub epoch2rfc822 { email_gmdate ( $_[0] ) }
 
-sub epoch2http { time2str $_[0] } 
+sub epoch2http { time2str $_[0] }
+
+sub http2epoch { str2time $_[0] }  
  
 1;

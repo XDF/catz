@@ -112,7 +112,7 @@ SKIP_FOLDER:
 $guide{'meta'} or goto SKIP_META;
 
 my @metafiles =  qw ( 
- metaexif metanews metanat metabreed metabreeder metafeat metatitle metadata
+ metaexif metanews metanat metabreed metabreeder metafeat metatitle metacore
 );
 
 logit ( 'verifying ' . scalar @metafiles  . ' files' );
@@ -131,7 +131,7 @@ foreach my $head ( @metafiles ) {
   
   $changes++; 
  
-  if ( $head eq 'metadata' ) { # complex loading
+  if ( $head eq 'metacore' ) { # complex loading
   
    # reverse makes the oldest gallery to load first and get the smallest S
    foreach my $pile ( reverse topiles ( $data ) ) {  

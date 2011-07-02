@@ -41,14 +41,14 @@ use Catz::Data::Setup;
 
 use Catz::Util::File qw ( fileread findlatest pathcut );
 use Catz::Util::Time qw( 
- dt dt2epoch dtdate dttime dtexpand dtlang epoch2http thisyear 
+ dt dt2epoch dtdate dttime dtexpand dtlang epoch2http http2epoch thisyear 
 );
 use Catz::Util::Number qw ( fmt fullnum33 round );
 use Catz::Util::String qw ( 
- clean enurl etag decode encode limit trim urirest 
+ clean enurl decode encode limit trim urirest 
 );
 
-my $time_page = 1;  # turns on timing on all HTTP requests
+my $time_page = 0;  # turns on timing on all HTTP requests
 
 my $version = undef; # data version
 
@@ -126,7 +126,7 @@ sub startup {
  ###
  
  # the database verifier service (simple non-destructive routine)
- $r->route( '/tools/verify/:auth', auth => qr/[a-z0-9]{8}/ )
+ $r->route( '/tools/verify/:auth', auth => qr/[a-z0-9]{16}/ )
   ->to( 'main#verify', hold => 0 );
 
  # all site's true content is under /:langa where langa is 'en' or 'fi'
@@ -235,7 +235,10 @@ sub before {
 
  # we skip all processing for static files
  ( $self->req->url->path->to_string  =~ /\..{2,4}$/ ) and return;
- 
+
+ # default is not to cache so routing should set hold appropriately 
+ $s->{hold} = 0; 
+   
  $time_page and $s->{time_start} = time();
  
  my $dbp = $ENV{MOJO_HOME}.'/db';
@@ -259,9 +262,9 @@ sub before {
   };   
   
  };
-  
- $s->{version} = $version; # data version
  
+ $s->{version} = $version; # data version
+
  #
  # require urls to end with slash when there is no query params
  # you may ask why but I think this is cool
@@ -288,6 +291,26 @@ sub before {
 
  }
 
+ # Some cache control logic
+ 
+ # We use If-Modified-Since if present in request 
+ my $since = $self->req->headers->header('If-Modified-Since');
+ 
+ $since = $since ? http2epoch $since : 0; # convert to epoch
+ 
+ my $curr = dt2epoch $s->{version}; # convert data version to epoch
+  
+ if ( $curr == $since ) {
+ 
+  # no need to send response, the old response is still ok
+ 
+  $self->res->code(304);
+  $self->res->headers->content_length(0);
+  $self->rendered;
+  return; 
+ 
+ }
+   
  $s->{url} = $self->req->url;  # let the url be in the stash also
 
  $s->{lang} = 'en'; # default to English
@@ -319,7 +342,6 @@ sub before {
    ( $self->render_not_found and return );   
  
  }
- 
          
  # attempt to fetch from cache
  if ( my $res = cache_get ( cachekey ( $self ) ) ) {  # cache hit
@@ -328,9 +350,8 @@ sub before {
   $self->res->headers->content_type( $res->[0] );
   defined $res->[1] and $self->res->headers->content_length( $res->[1] );
   defined $res->[2] and $self->res->headers->header( 'Cache-Control' => $res->[2] );
-  defined $res->[3] and $self->res->headers->header( 'ETag' => $res->[3] );
-  defined $res->[4] and $self->res->headers->header( 'Last-Modified' => $res->[4] );
-  $self->res->body( ${ $res->[5] } ); # scalar ref to prevent copying
+  defined $res->[3] and $self->res->headers->header( 'Last-Modified' => $res->[3] );
+  $self->res->body( ${ $res->[4] } ); # scalar ref to prevent copying
   $self->rendered;
   $s->{cached} = 1; # mark that the content came from cache
   
@@ -379,39 +400,36 @@ sub after {
  my $self = shift; my $s = $self->{stash};
  
  # we skip all processing for static files
- ( $self->req->url->path->to_string  =~ /\..{2,4}$/ ) and return;
+ ( $self->req->url->path->to_string  =~ /\..{1,8}$/ ) and return;
  
  # we require the basics to be available for further processing   
  ( 
   defined $s->{controller} and defined $s->{action} and defined $s->{url} 
  ) or return;
 
+ #
+ # we use data version as last modified time
+ #
  $self->res->headers->header(
   'Last-Modified' => epoch2http ( dt2epoch ( $s->{version} ) )  
  );
+ #
+ # this means that deployments of the system must always deploy 
+ # an new data version, otherwise cache logic gets broken
+ #
  
- $self->res->headers->header ( 'ETag' => etag ( $self->res->body ) );  
-
- my $age = 0; # lifetime in response headers, default to no lifetime 
- my $cac = 0; # server side caching  
+ # from seconds to minutes, and 0 * 60 is still 0
+ $s->{hold} = $s->{hold} * 60;
+     
+ # set cache response header to use the defined max-age
+ $self->res->headers->header(
+  'Cache-Control' => 'max-age=' .  $s->{hold} . ', public' 
+ );
  
- if ( $s->{hold} > 0 ) {
-   
-   $age = $s->{hold}*60; # convert minutes to seconds
-   
-   $cac = 1; # set server side page caching on
-  
- }
-  
- # set age back to 0 if not in production = disable browser's cache in dev
- $ENV{MOJO_MODE} eq 'production' or $age = 0;
+ $s->{hold} or return; # continue only if server side page caching is needed
  
- # set cache response header
- $self->res->headers->header('Cache-Control' => 'max-age=' . $age . ', public' );
- 
- $cac or return; # continue only if server side page caching is needed
- 
- # no recaching: if the result came from the cache then don't cache it again
+ # no recaching: if the result came from server side the cache 
+ # then don't cache it again
  $s->{cached} and return;
  
  # we cache only GET and with 200 OK to be safe
@@ -424,22 +442,21 @@ sub after {
     $self->res->headers->content_type,
     $self->res->headers->content_length // undef,
     $self->res->headers->header('Cache-Control') // undef,
-    $self->res->headers->header('ETag') // undef,
     $self->res->headers->header('Last-Modified') // undef,
     \$self->res->body # scalar ref to prevent copying
    ]
   );
-   
+  
  }
- 
+  
  $time_page and $s->{time_end} = time();
  
  $time_page and warn "PAGE $s->{url} -> " . round ( ( ( $s->{time_end} - $s->{time_start}  ) * 1000 ), 0 ) . ' ms' ;
    
 }
 
-# the key for page caching consists of namespace 'page', 
-# the url and all setup values in the order of their keys
+# the key for page caching consists of the data version,
+# namespace 'page' and the url
 
 sub cachekey { (
  $_[0]->{stash}->{version}, 'page', $_[0]->{stash}->{url}, 
