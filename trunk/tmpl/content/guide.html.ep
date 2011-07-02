@@ -1,6 +1,8 @@
 % my $term = undef;
+% my $exa = undef;
+% my $exb = undef;
 <div class="bar">
-<h2>Superhaku</h2> on valokuvien hakukone sinulle, jolle <a href="/<%== $langa %>/">etusivun</a> hakutavat eivät riitä. Superhaku vaatii perehtymistä, mutta sen avulla löydät täsmälleen ne kuvat, joita etsit. Hakutermit kirjoitetaan peräkkäin hakukentään välilyönnillä eroteltuna ja haku käynnistyy painamalla enter tai <%= $t->{SEARCH_SUBMIT} %>-nappulaa. Jos hakutermi sisältää välilöyntejä, on se ympäröitävä lainausmerkein. Superhaku ei piittaa, käytätkö pieniä vai isoja kirjaimia, ja hakee aina tasa-arvoisesti sekä suomen- että englanninkielisestä sisällöstä. Hakutermien järjestykselläkään ei ole merkitystä. Yhdessä haussa voi olla jopa 25 hakutermiä ja haun kokonaispituus voi olla korkeintaan <%<%= fmt ( 1234, $lang ) %> merkkiä.
+<h2>Superhaku</h2> on valokuvien hakukone sinulle, jolle <a href="/<%== $langa %>/">etusivun</a> hakutavat eivät riitä. Superhaku vaatii perehtymistä, mutta sen avulla löydät täsmälleen ne kuvat, joita etsit. Hakutermit kirjoitetaan peräkkäin hakukentään välilyönnillä eroteltuna ja haku käynnistyy painamalla enter tai <%= $t->{SEARCH_SUBMIT} %>-nappulaa. Jos hakutermi sisältää välilöyntejä, on se ympäröitävä lainausmerkein. Superhaku ei piittaa, käytätkö hakutermissä pieniä vai isoja kirjaimia, ja hakee aina tasa-arvoisesti sekä suomen- että englanninkielisestä sisällöstä. Hakutermien järjestykselläkään ei ole merkitystä. Yhdessä haussa voi olla jopa 25 hakutermiä ja haun kokonaispituus voi olla korkeintaan <%<%= fmt ( 1234, $lang ) %> merkkiä.
 </div>
 %#
 %# --------------------
@@ -188,8 +190,6 @@ Superhaku hakee lähtökohtaisesti täsmällistä osumaa. Käyttämällä hakute
 %# --------------------
 %#
 <div class="bar">Kaikki superhaun tuntemat käsitteet aakkosjärjestyksessä ovat</div>
-% my $exa = undef;
-% my $exb = undef;
 %#
 %# --------------------
 %#
@@ -410,7 +410,6 @@ Superhaku hakee lähtökohtaisesti täsmällistä osumaa. Käyttämällä hakute
 </ul>
 %#
 %# --------------------
-%#
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

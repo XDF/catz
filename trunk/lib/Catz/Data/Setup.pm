@@ -32,7 +32,7 @@ use POSIX qw ( ceil );
 
 # The external interface is prodecural method calls
 
-our @EXPORT = qw ( setup_init setup_keys setup_values setup_verify );
+our @EXPORT = qw ( setup_init setup_keys setup_values );
 
 #
 # the system configuration array that should be 
@@ -122,20 +122,6 @@ foreach my $i ( 0 .. $#{ $conf } ) {
  
 }
 
-# for verifying: key->value->1
-# size (Devel::Size) 2,2 kB 2011-07-02
-my $pass = {};
-
-foreach my $c ( @$conf ) {
-
- foreach my $key ( @{ $c->{values} } ) {
- 
-  $pass->{$c->{name}}->{$key} = 1;
- 
- }
-
-}  
-
 sub setup_init { # initialize the setup to application stash
 
  my $app = shift; # Mojolicious application
@@ -214,9 +200,5 @@ sub setup_values {
  return $out;
 
 }
-
-# verify a setup key-value pair
-# return the value from $pass hashref (is 1 if ok) 
-sub setup_verify { $pass->{$_[0]}->{$_[1]} // 0 };
 
 1; 

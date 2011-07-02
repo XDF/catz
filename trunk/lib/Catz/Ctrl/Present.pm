@@ -137,9 +137,9 @@ sub multi {
  # provide photo browsing as thumbnails
  # returns 1 in success 
  # returns 0 on reject
- 
+  
  my $self = shift; my $s = $self->{stash};
- 
+  
  ( 
   $s->{total}, $s->{page}, $s->{pages}, $s->{from}, 
   $s->{to}, $s->{pin}, $s->{xs}, $s->{xfirst}, $s->{xlast} 

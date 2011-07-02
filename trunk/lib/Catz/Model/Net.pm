@@ -45,13 +45,8 @@ my $key_name = conf ( 'result_param_name' );
 my $net = Mojo::UserAgent->new;
 
 $net->name( text('en')->{SITE} . ' Perl Mojo::UserAgent' );
-
-# hopefully these disable keepalive
-$net->keep_alive_timeout(0); 
-$net->max_connections(0);
-
-# use 5 minutes caching 
-sub cachet { { count => 5*60, data => 5*60 } }
+ 
+$net->keep_alive_timeout(10); # use 10 s 
 
 sub urlc {
 
@@ -75,7 +70,7 @@ sub urld {
 
 sub _data {
 
- my ( $self, $date, $loc, $name ) = @_;
+ my ( $self, $date, $loc, $name, $pseudo ) = @_; # pseudo parameter is not used
  
  my $url = urld ( $url_data, $date, $loc, $name );
 
@@ -90,7 +85,7 @@ sub _data {
 
 sub _count {
 
- my ( $self, $date, $loc ) = @_;
+ my ( $self, $date, $loc, $pseudo ) = @_; # pseudo parameter is not used
 
  my $url = urlc ( $url_count, $date, $loc );
 
@@ -102,9 +97,4 @@ sub _count {
 
 }
 
-sub _link {
-
- my ( $self, $breeder )
-
-
-}
+1;

@@ -23,7 +23,11 @@ $ENV{MOJO_APP} ||= 'Catz::Core::App';
 conf ( 'win' ) and do {
 
  $ENV{MOJO_HOME} = '/catz/dev';
- $ENV{MOJO_MODE} = 'development';
+ 
+ #$ENV{MOJO_USERAGENT_DEBUG} = 1;
+ 
+ #$ENV{MOJO_MODE} = 'development';
+ $ENV{MOJO_MODE} = 'production';
  
 };
  

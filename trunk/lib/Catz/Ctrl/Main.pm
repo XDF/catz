@@ -35,6 +35,7 @@ use Catz::Data::Result;
 use Catz::Data::Setup;
 use Catz::Data::Style;
 use Catz::Util::Number qw ( fmt round );
+use Catz::Util::Time qw ( dt );
 
 my $langs = [ 'en', 'fi' ];
  
@@ -91,9 +92,7 @@ sub reset { $_[0]->render ( template => 'style/reset', format => 'css' ) }
 sub base {
 
  my $self = shift; my $s = $self->{stash};
-
- setup_verify ( 'palette', $s->{palette} ) or ( $self->not_found and return );
- 
+  
  $s->{st} = style_get; # copy style hashref to stash for stylesheet processing
   
  $self->render ( template => 'style/base', format => 'css' );
@@ -143,12 +142,20 @@ sub result {
  scalar @keys == 3 or 
   $self->render( text => RESULT_NA ) and return;
  
- my $count = $self->fetch ( 'net#count', $keys[0], $keys[1] ) // 0;
+ # this is a pseudo parameter passed to the model that contains the
+ # current dt down to 10 minutes, so this parameter changes in every
+ # 10 minutes and this makes cached model data live at most 10 minutes
+ my $pseudo = substr ( dt, 0, -3 );
+ # combined to the bypassed page cache and max-age 9 minutes it is
+ # 19 minutes and so it can be said that results are no older than 20
+ # minutes
+  
+ my $count = $self->fetch ( 'net#count', $keys[0], $keys[1], $pseudo ) // 0;
   
  $count == 0 and 
   $self->render( text => RESULT_NA ) and return;
 
- my $res = $self->fetch ( 'net#data', @keys );
+ my $res = $self->fetch ( 'net#data', @keys, $pseudo );
  
  defined $res and do {
  
