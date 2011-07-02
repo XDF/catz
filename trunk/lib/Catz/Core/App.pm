@@ -44,7 +44,9 @@ use Catz::Util::Time qw(
  dt dt2epoch dtdate dttime dtexpand dtlang epoch2http thisyear 
 );
 use Catz::Util::Number qw ( fmt fullnum33 round );
-use Catz::Util::String qw ( clean enurl etag decode encode limit trim );
+use Catz::Util::String qw ( 
+ clean enurl etag decode encode limit trim urirest 
+);
 
 my $time_page = 0;  # turns on timing on all HTTP requests
 
@@ -68,7 +70,7 @@ sub startup {
  # we use dynamically generated subs as bridges
  foreach my $sub ( 
   qw ( dt dt2epoch dtdate dttime dtexpand fmt clean enurl limit trim 
-  fullnum33 thisyear encode decode round ) 
+  fullnum33 thisyear encode decode round urirest ) 
  ) {
 
   $self->helper ( $sub => eval qq{ sub {
@@ -134,7 +136,7 @@ sub startup {
  #
   my $l = $r->route ( 
    '/:dummy', 
-   dummy => qr/[a-z0-9_]+/ 
+   dummy => qr/en(?:[1-9]{6})?|fi(?:[1-9]{6})?/ 
   );
  
  # the front page is at the root under the language
@@ -186,12 +188,12 @@ sub startup {
   
  # with photo id
  $p->route( ':pri/:sec/:id', 
-  pri => qr/[a-z]{1,50}/, sec => qr/[A-ZA-z0-9_-]+/, id => qr/\d{6}/ 
+  pri => qr/[a-z]{1,25}/, sec => qr/[A-ZA-z0-9_-]{1,500}/, id => qr/\d{6}/ 
  )->to( controller => 'pair' );
  
  # without photo id
  $p->route( ':pri/:sec/', 
-  pri => qr/[a-z]{1,50}/, sec => qr/[A-ZA-z0-9_-]+/ )->to( 
+  pri => qr/[a-z]{1,25}/, sec => qr/[A-ZA-z0-9_-]{1,500}/ )->to( 
    controller => 'pair', id => undef 
   );
 
@@ -283,62 +285,37 @@ sub before {
 
  $s->{url} = $self->req->url;  # let the url be in the stash also
 
- $s->{lang} = 'en'; $s->{langother} = 'fi'; # default to English
- $s->{langa} = 'en'; $s->{langaother} = 'fi';
+ $s->{lang} = 'en'; # default to English
+ $s->{langa} = 'en';
 
  # default is meta robots "index,follow",
  # controllers may modify these as needed
  # by setting to false sets noindex,nofollow respectively 
  $s->{meta_index} = 1;
  $s->{meta_follow} = 1;
- 
- # peek mode off by default
- $s->{peek} = 0;
- 
- my @urip = split m|/|, $s->{url};
- 
- #warn $urip[1];
- 
- if ( $urip[1] ) {
- 
-  #$s->{langa} = $urip[1];
   
-  given ( substr( $urip[1], 0, 2 ) ) {
-   
-   when ( 'fi' ) { 
-    $s->{lang} = 'fi'; $s->{langother} = 'en'; # Finnish
-    #$s->{langa} = 'fi'; $s->{langaother} = 'en';
-   }
-   
-  when ( 'if' ) {
+ if ( $s->{url} =~ /^\/((en|fi)([1-9]{6})?)\// ) {
+  
+  $s->{langa} = $1; $s->{lang} = $2;
     
-   $s->{lang} = 'fi'; $s->{langother} = 'en'; # Finnish
-   #$s->{langa} = 'fi'; $s->{langaother} = 'en';
-    
-   $s->{peek} = 1;
+  $3 and do { # if running with non-default setup then no indexing
    $s->{meta_index} = 0;
    $s->{meta_follow} = 0;
-    
-  }
-   
-  when ( 'ne' ) { 
+  };
+  
 
-   $s->{lang} = 'en'; $s->{langother} = 'fi';
-   #$s->{langa} = 'en'; $s->{langaother} = 'fi';
-     
-   $s->{peek} = 1;
-   $s->{meta_index} = 0;
-   $s->{meta_follow} = 0;
-       
-   }  
+  $s->{langother} = $s->{lang} eq 'fi' ? 'en' : 'fi';
  
-  }
+  $s->{langaother} = $s->{langother} . ( $3 // '' );  
+ 
+  # process and populate stash with setup data
+  # returns true if success                                                                                  
+  setup_init ( $self, $s->{langa} ) or
+   ( $self->render_not_found and return );   
+ 
  }
-    
- # process and populate stash with setup data                                                                                  
- setup_init ( $self, $s->{langa} );
-    
-      
+ 
+         
  # attempt to fetch from cache
  if ( my $res = cache_get ( cachekey ( $self ) ) ) {  # cache hit
  

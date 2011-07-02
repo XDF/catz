@@ -1,9 +1,9 @@
 % my $arg1 = qq{'$setupkey'}; 
-<select id="setup_<%= $setupkey %>" class="shade" onChange="catzSetupChange($('#setup_<%== $setupkey %>').val())">
+<select id="setup_<%= $setupkey %>" class="shade" onChange="location.href=$('#setup_<%== $setupkey %>').val()">
 % foreach my $row ( @{ $setup_values->{$setupkey} } ) {
 % my $selected = ' ';
 % $row->[0] eq stash ( $setupkey ) and $selected = ' selected ';
-<option<%= $selected %>value="<%== $row->[1] %>"><%= $t->{'SETUP_'.$setupkey.'_'.$row->[0]} %></option>
+<option<%= $selected %>value="/<%== $row->[1] . urirest ( $url ) %>"><%= $t->{'SETUP_'.$setupkey.'_'.$row->[0]} %></option>
 % }
 </select> 
 %#

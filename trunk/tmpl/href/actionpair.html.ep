@@ -1,5 +1,5 @@
 %# Create link to different action & pair of parametrs but to same id
-/<%== $lang %>/browse/<%== $topri %>/<%== encode($tosec) %>/<%== $id %>/
+/<%== $langa %>/browse/<%== $topri %>/<%== encode($tosec) %>/<%== $id %>/
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

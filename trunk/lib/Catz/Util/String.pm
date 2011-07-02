@@ -30,7 +30,7 @@ use base 'Exporter';
 
 our @EXPORT_OK = qw ( 
  clean decode deurl dna encode enurl etag lcc limit 
- nobreak trim ucc ucclcc
+ nobreak trim ucc ucclcc urirest
 ); 
 
 use Digest::MD5 qw ( md5_base64 md5_hex );
@@ -135,5 +135,15 @@ sub ucc { $_ = $_[0]; tr|üåäö|ÜÅÄÖ|; uc }
 sub ucclcc { ucc ( substr ( $_[0], 0, 1 ) ) . lcc ( substr ( $_[0], 1 ) ) }
 
 sub etag { lc md5_hex $_[0] }
+
+sub urirest { # remove the beginning of uri (the language/config part)
+
+ my @parts = split /\//, $_[0];
+ 
+ shift @parts; shift @parts;
+ 
+ return '/' . ( join '/', @parts );
+ 
+}
 
 1;
