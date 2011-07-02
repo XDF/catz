@@ -59,8 +59,8 @@ my $setkeys = [ map { $_->{name} } @$conf ];
 
 # generate all configurations beforehand at compile time
 
-# for initialization
-# chars -> values mapping 
+# for initialization: config -> values
+# size (Devel::Size) 550 kB 2011-07-02 
 my $init = {};
 
 foreach my $a ( 0 .. $#{ $conf->[0]->{values} } ) {
@@ -85,9 +85,9 @@ foreach my $a ( 0 .. $#{ $conf->[0]->{values} } ) {
  }
 } 
 
-# for changes
-# key -> new value -> old config -> new config
-my $list = {}; 
+# for changes: key -> new value -> old config -> new config
+# size (Devel::Size) 2,1 MB 2011-07-02 
+my $list = {};
 
 foreach my $i ( 0 .. $#{ $conf } ) {
  
@@ -120,8 +120,21 @@ foreach my $i ( 0 .. $#{ $conf } ) {
  
  }
  
-} 
-  
+}
+
+# for verifying: key->value->1
+# size (Devel::Size) 2,2 kB 2011-07-02
+my $pass = {};
+
+foreach my $c ( @$conf ) {
+
+ foreach my $key ( @{ $c->{values} } ) {
+ 
+  $pass->{$c->{name}}->{$key} = 1;
+ 
+ }
+
+}  
 
 sub setup_init { # initialize the setup to application stash
 
@@ -149,11 +162,13 @@ sub setup_init { # initialize the setup to application stash
   
   return 1; # success
 
- } else { return 0; # init failed }
+ } else { return 0 } # init failed
   
 }
 
-sub setup_keys { $setkeys };
+
+# get arrayref of all setup keys
+sub setup_keys { [ map { $_->{name} } @$conf ] };
 
 sub setup_values { 
 
@@ -183,11 +198,7 @@ sub setup_values {
   my @one = ();
   
   foreach my $j ( 0 .. $#{ $conf->[ $i ]->{values} } ) {
-  
-   #warn "$conf->[$i]->{name} $conf->[$i]->{values}->[$j] $config";
-  
-   #warn $list->{$conf->[$i]->{name}}->{$conf->[$i]->{values}->[$j]}->{$config}; 
-   
+     
    push @one, [ 
     $conf->[ $i ]->{values}->[ $j ], 
     $lang .
@@ -203,5 +214,9 @@ sub setup_values {
  return $out;
 
 }
+
+# verify a setup key-value pair
+# return the value from $pass hashref (is 1 if ok) 
+sub setup_verify { $pass->{$_[0]}->{$_[1]} // 0 };
 
 1; 

@@ -116,7 +116,7 @@ sub pattern {
   
  # prepare the url for the page of the other language
  
- $s->{urlother} =  '/' . $s->{langother} . '/' . $s->{action};
+ $s->{urlother} =  '/' . $s->{langaother} . '/' . $s->{action};
  
  if ( $s->{what} ) {
  

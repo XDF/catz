@@ -9,7 +9,7 @@
 %# --------------------
 %#
 <% content 'pathadd' => begin %>
-<a href="/<%== $lang %>/news/"><%= $t->{NEWS} %></a> <%= $pathsep %>
+<a href="/<%== $langa %>/news/"><%= $t->{NEWS} %></a> <%= $pathsep %>
 <% end %>
 %#
 %# --------------------
@@ -24,33 +24,33 @@
 <meta name="og:title" content="<%= dtexpand ( dtdate ( $new1->[0] ), $lang ) %> <%= $new1->[1] %>">
 <meta name="og:url" content="<%== $url %>">
 <meta name="og:type" content="article">
-<link rel="index" href="/<%== $lang %>/news/">
+<link rel="index" href="/<%== $langa %>/news/">
 % if ( $prev ) {
-<link rel="prev" href="/<%== $lang %>/news/<%== $prev %>/">
+<link rel="prev" href="/<%== $langa %>/news/<%== $prev %>/">
 % }
 % if ( $next ) {
-<link rel="next" href="/<%== $lang %>/news/<%== $next %>/">
+<link rel="next" href="/<%== $langa %>/news/<%== $next %>/">
 % } 
 <% end %>
 %#
 %# --------------------
 %#
-<% content 'bextra' => begin %><a href="/<%== $lang %>/feed/"><%= $t->{FEED} %></a> <%= $sep %> <%== include 'elem/extra' %><% end %>
+<% content 'bextra' => begin %><a href="/<%== $langa %>/feed/"><%= $t->{FEED} %></a> <%= $sep %> <%== include 'elem/extra' %><% end %>
 %#
 %# --------------------
 %#
 <% content 'sub' => begin %>
 <div class="center stripetop">
 % if ( $prev ) {
-<a href="/<%== $lang %>/news/<%== $prev %>/"><%= $t->{PREV_NEW1} %></a>
+<a href="/<%== $langa %>/news/<%== $prev %>/"><%= $t->{PREV_NEW1} %></a>
 % } else {
 <%= $t->{PREV_NEW1} %>
 % }
 <%= $sep %>
-<a href="/<%== $lang %>/news/"><%= $t->{NEWS_ALL} %></a>
+<a href="/<%== $langa %>/news/"><%= $t->{NEWS_ALL} %></a>
 <%= $sep %>
 % if ( $next ) {
-<a href="/<%== $lang %>/news/<%== $next %>/"><%= $t->{NEXT_NEW1} %></a>
+<a href="/<%== $langa %>/news/<%== $next %>/"><%= $t->{NEXT_NEW1} %></a>
 % } else {
 <%= $t->{NEXT_NEW1} %>
 % }

@@ -30,7 +30,7 @@
 <h2><%= fmt ( $row->[1], $lang ) %> <%= $t->{uc($row->[0]).'A'} %></h2>
 % foreach my $mode ( @{ $matrix->{$row->[0]}->{modes} } ) {
 <%= $sep %>
-<a href="/<%== $lang %>/list/<%== $row->[0] %>/<%== $mode %>/"><%= $t->{'MODE_'.uc($mode)} %></a>
+<a href="/<%== $langa %>/list/<%== $row->[0] %>/<%== $mode %>/"><%= $t->{'MODE_'.uc($mode)} %></a>
 % }
 </div>
 % }

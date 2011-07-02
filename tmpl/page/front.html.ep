@@ -46,7 +46,7 @@
 %# --------------------
 %#
 <% content 'bextra' => begin %>
-<a href="/<%== $lang %>/search?what=<%= enurl('+has=breed -has=cat') %>"><%= $t->{DONATE_CAT} %></a> 
+<a href="/<%== $langa %>/search?what=<%= enurl('+has=breed -has=cat') %>"><%= $t->{DONATE_CAT} %></a> 
 <%= $sep %>
 <a href="<%== $t->{URL_YOUTUBE} %>"><%= $t->{VIDEOS} %></a><% end %>
 %#
@@ -55,7 +55,7 @@
 <% content 'sub' => begin %>
 <div class="bar find stripetop center"><h2 class="aero"><%= $t->{FIND} %></h2>
 <input class="aero field" type="text" id="find" size="35">
-<a class="aero" href="/<%== $lang %>/search/"><%= $t->{SEARCH} %></a></div>
+<a class="aero" href="/<%== $langa %>/search/"><%= $t->{SEARCH} %></a></div>
 <% end %>
 %#
 %# --------------------
@@ -70,15 +70,15 @@
 %#
 <div class="bar"><h2><%= $t->{SUBJECTS} %></h2>
 %#
-<a href="/<%== $lang %>/browseall/"><%= fmt ( $maxx, $lang )  %> <%== $t->{PHOTOA_CATSHOW} %></a>
+<a href="/<%== $langa %>/browseall/"><%= fmt ( $maxx, $lang )  %> <%== $t->{PHOTOA_CATSHOW} %></a>
 %#
 % foreach my $row ( @$pris ) {
-<%= $sep %> <a href="/<%= $lang %>/list/<%= $row->[0] %>/<%= $matrix->{$row->[0]}->{modes}->[0] %>/">
+<%= $sep %> <a href="/<%== $langa %>/list/<%= $row->[0] %>/<%= $matrix->{$row->[0]}->{modes}->[0] %>/">
 <%= fmt ( $row->[1], $lang ) %>
 <%= $t->{uc($row->[0]).'A'} %></a>
 % }
 %#
-<%= $sep %> <a href="/<%== $lang %>/lists/"><%= $t->{ALL} %> <%= $t->{LISTINGS} %></a>
+<%= $sep %> <a href="/<%== $langa %>/lists/"><%= $t->{ALL} %> <%= $t->{LISTINGS} %></a>
 %#
 </div>
 %#
@@ -86,18 +86,18 @@
 %#
 <div class="bar"><h2><%= $t->{NEWS} %></h2>
 % foreach my $row ( @$news ) {
-<a href="/<%== $lang %>/news/<%== $row->[0] %>/"><%= dtexpand ( dtdate ( $row->[0] ), $lang ) %> <%= $row->[1] %></a> <%== $sep %>
+<a href="/<%== $langa %>/news/<%== $row->[0] %>/"><%= dtexpand ( dtdate ( $row->[0] ), $lang ) %> <%= $row->[1] %></a> <%== $sep %>
 % } 
-<a href="/<%== $lang %>/news/"><%= $t->{NEWS_ALL} %></a>
+<a href="/<%== $langa %>/news/"><%= $t->{NEWS_ALL} %></a>
 </div>
 %#
 %# --------------------
 %#
 <div class="bar"><h2><%= $t->{ALBUMS} %></h2> 
 % foreach my $row ( @$folders ) {
-<a title="<%= $row->[1] %> <%= $row->[1] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%= $lang %>/browse/folder/<%== $row->[0] %>/"><%= $mapview->{folder}->{$row->[0]}->[1] %></a> <%= $sep %>
+<a title="<%= $row->[1] %> <%= $row->[1] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%== $langa %>/browse/folder/<%== $row->[0] %>/"><%= $mapview->{folder}->{$row->[0]}->[1] %></a> <%= $sep %>
 % }
-<a href="/<%= $lang %>/list/album/cron/"><%= $t->{ALL} . ' ' . $t->{ALBUMS} %></a>
+<a href="/<%== $langa %>/list/album/cron/"><%= $t->{ALL} . ' ' . $t->{ALBUMS} %></a>
 </div>
 %#
 %# --------------------
@@ -108,7 +108,7 @@
 % my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
 % my $titl = dtexpand ( dtdate ( $th->[3] ), $lang );
 % defined $texts->{$th->[0]} and $titl = "$titl $sep " . $texts->{$th->[0]}; 
-<a title="<%= $titl %>" href="/<%== $lang %>/viewall/<%== $id %>/">
+<a title="<%= $titl %>" href="/<%== $langa %>/viewall/<%== $id %>/">
 <img src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" alt="[<%= $t->{PHOTO} %> <%= $id %>]" width="<%== $width %>" height="<%== $thumbsize %>">
 </a>
 % }

@@ -13,7 +13,7 @@
 %#
 %# --------------------
 %#
-<% content 'pathadd' => begin %><a href="/<%== $lang %>/lists/"><%= $t->{LISTINGS} %></a> <%= $pathsep %><% end %>
+<% content 'pathadd' => begin %><a href="/<%== $langa %>/lists/"><%= $t->{LISTINGS} %></a> <%= $pathsep %><% end %>
 %#
 %# --------------------
 %#
@@ -50,7 +50,7 @@
 </select>
 % };
 %  } else {
-<a href="/<%== $lang %>/list/<%== $subject %>/<%== $tom %>/"><%== $t->{'MODE_'.uc($tom)} %></a>   
+<a href="/<%== $langa %>/list/<%== $subject %>/<%== $tom %>/"><%== $t->{'MODE_'.uc($tom)} %></a>   
 %  }
 % }
 </div>
@@ -77,7 +77,7 @@
 % $matrix->{$subject}->{dividers} and do {
 <div class="bar outer stripebottom"><table class="full"><tr><td class="left">
 % if ( $mode eq 'top' ) {
-<h2 id="idx<%= $set->[0] %>"><%=  $lang eq 'fi' ? $set->[0] . $sep : '#' . $set->[0] %></h2>
+<h2 id="idx<%= $set->[0] %>"><%= $lang eq 'fi' ? $set->[0] . $sep : '#' . $set->[0] %></h2>
 % } else {
 <h2 id="idx<%= $set->[0] %>"><%= $set->[0] %></h2>
 % }
@@ -108,7 +108,7 @@
 % my $topri = $row->[0];
 % my $tosec = $row->[1];
 % if ( $maplink->{$topri}->{ROOT} ) { $topri = $maplink->{$subject}->{$tosec}->[0]; $tosec = $maplink->{$subject}->{$tosec}->[1]; }        
-<a title="<%== $t->{uc($subject)} %> <%== $sep %> <%= $row->[1] %>" href="/<%= $lang %>/browse/<%== $topri %>/<%== encode($tosec) %>/"> 
+<a title="<%== $t->{uc($subject)} %> <%== $sep %> <%= $row->[1] %>" href="/<%== $langa %>/browse/<%== $topri %>/<%== encode($tosec) %>/"> 
 <%= $subject ne 'date' ? $row->[1] : dtexpand ( $row->[1], $lang ) %></a>
 %#
 %# --------------------

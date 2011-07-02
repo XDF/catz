@@ -48,7 +48,7 @@
 % if ( $pri and $pri eq 'nat' ) {
 <%== include 'elem/flag', flag => $sec %>
 % } elsif ( $breedernat ) {
-<a title="<%= $t->{NAT} %> <%== $breedernat %>" href="/<%== $lang %>/browse/nat/<%== $breedernat %>/"><%== include 'elem/flag', flag => $breedernat %></a>
+<a title="<%= $t->{NAT} %> <%== $breedernat %>" href="/<%== $langa %>/browse/nat/<%== $breedernat %>/"><%== include 'elem/flag', flag => $breedernat %></a>
 % }
 <h1><%== include 'elem/titleb' =%> (<%= $from - $to == 1 ? $t->{PHOTO} : $t->{PHOTOS} %> <%== $from %>-<%== $to %>/<%= $total %>)</h1>
 <% end %>
@@ -170,13 +170,13 @@
 % if ( defined $cover_notext ) {
 <%= $sep %> <%= $t->{COVER_TEXT} %> <%== fmt ( round ( ( 100 - ( $cover_notext / $total ) * 100 ), 1 ), $lang ) %> %
 %  if ( $cover_notext > 0 ) {
-<%= $sep %> <a href="/<%== $lang %>/search?what=<%== enurl ( $url_notext ) %>"><%== fmt ( $cover_notext, $lang ) %> <%= $cover_notext == 1 ? $t->{NOTEXT} :  $t->{NOTEXTA} %></a>
+<%= $sep %> <a href="/<%== $langa %>/search?what=<%== enurl ( $url_notext ) %>"><%== fmt ( $cover_notext, $lang ) %> <%= $cover_notext == 1 ? $t->{NOTEXT} :  $t->{NOTEXTA} %></a>
 %  }
 % }
 % if ( defined $cover_nocat ) {
 <%= $sep %> <%= $t->{COVER_CAT} %> <%== fmt ( round ( ( 100 - ( ( $cover_nocat + $cover_notext ) / $total ) * 100 ), 1 ), $lang ) %> %
 %  if ( $cover_nocat > 0 ) { 
-<%= $sep %> <a href="/<%== $lang %>/search?what=<%== enurl ( $url_nocat ) %>"><%== fmt ( $cover_nocat, $lang ) %> <%= $cover_nocat == 1 ? $t->{NOCAT} :  $t->{NOCATA} %></a>
+<%= $sep %> <a href="/<%== $langa %>/search?what=<%== enurl ( $url_nocat ) %>"><%== fmt ( $cover_nocat, $lang ) %> <%= $cover_nocat == 1 ? $t->{NOCAT} :  $t->{NOCATA} %></a>
 %  }
 % }
 % if ( $runmode eq 'search' ) {

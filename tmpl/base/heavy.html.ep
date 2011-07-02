@@ -23,13 +23,24 @@
 %#
 <meta http-equiv="content-type" content="text/html; charset=utf-8"> 
 <meta name="generator" content="<%== $t->{GENERATOR} %>">
-<meta name="timestamp" content="<%== $now %>">
-<meta name="data_version" content="<%== $version %>">
 <meta name="author" content="<%== $t->{AUTHOR} %>">
 <meta name="copyright" content="<%== $t->{COPYRIGHT} %> <%== $t->{AUTHOR} %> <%== $t->{FIRSTYEAR} %>-<%== thisyear %>. <%= $t->{LICENCE} %>."> 
 <meta name="credits" content="<%== $t->{CREDITS} %>">
-<meta name="og:site_name" content="<%= $t->{SITE} %>"> 
-<meta name="robots" content="<%==  ( $meta_index ? 'index' : 'noindex' ) . ',' . ( $meta_follow ? 'follow' : 'nofollow' ) %>">
+<meta name="og:site_name" content="<%= $t->{SITE} %>">
+% if ( $meta_index ) {
+%  if ( $meta_follow ) {
+<meta name="robots" content="all">
+%  } else {
+<meta name="robots" content="index,nofollow">
+%  }
+% } 
+% else {
+%  if ( $meta_follow ) {
+<meta name="robots" content="noindex,follow">
+%  } else {
+<meta name="robots" content="none">
+%  }
+% } 
 <link rel="alternate" title="<%= $t->{TRANSLATE} %>" lang="<%== $langother %>" hreflang="<%== $langother %>" href="<%== $urlother %>">
 <link rel="copyright" href="<%== $t->{URL_LICENCE} %>">
 <link rel="shortcut icon" href="/favicon.ico">
@@ -47,7 +58,7 @@
 %# --------------------
 %#
 <tr><td class="left"><%= content 'path' => begin %>
-<a href="/<%== $lang %>/"><%= $t->{SITE} %></a> <%= $pathsep %>
+<a href="/<%== $langa %>/"><%= $t->{SITE} %></a> <%= $pathsep %>
 <%= content 'pathadd' %>
 <% end %></td>
 %#

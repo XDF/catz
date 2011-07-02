@@ -50,7 +50,7 @@ sub all {
  $self->pre or return 0;
  
  $s->{urlother} =  
-  '/' . $s->{langother} . '/' . $s->{action} . '/' .
+  '/' . $s->{langaother} . '/' . $s->{action} . '/' .
   ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
 
  return 1;

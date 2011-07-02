@@ -24,7 +24,7 @@
 %#
 <% content 'pathadd' => begin %>
 % if ( length ( $what // '' ) > 0 ) {
-<a href="/<%== $lang %>/search/"><%= $t->{SEARCH} %></a> <%= $pathsep %> 
+<a href="/<%== $langa %>/search/"><%= $t->{SEARCH} %></a> <%= $pathsep %> 
 <h1 class="mini xtra"><%= $t->{SEARCH_NOTHING} %></h1>
 % } else {
 <h1 class="mini"><%= $t->{SEARCH} %></h1>
