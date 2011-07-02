@@ -4,7 +4,11 @@
 </div>
 % }
 <div class="outer">
-<%== include 'content/guide' %>
+% if ( $lang eq 'fi' ) {
+<%== include 'content/guide_fi' %>
+% } else {
+<%== include 'content/guide_en' %>
+% }
 </div>
 %#
 %# Catz - the world's most advanced cat show photo engine
