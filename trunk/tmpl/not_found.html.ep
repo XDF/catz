@@ -1,6 +1,6 @@
 % extends 'base/light'; 
 <% content 'ptitle' => begin %>404 resource not found - 404 resurssia ei löydy<% end %>
-<% content 'main' => begin %><h1>404 resource not found<br>404 resurssia ei löydy<% end %>
+<% content 'main' => begin %><h1>404 resource not found<br>404 resurssia ei löydy</h1><% end %>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

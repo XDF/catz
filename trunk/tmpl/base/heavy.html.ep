@@ -21,13 +21,11 @@
 %#
 %# --------------------
 %#
-<meta http-equiv="content-type" content="text/html; charset=utf-8"> 
-<meta name="generator" content="<%== $t->{GENERATOR} %>">
-<meta name="generated_at" content="<%== $now %>">
-<meta name="loaded_at" content="<%== dtexpand ( $version, $lang ) %>">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link rel="shortcut icon" href="/favicon.ico">
 <meta name="author" content="<%== $t->{AUTHOR} %>">
-<meta name="copyright" content="<%== $t->{COPYRIGHT} %> <%== $t->{AUTHOR} %> <%== $t->{FIRSTYEAR} %>-<%== thisyear %>. <%= $t->{LICENCE} %>."> 
-<meta name="credits" content="<%== $t->{CREDITS} %>">
+<meta name="copyright" content="<%== $t->{COPYRIGHT} %> <%== $t->{AUTHOR} %> <%== $t->{FIRSTYEAR} %>-<%== thisyear %>. <%= $t->{LICENCE} %>.">
+<link rel="copyright" href="<%== $t->{URL_LICENCE} %>"> 
 <meta name="og:site_name" content="<%= $t->{SITE} %>">
 % if ( $meta_index ) {
 %  if ( $meta_follow ) {
@@ -44,10 +42,12 @@
 %  }
 % } 
 <link rel="alternate" title="<%= $t->{TRANSLATE} %>" lang="<%== $langother %>" hreflang="<%== $langother %>" href="<%== $urlother %>">
-<link rel="copyright" href="<%== $t->{URL_LICENCE} %>">
-<link rel="shortcut icon" href="/favicon.ico">
 <meta name="fb:app_id" content="<%== $facebookkey %>"> 
 <%= content 'metaadd' %>
+<meta name="generator" content="<%== $t->{GENERATOR} %>">
+<meta name="loaded_at" content="<%== dtexpand ( $version, $lang ) %>">
+<meta name="rendered_at" content="<%== $now %>">
+<meta name="credits" content="<%== $t->{CREDITS} %>">
 %#
 %# --------------------
 %#

@@ -1,0 +1,435 @@
+% my $term = undef;
+% my $exa = undef;
+% my $exb = undef;
+<div class="bar">
+<h2>Advanced search</h2> is the photo search engine targeted to those looking for more than the search capabilities provided by the <a href="/<%== $langa %>/">front page</a>. Using advanced search properly requires some learning but the reward is that you get exactly the photos you want. The search terms are typed to the search filed separated by spaces and the search gets executed by hitting <span class="lean">enter</span> or <span class="lean"><%= $t->{SEARCH_SUBMIT} %></span> button. Search term containing spaces must be surrounded by double quotations. The advanced search is case-insensitive regarding the search terms and always conducts the search from both English and Finnish content. The ordering of search terms doesn't affect the result. The search can have maximum of 25 search terms and the total length of the search is limited to <%= fmt ( 1234, $lang ) %> characters.
+</div>
+%#
+%# --------------------
+%#
+<ul>
+%#
+%# --------------------
+%#
+<li>
+% $term = 'mimosa';
+<a href="/<%== $langa %>/search?what=<%== enurl $term %>"><%= $term %></a> conducts a search for photos of subjects that are exactly <span class="lean"><%= $term %></span> and matches are found in cat names and nicknames
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $term = 'mimosan';
+<a href="/<%== $langa %>/search?what=<%== enurl($term) %>"><%= $term %></a> conducts a search for photos of subjects that are exactly <span class="lean"><%= $term %></span> and it matches a breeder name
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $term = 'Iltavilli Ilveskartanon Ilveslinnan';
+<a href="/<%== $langa %>/search?what=<%== enurl($term) %>"><%= $term %></a> conducts a search for photos of subjets that are exactly <span class="lean">Iltavilli</span>, <span class="lean">Ilveskartanon</span> or <span class="lean">Ilveslinnan</span> and so the result is an union of the photos of three breeders
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $term = 'NFO n 22';
+<a href="/<%== $langa %>/search?what=<%== enurl($term) %>"><%= $term %></a> returns lot of photos due to the fact it is an union of photos of Norwegian Forest Cat, feature <span class="lean">n</span> and feature<span class="lean">22</span>
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $term = 'NFO n 22';
+<a href="/<%== $langa %>/search?what=<%== enurl(qq{"$term"}) %>"><%= qq{"$term"} %></a> matches only exactly to <span class="lean"><%= $term %></span> which is an EMS code
+</li>
+%#
+%# --------------------
+%#
+</ul>
+%#
+%# --------------------
+%#
+<div class="bar">
+If multiple search terms are given the default behavior is to return photos that matches to at least one of the terms (OR). To get the photos that match all the terms (AND) add plus right before each search term. To filter out the photos matching a search term use minus right before the term.
+</div>
+%#
+%# --------------------
+%#
+<ul>
+%#
+%# --------------------
+%#
+<li>
+% $term = '+MCO d e f';
+<a href="/<%== $langa %>/search?what=<%== enurl($term) %>"><%= $term %></a> returns Maine Coon photos having at least one of the three features given
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $term = '+MCO d e f -22 -23';
+<a href="/<%== $langa %>/search?what=<%== enurl($term) %>"><%= $term %></a> returns Maine Coon photos having at least one of the three features given but filters out the photos having features <span class="lean">22</span> and <span class="lean">23</span>
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $term = '-22 +n aby rag ben';
+<a href="/<%== $langa %>/search?what=<%== enurl($term) %>"><%= $term %></a> conducts a search for photos of three breeds that also have feature <span class="lean">n</span> but filtering out feature <span class="lean">22</span>
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $term = '+chamberlain +MCO';
+<a href="/<%== $langa %>/search?what=<%== enurl($term) %>"><%= $term %></a> returns Chamberlain breeder's Maine Coon photos
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $term = '-chamberlain +MCO';
+<a href="/<%== $langa %>/search?what=<%== enurl($term) %>"><%= $term %></a> returns other Maine Coon photos than Chamberlain breeder's
+</li>
+%#
+%# --------------------
+%#
+</ul>
+%#
+%# --------------------
+%#
+<div class="bar">
+By default the advanced search looks for an exact match. To relax this rule use question mark to match any character and asterisk to match a sequence of any characters of any length.
+</div>
+%#
+%# --------------------
+%#
+<ul>
+%#
+%# --------------------
+%#
+<li>
+% $term = 'b??';
+<a href="/<%== $langa %>/search?what=<%== enurl($term) %>"><%= $term %></a> conducts a search for photos of subjects that start with letter <span class="lean">b</span> and are three characters of length matching breed codes that begin with <span class="lean">b</span>
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $term = 'miu*';
+<a href="/<%== $langa %>/search?what=<%== enurl($term) %>"><%= $term %></a> conducts a search for photos that have subject that begins with <span class="lean">miu</span>
+</li>
+%#
+%#
+%# --------------------
+%#
+<li>
+% $term = '*mini*';
+<a href="/<%== $langa %>/search?what=<%== enurl($term) %>"><%= $term %></a> conducts a search for photos that have subjects that have text <span class="lean">mini</span> somewhere within the subject matching cat names and nicknames
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $term = '"MCO ? ??" "NFO ? ??"';
+<a href="/<%== $langa %>/search?what=<%== enurl($term) %>"><%= $term %></a> returns Maine Coon and Norwegian Forest Cat photos having EMS code of structure breed code, one character, two characters. </li>
+%#
+%# --------------------
+%#
+</ul>
+%#
+%# --------------------
+%#
+<div class="bar">By default the search term is matched against all concepts. To force a search term to match against a single concept the name of the concept is given right before the term and separated from it with an equality sign.
+</div>
+%#
+%# --------------------
+%#
+<ul>
+%#
+%# --------------------
+%#
+<li>
+% $term = '+lens=sigma* +org=surok +breed=rus';
+<a href="/<%== $langa %>/search?what=<%== enurl($term) %>"><%= $term %></a> returns all photos that are taken with Sigma lenses in SUROK shows and have a Russian Blue
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $term = '+breeder=Mi* date=2010* date=2009* date=2008*';
+<a href="/<%== $langa %>/search?what=<%== enurl($term) %>"><%= $term %></a> returns all photos of breeders that start with <span class="lean">Mi</span> and are taken at 2010, 2009 or 2008 (the advanced search uses date format <span class="lean">YYYYMMDD</span>) 
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $term = '+has=breed -has=cat date=2011*';
+<a href="/<%== $langa %>/search?what=<%== enurl($term) %>"><%= $term %></a> returns all photos taken at 2011 that have a breed but no cat name (we are very happy for new cat data contributions)
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $term = '+text=*panel*';
+<a href="/<%== $langa %>/search?what=<%== enurl($term) %>"><%= $term %></a> conducts a search against the photo text and looks for <span class="lean">panel</span> anywhere within the text
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $term = '+flen="85 mm" +fnum=f/1.8';
+<a href="/<%== $langa %>/search?what=<%== enurl($term) %>"><%= $term %></a> conducts a search for photos matching both focal length <span class="lean">85 mm</span> and aperture <span class="lean">f/1.8</span>
+</li>
+%#
+%# --------------------
+%#
+</ul>
+%#
+%# --------------------
+%#
+<div class="bar">All the concepts known by the advanced search in alphabetical order are as follows</div>
+%#
+%# --------------------
+%#
+<ul>
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'album';
+% $exb = 'SRK cat of the year 2009 award gala';
+<span class="lean"><%== $exa %></span> is the visible name of the photo album like <a href="/<%== $langa %>/search?what=<%== enurl(qq{$exa="$exb"}) %>"><%= $exb %></a> but due to album name changes it is better to use concepts <span class="lean">date</span>, <span class="lean">folder</span>, <span class="lean">loc</span> and <span class="lean">org</span> in searches
+</li>  
+%#
+%# --------------------
+%#
+<li>
+% $exa = '"Eetu Pörri"';
+% $exb = 'any="Eetu Pörri"';
+<span class="lean">any</span> is a special concept matching all concepts and it gets used transparently whenever no concept is defined for a search term making searches
+<a href="/<%== $langa %>/search?what=<%= enurl $exa %>"><%= $exa %></a> ja <a href="/<%== $langa %>/search?what=<%= enurl $exb %>"><%= $exb %></a> to return the same result
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'app';
+% $exb = 'g 09';
+<span class="lean"><%== $exa %></span> is the <%= $t->{uc($exa)} %> of the cat in the photo being effectively the EMS code without the breed like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'body';
+% $exb = 'Canon EOS 20D';
+<span class="lean"><%== $exa %></span> is the camera body used in taking the photo like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'breed';
+% $exb = 'AWS';
+<span class="lean"><%== $exa %></span> is the <%= $t->{uc($exa)} %> of the cat in the photo being effectively the breed part of the EMS code like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'breeder';
+% $exb = 'Piupaws';
+<span class="lean"><%== $exa %></span> is the <%= $t->{uc($exa)} %> of the cat in the photo like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'cat';
+% $exb = 'Tatsutan Kaori Asmi-Apsaro';
+<span class="lean"><%== $exa %></span> is the <%= $t->{uc($exa)} %> in the photo being effectively the cat name without titles, nickname and EMS code like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'code';
+% $exb = 'BEN n 24 33';
+<span class="lean"><%== $exa %></span> is the full EMS code of the cat in the photo like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+</li>
+%#
+%# --------------------
+%#   
+<li>
+% $exa = 'date';
+% $exb = '20081122';
+<span class="lean"><%== $exa %></span> is the date of the photo album using format <span class="lean">YYYYMMDD</span> like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a> but notice that the quick find <a href="/<%== $langa %>/">on the front page</a> uses langauge specific format instead of this format
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'etime';
+% $exb = '1/250 s';
+<span class="lean"><%== $exa %></span> is the exposure time used in taking the photo like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'feat';
+% $exb = 'x';
+<span class="lean"><%== $exa %></span> is the <%= $t->{uc($exa)} %> that is effectively a single part of the EMS code of the cat in the photo like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a></li>
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'flen';
+% $exb = '200 mm';
+<span class="lean"><%== $exa %></span> is the focal length used in taking the photo like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'fnum';
+% $exb = 'f/1.4';
+<span class="lean"><%== $exa %></span> is the aperture used in taking the photo like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</li>
+%#
+%# --------------------
+%#   
+<li>
+% $exa = 'folder';
+% $exb = '20100926loimaa';
+<span class="lean"><%== $exa %></span> is the technical name of the folder of the album like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a> and this is a fixed concept that never changes and is the same as the the folder name used by the the old service
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $exa = '+has=title';
+% $exb = '-has=breed';
+<span class="lean">has</span> is a special concept that allows to conduct a search for photos having a certain concept or photos not having a certain concept like <a href="/<%== $langa %>/search?what=<%= enurl $exa %>"><%= $exa %></a> that returns photos having cats that have at least one reported title and <a href="/<%== $langa %>/search?what=<%= enurl $exb %>"><%= $exb %></a> that returns photos that have no breed
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'iso';
+% $exb = 'ISO 1600';
+<span class="lean"><%== $exa %></span> is the camera sensitivity used in taking the photo like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'lens';
+% $exb = 'Tokina 17mm f/3.5 AT-X Pro';
+<span class="lean"><%== $exa %></span> is the lens name used taking the photo <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'loc';
+% $exb = 'Helsinki';
+<span class="lean"><%== $exa %></span> is the name of the place where the album was shot like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'nat';
+% $exb = 'US';
+<span class="lean"><%== $exa %></span> is the country code of the breeder of the cat in the photo like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'nick';
+% $exb = 'Vikke';
+<span class="lean"><%== $exa %></span> is the nickname of the cat in the photo like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'org';
+% $exb = 'PIROK';
+<span class="lean"><%== $exa %></span> is the organizer of the show of the album like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'text';
+% $exb = '*rosette*';
+<span class="lean"><%== $exa %></span> is the complete photo text and typically it is searched for a pattern like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</li>
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'title';
+% $exb = 'QGCA';
+<span class="lean"><%== $exa %></span> is the reported title of the cat in the photo like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</li> 
+%#
+%# --------------------
+%#
+<li>
+% $exa = 'umb';
+% $exb = 'CFA';
+<span class="lean"><%== $exa %></span> is the umbrella organization of the organizer of the show of the album like <a href="/<%== $langa %>/search?what=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+</li>
+%#
+%# --------------------
+%#
+<div class="bar">
+The quick find on <a href="/<%== $langa %>/">the front page</a> is aimed for all users and its purpose is to provide instant access to photos. In the other hand the advanced search is targeted to users having deeper understading of the data content and structure. For this reason the quick find and the advanced search have at least the following differences 
+</div>
+%#
+<ul>
+%#
+<li>quick find is language aware while the advanced search always conducts the searches against both English and Finnish content</li>
+%#
+<li>quick find expresses dates in the langauge specific format while advanced search uses format <span class="lean">YYYYMMDD</span></li>
+%#
+<li>quick find can be used to find breeds, features, nations and titles in their full language dependent form while advanced search uses only the codes</li>
+%#
+<li>quick find is never matched directly against the photo text</li>
+%#
+<li>quick find operates in real time while the search is typed while advanced search must be submitted for execution</li>
+%#
+<li>the result of a quick find is a suggestion of matching subjects while the result of an advanced search is a set of photos</li>
+%# 
+</ul>
+%#
+%# --------------------
+%#
+%# Catz - the world's most advanced cat show photo engine
+%# Copyright (c) 2010-2011 Heikki Siltala
+%# Licensed under The MIT License
+%# 
+%# Permission is hereby granted, free of charge, to any person obtaining a copy
+%# of this software and associated documentation files (the "Software"), to deal
+%# in the Software without restriction, including without limitation the rights
+%# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+%# copies of the Software, and to permit persons to whom the Software is
+%# furnished to do so, subject to the following conditions:
+%# 
+%# The above copyright notice and this permission notice shall be included in
+%# all copies or substantial portions of the Software.
+%# 
+%# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+%# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+%# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+%# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+%# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+%# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+%# THE SOFTWARE.
+%#

@@ -34,11 +34,15 @@ my $t = Test::Mojo->new( app => 'Catz::Core::App' );
 
 my $c = 0;
 
+my @valid = qw ( 20110512234151 20110512234151 20110627222128 );
+
+my @invalid = qw ( 20110415123456 roska 19001010123456 99887766654321 ok !!! );
+
 foreach my $lang ( qw ( en fi ) ) {
 
  my $txt = text ( $lang );
  
- # news page
+ # news index page
    
  $t->get_ok("/$lang/news/")
    ->status_is(200)
@@ -47,6 +51,27 @@ foreach my $lang ( qw ( en fi ) ) {
    ->content_like(qr/$txt->{NOSCRIPT}/);
  
  $c += 5;
+ 
+ # articles
+ 
+ foreach my $key ( @valid ) {
+ 
+  $t->get_ok("/$lang/news/$key")->status_is(302); $c += 2;
+ 
+  $t->get_ok("/$lang/news/")
+    ->status_is(200)
+    ->content_type_like(qr/text\/html/)
+    ->content_like(qr/$txt->{NEWS}/);
+ 
+  $c += 4;
+  
+ }
+ 
+ foreach my $key ( @invalid ) {
+ 
+  $t->get_ok("/$lang/news/$key/")->status_is(404); $c += 2;
+ 
+ }
  
  # RSS feed
  

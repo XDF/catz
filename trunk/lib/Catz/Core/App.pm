@@ -336,10 +336,8 @@ sub before {
     
   $3 and do { # if running with non-default setup then no indexing
    $s->{meta_index} = 0;
-   $s->{meta_follow} = 0;
   };
   
-
   $s->{langother} = $s->{lang} eq 'fi' ? 'en' : 'fi';
  
   $s->{langaother} = $s->{langother} . ( $3 // '' );  
