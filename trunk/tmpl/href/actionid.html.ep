@@ -18,7 +18,7 @@ $toaction eq 'auto' and do {
 location.href='/<%== $langa %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/'+this.options[this.selectedIndex].value+'/'
 %   } 
 %   when ( 'search' ) {
-location.href='/<%== $langa %>/<%== $toaction %>/'+this.options[this.selectedIndex].value+'/?what=<%== enurl($what) %>'
+location.href='/<%== $langa %>/<%== $toaction %>/'+this.options[this.selectedIndex].value+'/?q=<%== enurl($what) %>'
 %   } 
 %   default  { 
 location.href='/<%== $langa %>/<%== $toaction %>/'+this.options[this.selectedIndex].value+'/'
@@ -30,7 +30,7 @@ location.href='/<%== $langa %>/<%== $toaction %>/'+this.options[this.selectedInd
 /<%== $langa %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/<%== $toid %>/
 %   } 
 %   when ( 'search' ) {
-/<%== $langa %>/<%== $toaction %>/<%== $toid %>?what=<%== enurl($what) %>
+/<%== $langa %>/<%== $toaction %>/<%== $toid %>?q=<%== enurl($what) %>
 %   } 
 %   default  { 
 /<%== $langa %>/<%== $toaction %>/<%== $toid %>/

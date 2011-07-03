@@ -76,21 +76,21 @@ my @non = (
 # known good combinations
 
 my @good = (
- '139024?what=mimosan',
- '122005?what=mimosan',
- '014001?what=%2Blens%3Dsigma* %2Borg%3Dsurok %2Bbreed%3Drus',
- '126133?what=%2Btext%3D"* panel*"',
- '126127?what=%2Btext%3D"* panel*"'
+ '139024?q=mimosan',
+ '122005?q=mimosan',
+ '014001?q=%2Blens%3Dsigma* %2Borg%3Dsurok %2Bbreed%3Drus',
+ '126133?q=%2Btext%3D"* panel*"',
+ '126127?q=%2Btext%3D"* panel*"'
 );
 
 # known bad combinations
 
 my @bad = (
- '122001?what=mimosan',
- '100008?what=mimosan',
- '123456?what=%2Blens%3Dsigma* %2Borg%3Dsurok %2Bbreed%3Drus',
- '126001?what=%2Btext%3D"* panel*"',
- '121100?what=%2Btext%3D"* panel*"'
+ '122001?q=mimosan',
+ '100008?q=mimosan',
+ '123456?q=%2Blens%3Dsigma* %2Borg%3Dsurok %2Bbreed%3Drus',
+ '126001?q=%2Btext%3D"* panel*"',
+ '121100?q=%2Btext%3D"* panel*"'
 );
 
 foreach my $lang ( qw ( en fi en en264311 fi365312 ) ) {
@@ -99,7 +99,7 @@ foreach my $lang ( qw ( en fi en en264311 fi365312 ) ) {
  
  foreach my $init ( @ok ) {
  
-  $t->get_ok("/$lang/search?init=".enurl($init))
+  $t->get_ok("/$lang/search?i=".enurl($init))
     ->status_is(200)
     ->content_type_like(qr/text\/html/);
   
@@ -133,7 +133,7 @@ foreach my $lang ( qw ( en fi en en264311 fi365312 ) ) {
 
  foreach my $what ( @ok ) {
     
-  $t->get_ok("/$lang/search?what=".enurl($what))
+  $t->get_ok("/$lang/search?q=".enurl($what))
     ->status_is(200)
     ->content_type_like(qr/text\/html/)
     ->element_exists('html body div div a img')
@@ -142,7 +142,7 @@ foreach my $lang ( qw ( en fi en en264311 fi365312 ) ) {
 
   $c += 6;
   
-  $t->get_ok("/$lang/display?what=".enurl($what))
+  $t->get_ok("/$lang/display?q=".enurl($what))
     ->status_is(200)
     ->content_type_like(qr/text\/html/)
     ->content_like(qr/ alt=\"\[/)
@@ -154,7 +154,7 @@ foreach my $lang ( qw ( en fi en en264311 fi365312 ) ) {
 
  foreach my $what ( @non ) {
   
-  $t->get_ok("/$lang/search?what=".enurl($what))
+  $t->get_ok("/$lang/search?q=".enurl($what))
     ->status_is(200)
     ->content_type_like(qr/text\/html/)
     ->element_exists('html body div div')
@@ -162,7 +162,7 @@ foreach my $lang ( qw ( en fi en en264311 fi365312 ) ) {
  
   $c += 5;
 
-  $t->get_ok("/$lang/display?what=".enurl($what))
+  $t->get_ok("/$lang/display?q=".enurl($what))
     ->status_is(404);
   
   $c += 2;
@@ -190,7 +190,7 @@ foreach my $lang ( qw ( en fi en en264311 fi365312 ) ) {
   
   if ( ( length ( $what ) < 1234 ) and ( $c <= 25 ) ) {
     
-   $t->get_ok("/$lang/search?what=".enurl($what))
+   $t->get_ok("/$lang/search?q=".enurl($what))
      ->status_is(200)
      ->content_type_like(qr/text\/html/);
 
@@ -198,7 +198,7 @@ foreach my $lang ( qw ( en fi en en264311 fi365312 ) ) {
     
   } else {
   
-    $t->get_ok("/$lang/search?what=".enurl($what));
+    $t->get_ok("/$lang/search?q=".enurl($what));
 
     $c += 1;
   
@@ -208,17 +208,17 @@ foreach my $lang ( qw ( en fi en en264311 fi365312 ) ) {
  
  # empty
  
- $t->get_ok("/$lang/search?what=")->status_is(200); $c += 2;    
+ $t->get_ok("/$lang/search?q=")->status_is(200); $c += 2;    
 
  # just spaces
  
- $t->get_ok("/$lang/search?what=".enurl('    '))->status_is(200); $c += 2;    
+ $t->get_ok("/$lang/search?q=".enurl('    '))->status_is(200); $c += 2;    
  
  # huge
  
  my $what = join '', map { 'x' } ( 1 .. 1900 );
  
- $t->get_ok("/$lang/search?what=$what")
+ $t->get_ok("/$lang/search?q=$what")
    ->status_is(404);
    
  $c += 2;    

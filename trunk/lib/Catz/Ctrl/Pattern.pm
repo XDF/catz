@@ -51,8 +51,8 @@ sub pattern {
  $s->{args_count} = 0;
 
  # search-related input parameters are fetched 
- $s->{what} = $self->param('what') // undef;
- $s->{init} = $self->param('init') // undef;
+ $s->{what} = $self->param('q') // undef;
+ $s->{init} = $self->param('i') // undef;
  
  $s->{what} and do {
  
@@ -122,17 +122,17 @@ sub pattern {
  
   if ( $s->{origin} eq 'id' ) {
   
-   $s->{urlother} .= '/' . $s->{id} . '?what=' .  $self->enurl ( $s->{what} );
+   $s->{urlother} .= '/' . $s->{id} . '?q=' .  $self->enurl ( $s->{what} );
   
   } else {
   
-   $s->{urlother} .= '?what=' .  $self->enurl ( $s->{what} );
+   $s->{urlother} .= '?q=' .  $self->enurl ( $s->{what} );
   
   } 
  
  } elsif ( $s->{init} ) {
 
-  $s->{urlother} .= '?init=' .  $self->enurl ( $s->{init} );
+  $s->{urlother} .= '?i=' .  $self->enurl ( $s->{init} );
  
  } else {
 
@@ -181,6 +181,9 @@ sub search {
 sub display {
  
  my $self = shift; my $s = $self->{stash};
+ 
+ # display requires always a query
+ $self->param('q') or ( $self->not_found and return );
  
  $self->pattern or ( $self->not_found and return );
  

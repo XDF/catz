@@ -94,7 +94,7 @@ foreach my $lang ( qw ( en fi ) ) {
 
  # no key / 2
 
- $t->get_ok("/$lang/result?key=")
+ $t->get_ok("/$lang/result?x=")
   ->status_is(200)
   ->content_type_like(qr/text\/html/)
   ->content_is(RESULT_NA);
@@ -103,7 +103,7 @@ foreach my $lang ( qw ( en fi ) ) {
  
  foreach my $key ( @ok ) {
  
-  $t->get_ok("/$lang/result?key=$key")
+  $t->get_ok("/$lang/result?x=$key")
     ->status_is(200)
     ->content_type_like(qr/text\/html/)
     ->content_like(qr/$txt->{RESULT_CREDIT_URL}/);
@@ -114,7 +114,7 @@ foreach my $lang ( qw ( en fi ) ) {
  
  foreach my $key ( @bad, @mal, $huge ) {
  
-  $t->get_ok("/$lang/result?key=$key")
+  $t->get_ok("/$lang/result?x=$key")
     ->status_is(200)
     ->content_type_like(qr/text\/html/)
     ->content_is(RESULT_NA);

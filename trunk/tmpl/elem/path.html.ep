@@ -1,5 +1,5 @@
 % if ( $runmode eq 'search' ) {
-<a href="/<%== $langa %>/search<%= length ( $what ) == 0 ? '/' : '?init='.enurl ( $what ) %>"><%= $t->{SEARCH} %></a> <%= $pathsep %>
+<a href="/<%== $langa %>/search<%= length ( $what ) == 0 ? '/' : '?i='.enurl ( $what ) %>"><%= $t->{SEARCH} %></a> <%= $pathsep %>
 % } elsif ( $args_count == 0 ) {
 %# do nothing = use the default path
 % } elsif ( $args_count == 2 ) {
@@ -9,7 +9,7 @@
 <a href="/<%== $langa %>/list/<%== $args_array->[0] %>/<%== $matrix->{$args_array->[0]}->{modes}->[0] %>/"><%= $t->{uc($args_array->[0]).'S'} %></a> <%= $pathsep %>
 %  }
 % } else {
-<a href="/<%== $langa %>/search<%= length ( $what ) == 0 ? '/' : '?init='.enurl ( $what ) %>"><%= $t->{SEARCH} %></a> <%= $pathsep %>
+<a href="/<%== $langa %>/search<%= length ( $what ) == 0 ? '/' : '?i='.enurl ( $what ) %>"><%= $t->{SEARCH} %></a> <%= $pathsep %>
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine

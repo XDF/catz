@@ -42,16 +42,18 @@
 %  }
 % } 
 <link rel="alternate" title="<%= $t->{TRANSLATE} %>" lang="<%== $langother %>" hreflang="<%== $langother %>" href="<%== $urlother %>">
-<meta name="fb:app_id" content="<%== $facebookkey %>"> 
+<meta name="fb:admins" content="<%== $facebookkey %>"> 
 <%= content 'metaadd' %>
 <meta name="generator" content="<%== $t->{GENERATOR} %>">
 <meta name="loaded_at" content="<%== dtexpand ( $version, $lang ) %>">
 <meta name="rendered_at" content="<%== $now %>">
 <meta name="credits" content="<%== $t->{CREDITS} %>">
+%== include 'elem/analytics'
+</head>
 %#
 %# --------------------
 %#
-</head><body lang="<%== $lang %>"><div id="page">
+<body lang="<%== $lang %>"><div id="page">
 %#
 %# --------------------
 %#

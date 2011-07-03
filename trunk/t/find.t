@@ -43,7 +43,7 @@ foreach my $lang ( qw ( en fi ) ) {
   30 5 kää HYVINkää HyVINkÄÄ jÄMSä åker SUROK surok pirok FIFE FifE TIcA TicA
  ) ) {
   
- $t->get_ok("/$lang/find?what=$find")
+ $t->get_ok("/$lang/find?s=$find")
    ->status_is(200)
    ->content_type_like(qr/text\/html/)
    ->element_exists('div[class~="rounded"] a');
@@ -58,7 +58,7 @@ foreach my $lang ( qw ( en fi ) ) {
   SIGM* ??GMA ??GMA ?rppi ÖRPP? ÖR* *Ö* ??? ???? ????? ?????? mimos? mimo* *san
  ) ) {
   
- $t->get_ok("/$lang/find?what=$find")
+ $t->get_ok("/$lang/find?s=$find")
    ->status_is(200)
    ->content_type_like(qr/text\/html/)
    ->element_exists('div[class~="rounded"] a');
@@ -73,7 +73,7 @@ foreach my $lang ( qw ( en fi ) ) {
   %$@OIIKKKJ MIIMUUXxde poi%lk%%jd 798_3h_3hj //;;;: -öÅÄÖåäö// ?=?=?=??=
  ) ) {
   
-  $t->get_ok("/$lang/find?what=$find")
+  $t->get_ok("/$lang/find?s=$find")
    ->status_is(200)
    ->content_type_like(qr/text\/html/)
    ->content_is('');
@@ -90,7 +90,7 @@ foreach my $lang ( qw ( en fi ) ) {
  
   my $url = join '', map { 'x' } ( 1 .. $i );
   
-  $t->get_ok("/$lang/find?what=$url")
+  $t->get_ok("/$lang/find?s=$url")
    ->status_is(200)
    ->content_is('');
    
@@ -102,42 +102,42 @@ foreach my $lang ( qw ( en fi ) ) {
 
 # english specific
 
-$t->get_ok("/en/find?what=".enurl('2010-'))
+$t->get_ok("/en/find?s=".enurl('2010-'))
   ->status_is(200)
   ->content_type_like(qr/text\/html/)
   ->element_exists('div[class~="rounded"] a');
    
 $c += 4;
 
-$t->get_ok("/en/find?what=".enurl('2005-07-'))
+$t->get_ok("/en/find?s=".enurl('2005-07-'))
   ->status_is(200)
   ->content_type_like(qr/text\/html/)
   ->element_exists('div[class~="rounded"] a');
    
 $c += 4;
 
-$t->get_ok("/en/find?what=".enurl('association'))
+$t->get_ok("/en/find?s=".enurl('association'))
   ->status_is(200)
   ->content_type_like(qr/text\/html/)
   ->element_exists('div[class~="rounded"] a');
    
 $c += 4;
 
-$t->get_ok("/en/find?what=".enurl('10.10.'))
+$t->get_ok("/en/find?s=".enurl('10.10.'))
   ->status_is(200)
   ->content_type_like(qr/text\/html/)
   ->content_is('');
 
 $c += 4;
    
-$t->get_ok("/en/find?what=".enurl('7.2005'))
+$t->get_ok("/en/find?s=".enurl('7.2005'))
   ->status_is(200)
   ->content_type_like(qr/text\/html/)
   ->content_is('');
 
 $c += 4;
 
-$t->get_ok("/en/find?what=".enurl('yhdistys'))
+$t->get_ok("/en/find?s=".enurl('yhdistys'))
   ->status_is(200)
   ->content_type_like(qr/text\/html/)
   ->content_is('');
@@ -147,42 +147,42 @@ $c += 4;
 
 # finnish specific
 
-$t->get_ok("/fi/find?what=".enurl('2010-'))
+$t->get_ok("/fi/find?s=".enurl('2010-'))
   ->status_is(200)
   ->content_type_like(qr/text\/html/)
   ->content_is('');
    
 $c += 4;
 
-$t->get_ok("/fi/find?what=".enurl('2005-07-'))
+$t->get_ok("/fi/find?s=".enurl('2005-07-'))
   ->status_is(200)
   ->content_type_like(qr/text\/html/)
   ->content_is('');
    
 $c += 4;
 
-$t->get_ok("/fi/find?what=".enurl('association'))
+$t->get_ok("/fi/find?s=".enurl('association'))
   ->status_is(200)
   ->content_type_like(qr/text\/html/)
   ->content_is('');
    
 $c += 4;
 
-$t->get_ok("/fi/find?what=".enurl('10.10.'))
+$t->get_ok("/fi/find?s=".enurl('10.10.'))
   ->status_is(200)
   ->content_type_like(qr/text\/html/)
   ->element_exists('div[class~="rounded"] a');
 
 $c += 4;
    
-$t->get_ok("/fi/find?what=".enurl('7.2005'))
+$t->get_ok("/fi/find?s=".enurl('7.2005'))
   ->status_is(200)
   ->content_type_like(qr/text\/html/)
   ->element_exists('div[class~="rounded"] a');
 
 $c += 4;
 
-$t->get_ok("/fi/find?what=".enurl('yhdistys'))
+$t->get_ok("/fi/find?s=".enurl('yhdistys'))
   ->status_is(200)
   ->content_type_like(qr/text\/html/)
   ->element_exists('div[class~="rounded"] a');

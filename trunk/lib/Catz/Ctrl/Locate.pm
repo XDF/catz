@@ -39,10 +39,9 @@ sub find {
 
  my $self = shift; my $s = $self->{stash};
  
- # find available only without setup
- $s->{langa} ne $s->{lang} and ( $self->not_found and return );
-
- $s->{what} = $self->param( 'what' ) // undef;
+ # find is available with both bare lang and with setup
+ 
+ $s->{what} = $self->param( 's' ) // undef;
  
  # it appears that browsers typcially send UTF-8 encoded data
  # when the origin page is UTF-8 -> we decode now
@@ -50,7 +49,7 @@ sub find {
 
  $s->{mapdual} = $self->fetch ( 'map#dual' );
  
- if ( length $s->{what} > 50 ) {
+ if ( ( length $s->{what} > 50 ) or ( length $s->{what} == 0 ) ) {
  
   $s->{find} = [];
  

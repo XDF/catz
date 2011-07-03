@@ -52,7 +52,7 @@ function catzInfo() {
  // to class info or infox
  
  // extract '/fi' or '/en' from the current URL
- // to make info language sensitive
+ // to make info language sensitive but without setup
  var head = $(location).attr('pathname').toString().substring ( 0, 3 );
 
  $.ajax ({
@@ -61,18 +61,18 @@ function catzInfo() {
    
    plain = catzDemess ( data );
 
-   if ( $('.info').length != 0 ) {    
-    $('.info').html(plain);   
+   if ( $('.info').length != 0 ) {       
     $('.info').attr('href','mai' + 'lto:' + plain );
     $('.info').attr('title',plain );
+    $('.info').html(plain);
    }
     
-   if ( $('.infox').length != 0 ) {
-    $('.infox').html(plain);   
+   if ( $('.infox').length != 0 ) {   
     $('.infox').attr(
      'href', 'mai' + 'lto:' + plain + '?subject=' + 
      encodeURI ( $('.infox').attr('title') ) 
-    );  
+    );
+    $('.infox').html(plain);  
    }
    
   }

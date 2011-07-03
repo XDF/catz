@@ -24,9 +24,11 @@
 
 function catzResultURL( key ) {
 
+ // we are langauge specific but without setup
  var head = $(location).attr('pathname').toString().substring ( 0, 3 );
 
- return head + '/result?key=' + key;
+ // # x is URL safe so no need to encode
+ return head + '/result?x=' + key;
 
 }
 
