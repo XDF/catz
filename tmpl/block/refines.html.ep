@@ -16,7 +16,7 @@
 %     if ( $matrix->{$pri}->{jump}->{$set->[0]} ) {
 <a href="/<%== $langa %>/browse/<%== $set->[0] %>/<%== encode $item %>/">
 %     } else { 
-<a href="/<%== $langa %>/search?what=<%== enurl ( args2search ( "+$pri", $sec, "+$set->[0]", $item ) ) %>">
+<a href="/<%== $langa %>/search?q=<%== enurl ( args2search ( "+$pri", $sec, "+$set->[0]", $item ) ) %>">
 %     }
 <%== $item %></a>
 %    }

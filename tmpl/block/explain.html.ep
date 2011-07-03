@@ -17,9 +17,9 @@
 %   if ( $esec =~ m|^\*(.+)\*$| ) { 
 %    $where = '_MIDDLE'; $esec = $1;
 %   } elsif ( $esec =~ m|^\*(.+)$| ) {
-%    $where = '_BEGIN'; $esec = $1; 
-%   } elsif ( $esec =~ m|(.+)\*$| ) {
 %    $where = '_END'; $esec = $1; 
+%   } elsif ( $esec =~ m|(.+)\*$| ) {
+%    $where = '_BEGIN'; $esec = $1; 
 %   }
 %   my $mode = 'EXACT';
 %   ( index($esec,'*')>-1 or index($esec,'?')>-1 ) and $mode = 'PATTERN';    

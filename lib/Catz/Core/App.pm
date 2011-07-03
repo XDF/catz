@@ -30,7 +30,7 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Mojolicious';
 
-use Time::HiRes qw ( time );
+use Time::HiRes;
 
 use Catz::Core::Cache;
 use Catz::Core::Conf;
@@ -50,7 +50,8 @@ use Catz::Util::String qw (
 
 my $time_page = 0;  # turns on timing on all HTTP requests
 
-my $version = undef; # data version
+my $version = undef; # data version stored static
+my $checked = undef; # epoch time of the last data version check
 
 sub startup {
 
@@ -90,11 +91,14 @@ sub startup {
  
  #
  # 'hold' stash var controls caching so that it sets max-age HTTP header
- #  to the number of minutes the hold tells it to
+ # to the number of minutes the hold tells it to
  #
- #  0 disables HTTP caching and also server side page caching 
+ # 0 disables HTTP caching and also server side page caching 
  #
-
+ # negative value indicates that max-age should be set to abs value
+ # but page caching should be bypassed 
+ #
+ 
  ###
  ### the site's bare root gets passed to language detection mechanism
  ###
@@ -221,11 +225,11 @@ sub startup {
  $l->route( '/find' )->to ( "locate#find", hold => 30 );
 
  # the show result AJAX interface
- $l->route( '/result' )->to ( "main#result",  hold => 9 );
- # when 9 is combined to maximum of 10 on model cache
+ $l->route( '/result' )->to ( "main#result",  hold => -19 );
+ # when 19 is combined to maximum of 10 on model cache
  # and to the fact that page cache is bypassed
- # it is 19 and so it can be said that results are no
- # older than 20 minutes
+ # it is 29 and so it can be said that results are no
+ # older than 30 minutes
  
  # the info base data provided AJAX interface
  $l->route( '/info/:cont', cont => qr/std/ )
@@ -253,27 +257,36 @@ sub before {
  # default is not to cache so routing should set hold appropriately 
  $s->{hold} = 0; 
    
- $time_page and $s->{time_start} = time();
+ # we can't export time since we use the standard time function also
+ $time_page and $s->{time_start} = Time::HiRes::time();
  
  my $dbp = $ENV{MOJO_HOME}.'/db';
  
- ( defined $version and ( -f "$dbp/$version.txt" ) ) or do {
+ ( $checked and ( ( $checked + 10 ) < time() ) ) or do {
  
-  # version not detected earlier or no longer valid
+  # never checked or not checked within last 10 seconds
   
-  # fetch the latest key file
-  my $keyf = findlatest ( $dbp, 'txt' );
+  ( defined $version and ( -f "$dbp/$version.txt" ) ) or do {
+ 
+   # version not detected earlier or no longer valid
   
-  defined $keyf and do {
+   # fetch the latest key file
+   my $keyf = findlatest ( $dbp, 'txt' );
   
-   # we make it very safe: if anything is wrong we continue to run
-   # with the old database and data version
+   defined $keyf and do {
   
-   my $newv = substr ( pathcut ( $keyf ), 0, 14 );
+    # we make it very safe: if anything is wrong we continue to run
+    # with the old database and data version
+  
+    my $newv = substr ( pathcut ( $keyf ), 0, 14 );
    
-   -f "$dbp/$newv.db" and $version = $newv; 
+    -f "$dbp/$newv.db" and $version = $newv; 
    
-  };   
+   };   
+  
+  };
+  
+  $checked = time();
   
  };
  
@@ -367,7 +380,7 @@ sub before {
   $self->rendered;
   $s->{cached} = 1; # mark that the content came from cache
   
-  $time_page and $s->{time_end} = time();
+  $time_page and $s->{time_end} = Time::HiRes::time();
  
   $time_page and warn "PAGE $s->{url} -> " . round ( ( ( $s->{time_end} - $s->{time_start}  ) * 1000 ), 0 ) . ' ms (cache)' ;
   
@@ -386,7 +399,11 @@ sub before {
  $s->{setup_keys} = setup_keys;
  
  $s->{setup_values} = setup_values ( $s->{langa} );
-     
+
+ $s->{analyticskey} = undef;
+ 
+ conf ( 'lin' ) and  $s->{analyticskey} = conf ( 'key_analytics' );     
+ 
  $s->{facebookkey} = conf ( 'key_facebook' );
  
  $s->{twitterkey} = conf ( 'key_twitter' );
@@ -434,17 +451,15 @@ sub after {
      
  # set cache response header to use the defined max-age
  $self->res->headers->header(
-  'Cache-Control' => 'max-age=' .  $s->{hold} . ', public' 
+  'Cache-Control' => 'max-age=' .  abs ( $s->{hold} ) . ', public' 
  );
  
- $s->{hold} or return; # continue only if server side page caching is needed
- 
+ # continue only if server side page caching is needed
+ $s->{hold} > 0 or return; 
+
  # no recaching: if the result came from server side the cache 
  # then don't cache it again
  $s->{cached} and return;
-
- # as a special case we bypass page cache for show results
- $s->{action} eq 'result' and return; 
  
  # we cache only GET and with 200 OK to be safe
  if ( $self->req->method eq 'GET' and $self->res->code == 200 ) {
@@ -463,7 +478,7 @@ sub after {
   
  }
   
- $time_page and $s->{time_end} = time();
+ $time_page and $s->{time_end} = Time::HiRes::time();
  
  $time_page and warn "PAGE $s->{url} -> " . round ( ( ( $s->{time_end} - $s->{time_start}  ) * 1000 ), 0 ) . ' ms (real)' ;
    

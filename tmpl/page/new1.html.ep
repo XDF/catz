@@ -36,7 +36,7 @@
 %#
 %# --------------------
 %#
-<% content 'bextra' => begin %><a href="/<%== $lang %>/feed/"><%= $t->{FEED} %></a> <%= $sep %> <%== include 'elem/extra' %><% end %>
+<% content 'bextra' => begin %><%== include 'elem/extra' %><% end %>
 %#
 %# --------------------
 %#

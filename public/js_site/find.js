@@ -49,9 +49,11 @@ function catzDoFind() {
   // terminate ongoing request if any
   if ( catzPrevReqFind ) { catzPrevReqFind.abort(); }  
   
-  // extract '/fi' or '/en' from the current URL
-  // to make find language sensitive
-  var head = $(location).attr('pathname').toString().substring ( 0, 3 );
+  // extract langauge and setup from url
+  var parts = 
+   $(location).attr('pathname').toString().match('^/(..([1-9]{6})?)');
+  
+  var head = parts[0];
   
   if ( what == '' ) { // there is nothing to look for
 
@@ -63,7 +65,7 @@ function catzDoFind() {
   } else { // there is something to find, send request
      
    catzPrevReqFind = $.ajax ({
-    url: head + '/find?what=' + encodeURI(what),
+    url: head + '/find?s=' + encodeURI(what),
     success: function( data ){ // when te request completes this get executed
      
       catzPrevReqFind = null; // clear the reference to this request

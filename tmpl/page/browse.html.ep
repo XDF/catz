@@ -167,13 +167,13 @@
 % if ( defined $cover_notext ) {
 <%= $sep %> <%= $t->{COVER_TEXT} %> <%== fmt ( round ( ( 100 - ( $cover_notext / $total ) * 100 ), 1 ), $lang ) %> %
 %  if ( $cover_notext > 0 ) {
-<%= $sep %> <a href="/<%== $langa %>/search?what=<%== enurl ( $url_notext ) %>"><%== fmt ( $cover_notext, $lang ) %> <%= $cover_notext == 1 ? $t->{NOTEXT} :  $t->{NOTEXTA} %></a>
+<%= $sep %> <a href="/<%== $langa %>/search?q=<%== enurl ( $url_notext ) %>"><%== fmt ( $cover_notext, $lang ) %> <%= $cover_notext == 1 ? $t->{NOTEXT} :  $t->{NOTEXTA} %></a>
 %  }
 % }
 % if ( defined $cover_nocat ) {
 <%= $sep %> <%= $t->{COVER_CAT} %> <%== fmt ( round ( ( 100 - ( ( $cover_nocat + $cover_notext ) / $total ) * 100 ), 1 ), $lang ) %> %
 %  if ( $cover_nocat > 0 ) { 
-<%= $sep %> <a href="/<%== $langa %>/search?what=<%== enurl ( $url_nocat ) %>"><%== fmt ( $cover_nocat, $lang ) %> <%= $cover_nocat == 1 ? $t->{NOCAT} :  $t->{NOCATA} %></a>
+<%= $sep %> <a href="/<%== $langa %>/search?q=<%== enurl ( $url_nocat ) %>"><%== fmt ( $cover_nocat, $lang ) %> <%= $cover_nocat == 1 ? $t->{NOCAT} :  $t->{NOCATA} %></a>
 %  }
 % }
 % if ( $runmode eq 'search' ) {

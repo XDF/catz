@@ -108,7 +108,7 @@ sub result {
  # result available only without setup
  $s->{langa} ne $s->{lang} and ( $self->not_found and return );
 
- my $key = $self->param( 'key' ) // undef;
+ my $key = $self->param( 'x' ) // undef;
 
  (
    defined $key and length $key < 2000 
