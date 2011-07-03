@@ -39,6 +39,8 @@ body {
  height: 100%;
 }
 
+#page { min-width: 600px; }
+
 .full { width: 100%; }
 
 ul {

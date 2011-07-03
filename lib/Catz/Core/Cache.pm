@@ -45,10 +45,10 @@ my $cacheon = 1;
 my $cache = new Cache::Memcached::Fast { 
  servers => [ '127.0.0.1:11211' ], 
  connect_timeout => 0.1, 
- max_failures => 2, 
- failure_timeout => 10,
- compress_threshold => 10_000,
- nowait => 1 
+ max_failures => 2, # let connect fail 2 times ...
+ failure_timeout => 15, # ... and then rest for 15 seconds
+ compress_threshold => 15_000,
+ nowait => 1 # should speed up set by not waiting for confirmation for success
 };
 
 # the string that separates cache key parts
