@@ -32,13 +32,13 @@
 || *type* || *tag* || *front* || *news* || *news1* || *lists* || *list1* || *browse* || *view* || *search* ||
 || meta || block canon || default || default || default || default || default || in id mode links to the same page without setup and by using first thumb's id, if on first page then to the same page without setup and without id || links to the same photo without setup on runmode all || default ||    
 || meta || link index || || || links to news index || || links to lists index || || links to thumbnails || ||
-|| meta || link start || || || || || || links to first thumbnail page (no id mode ) || links to first photo ||
+|| meta || link start || || || || || || links to first thumbnail page (no id mode ) || links to first photo || ||
 || meta || link prev || || || links to previous article || || || links to previous thumbnail page || link to the previous photo || ||
 || meta || link next || || || links to nexct article || || || links to next thumbnail page || link to the next photo || ||
 || meta || block image || use the first sample thumbnail on page with suitable geometry || default || default || default || default || use the first thumbnail on page with suitable geometry || use the photo thumbnail || default || 
 || facebook || meta og:type || website || catz:list || article || catz:list || catz:list || in runmode pair on org, umb, breeder: non_profit, on nat: country, on loc: city, on others catz:english_test_of_pri || article || catz:search ||  
-|| facebook || meta og:title || the site name || a fixed title || the date and the news title || a fixed title ||
-|| facebook || meta og:url || the global site url || the english news index without setup || the news article in english without setup || the english list index without setup || the english list page without setup || the first page no id mode in english without setup || the same photo in all photo browsing id mode in english without setup || the same page without setup ||  
+|| facebook || meta og:title || the site name || a fixed title || the date and the news title || a fixed title || a title constructed from the subject and mode || ??? || ??? || a fixed title ||
+|| facebook || meta og:url || the global site url || the english news index without setup || the news article in english without setup || the english list index without setup || the english list page without setup || the first page no id mode in english without setup || the same photo in all photo browsing id mode in english without setup || the same page in english without setup ||  
 || facebook || meta og:locality || || || || || || in runmode pair on loc contains the location name || in runmode pair on loc contains the location name || ||  
 || facebook || meta og:country-name || || || || || || in runmode pair on loc contains the country name || in runmode pair on loc contains the country name || ||
 
@@ -49,9 +49,18 @@ Currently the metadata not provided is
  
 = Social media integration =
 
-|| *functionality* || *front* || *news* || *news1* || *lists* || *list1* || *browse* || *view* || *search* ||
-|| Facebook like || like the website || || || || || in runmode pair with specific subject like the subject || like the photo || ||
-|| Twitter tweet || tweet the site || || for articles not older than 30 days || || || in runmode pair tweet the subject || tweet the photo || ||
+== Facebook like ==
 
+|| *front* || *news* || *news1* || *lists* || *list1* || *browse* || *view* || *search* ||
+|| like the website || || || || || in runmode pair with specific subject like the subject || like the photo || ||
+
+== Twitter tweet ==
+
+|| *front* || *news* || *news1* || *lists* || *list1* || *browse* || *view* || *search* ||
+|| tweet the site || || for articles not older than 30 days || || || in runmode pair tweet the subject || tweet the photo || ||
+
+  * Tweets the url identical to that provided in meta og:url but in current language
+  * Uses og:url as count url
+       
  
 
