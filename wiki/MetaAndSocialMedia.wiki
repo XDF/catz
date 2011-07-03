@@ -29,73 +29,29 @@
 
 == Page type specific metadata ==
  
-og:title - The title of the entity. 
-og:type - The type of entity. You must select a type from the list of Open Graph types. 
-og:image - The URL to an image that represents the entity. Images must be at least 50 pixels by 50 pixels. Square images work best, but you are allowed to use images up to three times as wide as they are tall. 
-og:url - The canonical, permanent URL of the page representing the entity. When you use Open Graph tags, the Like button posts a link to the og:url instead of the URL in the Like button code. 
-og:site_name - A human-readable name for your site, e.g., "IMDb". 
-fb:admins or fb:app_id - A comma-separated list of either the Facebook IDs of page administrators or a Facebook Platform application ID. At a minimum, include only your own Faceboo
-og:description - A one to two sentence description of your page.
-<meta name="og:locality" content="<%= $sec %>">
-<meta name="og:country-name" content="<%= $t->{COUNTRY} %>">
-<link rel="start" href="<%== include 'href/id', toid => $pin->[0] %>">
-<link rel="prev" href="<%== include 'href/id', toid => $pin->[$page-2] %>">
-<link rel="next" href="<%== include 'href/id', toid => $pin->[$page] %>">
-<link rel="index" href="<%== include 'href/id', toid => $pin->[$page] %>">
-keywords
-
 || *type* || *tag* || *front* || *news* || *news1* || *lists* || *list1* || *browse* || *view* || *search* ||
 || meta || block canon || default || default || default || default || default || in id mode links to the same page without setup and by using first thumb's id, if on first page then to the same page without setup and without id || links to the same photo without setup on runmode all || default ||    
+|| meta || link index || || || links to news index || || links to lists index || || links to thumbnails || ||
+|| meta || link start || || || || || || links to first thumbnail page (no id mode ) || links to first photo ||
+|| meta || link prev || || || links to previous article || || || links to previous thumbnail page || link to the previous photo || ||
+|| meta || link next || || || links to nexct article || || || links to next thumbnail page || link to the next photo || ||
 || meta || block image || use the first sample thumbnail on page with suitable geometry || default || default || default || default || use the first thumbnail on page with suitable geometry || use the photo thumbnail || default || 
-|| facebook || meta og:type || website || catz:list || article || catz:list || catz:list || in runmode pair on org, umb, breeder: non_profit, on nat: country, on loc: city, on others catz:english_test_of_pri || article || ||  
+|| facebook || meta og:type || website || catz:list || article || catz:list || catz:list || in runmode pair on org, umb, breeder: non_profit, on nat: country, on loc: city, on others catz:english_test_of_pri || article || catz:search ||  
+|| facebook || meta og:title || the site name || a fixed title || the date and the news title || a fixed title ||
+|| facebook || meta og:url || the global site url || the english news index without setup || the news article in english without setup || the english list index without setup || the english list page without setup || the first page no id mode in english without setup || the same photo in all photo browsing id mode in english without setup || the same page without setup ||  
 || facebook || meta og:locality || || || || || || in runmode pair on loc contains the location name || in runmode pair on loc contains the location name || ||  
-|| facebook || meta og:country || || || || || || in runmode pair on loc contains the country name || in runmode pair on loc contains the country name || ||
+|| facebook || meta og:country-name || || || || || || in runmode pair on loc contains the country name || in runmode pair on loc contains the country name || ||
 
-
-|| facebook || meta og:title || front || the site name ||
-|| facebook || meta og:title || browse/pair || the title constucted from pri-sec -pair ||
-|| facebook || meta og:title || list || the list page title ||
-|| facebook || meta og:title || news || the size and the a fixed all news text ||
-|| facebook || meta og:title || view || the title constructed from photo id and comment text(s) ||
-
+Currently the metadata not provided is
+  * meta keywords
+  * meta description
+  * meta og:description    
  
-
-|| *class* || *tag* || *page type* || *content* ||
-
-|| link || image_src || browse || links to the first thumbnail within the thumbnails presented on the current page ||
-|| link || image_src || front || links to the first thumbail of the sample photos presented on the page ||
-|| link || image_src || view || links to the thumbnail version of the photo viewed ||
-|| link || index || view || links from the viewing page to the corresponding thumbnail page ||
-|| link || next || browse || if not in the last page within the set then links to the next page within the set ||
-|| link || next || view || if not in the last photo within the set then links to the next photo within the set ||
-|| link || prev || browse || if not in the first page within the set then links to the previous page within the set ||
-|| link || prev || view || if not in the first photo within the set then links to the previous photo within the set ||
-|| link || start || browse || links to the first thumbnails page within the set ||
-|| link || start || view || links to the first photo within the set ||
-|| meta || description || front || the site slogan ||
-|| meta || description || news || a simple fixed text describing the page || 
-|| meta || description || list || the alternative title of the list ||
-|| meta || og:description || see 'description' ||  see 'description' || 
-|| meta || og:image || see 'image_src' || see 'image_src' ||
- 
-|| meta || og:country-name || browse/pair/loc,view/pair/loc || when browsing or viewing a location then exists and contains the country name of the location ||
-
-
-|| meta || og:url || front || points to the global site url ||
-|| meta || og:url || browse/??? || points to the english version of the first page of the photo set without the photo id ??? not implemented as this says ??? ||
-|| meta || og:url || news,list || points to the english version of the page ||
-|| meta || og:url || view || points to the english version of the photo in all photo viewing (includes the photo id) ||
-
-Meta tag keywords it not provided at all.
-
 = Social media integration =
 
-|| *page* || *media* || *operation* ||
-|| front || facebook || like the website ||
-|| browse/pair || facebook || like the subject ||
-|| browse/pair || twitter || tweet a link to the subject ||
-|| news || twitter || tweet a link to the news page having the article as title etc. ||
-|| view || facebook || like the photo ||
-|| view || twitter || tweet a link to the photo ||
+|| *functionality* || *front* || *news* || *news1* || *lists* || *list1* || *browse* || *view* || *search* ||
+|| Facebook like || like the website || || || || || in runmode pair with specific subject like the subject || like the photo || ||
+|| Twitter tweet || tweet the site || || for articles not older than 30 days || || || in runmode pair tweet the subject || tweet the photo || ||
+
  
 
