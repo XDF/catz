@@ -127,8 +127,7 @@
 <span class="shrink"><%= $t->{NO_CAT_A} %> <%== $id %> <%= $t->{NO_CAT_B} %> <a class="infox" title="<%= $t->{MAILTO_HEAD} %> <%== $id %>" href=""></a></span>
 % } else { # not just a code, has more data
 <%= $comm %>
-% } 
-% #use Data::Dumper; warn Dumper $resultkey->[$i]; 
+% }  
 %   if ( defined $resultkey->[$i] ) {
 <span class="result lean shrink" id="<%== $resultkey->[$i] %>"></span>
 %   $i++; 

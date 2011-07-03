@@ -43,9 +43,9 @@ $t->get_ok('/')
   
 $c += 2;
 
-foreach my $lang ( qw ( en fi ) ) {
+foreach my $lang ( qw ( en fi en211211 fi171212 ) ) {
 
- my $txt = text ( $lang );
+ my $txt = text ( substr ( $lang, 0, 2 ) );
  
  # front page
    
@@ -68,92 +68,5 @@ foreach my $lang ( qw ( en fi ) ) {
  $c += 2;
  
 } 
-
-# stupid urls no encoding
-
-foreach my $url ( qw ( a b x void pointless 0 1 123 web_inf pOKWj3jk33lkJ ) ) {
-
- $t->get_ok("/$url/")->status_is(404); $c += 2; 
- $t->get_ok("/$url/$url/")->status_is(404); $c += 2;
- $t->get_ok("/$url/$url/$url/")->status_is(404); $c += 2;
-  
- foreach my $lang ( qw ( en fi ) ) {
-   
-  $t->get_ok("/$lang/$url/")->status_is(404); $c += 2;
-  $t->get_ok("/$lang/$url/$url/")->status_is(404); $c += 2;
-  $t->get_ok("/$lang/$url/$url/$url/")->status_is(404); $c += 2;
-   
- }
- 
-}
-
-# stupid urls with encoding
-
-foreach my $uri ( qw ( oiuy//&?? *345== HEU@^^ !?+09~ *-ÅÄÖåäö ) ) {
-
- my $url = enurl ( $uri );
-
- $t->get_ok("/$url/")->status_is(404); $c += 2; 
- $t->get_ok("/$url/$url/")->status_is(404); $c += 2;
- $t->get_ok("/$url/$url/$url/")->status_is(404); $c += 2;
- 
- foreach my $lang ( qw ( en fi ) ) { 
-  
-  $t->get_ok("/$lang/$url/")->status_is(404); $c += 2;
-  $t->get_ok("/$lang/$url/$url/")->status_is(404); $c += 2;
-  $t->get_ok("/$lang/$url/$url/$url/")->status_is(404); $c += 2;
-
- }
- 
-}
-
-# make it big from 100 to 1900
-
-foreach my $val ( 1 .. 19 ) {
-
- my $url = join '', map { 'x' } ( 1 .. $val * 100 );
- 
- $t->get_ok("/$url/")->status_is(404); $c += 2;
- 
- foreach my $lang ( qw ( en fi ) ) {
- 
-  $t->get_ok("/$lang/$url/")->status_is(404); $c += 2;
- 
- }
-
-}
-
-
-# stress with force
- 
-foreach my $i ( 1 .. 100 ) {
- 
- my $elems = int(rand(30)) + 1;
- 
- my @patt = ();
-   
- foreach ( 1 .. $elems ) {
-
-  my $c = 10 + int(rand(40));
-  
-  push @patt, 
-   ( join '', map { chr $_ } map { 33 + int(rand(95)) } ( 1 .. $c ) ); 
-  
- }
-  
- my $pata = join '/', map { enurl $_ } @patt;
-  
- my $patb = join '/', map { encode $_ } @patt; 
-    
- $t->get_ok("/$pata/")->status_is(404); $c += 2;
- $t->get_ok("/en/$pata/")->status_is(404); $c += 2;
- $t->get_ok("/fi/$pata/")->status_is(404); $c += 2;    
-
- $t->get_ok("/$patb/")->status_is(404); $c += 2;
- $t->get_ok("/en/$patb/")->status_is(404); $c += 2;
- $t->get_ok("/fi/$patb/")->status_is(404); $c += 2;    
-
- 
-}
 
 done_testing( $c );

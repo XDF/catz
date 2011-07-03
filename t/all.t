@@ -42,7 +42,7 @@ my @bad = qw (
  13 567 98798 12345 abcde a -123123 ===!!! $$~~ CRX TUV lens=Sigma* *he??o*
 ); 
 
-foreach my $lang ( qw ( en fi ) ) {
+foreach my $lang ( qw ( en fi en394211 fi211111 ) ) {
  
  foreach my $mode ( qw ( browseall viewall ) ) {
  

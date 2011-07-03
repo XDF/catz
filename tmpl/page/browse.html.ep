@@ -85,7 +85,15 @@
 %#
 %# --------------------
 %#
-<% content 'pathadd' => begin %><%== include 'elem/path' %><% end %>  
+<% content 'pathadd' => begin %>
+<%== include 'elem/path' %>
+% if ( $runmode eq 'pair' ) {
+% my $etg = $lang eq 'fi' ? $trans : $sec; 
+% my $turi = $t->{URL_CATZA}."en/browse/$pri/$etg/";
+%== include 'elem/twitter', twurl => $t->{URL_CATZA}."$lang/browse/$pri/$etg/", twtext => "$sec (".$t->{uc($pri)}.')', twcounturl => $turi;
+%== include 'elem/facebook', fbhref => $turi, fbref => 'browse';
+% }
+<% end %>  
 %#
 %# --------------------
 %#
@@ -146,19 +154,8 @@
 %#
 %# --------------------
 %#
-% if ( $runmode eq 'pair' ) {
-% my $etg = $lang eq 'fi' ? $trans : $sec; 
-% my $turi = $t->{URL_CATZA}."en/browse/$pri/$etg/";
 <div class="bar">
-<h2><%== include 'elem/titlea' %></h2>
-%== include 'elem/twitter', twurl => $t->{URL_CATZA}."$lang/browse/$pri/$etg/", twtext => "$sec (".$t->{uc($pri)}.')', twcounturl => $turi;
-%== include 'elem/facebook', fbhref => $turi, fbref => 'browse';
-</div>
-% }
-<div class="bar">
-% if ( $runmode ne 'pair' ) {
 <%== include 'elem/titlea' %> <%= $sep %>
-% }
 % if ( defined $breederurl ) {
 <a href="<%== $breederurl %>"><%= $breederurl %></a> <%= $sep %>
 % } 

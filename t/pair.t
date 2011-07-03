@@ -76,9 +76,9 @@ my @bad = qw (
  =="d"/!!!!!/~~***
 ); 
  
-foreach my $lang ( qw ( en fi ) ) {
+foreach my $lang ( qw ( en fi en264312 fi384322 ) ) {
 
- my $txt = text ( $lang );
+ my $txt = text ( substr ( $lang, 0, 2 ) );
  
  foreach my $set ( @ok ) {
 
