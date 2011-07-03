@@ -35,12 +35,11 @@ use Cache::Memcached::Fast;
 use Digest::MD5 qw( md5_hex );
 
 use Catz::Core::Conf;
-use Catz::Util::String qw ( encode );  
+use Catz::Util::String qw ( enurl );  
 
-# caching gets activated only in production mode
-# if not in production mode, cache_set and cache_get 
-# can still be called as usual but are NOP
-my $cacheon = $ENV{MOJO_MODE} eq 'production' ? 1 : 0;
+# for debugging or other needs all caching can be
+# set to NOP setting this to false
+my $cacheon = 1;
 
 # we create a static cache object at compile time and this works just fine
 my $cache = new Cache::Memcached::Fast { 
@@ -52,7 +51,11 @@ my $cache = new Cache::Memcached::Fast {
  nowait => 1 
 };
 
-my $sep = ' '; # the string that separates cache key parts
+# the string that separates cache key parts
+# since we use URL encoding with cache keys this
+# should be an URL safe character and the encoding of it
+# doesn't add unnecessary length to the cache keys
+my $sep = '~'; 
 
 # force the cache key to be 250 characters or less (Memcached limit)
 # all characters after 218 are hashed to md5 hash in hex encoding
@@ -70,8 +73,10 @@ sub cache_set {
   
  # we build the cache key by joining the encoded key parts
  # we map undefined key parts to string 'undef' to be safe
- my $key = encode join $sep, map { defined $_ ? $_ : 'undef' } @args;
- 
+ my $key = 
+  enurl join $sep, map { $_ = $_ // 'undef'; $_ =~ tr/ /_/; $_  } @args;
+  # MUST BE THE SAME CODE AS IN GET
+   
  # shrink too long keys
  length $key > 250 and $key = shrink $key;
   
@@ -98,8 +103,10 @@ sub cache_get {
  
  # we build the cache key by joining the encoded key parts
  # we map undefined key parts to string 'undef' to be safe 
- my $key = encode join $sep, map { defined $_ ? $_ : 'undef' } @args;
- 
+ my $key = 
+  enurl join $sep, map { $_ = $_ // 'undef'; $_ =~ tr/ /_/; $_  } @args;
+  # MUST BE THE SAME CODE AS IN SET 
+  
  # shrink too long keys
  length $key > 250 and $key = shrink $key;
  
