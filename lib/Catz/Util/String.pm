@@ -37,11 +37,12 @@ use Digest::MD5 qw ( md5_base64 );
 use MIME::Base32 qw( RFC );
 use URI::Escape::XS qw ( uri_escape uri_unescape );
 
-#
-# an internal utility function called by encode sub
-#
+# prepare a conversion hash to be used by encode
+# the hash was addded to make encoding run faster
 
-sub chrsolve {
+my %cconv = ();
+
+sub chrprep {
  
  (
   ( ( $_[0] > 47) && ( $_[0] < 58 ) ) || 
@@ -51,6 +52,8 @@ sub chrsolve {
  ( ( $_[0] == 32 ) ? '_' : ( '-' . sprintf ( "%03d", $_[0] ) ) )
    
 }
+
+do { $cconv { chr ($_) } = chrprep ( $_ ) } foreach ( 0 .. 255 );
 
 #
 # trims extra spaces = several adjacent spaces becomes a single space
@@ -91,7 +94,7 @@ sub dna { md5_base64 ( $_[0] ) }
 # A'rdnán Nau Mau's -> A-039rdn-225n_Nau_Mau-039s
 #
 
-sub encode { join '', map { chrsolve( ord ( $_ ) ) } split //, $_[0] // '' }
+sub encode { join '', map { $cconv { $_ } } split //, $_[0] // '' }
 
 #
 # url encodes a string
@@ -134,12 +137,14 @@ sub ucc { $_ = $_[0]; tr|üåäö|ÜÅÄÖ|; uc }
 #
 sub ucclcc { ucc ( substr ( $_[0], 0, 1 ) ) . lcc ( substr ( $_[0], 1 ) ) }
 
-sub urirest { # remove the beginning of uri (the language/config part)
+sub urirest { 
 
- $_[0] =~ /^\/(?:en(?:[1-9]{6})?|fi(?:[1-9]{6})?)(.*)$/;
+ # remove the beginning of uri (the language/config part)
+ 
+ $_[0] =~ /^\/(?:..(?:[1-9]{6})?)(.*)/;
  
  $1 ? $1 : undef;
- 
+   
 }
 
 1;

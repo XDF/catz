@@ -46,9 +46,8 @@
 %# --------------------
 %#
 <% content 'bextra' => begin %>
-<a href="/<%== $langa %>/search?what=<%= enurl('+has=breed -has=cat') %>"><%= $t->{DONATE_CAT} %></a> 
-<%= $sep %>
-<a href="<%== $t->{URL_YOUTUBE} %>"><%= $t->{VIDEOS} %></a><% end %>
+<a href="/<%== $langa %>/search?what=<%= enurl('+has=breed -has=cat') %>"><%= $t->{DONATE_CAT} %></a>
+<% end %>
 %#
 %# --------------------
 %#
@@ -71,6 +70,8 @@
 <div class="bar"><h2><%= $t->{SUBJECTS} %></h2>
 %#
 <a href="/<%== $langa %>/browseall/"><%= fmt ( $maxx, $lang )  %> <%== $t->{PHOTOA_CATSHOW} %></a>
+<%= $sep %>
+<a href="<%== $t->{URL_YOUTUBE} %>"><%= $t->{VIDEOS} %></a>
 %#
 % foreach my $row ( @$pris ) {
 <%= $sep %> <a href="/<%== $langa %>/list/<%= $row->[0] %>/<%= $matrix->{$row->[0]}->{modes}->[0] %>/">

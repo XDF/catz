@@ -93,7 +93,7 @@ sub list {
  $s->{mapview} = $self->fetch ( 'map#view' );
  $s->{mapdual} = $self->fetch ( 'map#dual' );
       
- $self->render(template => 'page/list');
+ $self->render(template => 'page/list1');
  
 }
 

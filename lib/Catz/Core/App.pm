@@ -240,9 +240,15 @@ sub startup {
 sub before {
 
  my $self = shift; my $s = $self->{stash};
+ 
+ $s->{isstatic} = 0;
 
  # we skip all processing for static files
- ( $self->req->url->path->to_string  =~ /\..{2,4}$/ ) and return;
+ ( $self->req->url->path->to_string  =~ /\..{2,4}$/ ) and do {
+ 
+  $s->{isstatic} = 1; return;
+  
+ };
 
  # default is not to cache so routing should set hold appropriately 
  $s->{hold} = 0; 
@@ -363,7 +369,7 @@ sub before {
   
   $time_page and $s->{time_end} = time();
  
-  $time_page and warn "PAGE $s->{url} -> " . round ( ( ( $s->{time_end} - $s->{time_start}  ) * 1000 ), 0 ) . ' ms' ;
+  $time_page and warn "PAGE $s->{url} -> " . round ( ( ( $s->{time_end} - $s->{time_start}  ) * 1000 ), 0 ) . ' ms (cache)' ;
   
   return $self;
 
@@ -405,8 +411,7 @@ sub after {
 
  my $self = shift; my $s = $self->{stash};
  
- # we skip all processing for static files
- ( $self->req->url->path->to_string  =~ /\..{1,8}$/ ) and return;
+ $s->{isstatic} and return;
  
  # we require the basics to be available for further processing   
  ( 
@@ -460,7 +465,7 @@ sub after {
   
  $time_page and $s->{time_end} = time();
  
- $time_page and warn "PAGE $s->{url} -> " . round ( ( ( $s->{time_end} - $s->{time_start}  ) * 1000 ), 0 ) . ' ms' ;
+ $time_page and warn "PAGE $s->{url} -> " . round ( ( ( $s->{time_end} - $s->{time_start}  ) * 1000 ), 0 ) . ' ms (real)' ;
    
 }
 
