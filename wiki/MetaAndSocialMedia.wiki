@@ -1,21 +1,34 @@
-#summary The page metadata provided by the system and social media integration
+#summary The page metadata and the social media integation
 
 = The page metadata =
 
-== Page type independent metadata and metadata that has same logic on all pages ==
+== Forced by "base/heavy.html.ep" for all pages ==
 
-|| *class* || *tag* || *content* ||
-|| link || alternate || the url of the page in the other language (lang and hreflang attributes are set accordingly) ||
-|| link || copyright || the link to the copyright statement of the service ||
-|| link || shortcut icon || link to the favicon.ico file || 
-|| meta || author || the name of the author of the service ||
-|| meta || copyright || the copyright statement of the service ||
-|| meta || credits || this tag lists some fundamental technologies that make this service possible ||
-|| meta || fb:app_id || the facebook application id ||  
-|| meta || generator || the long name of the service's application ||
-|| meta || og:site_name || the name of the site in its most simple form ||
-|| meta || robots || the standard robots tag to control the indexing of pages by search engines ||        
-|| meta || timestamp || the language specific format date and time when the page was generated (old value indicates that the page comes from some cache) ||
+|| *type* || *tag* || *explanation* ||
+|| core || meta http-equiv content-type || ||
+|| core || link "shortcut icon" || standard old-school favicon.ico at the root ||
+|| meta || meta generator || ||
+|| meta || meta author || || ||
+|| meta || meta copyright || ||
+|| meta || link copyright || ||    
+|| meta || robots || controlled by controllers ||
+|| meta || link alternate || links to the page in another language ||    
+|| facebook || meta og:site_name || ||
+|| facebook || meta fb:admins || ||
+|| misc || meta loaded_at || the language-specific time when the data was loaded ||
+|| misc || meta rendered_at || the language-specific time when the HTML was rendered ||
+|| misc || meta credits || gives credits to some vital technologies used by the system || 
+       
+== Default provided by "base/heavy.html.ep" but overloadable on block "image" ==       
+
+Uses template "elem/image.html.ep".
+
+|| meta || link image_src || to the site's logo in png format ||
+|| facebook || meta og:image || to the site's logo in png format ||
+
+== Page type specific metadata ==
+
+
 
 == Page type specific metadata ==
 
