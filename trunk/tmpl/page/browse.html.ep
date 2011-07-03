@@ -26,10 +26,6 @@
 % if ( $page < $pages ) {
 <link rel="next" href="<%== include 'href/id', toid => $pin->[$page] %>">
 % }
-% if ( defined $thumbs->[0] ) {
-<link ref="image_src" href="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
-<meta name="og:image" value="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
-% }
 % if ( $origin eq 'id' and ( defined $thumbs->[0] ) ) {
 <link rel="canonical" content="<%== include 'href/id', toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]) %>">
 % }  
@@ -37,6 +33,15 @@
 %#
 %# --------------------
 %#
+<% content 'image' => begin %>
+% if ( defined $thumbs->[0] ) {
+<link ref="image_src" href="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
+<meta name="og:image" value="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
+% }
+<% end %>
+%#
+%#
+#%
 <% content 'ptitleadd' => begin %>
 %== include 'elem/titlea';
 (<%= $t->{PAGE} %> <%= $page %>/<%= $pages %>)
@@ -88,10 +93,14 @@
 <% content 'pathadd' => begin %>
 <%== include 'elem/path' %>
 % if ( $runmode eq 'pair' ) {
+<span class="aero">
 % my $etg = $lang eq 'fi' ? $trans : $sec; 
 % my $turi = $t->{URL_CATZA}."en/browse/$pri/$etg/";
 %== include 'elem/twitter', twurl => $t->{URL_CATZA}."$lang/browse/$pri/$etg/", twtext => "$sec (".$t->{uc($pri)}.')', twcounturl => $turi;
+%  if ( $matrix->{$pri}->{like} ) {
 %== include 'elem/facebook', fbhref => $turi, fbref => 'browse';
+%  }
+</span>
 % }
 <% end %>  
 %#

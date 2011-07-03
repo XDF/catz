@@ -19,13 +19,18 @@
 % if ( $pos < $total ) {
 <link rel="next" href="<%== include 'href/id', toid => $pin->[2] %>">
 % }
-<link rel="image_src" href="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[6] %>">
-<meta name="og:image" content="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[6] %>">
 <meta name="og:url" content="<%== $t->{URL_CATZA} %>en/viewall/<%== $id %>/">
 <link rel="canonical" content="<%== $t->{URL_CATZA} %><%== $lang %>/viewall/<%== $id %>/">
 % my $desc = $t->{PHOTO}." $id";
 % length ( $ttl ) > 0 and $desc = "$ttl ($desc)";
 <meta name="og:title" content="<%= $desc %>">   
+<% end %>
+%#
+%# --------------------
+%#
+<% content 'image' => begin %>
+<link rel="image_src" href="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[6] %>">
+<meta name="og:image" content="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[6] %>">
 <% end %>
 %#
 %# --------------------

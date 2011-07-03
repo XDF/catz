@@ -3,6 +3,7 @@
 % } elsif ( $args_count == 0 ) {
 %# do nothing = use the default path
 % } elsif ( $args_count == 2 ) {
+<a href="/<%== $langa %>/lists/"><%= $t->{'LISTS'} %></a> <%= $pathsep %>
 %  if ( $args_array->[0] eq 'folder' ) {
 <a href="/<%== $langa %>/list/album/<%== $matrix->{album}->{modes}->[0] %>/"><%= $t->{'ALBUMS'} %></a> <%= $pathsep %>
 %  } else {

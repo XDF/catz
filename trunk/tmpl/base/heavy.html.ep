@@ -23,6 +23,9 @@
 %#
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <link rel="shortcut icon" href="/favicon.ico">
+<%= content 'image' => begin %>
+%== include 'elem/image', img => '/catzlogo.png';
+<% end %>
 <meta name="author" content="<%== $t->{AUTHOR} %>">
 <meta name="copyright" content="<%== $t->{COPYRIGHT} %> <%== $t->{AUTHOR} %> <%== $t->{FIRSTYEAR} %>-<%== thisyear %>. <%= $t->{LICENCE} %>.">
 <link rel="copyright" href="<%== $t->{URL_LICENCE} %>"> 
@@ -40,7 +43,10 @@
 %  } else {
 <meta name="robots" content="none">
 %  }
-% } 
+% }
+<%= content 'canon' => begin %>
+<link rel="canonical" href="/<%== $lang . urirest ( $url ) %>">
+<% end %> 
 <link rel="alternate" title="<%= $t->{TRANSLATE} %>" lang="<%== $langother %>" hreflang="<%== $langother %>" href="<%== $urlother %>">
 <meta name="fb:admins" content="<%== $facebookkey %>"> 
 <%= content 'metaadd' %>
@@ -48,7 +54,7 @@
 <meta name="loaded_at" content="<%== dtexpand ( $version, $lang ) %>">
 <meta name="rendered_at" content="<%== $now %>">
 <meta name="credits" content="<%== $t->{CREDITS} %>">
-%== include 'elem/analytics'
+%== include 'elem/analytics';
 </head>
 %#
 %# --------------------
