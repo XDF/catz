@@ -154,7 +154,7 @@ sub setup_init { # initialize the setup to application stash
 
 
 # get arrayref of all setup keys
-sub setup_keys { [ map { $_->{name} } @$conf ] };
+sub setup_keys { [ map { $_->{name} } @$conf ] }
 
 sub setup_values { 
 

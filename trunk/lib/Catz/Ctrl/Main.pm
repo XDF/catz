@@ -99,36 +99,14 @@ sub base {
 
 }
 
-sub set {
-
- my $self = shift;
-
- my @params = $self->param;
-
- my $i = 0; # counts accepted parameters
-
- foreach my $key ( @params ) {
-
-  # attempt to set the parameter, increase accepted counter if success 
-  setup_set ( $self, $key // '', $self->param( $key ) // '' ) and $i++;
- 
- }
- 
- # at least one set was done -> OK
- $i and do { 
-  $self->render( text => 'OK', format => 'txt' ); 
-  return;
- };
-  
- $self->render( text => 'FAILED', format => 'txt' ); 
- 
-}
-
 use constant RESULT_NA => '<!-- N/A -->';
 
 sub result {
 
  my $self = shift; my $s = $self->{stash};
+ 
+ # result available only without setup
+ $s->{langa} ne $s->{lang} and ( $self->not_found and return );
 
  my $key = $self->param( 'key' ) // undef;
 
@@ -170,19 +148,6 @@ sub result {
  
 }
 
-sub link {
-
- my $self = shift; my $s = $self->{stash};
-
- my $key = $self->param( 'key' ) // undef;
-
- ( defined $key and length $key < 2000 and $key =~ /^[A-Z2-7]+$/ ) or
-  $self->render( text => RESULT_NA ) and return;
-
- # waiting to be implemented ...
-
-}
-
 sub lastshow {
 
  my $self = shift; my $s = $self->{stash};
@@ -221,6 +186,9 @@ sub info {
 
  my $self = shift; my $s = $self->{stash}; my $base = undef;
  
+ # info available only without setup
+ $s->{langa} ne $s->{lang} and ( $self->not_found and return );
+
  if ( $s->{cont} eq 'std' ) { $base = $s->{t}->{MAILTO_TEXT} }
    
   else { $self->not_found and return }

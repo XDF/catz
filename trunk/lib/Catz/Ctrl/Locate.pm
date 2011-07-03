@@ -38,6 +38,9 @@ use Catz::Util::Number qw ( round );
 sub find {
 
  my $self = shift; my $s = $self->{stash};
+ 
+ # find available only without setup
+ $s->{langa} ne $s->{lang} and ( $self->not_found and return );
 
  $s->{what} = $self->param( 'what' ) // undef;
  

@@ -68,6 +68,9 @@ sub feed { # RSS feed of news
 
  my $self = shift; my $s = $self->{stash};
  
+ # feed available only without setup
+ $s->{langa} ne $s->{lang} and ( $self->not_found and return );
+
  my $news = $self->fetch ( 'news#latest', 10 ); # max 10 latest
     
  my $rss = XML::RSS->new( version => '2.0' );

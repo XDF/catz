@@ -76,7 +76,7 @@ sub result_pack {
  my $data = MIME::Base32::encode ( $eng->encrypt ( join '|', @_ ) );
  
  # calculate md5 digest using the configured key, output as hex
- my $dig = uc ( hmac_md5_hex ( $data, conf ( 'result_key' ) ) );
+ my $dig = uc ( hmac_md5_hex ( $data, conf ( 'key_result' ) ) );
                
  # the outputted key contains 
  # * a letter to make it HTML DOM id save
@@ -98,7 +98,7 @@ sub result_unpack {
  
   my $data = $1; my $dig = $2;
   
-  my $cmp = uc ( hmac_md5_hex ( $data, conf ( 'result_key' ) ) );
+  my $cmp = uc ( hmac_md5_hex ( $data, conf ( 'key_result' ) ) );
    
   $dig ne $cmp and return (); # data digest mismatch
  

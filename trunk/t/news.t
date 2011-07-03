@@ -38,9 +38,9 @@ my @valid = qw ( 20110512234151 20110512234151 20110627222128 );
 
 my @invalid = qw ( 20110415123456 roska 19001010123456 99887766654321 ok !!! );
 
-foreach my $lang ( qw ( en fi ) ) {
+foreach my $lang ( qw ( en fi en234311 fi334212 ) ) {
 
- my $txt = text ( $lang );
+ my $txt = text ( substr ( $lang, 0, 2 ) );
  
  # news index page
    
@@ -56,7 +56,7 @@ foreach my $lang ( qw ( en fi ) ) {
  
  foreach my $key ( @valid ) {
  
-  $t->get_ok("/$lang/news/$key")->status_is(302); $c += 2;
+  $t->get_ok("/$lang/news/$key")->status_is(301); $c += 2;
  
   $t->get_ok("/$lang/news/")
     ->status_is(200)
@@ -75,14 +75,22 @@ foreach my $lang ( qw ( en fi ) ) {
  
  # RSS feed
  
- $t->get_ok("/$lang/feed/")
-   ->status_is(200)
-   ->content_type_like(qr/xml/)
-   ->element_exists('rss[version=2.0]')
-   ->text_is('title'=>$txt->{SITE})
-   ->element_exists('pubDate');
+ if ( length ( $lang ) == 2 ) {
+ 
+  $t->get_ok("/$lang/feed/")
+    ->status_is(200)
+    ->content_type_like(qr/xml/)
+    ->element_exists('rss[version=2.0]')
+    ->text_is('title'=>$txt->{SITE})
+    ->element_exists('pubDate');
     
- $c += 6;
+  $c += 6;
+ 
+ } else {
+ 
+  $t->get_ok("/$lang/feed/")->status_is(404); $c += 2;
+  
+ }
  
 }
 

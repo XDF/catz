@@ -93,9 +93,9 @@ my @bad = (
  '121100?what=%2Btext%3D"* panel*"'
 );
 
-foreach my $lang ( qw ( en fi ) ) {
+foreach my $lang ( qw ( en fi en en264311 fi365312 ) ) {
 
- my $txt = text ( $lang );
+ my $txt = text ( substr ( $lang, 0, 2 ) );
  
  foreach my $init ( @ok ) {
  
@@ -187,12 +187,22 @@ foreach my $lang ( qw ( en fi ) ) {
   }
   
   my $what = join ' ', @patt;
+  
+  if ( ( length ( $what ) < 1234 ) and ( $c <= 25 ) ) {
     
-  $t->get_ok("/$lang/search?what=".enurl($what))
-    ->status_is(200)
-    ->content_type_like(qr/text\/html/);
+   $t->get_ok("/$lang/search?what=".enurl($what))
+     ->status_is(200)
+     ->content_type_like(qr/text\/html/);
 
-  $c += 3;    
+    $c += 3;
+    
+  } else {
+  
+    $t->get_ok("/$lang/search?what=".enurl($what));
+
+    $c += 1;
+  
+  }    
  
  }
  
@@ -209,7 +219,7 @@ foreach my $lang ( qw ( en fi ) ) {
  my $what = join '', map { 'x' } ( 1 .. 1900 );
  
  $t->get_ok("/$lang/search?what=$what")
-   ->status_is(200);
+   ->status_is(404);
    
  $c += 2;    
  
