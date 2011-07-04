@@ -25,7 +25,8 @@
 <meta http-equiv="content-language" content="<%== $lang %>">
 <link rel="shortcut icon" href="/favicon.ico">
 <%= content 'image' => begin %>
-%== include 'elem/image', img => '/catzlogo.png';
+<link ref="image_src" href="/catzlogo.png">
+<meta name="og:image" value="/catzlogo.png">
 <% end %>
 <meta name="author" content="<%== $t->{AUTHOR} %>">
 <meta name="copyright" content="<%== $t->{COPYRIGHT} %> <%== $t->{AUTHOR} %> <%== $t->{FIRSTYEAR} %>-<%== thisyear %>. <%= $t->{LICENCE} %>.">
@@ -46,14 +47,16 @@
 %  }
 % }
 <%= content 'canon' => begin %>
-<link rel="canonical" href="/<%== $lang . urirest ( $url ) %>">
+<link rel="canonical" href="<%== "/$lang".urirest ( $url ) %>">
+<meta name="og:url" href="<%== "/$lang".urirest ( $url ) %>">
 <% end %> 
 <link rel="alternate" title="<%= $t->{TRANSLATE} %>" lang="<%== $langother %>" hreflang="<%== $langother %>" href="<%== $urlother %>">
-<meta name="fb:admins" content="<%== $facebookkey %>"> 
+<meta name="fb:admins" content="<%== $facebookkey %>">
+<link rel="me" content="<%== $t->{URL_FACEBOOK} %>"> 
 <%= content 'metaadd' %>
 <meta name="generator" content="<%== $t->{GENERATOR} %>">
-<meta name="loaded_at" content="<%== dtexpand ( $version, $lang ) %>">
-<meta name="rendered_at" content="<%== $now %>">
+<meta name="loaded" content="<%== dtexpand ( $version, $lang ) %>">
+<meta name="rendered" content="<%== $now %>">
 <meta name="credits" content="<%== $t->{CREDITS} %>">
 %== include 'elem/analytics';
 </head>

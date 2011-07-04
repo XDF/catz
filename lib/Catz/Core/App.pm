@@ -245,15 +245,21 @@ sub before {
 
  my $self = shift; my $s = $self->{stash};
  
+ # setting the analytics key  must be done first and also for static requests 
+ # since if a static request fails it renders a template that contains a 
+ # use of the key 
+ $s->{analyticskey} = undef; 
+ conf ( 'lin' ) and  $s->{analyticskey} = conf ( 'key_analytics' );     
+
  $s->{isstatic} = 0;
 
- # we skip all processing for static files
  ( $self->req->url->path->to_string  =~ /\..{2,4}$/ ) and do {
- 
+
+  # we skip all further preprocessing for static files 
   $s->{isstatic} = 1; return;
   
  };
-
+ 
  # default is not to cache so routing should set hold appropriately 
  $s->{hold} = 0; 
     
@@ -361,13 +367,19 @@ sub before {
   
   $s->{langother} = $s->{lang} eq 'fi' ? 'en' : 'fi';
  
-  $s->{langaother} = $s->{langother} . ( $3 // '' );  
- 
+  $s->{langaother} = $s->{langother} . ( $3 // '' );
+   
   # process and populate stash with setup data
   # returns true if success                                                                                  
-  setup_init ( $self, $s->{langa} ) or
-   ( $self->render_not_found and return );   
+  setup_init ( $self, $s->{langa} ) or do {
+  
+   $self->res->code(404);
+   $self->res->headers->content_length(0);
+   $self->rendered;
+   return; 
  
+  };
+    
  }
          
  # attempt to fetch from cache
@@ -401,10 +413,6 @@ sub before {
  $s->{setup_keys} = setup_keys;
  
  $s->{setup_values} = setup_values ( $s->{langa} );
-
- $s->{analyticskey} = undef;
- 
- conf ( 'lin' ) and  $s->{analyticskey} = conf ( 'key_analytics' );     
  
  $s->{facebookkey} = conf ( 'key_facebook' );
  

@@ -24,10 +24,10 @@ conf ( 'win' ) and do {
 
  $ENV{MOJO_HOME} = '/catz/dev';
  
- $ENV{MOJO_MODE} = 'production';
+ #$ENV{MOJO_MODE} = 'production';
  
  #$ENV{MOJO_USERAGENT_DEBUG} = 1;
- #$ENV{MOJO_MODE} = 'development';
+ $ENV{MOJO_MODE} = 'development';
  
  
 };

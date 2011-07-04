@@ -137,9 +137,9 @@ sub setup_init { # initialize the setup to application stash
    $config = substr ( $langa, 2 );
    
  }
- 
- if ( $init->{$config} ) { # config key is ok 
- 
+  
+ if ( $init->{$config} ) { # config key is ok
+  
   foreach my $i ( 0 .. $#{ $conf } ) {
  
    $app->{stash}->{ $conf->[ $i ]->{name} } = $init->{$config}->[ $i ];

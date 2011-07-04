@@ -1,8 +1,9 @@
+%#
 % my $term = undef;
 % my $exa = undef;
 % my $exb = undef;
 <div class="bar">
-<h2>Advanced search</h2> is the photo search engine targeted to those looking for more than the search capabilities provided by the <a href="/<%== $langa %>/">front page</a>. Using advanced search properly requires some learning but the reward is that you get exactly the photos you want. The search terms are typed to the search filed separated by spaces and the search gets executed by hitting <span class="lean">enter</span> or <span class="lean"><%= $t->{SEARCH_SUBMIT} %></span> button. Search term containing spaces must be surrounded by double quotations. The advanced search is case-insensitive regarding the search terms and always conducts the search from both English and Finnish content. The ordering of search terms doesn't affect the result. The search can have maximum of 25 search terms and the total length of the search is limited to <%= fmt ( 1234, $lang ) %> characters.
+<h2>Advanced search</h2> is a photo search engine for those looking for more than the search features on <a href="/<%== $langa %>/">the front page</a>. Utilizing the power of advanced search requires some learning but the reward is that you get exactly the photos you want. Type the search terms to the search field separated by spaces and execute the search by hitting <span class="lean">enter</span> or <span class="lean"><%= $t->{SEARCH_SUBMIT} %></span> button. Search terms containing spaces must be surrounded by double quotations. The advanced search is case-insensitive regarding the search term content and always searches both English and Finnish content. The ordering of search terms doesn't affect the results. The search can have maximum of 25 search terms and the maximum length of the search is <%= fmt ( 1234, $lang ) %> characters.
 </div>
 %#
 %# --------------------
@@ -13,28 +14,28 @@
 %#
 <li>
 % $term = 'mimosa';
-<a href="/<%== $langa %>/search?q=<%== enurl $term %>"><%= $term %></a> conducts a search for photos of subjects that are exactly <span class="lean"><%= $term %></span> and matches are found in cat names and nicknames
+<a href="/<%== $langa %>/search?q=<%== enurl $term %>"><%= $term %></a> conducts a search for photos of subjects that are exactly <span class="lean"><%= $term %></span> and matches are found both in cat names and nicknames
 </li>
 %#
 %# --------------------
 %#
 <li>
 % $term = 'mimosan';
-<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> conducts a search for photos of subjects that are exactly <span class="lean"><%= $term %></span> and it matches a breeder name
+<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> conducts a search for photos of subjects that are exactly <span class="lean"><%= $term %></span> and this matches a breeder name
 </li>
 %#
 %# --------------------
 %#
 <li>
 % $term = 'Iltavilli Ilveskartanon Ilveslinnan';
-<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> conducts a search for photos of subjets that are exactly <span class="lean">Iltavilli</span>, <span class="lean">Ilveskartanon</span> or <span class="lean">Ilveslinnan</span> and so the result is an union of the photos of three breeders
+<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> conducts a search for photos of subjects that are exactly <span class="lean">Iltavilli</span>, <span class="lean">Ilveskartanon</span> or <span class="lean">Ilveslinnan</span> and so the result is an union of the photos of the three breeders
 </li>
 %#
 %# --------------------
 %#
 <li>
 % $term = 'NFO n 22';
-<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> returns lot of photos due to the fact it is an union of photos of Norwegian Forest Cat, feature <span class="lean">n</span> and feature<span class="lean">22</span>
+<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> returns plenty of photos since the result is an union of photos reprsenting Norwegian Forest Cat, feature <span class="lean">n</span> and feature <span class="lean">22</span>
 </li>
 %#
 %# --------------------
@@ -51,7 +52,7 @@
 %# --------------------
 %#
 <div class="bar">
-If multiple search terms are given the default behavior is to return photos that matches to at least one of the terms (OR). To get the photos that match all the terms (AND) add plus right before each search term. To filter out the photos matching a search term use minus right before the term.
+If multiple search terms are given the default behavior is to return photos that matches to at least one of the terms (OR). To get the photos that match all the terms (AND) add plus right before each search term. To filter out the photos matching a term use minus right before the term.
 </div>
 %#
 %# --------------------
@@ -69,14 +70,14 @@ If multiple search terms are given the default behavior is to return photos that
 %#
 <li>
 % $term = '+MCO d e f -22 -23';
-<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> returns Maine Coon photos having at least one of the three features given but filters out the photos having features <span class="lean">22</span> and <span class="lean">23</span>
+<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> returns Maine Coon photos having at least one of the three features given but filters out photos having feature <span class="lean">22</span> or feature <span class="lean">23</span>
 </li>
 %#
 %# --------------------
 %#
 <li>
 % $term = '-22 +n aby rag ben';
-<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> conducts a search for photos of three breeds that also have feature <span class="lean">n</span> but filtering out feature <span class="lean">22</span>
+<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> conducts a search for photos of three breeds that also have feature <span class="lean">n</span> but filtering out photos with feature <span class="lean">22</span>
 </li>
 %#
 %# --------------------
@@ -111,7 +112,7 @@ By default the advanced search looks for an exact match. To relax this rule use 
 %#
 <li>
 % $term = 'b??';
-<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> conducts a search for photos of subjects that start with letter <span class="lean">b</span> and are three characters of length matching breed codes that begin with <span class="lean">b</span>
+<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> conducts a search for photos of subjects that start with letter <span class="lean">b</span> of three characters of length matching breed codes that begin with <span class="lean">b</span>
 </li>
 %#
 %# --------------------
@@ -126,14 +127,14 @@ By default the advanced search looks for an exact match. To relax this rule use 
 %#
 <li>
 % $term = '*mini*';
-<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> conducts a search for photos that have subjects that have text <span class="lean">mini</span> somewhere within the subject matching cat names and nicknames
+<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> conducts a search for photos that have a subject that contain text <span class="lean">mini</span> matching cat names and nicknames
 </li>
 %#
 %# --------------------
 %#
 <li>
 % $term = '"MCO ? ??" "NFO ? ??"';
-<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> returns Maine Coon and Norwegian Forest Cat photos having EMS code of structure breed code, one character, two characters. </li>
+<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> returns Maine Coon and Norwegian Forest Cat photos having EMS code structure as follows: breed code, one character, two characters.</li>
 %#
 %# --------------------
 %#
@@ -141,7 +142,7 @@ By default the advanced search looks for an exact match. To relax this rule use 
 %#
 %# --------------------
 %#
-<div class="bar">By default the search term is matched against all concepts. To force a search term to match against a single concept the name of the concept is given right before the term and separated from it with an equality sign.
+<div class="bar">By default a search term is matched against all concepts. To force a search term to match against a single concept give the name of the concept right before the term and separated from the term with an equality sign.
 </div>
 %#
 %# --------------------
@@ -166,13 +167,13 @@ By default the advanced search looks for an exact match. To relax this rule use 
 %#
 <li>
 % $term = '+has=breed -has=cat date=2011*';
-<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> returns all photos taken at 2011 that have a breed but no cat name (we are very happy for new cat data contributions)
+<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> returns all photos taken at 2011 that have a breed but no cat name (we are happy to accept more cat data donations)
 </li>
 %#
 %# --------------------
 %#
 <li>
-% $term = '+text=*panel*';
+% $term = 'text=*panel*';
 <a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> conducts a search against the photo text and looks for <span class="lean">panel</span> anywhere within the text
 </li>
 %#
@@ -189,7 +190,7 @@ By default the advanced search looks for an exact match. To relax this rule use 
 %#
 %# --------------------
 %#
-<div class="bar">All the concepts known by the advanced search in alphabetical order are as follows</div>
+<div class="bar">All concepts known by the advanced search are as follows (in alphabetical order):</div>
 %#
 %# --------------------
 %#
@@ -265,7 +266,7 @@ By default the advanced search looks for an exact match. To relax this rule use 
 <li>
 % $exa = 'date';
 % $exb = '20081122';
-<span class="lean"><%== $exa %></span> is the date of the photo album using format <span class="lean">YYYYMMDD</span> like <a href="/<%== $langa %>/search?q=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a> but notice that the quick find <a href="/<%== $langa %>/">on the front page</a> uses langauge specific format instead of this format
+<span class="lean"><%== $exa %></span> is the date of the photo album using format <span class="lean">YYYYMMDD</span> like <a href="/<%== $langa %>/search?q=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a> but notice that the instant find <a href="/<%== $langa %>/">on the front page</a> uses langauge specific format instead of this format
 </li>
 %#
 %# --------------------
@@ -281,7 +282,7 @@ By default the advanced search looks for an exact match. To relax this rule use 
 <li>
 % $exa = 'feat';
 % $exb = 'x';
-<span class="lean"><%== $exa %></span> is the <%= $t->{uc($exa)} %> that is effectively a single part of the EMS code of the cat in the photo like <a href="/<%== $langa %>/search?q=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a></li>
+<span class="lean"><%== $exa %></span> is the <%= $t->{uc($exa)} %> like <a href="/<%== $langa %>/search?q=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a> that is effectively a single part of the EMS code of the cat in the photo excluding the breed code</li>
 %#
 %# --------------------
 %#
@@ -304,7 +305,7 @@ By default the advanced search looks for an exact match. To relax this rule use 
 <li>
 % $exa = 'folder';
 % $exb = '20100926loimaa';
-<span class="lean"><%== $exa %></span> is the technical name of the folder of the album like <a href="/<%== $langa %>/search?q=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a> and this is a fixed concept that never changes and is the same as the the folder name used by the the old service
+<span class="lean"><%== $exa %></span> is the technical name of the folder of the album like <a href="/<%== $langa %>/search?q=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a> and this is a fixed value for an album matching the folder name used by <%= $t->{SITEOLD} %>
 </li>
 %#
 %# --------------------
@@ -312,7 +313,7 @@ By default the advanced search looks for an exact match. To relax this rule use 
 <li>
 % $exa = '+has=title';
 % $exb = '-has=breed';
-<span class="lean">has</span> is a special concept that allows to conduct a search for photos having a certain concept or photos not having a certain concept like <a href="/<%== $langa %>/search?q=<%= enurl $exa %>"><%= $exa %></a> that returns photos having cats that have at least one reported title and <a href="/<%== $langa %>/search?q=<%= enurl $exb %>"><%= $exb %></a> that returns photos that have no breed
+<span class="lean">has</span> is a special concept that allows to conduct a search for photos having a certain concept or photos not having a certain concept like <a href="/<%== $langa %>/search?q=<%= enurl $exa %>"><%= $exa %></a> that returns photos having cats that have at least one reported title and <a href="/<%== $langa %>/search?q=<%= enurl $exb %>"><%= $exb %></a> that returns photos that have no breed defined
 </li>
 %#
 %# --------------------
@@ -336,7 +337,7 @@ By default the advanced search looks for an exact match. To relax this rule use 
 <li>
 % $exa = 'loc';
 % $exb = 'Helsinki';
-<span class="lean"><%== $exa %></span> is the name of the place where the album was shot like <a href="/<%== $langa %>/search?q=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+<span class="lean"><%== $exa %></span> is the name of the place where the album was shot at like <a href="/<%== $langa %>/search?q=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
 </li>
 %#
 %# --------------------
@@ -368,7 +369,7 @@ By default the advanced search looks for an exact match. To relax this rule use 
 <li>
 % $exa = 'text';
 % $exb = '*rosette*';
-<span class="lean"><%== $exa %></span> is the complete photo text and typically it is searched for a pattern like <a href="/<%== $langa %>/search?q=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
+<span class="lean"><%== $exa %></span> is the complete photo text and it is typically searched for a pattern like <a href="/<%== $langa %>/search?q=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
 </li>
 %#
 %# --------------------
@@ -390,22 +391,22 @@ By default the advanced search looks for an exact match. To relax this rule use 
 %# --------------------
 %#
 <div class="bar">
-The quick find on <a href="/<%== $langa %>/">the front page</a> is aimed for all users and its purpose is to provide instant access to photos. In the other hand the advanced search is targeted to users having deeper understading of the data content and structure. For this reason the quick find and the advanced search have at least the following differences 
+The instant find on <a href="/<%== $langa %>/">the front page</a> is aimed for all users and its purpose is to provide rapid access to photos. The advanced search is targeted to users having deeper understading of the data content and structure. The instant find and the advanced search have the following differences: 
 </div>
 %#
 <ul>
 %#
-<li>quick find is language aware while the advanced search always conducts the searches against both English and Finnish content</li>
+<li>instant find is language aware while the advanced search searches both English and Finnish content</li>
 %#
-<li>quick find expresses dates in the langauge specific format while advanced search uses format <span class="lean">YYYYMMDD</span></li>
+<li>instant find expresses dates in the langauge specific format while advanced search uses format <span class="lean">YYYYMMDD</span></li>
 %#
-<li>quick find can be used to find breeds, features, nations and titles in their full language dependent form while advanced search uses only the codes</li>
+<li>instant find can be used to find breeds, features, nations and titles both in their full language dependent form and in the code form while advanced search uses only the code form</li>
 %#
-<li>quick find is never matched directly against the photo text</li>
+<li>instant find is never matched directly against the photo text or against technical folder name</li>
 %#
-<li>quick find operates in real time while the search is typed while advanced search must be submitted for execution</li>
+<li>instant find operates in real time while an advanced search must be submitted for execution</li>
 %#
-<li>the result of a quick find is a suggestion of matching subjects while the result of an advanced search is a set of photos</li>
+<li>the result of a instant find is a suggestion of matching subjects while the result of an advanced search is a set of photos</li>
 %# 
 </ul>
 %#

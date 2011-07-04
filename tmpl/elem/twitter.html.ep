@@ -1,5 +1,5 @@
 % utf8::encode ( $twtext );
-<iframe class="twitter" src="http://platform.twitter.com/widgets/tweet_button.html?url=<%== enurl ($t->{URL_CATZA}.$twurl) %>&via=<%== enurl $twitterkey %>&text=<%== enurl $twtext %>&related=<%== enurl $twitterkey %>&count=none&lang=en&counturl=<%== enurl $twcounturl %>" allowtransparency="true" frameborder="0" scrolling="no"></iframe>
+<iframe class="twitter" src="http://platform.twitter.com/widgets/tweet_button.html?url=<%== enurl ($t->{URL_CATZA}.$twurl) %>&via=<%== enurl $twitterkey %>&text=<%== enurl $twtext %>&related=<%== enurl $twitterkey %>&count=none&lang=en" allowtransparency="true" frameborder="0" scrolling="no"></iframe>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

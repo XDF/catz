@@ -1,2 +1,0 @@
-<link ref="image_src" href="<%== $img %>">
-<meta name="og:image" value="<%== $img %>">
