@@ -44,7 +44,7 @@ foreach my $url ( qw ( a b x void pointless 0 1 123 web_inf pOKWj3jk33lkJ ) ) {
  $t->get_ok("/$url/$url/")->status_is(404); $c += 2;
  $t->get_ok("/$url/$url/$url/")->status_is(404); $c += 2;
   
- foreach my $lang ( qw ( en fi en264312 fi264322 en897123 fi2643a2 en12 ) ) {
+ foreach my $lang ( qw ( en fi en264312 fi264322 en897123 fi189492 fi2643a2 en12 ) ) {
    
   $t->get_ok("/$lang/$url/")->status_is(404); $c += 2;
   $t->get_ok("/$lang/$url/$url/")->status_is(404); $c += 2;
@@ -64,7 +64,7 @@ foreach my $uri ( qw ( oiuy//&?? *345== HEU@^^ !?+09~ *-ÅÄÖåäö ) ) {
  $t->get_ok("/$url/$url/")->status_is(404); $c += 2;
  $t->get_ok("/$url/$url/$url/")->status_is(404); $c += 2;
  
- foreach my $lang ( qw ( en fi en211211 fi171212 en123123123 fi929 enneen ) ) { 
+ foreach my $lang ( qw ( en fi en211211 fi171212 en914311 en123123123 fi929 enneen ) ) { 
   
   $t->get_ok("/$lang/$url/")->status_is(404); $c += 2;
   $t->get_ok("/$lang/$url/$url/")->status_is(404); $c += 2;
@@ -114,7 +114,7 @@ foreach my $i ( 1 .. 100 ) {
  $t->get_ok("/$pata/")->status_is(404); $c += 2;
  $t->get_ok("/en/$pata/")->status_is(404); $c += 2;
  $t->get_ok("/en211211/$pata/")->status_is(404); $c += 2;
-  $t->get_ok("/en211x11/$pata/")->status_is(404); $c += 2;
+ $t->get_ok("/en211x11/$pata/")->status_is(404); $c += 2;
  $t->get_ok("/fi/$pata/")->status_is(404); $c += 2;    
 
  $t->get_ok("/$patb/")->status_is(404); $c += 2;

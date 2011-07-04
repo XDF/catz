@@ -92,9 +92,7 @@
 <% content 'pathadd' => begin %>
 <%== include 'elem/path' %>
 % if ( $runmode eq 'pair' ) {
-% my $etg = $lang eq 'fi' ? $trans : $sec; 
-% my $turi = $t->{URL_CATZA}."en/browse/$pri/$etg/";
-%== include 'elem/twitter', twurl => $t->{URL_CATZA}."$lang/browse/$pri/$etg/", twtext => "$sec (".$t->{uc($pri)}.')', twcounturl => $turi;
+%== include 'elem/twitter', twurl => $url, twtext => "$sec (".$t->{uc($pri)}.')';
 %  if ( $matrix->{$pri}->{like} ) {
 %== include 'elem/facebook', fbhref => $turi, fbref => 'browse';
 %  }
