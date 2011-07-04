@@ -16,10 +16,9 @@
 %#
 <% content 'metaadd' => begin %>
 <meta name="og:title" content="<%= $t->{SITE} %> <%== $t->{NEWS_ALL} %>"> 
-<meta name="og:url" content="/<%== 'en' . urirest ( $url ) %>">
-<link rel="canonical" content="/<%== $lang . urirest ( $url ) %>">
 <meta name="description" content="<%= $t->{NEWSING} %>">
-<meta name="og:description" content="<%= $t->{NEWSING} %>"> 
+<meta name="og:description" content="<%= $t->{NEWSING} %>">
+<meta name="og:type" content="catz:list"> 
 <% end %>
 %#
 %# --------------------

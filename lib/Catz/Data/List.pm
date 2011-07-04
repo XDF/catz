@@ -63,15 +63,13 @@ my $matrix = {
    dividers => 0,
    refines => [ qw ( org umb ) ],
    # no jump
-   like => 1,
  },
  
  org => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
   refines => [ qw ( umb loc ) ],
-  jump => { umb => 1 },
-  like => 1,  
+  jump => { umb => 1 },  
  },
  
  umb => {
@@ -79,7 +77,6 @@ my $matrix = {
   dividers => 0,
   refines => [ qw ( org loc ) ],
   jump => { org => 1 },
-  like => 1,
  },
  
  folder => {
@@ -87,7 +84,6 @@ my $matrix = {
   # no dividers since no modes
   refines => [ qw ( loc org umb breed breeder lens body ) ],
   jump => { loc => 1, org => 1, umb => 1 },
-  like => 1,
  },
 
  cat => {
@@ -97,23 +93,20 @@ my $matrix = {
   jump => { 
    nick => 1, code => 1, breed => 1, app => 1, breeder => 1, nat => 1 
   },
-  like => 1, 
  },
  
  breed => {
   modes => [ qw ( a2z top first ) ],
   dividers => 0,
   refines => [ qw ( code breeder nat loc ) ],
-  jump => { code => 1 },
-  like => 1,  
+  jump => { code => 1 },  
  },
  
  breeder => {
   modes => [ qw ( a2z top first ) ],
   dividers => 1,
   refines => [ qw ( breed feat app nat cat ) ],
-  jump => { nat => 1, cat => 1 },
-  like => 1, 
+  jump => { nat => 1, cat => 1 }, 
  },
  
  nat => {
@@ -121,15 +114,13 @@ my $matrix = {
   dividers => 0,
   refines => [ qw ( breeder breed cat ) ],
   jump => { breeder => 1, cat => 1 },
-  like => 1,
  },
  
  code => {
   modes => [ qw ( a2z top first ) ],
   dividers => 1 ,
   refines => [ qw ( app feat breeder cat ) ],
-  jump => { app => 1, feat => 1, cat => 1 },
-  like => 1,  
+  jump => { app => 1, feat => 1, cat => 1 },  
  },
 
  app => {
@@ -144,7 +135,6 @@ my $matrix = {
   dividers => 0,
   refines => [ qw ( code feat breeder cat ) ],
   jump => { code => 1, cat => 1 },
-  like => 1,
  },
   
  feat => {
@@ -152,7 +142,6 @@ my $matrix = {
   dividers => 0,
   refines => [ qw ( breed app breeder cat ) ], 
   jump => { app => 1, cat => 1 },
-  like => 1,
  },
 
  nick => {
@@ -160,7 +149,6 @@ my $matrix = {
   dividers => 1,
   refines => [ qw ( cat ) ],
   jump => { cat => 1 },
-  like => 1,
  },
 
  title => {
@@ -175,7 +163,6 @@ my $matrix = {
   dividers => 0,
   refines => [ qw ( body flen fnum ) ],
   # no jump
-  like => 1,
  },
 
  body => {
@@ -183,7 +170,6 @@ my $matrix = {
   dividers => 0,
   refines => [ qw ( lens iso ) ],
   # no jump
-  like => 1,
  },
 
  fnum => {

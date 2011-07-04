@@ -3,22 +3,38 @@
 %# --------------------
 %#
 <% content 'metaadd' => begin %>
-% if ( $runmode eq 'pair' ) {
-%  my $ogtype = 'catz:'.$ten->{uc($pri)};
-%  given ( $pri ) {
-%   when ( [ qw ( org umb breeder ) ] ) { $ogtype = 'non_profit' }
-%   when ( 'nat' ) { $ogtype = 'country' }
-%   when ( 'loc' ) { $ogtype = 'city' } 
-%  }
+<%
+my $ogtype = 'catz:photobrowse'; # default
+if ( $runmode eq 'pair' ) {
+ $ogtype = "catz:$pri";
+ given ( $pri ) {
+  when ( [ qw ( org umb breeder ) ] ) { $ogtype = 'non_profit' }
+  when ( 'nat' ) { $ogtype = 'country' }
+  when ( 'loc' ) { $ogtype = 'city' } 
+ }
+}
+%>
 <meta name="og:type" content="<%= $ogtype %>">
-%  if ( $pri eq 'loc' ) {
+% if ( $runmode eq 'pair' and $pri eq 'loc' ) {
 <meta name="og:locality" content="<%= $sec %>">
 <meta name="og:country-name" content="<%= $t->{COUNTRY} %>">
-%  }
-% my $etg = $lang eq 'fi' ? $trans : $sec; 
-<meta name="og:url" content="<%== $t->{URL_CATZA} %>en/browse/<%== $pri %>/<%== encode $etg %>/">
-<meta name="og:title" content="<%= $sec %> (<%= $ten->{uc($pri)} %>)"> 
 % }
+<%
+my $ogtitle = fmt ( $maxx, $lang ).' '.$t->{PHOTOA_CATSHOW}; # default
+if ( $runmode eq 'pair' ) {
+ if ( $pri eq 'folder' ) {
+  $ogtitle = $t->{ALBUM}.' '.$mapview->{$pri}->{$sec}->[1];
+ } elsif ( $pri eq 'date' ) {
+  $ogtitle = $t->{DATE}.' '.dtexpand ( $sec, $lang );
+ } else {
+  $ogtitle = $t->{uc($pri)}.' '.$sec; 
+ }
+} elsif ( $runmode eq 'search' ) {
+ $ogtitle = $t->{SEARCH_RESULT}.' '.$what;  
+}
+stash ( 'ogtitle', $ogtitle ); # store for twitter use 
+%>
+<meta name="og:title" content="<%== $ogtitle %>"> 
 <link rel="start" href="<%== include 'href/id', toid => $pin->[0] %>">
 % if ( $page > 1 ) {
 <link rel="prev" href="<%== include 'href/id', toid => $pin->[$page-2] %>">
@@ -26,18 +42,25 @@
 % if ( $page < $pages ) {
 <link rel="next" href="<%== include 'href/id', toid => $pin->[$page] %>">
 % }
-% if ( $origin eq 'id' and ( defined $thumbs->[0] ) ) {
-<link rel="canonical" content="<%== include 'href/id', toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]) %>">
-% }  
+<% end %>
+%#
+%# --------------------
+%#
+<% content 'canon' => begin %>
+% if ( $page == 1 ) {
+<link rel="canonical" href="<%== include 'href/id', toid => 0 %>">
+<meta name="og:url" content="<%== include 'href/id', toid => 0 %>">
+% } else {
+<link rel="canonical" href="<%== include 'href/id', toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]) %>">
+<meta name="og:url" content="<%== include 'href/id', toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]) %>">
+% }
 <% end %>
 %#
 %# --------------------
 %#
 <% content 'image' => begin %>
-% if ( defined $thumbs->[0] ) {
 <link ref="image_src" href="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
 <meta name="og:image" value="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
-% }
 <% end %>
 %#
 %#
@@ -91,11 +114,9 @@
 %#
 <% content 'pathadd' => begin %>
 <%== include 'elem/path' %>
-% if ( $runmode eq 'pair' ) {
-%== include 'elem/twitter', twurl => $url, twtext => "$sec (".$t->{uc($pri)}.')';
-%  if ( $matrix->{$pri}->{like} ) {
-%== include 'elem/facebook', fbhref => $turi, fbref => 'browse';
-%  }
+% if ( $page == 1 ) {
+%== include 'elem/twitter', twurl => $url, twtext => stash ( 'ogtitle' );
+%== include 'elem/facebook', fbhref => $url, fbref => $runmode eq 'pair' ? $pri : $runmode;
 % }
 <% end %>  
 %#

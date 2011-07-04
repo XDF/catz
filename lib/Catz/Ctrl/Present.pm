@@ -38,9 +38,11 @@ use Catz::Data::Search;
 
 sub pre {
 
- # general preparations
+ # for general preparations
 
  my $self = shift; my $s = $self->{stash};
+ 
+ $s->{maxx} = $self->fetch ( 'all#maxx' );
  
  # read common mappings from model to stash
 

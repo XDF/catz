@@ -3,8 +3,8 @@
 %# --------------------
 %#
 <% content 'metaadd' => begin %>
-<meta name="og:title" content="<%= $t->{LISTINGS} %>"> 
-<meta name="og:url" content="<%== $lang eq 'fi' ? $urlother : $url %>"> 
+<meta name="og:title" content="<%= $t->{LISTINGS} %>">
+<meta name="og:type" content="catz:list">  
 <% end %>
 %#
 %# --------------------
