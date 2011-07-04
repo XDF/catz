@@ -37,16 +37,16 @@
 || meta || link start || || || || || || links to first thumbnail page || links to first photo || ||
 || meta || link prev || || || links to previous article || || || links to previous thumbnail page || link to the previous photo || ||
 || meta || link next || || || links to next article || || || links to next thumbnail page || link to the next photo || ||
-|| meta || block image || use the first sample thumbnail on page || default || default || default || default || use the first thumbnail on page || use the photo thumbnail || default || 
-|| facebook || meta og:type || website || catz:list || article || catz:list || catz:list || in runmode pair on org, umb, breeder: non_profit, on nat: country, on loc: city, on others "catz:" + pri || catz:photo || catz:search ||  
-|| facebook || meta og:title || the site name || a fixed title || the date and the news title || a fixed title || in runmode all a fixed title, in runmode pair a title constructed from the subject and mode, in runmode search ... || ??? || ??? || a fixed title ||  
+|| meta || block image || use the first sample thumbnail on page || default || default || default || default || use the first thumbnail on page || use the photo thumbnail || default ||
+|| meta || meta description || site name & slogan || a fixed text || || || generated from subject and pri || || || a fixed text || 
+|| meta || meta og:description || site name & slogan || a fixed text || || || generated from subject and pri || || || a fixed text ||
+|| facebook || meta og:type || website || catz:list || article || catz:list || catz:list || default "catz:photobrowse", in runmode pair on org, umb, breeder: non_profit, on nat: country, on loc: city, on others "catz:" + pri || catz:photo || catz:search ||  
+|| facebook || meta og:title || the site name || a fixed title || the date and the news title || a fixed title || in runmode all a title "n cat show photos", in runmode pair a title constructed from the subject and mode, in runmode search ... || ??? || ??? || a fixed title ||  
 || facebook || meta og:locality || || || || || || in runmode pair on loc contains the location name || in runmode pair on loc contains the location name || ||  
 || facebook || meta og:country-name || || || || || || in runmode pair on loc contains the country name || in runmode pair on loc contains the country name || ||
-
-Currently the metadata not provided are
+  
+Currently metadata not provided is
   * meta keywords
-  * meta description
-  * meta og:description    
  
 = Social media integration =
 
