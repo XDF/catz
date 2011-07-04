@@ -1,17 +1,14 @@
 %# Create link to different action & id but with same parameters
-<%
-use 5.10.0;
-$toaction eq 'auto' and do {
- given ( $action ) {
-  when ( 'browseall' ) { $toaction = 'viewall' }
-  when ( 'viewall' ) { $toaction = 'browseall' }
-  when ( 'browse' ) { $toaction = 'view' }
-  when ( 'view' ) { $toaction = 'browse' }
-  when ( 'search' ) { $toaction = 'display' }
-  when ( 'display' ) { $toaction = 'search' }
- }
-};
-%>
+% $toaction eq 'auto' and do {
+%  given ( $action ) {
+%   when ( 'browseall' ) { $toaction = 'viewall' }
+%   when ( 'viewall' ) { $toaction = 'browseall' }
+%   when ( 'browse' ) { $toaction = 'view' }
+%   when ( 'view' ) { $toaction = 'browse' }
+%   when ( 'search' ) { $toaction = 'display' }
+%   when ( 'display' ) { $toaction = 'search' }
+%  }
+% };
 % if ( $toid eq 'this' ) {
 %  given ( $runmode ) {
 %   when ( 'pair' ) { 
@@ -25,15 +22,29 @@ location.href='/<%== $langa %>/<%== $toaction %>/'+this.options[this.selectedInd
 %   }
 %  }   
 % } else {
-%  given ( $runmode ) {
-%   when ( 'pair' ) { 
+%  if ( $toid == 0 ) { # use no id, point to the root resource
+%   given ( $runmode ) {
+%    when ( 'pair' ) { 
+/<%== $langa %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/
+%    } 
+%    when ( 'search' ) {
+/<%== $langa %>/<%== $toaction %>?q=<%== enurl($what) %>
+%    } 
+%    default  { 
+/<%== $langa %>/<%== $toaction %>/
+%    }
+%   }
+%  } else {
+%   given ( $runmode ) {
+%    when ( 'pair' ) { 
 /<%== $langa %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/<%== $toid %>/
-%   } 
-%   when ( 'search' ) {
+%    } 
+%    when ( 'search' ) {
 /<%== $langa %>/<%== $toaction %>/<%== $toid %>?q=<%== enurl($what) %>
-%   } 
-%   default  { 
+%    } 
+%    default  { 
 /<%== $langa %>/<%== $toaction %>/<%== $toid %>/
+%    }
 %   }
 %  }
 % }

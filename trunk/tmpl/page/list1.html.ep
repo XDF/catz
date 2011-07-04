@@ -8,7 +8,8 @@
 <meta name="og:title" content="<%= $titl %>"> 
 <meta name="description" content="<%= $desc %>">
 <meta name="og:description" content="<%= $desc %>">
-<meta name="og:url" content="<%== $lang eq 'fi' ? $urlother : $url %>"> 
+<meta name="og:type" content="catz:list">
+<link rel="index" href="/<%== $lang %>/lists/">  
 <% end %>
 %#
 %# --------------------

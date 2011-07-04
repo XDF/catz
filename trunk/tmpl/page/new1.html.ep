@@ -21,9 +21,9 @@
 %# --------------------
 %#
 <% content 'metaadd' => begin %>
-<meta name="og:title" content="<%= dtexpand ( dtdate ( $new1->[0] ), $lang ) %> <%= $new1->[1] %>">
-<meta name="og:url" content="/<%== 'en' . urirest ( $url ) %>">
-<link rel="canonical" content="/<%== $lang . urirest ( $url ) %>">
+% my $ogtitle = dtexpand ( dtdate ( $new1->[0] ), $lang ).' '.$new1->[1];
+<meta name="og:title" content="<%== $ogtitle %>">
+% stash ( 'ogtitle', $ogtitle );
 <meta name="og:type" content="article">
 <link rel="index" href="/<%== $langa %>/news/">
 % if ( $prev ) {
@@ -69,8 +69,8 @@
 <%=  dtexpand ( $new1->[0], $lang ) %>
 % if ( ( dt2epoch ( dt ) - dt2epoch ( $new1->[0] ) ) < 60 * 60 * 24 * 90 ) {
 <span class="aero">
-%== include 'elem/twitter', twurl => "/$lang" . urirest ( $url ), twtext => $new1->[1], twcounturl => '/en' . urirest ( $url );
-%== include 'elem/facebook', fbhref =>  "/$lang" . urirest ( $url ), fbref => 'news';
+%== include 'elem/twitter', twurl => $url, twtext => stash ( 'ogtitle' );
+%== include 'elem/facebook', fbhref => $url, fbref => 'news';
 </span>
 % }
 </div>

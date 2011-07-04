@@ -5,9 +5,9 @@
 %# --------------------
 %#
 <% content 'metaadd' => begin %>
-<meta name="og:url" content="<%== $lang eq 'fi' ? $urlother : $url %>">
 <meta name="description" content="<%= $t->{SEARCHING} %>">
-<meta name="og:description" content="<%= $t->{SEARCHING} %>"> 
+<meta name="og:description" content="<%= $t->{SEARCHING} %>">
+<meta name="og:type" content="catz:search"> 
 <% end %>
 %#
 %# --------------------

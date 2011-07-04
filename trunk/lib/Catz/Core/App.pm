@@ -438,7 +438,15 @@ sub after {
 
  my $self = shift; my $s = $self->{stash};
  
- $s->{isstatic} and return;
+ $s->{isstatic} and do {
+   
+  $self->res->headers->header( # 2 hours of lifetime
+   'Cache-Control' => 'max-age=' . ( 60 * 60 * 2 ) . ', public' 
+  );
+ 
+  return; # for static content we just set one header and exit 
+ 
+ };
  
  # we require the basics to be available for further processing   
  ( 
