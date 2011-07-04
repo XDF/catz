@@ -100,7 +100,7 @@ sub AUTOLOAD {
  $time_model and $start = time();
  
  my $res = cache_get ( 
-  $self->{version}, $nspace, $self->{lang}, $self->{name}, $sub, @args 
+  $currver, $nspace, $self->{lang}, $self->{name}, $sub, @args 
  ); 
  
  $res and do {
@@ -122,7 +122,7 @@ sub AUTOLOAD {
  $time_model and warn "MODEL $self->{name} $sub -> " . round ( ( ( $end - $start ) * 1000 ), 0 ) . ' ms (real)';
   
  cache_set ( 
-  $self->{version}, $nspace, $self->{lang}, $self->{name}, $sub, @args, $res
+  $currver, $nspace, $self->{lang}, $self->{name}, $sub, @args, $res
  );
  
  return $res;
@@ -139,7 +139,7 @@ sub db_run {
  
  $time_db and $start = time();
   
- my $res = cache_get ( $self->{version}, $nspace, $comm, $sql, @args );
+ my $res = cache_get ( $currver, $nspace, $comm, $sql, @args );
  
  $res and do {
  
@@ -198,7 +198,7 @@ sub db_run {
  $time_db and warn "DB $comm $sql -> " . round ( ( ( $end - $start ) * 1000 ), 0 ) . ' ms (real)' ;
 
  # at database level we currently use infinite caching 
- cache_set (  $self->{version}, $nspace, $comm, $sql, @args, $res );
+ cache_set (  $currver, $nspace, $comm, $sql, @args, $res );
   
  return $res;
 

@@ -74,12 +74,13 @@ sub cache_set {
  # we build the cache key by joining the encoded key parts
  # we map undefined key parts to string 'undef' to be safe
  my $key = 
-  enurl join $sep, map { $_ = $_ // 'undef'; $_ =~ tr/ /_/; $_  } @args;
+  enurl join $sep, 
+   ( 'catz', map { $_ = $_ // 'undef'; $_ =~ tr/ /_/; $_  } @args );
   # MUST BE THE SAME CODE AS IN GET
    
  # shrink too long keys
  length $key > 250 and $key = shrink $key;
-  
+   
  {
  
   # the value to be cached may well be undef since it might
@@ -104,7 +105,8 @@ sub cache_get {
  # we build the cache key by joining the encoded key parts
  # we map undefined key parts to string 'undef' to be safe 
  my $key = 
-  enurl join $sep, map { $_ = $_ // 'undef'; $_ =~ tr/ /_/; $_  } @args;
+  enurl join $sep, 
+   ( 'catz', map { $_ = $_ // 'undef'; $_ =~ tr/ /_/; $_  } @args );
   # MUST BE THE SAME CODE AS IN SET 
   
  # shrink too long keys

@@ -157,7 +157,7 @@
 % foreach my $detail ( @$detail ) { 
 % if ( $detail->[0] ne $pdet ) {
 % $j = 1;
-<%= $i++ == 1 ? '' : $sep =%> <%== include 'elem/pri', a => $detail->[0] %>
+<%= $i++ == 1 ? '' : $sep %> <%== include 'elem/pri', a => $detail->[0] %>
 % }
 <%= $j++ == 1 ? '' : $sep %>
 % $pdet =  $detail->[0];
