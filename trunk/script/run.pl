@@ -22,14 +22,21 @@ $ENV{MOJO_APP} ||= 'Catz::Core::App';
 
 conf ( 'win' ) and do {
 
- $ENV{MOJO_HOME} = '/catz/dev';
+ $ENV{MOJO_HOME} = conf ( 'rootd' );
  
- #$ENV{MOJO_MODE} = 'production';
+ $ENV{MOJO_MODE} = 'production';
+ #$ENV{MOJO_MODE} = 'development';
  
  #$ENV{MOJO_USERAGENT_DEBUG} = 1;
- $ENV{MOJO_MODE} = 'development';
- 
- 
+  
+};
+
+conf ( 'lin' ) and do {
+
+ $ENV{MOJO_MODE} = 'production';
+
+ $ENV{MOJO_HOME} = conf ( 'rootd' ) . '/catz' . conf ( 'pkey' );
+
 };
  
 Mojolicious::Commands->start;
