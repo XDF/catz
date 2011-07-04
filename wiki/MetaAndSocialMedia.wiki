@@ -2,65 +2,72 @@
 
 = The page metadata =
 
-== Forced by "base/heavy.html.ep" for all pages ==
+== Forced by base/heavy.html.ep for all pages ==
 
 || *type* || *tag* || *explanation* ||
 || core || meta http-equiv content-type || ||
-|| core || meta http-equiv content-language || content langauge also set on html and body ||
-|| core || link "shortcut icon" || standard old-school favicon.ico at the root ||
+|| core || meta http-equiv content-language || content langauge also set on html and body so we really are on the safe side ||
+|| core || link "shortcut icon" || standard old-school favicon.ico at the set's root ||
 || meta || meta generator || ||
 || meta || meta author || ||
 || meta || meta copyright || ||
 || meta || link copyright || ||    
-|| meta || robots || controlled by controllers ||
+|| meta || meta robots || based on the values of stash variables meta_index & meta_follow, before hook sets to default "all" but if with setup then "noindex,follow", controllers are allowed to modify the default behavior  ||
 || meta || link alternate || links to the page in another language ||    
 || facebook || meta og:site_name || ||
 || facebook || meta fb:admins || ||
-|| misc || meta loaded_at || the language-specific time when the data was loaded ||
-|| misc || meta rendered_at || the language-specific time when the HTML was rendered ||
+|| facebook || link me || links to facebook the fan page ||
+|| misc || meta loaded || the language-specific time when the data was loaded ||
+|| misc || meta rendered || the language-specific time when the HTML was rendered ||
 || misc || meta credits || gives credits to some vital technologies used by the system || 
        
-== Default provided by "base/heavy.html.ep" but overloadable ==       
+== Default provided by base/heavy.html.ep but overloadable ==       
 
 || *block* || *type* || *tag* || *explanation* ||
-|| canon || meta || link canonical || links to the same page without setup ||
-|| image || meta || link image_src || to the site's logo in png format ||
-|| image || facebook || meta og:image || to the site's logo in png format ||
+|| canon || meta || link canonical || links to the same page in the same language but without setup ||
+|| canon || meta || meta og:url || see previous line ||
+|| image || meta || link image_src || links to the site's logo in png format ||
+|| image || facebook || meta og:image || see previous line ||
 
 == Page type specific metadata ==
  
 || *type* || *tag* || *front* || *news* || *news1* || *lists* || *list1* || *browse* || *view* || *search* ||
 || meta || block canon || default || default || default || default || default || in id mode links to the same page without setup and by using first thumb's id, if on first page then to the same page without setup and without id || links to the same photo without setup on runmode all || default ||    
-|| meta || link index || || || links to news index || || links to lists index || || links to thumbnails || ||
-|| meta || link start || || || || || || links to first thumbnail page (no id mode ) || links to first photo || ||
+|| meta || link index || || || links to news index || || links to lists index || || links to thumbnail page || ||
+|| meta || link start || || || || || || links to first thumbnail page || links to first photo || ||
 || meta || link prev || || || links to previous article || || || links to previous thumbnail page || link to the previous photo || ||
-|| meta || link next || || || links to nexct article || || || links to next thumbnail page || link to the next photo || ||
-|| meta || block image || use the first sample thumbnail on page with suitable geometry || default || default || default || default || use the first thumbnail on page with suitable geometry || use the photo thumbnail || default || 
-|| facebook || meta og:type || website || catz:list || article || catz:list || catz:list || in runmode pair on org, umb, breeder: non_profit, on nat: country, on loc: city, on others catz:english_test_of_pri || article || catz:search ||  
-|| facebook || meta og:title || the site name || a fixed title || the date and the news title || a fixed title || a title constructed from the subject and mode || ??? || ??? || a fixed title ||
-|| facebook || meta og:url || the global site url || the english news index without setup || the news article in english without setup || the english list index without setup || the english list page without setup || the first page no id mode in english without setup || the same photo in all photo browsing id mode in english without setup || the same page in english without setup ||  
+|| meta || link next || || || links to next article || || || links to next thumbnail page || link to the next photo || ||
+|| meta || block image || use the first sample thumbnail on page || default || default || default || default || use the first thumbnail on page || use the photo thumbnail || default || 
+|| facebook || meta og:type || website || catz:list || article || catz:list || catz:list || in runmode pair on org, umb, breeder: non_profit, on nat: country, on loc: city, on others "catz:" + pri || catz:photo || catz:search ||  
+|| facebook || meta og:title || the site name || a fixed title || the date and the news title || a fixed title || in runmode all a fixed title, in runmode pair a title constructed from the subject and mode, in runmode search ... || ??? || ??? || a fixed title ||  
 || facebook || meta og:locality || || || || || || in runmode pair on loc contains the location name || in runmode pair on loc contains the location name || ||  
 || facebook || meta og:country-name || || || || || || in runmode pair on loc contains the country name || in runmode pair on loc contains the country name || ||
 
-Currently the metadata not provided is
+Currently the metadata not provided are
   * meta keywords
   * meta description
   * meta og:description    
  
 = Social media integration =
 
-== Facebook like ==
+== Facebook recommend ==
 
 || *front* || *news* || *news1* || *lists* || *list1* || *browse* || *view* || *search* ||
-|| like the website || || || || || in runmode pair with specific subject like the subject || like the photo || ||
+|| recommend the site || || recommend the article not older than 90 days || || || on first page recommend the all photos / subject / search || recommend the photo || ||
+
+Like button uses
+  * current real url as href (Facebook should handle matching to canonical via or:url)
+  * recommend
+  * no ref    
 
 == Twitter tweet ==
 
 || *front* || *news* || *news1* || *lists* || *list1* || *browse* || *view* || *search* ||
-|| tweet the site || || for articles not older than 30 days || || || in runmode pair tweet the subject || tweet the photo || ||
+|| tweet the site || || for articles not older than 90 days || || || on first page tweet all photos / subject /search || tweet the photo || ||
 
-  * Tweets the url identical to that provided in meta og:url but in current language
-  * Uses og:url as count url
+  * current real url as href (hopefully this is matched to canonical by Twitter?)
+  * custom text as text, or what? use html title tag? use page h1 title? SAME AS OG:TITLE??? they are not probably the same due to twitter size policy
+  * how to make the same (template) routine to generate content for og:title and tweet text ...  
        
  
 
