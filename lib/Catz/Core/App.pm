@@ -145,7 +145,7 @@ sub startup {
   );
  
  # the front page is at the root under the language
- $l->route( '/' )->to( 'main#front', hold => 30 );
+ $l->route( '/' )->to( 'main#front', hold => 15 );
  
  ###
  ### the news service
@@ -256,16 +256,18 @@ sub before {
 
  # default is not to cache so routing should set hold appropriately 
  $s->{hold} = 0; 
-   
+    
  # we can't export time since we use the standard time function also
  $time_page and $s->{time_start} = Time::HiRes::time();
- 
- my $dbp = $ENV{MOJO_HOME}.'/db';
- 
- ( $checked and ( ( $checked + 10 ) < time() ) ) or do {
- 
-  # never checked or not checked within last 10 seconds
   
+ ( $checked and ( ( $checked + 10 ) > time() ) ) or do {
+ 
+   # never checked or not checked within last 10 seconds
+   # the check is fast but to be optimal we still prevent
+   # it to happen more often than in every 10 seconds
+  
+   my $dbp = $ENV{MOJO_HOME}.'/db';
+ 
   ( defined $version and ( -f "$dbp/$version.txt" ) ) or do {
  
    # version not detected earlier or no longer valid
@@ -279,7 +281,7 @@ sub before {
     # with the old database and data version
   
     my $newv = substr ( pathcut ( $keyf ), 0, 14 );
-   
+      
     -f "$dbp/$newv.db" and $version = $newv; 
    
    };   

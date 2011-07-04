@@ -34,6 +34,9 @@ use Time::HiRes qw ( time );
 use Catz::Core::Cache;
 use Catz::Util::Number qw ( round );
 
+my $db = undef;
+my $currver = 0;
+
 my $time_model = 0; # turns on timing on all model access
 
 my $time_db = 0; # turns on timing on all database access
@@ -49,8 +52,6 @@ sub new {
  bless ( $self, $class );
  
  $self->{lang} = undef;
- $self->{version} = 0;
- $self->{db} = undef;
    
  return $self;
  
@@ -59,22 +60,22 @@ sub new {
 
 sub fetch {
 
- my ( $self, $version, $lang, $sub, @args ) = @_;
+ my ( $self, $newver, $lang, $sub, @args ) = @_;
 
  $self->{lang} = $lang;
 
- if ( $self->{version} ne $version ) {
+ if ( $currver ne $newver ) {
  
    # version change -> change db
    
-   defined $self->{db} and $self->{db}->disconnect;
+   defined $db and $db->disconnect;
  
-   $self->{db} = DBI->connect (
-    'dbi:SQLite:dbname='.$ENV{MOJO_HOME}."/db/$version.db",
+   $db = DBI->connect (
+    'dbi:SQLite:dbname='.$ENV{MOJO_HOME}."/db/$newver.db",
      undef, undef, { AutoCommit => 1, RaiseError => 1, PrintError => 1 }
     ) || die ( $DBI::errstr ); 
  
-  $self->{version} = $version;
+  $currver = $newver;
  
  }
        
@@ -82,17 +83,6 @@ sub fetch {
    
 }
 
-sub DESTROY { 
-
- my $self = shift;
-
- defined $self->{db} and do {
-  
-  $self->{db}->disconnect; $self->{db} = undef;
-   
- };
-  
-}
 
 sub AUTOLOAD {
 
@@ -165,7 +155,7 @@ sub db_run {
   
   when ( 'one' ) { 
 
-   my $arr = $self->{db}->selectrow_arrayref( $sql, undef, @args );
+   my $arr = $db->selectrow_arrayref( $sql, undef, @args );
   
    $res = $arr->[0];
   
@@ -173,19 +163,19 @@ sub db_run {
   
   when ( 'row' ) {
   
-   $res = $self->{db}->selectrow_arrayref( $sql, undef, @args );
+   $res = $db->selectrow_arrayref( $sql, undef, @args );
 
   }
   
   when ( 'col' ) {
   
-   $res = $self->{db}->selectcol_arrayref( $sql, undef, @args );
+   $res = $db->selectcol_arrayref( $sql, undef, @args );
   
   }
   
   when ( 'all' ) {
   
-   $res = $self->{db}->selectall_arrayref( $sql, undef, @args );
+   $res = $db->selectall_arrayref( $sql, undef, @args );
   
   }
 
@@ -193,7 +183,7 @@ sub db_run {
   
    my $kf = shift @args;
 
-   $res = $self->{db}->selectall_hashref( $sql, $kf, undef, @args );
+   $res = $db->selectall_hashref( $sql, $kf, undef, @args );
 
    unshift @args, $kf;
   
@@ -223,6 +213,12 @@ sub dbcol { my $self = shift; $self->db_run ( 'col', @_ ) }
 sub dbone { my $self = shift; $self->db_run ( 'one', @_ ) }
 
 sub dbhash {my $self = shift; $self->db_run ( 'hash', @_ ) }
+
+sub DESTROY {
+
+ $db and $db->disconnect;
+
+}
 
 1;
 

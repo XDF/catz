@@ -68,7 +68,6 @@
 %  }
 %  if ( $runmode ne 'search' ) { 
 %   if ( scalar @{ $jump2date } > 1 ) {
-<%= $sep %>
 <select name="date" class="shade" onchange="<%== include 'href/id', toid => 'this' %>">
 <option selected value="<%== $id %>"><%= $t->{JUMP2DATE} %></option>
 %    foreach my $row ( @{ $jump2date } ) {
@@ -93,14 +92,12 @@
 <% content 'pathadd' => begin %>
 <%== include 'elem/path' %>
 % if ( $runmode eq 'pair' ) {
-<span class="aero">
 % my $etg = $lang eq 'fi' ? $trans : $sec; 
 % my $turi = $t->{URL_CATZA}."en/browse/$pri/$etg/";
 %== include 'elem/twitter', twurl => $t->{URL_CATZA}."$lang/browse/$pri/$etg/", twtext => "$sec (".$t->{uc($pri)}.')', twcounturl => $turi;
 %  if ( $matrix->{$pri}->{like} ) {
 %== include 'elem/facebook', fbhref => $turi, fbref => 'browse';
 %  }
-</span>
 % }
 <% end %>  
 %#
