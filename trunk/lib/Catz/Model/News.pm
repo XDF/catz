@@ -45,7 +45,7 @@ sub _one {
  my ( $self, $article ) = @_; my $lang = $self->{lang};
       
  my $res = $self->dbrow( 
-  "select dt,title_$lang,text_$lang,url from mnews where dt=?",$article 
+  "select dt,title_$lang,text_$lang,url_$lang from mnews where dt=?",$article 
  );
  
  my $prev = $self->dbone('select max(dt) from mnews where dt<?',$article);

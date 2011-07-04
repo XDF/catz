@@ -501,8 +501,9 @@ sub load_simple {
     
    }
    
-   when ( 'mnews' ) { # set news URL to null if not given at all
-    $lines[5] or $lines[5] = undef; 
+   when ( 'mnews' ) { # set news URLs to null if not given at all
+    $lines[5] or $lines[5] = undef;
+    $lines[6] or $lines[6] = undef; 
    }
          
   } 
