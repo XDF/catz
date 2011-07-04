@@ -1,0 +1,32 @@
+#summary Short notes and checklists for service management and service deployment
+
+= Deploy a new version of the service =
+
+== Preliminary phase on dev ==
+
+  * make sure that you have made at least one database load compared to the version in production (data version must be changed forward)
+  * run tests, check that run.pl has production mode and memcached is on (fresh memcached start), all test should pass 
+  * clean old database versions from /db
+  * clean logs from /log
+  * check what is in /temp and clean it
+  * SVN commit if not yet done  
+
+== Deploy the new version ==
+
+  * detect if the production is running on catz1 or on catz2
+  * shutdown (init.d) the non-prodcution service
+  * check that the production is still up and running :-D     
+  * delete all stuff from the application directory rm -fR *
+  * deploy the new version of the application by shipping all folders
+  * run tests, all should pass
+
+== Switch the service ==
+     
+  * fire up the service (init.d)
+  * test the service via ssh tunneled port that it appears to work as expected
+  * edit nginx config to so that it points to the deployed service
+  * test nginx config -t
+  * reload nginx by kill -HUP $( cat /usr/local/nginx/logs/nginx.pid )
+  * test via the public interface that the service works normally                  
+
+= Deploy a new version of the data (new SQLite database file with unchanged structure)

@@ -16,7 +16,7 @@
 || meta || link alternate || links to the page in another language ||    
 || facebook || meta og:site_name || ||
 || facebook || meta fb:admins || ||
-|| facebook || link me || links to facebook the fan page ||
+|| facebook || link me || links to facebook fan page ||
 || misc || meta loaded || the language-specific time when the data was loaded ||
 || misc || meta rendered || the language-specific time when the HTML was rendered ||
 || misc || meta credits || gives credits to some vital technologies used by the system || 
@@ -41,7 +41,7 @@
 || meta || meta description || site name & slogan || a fixed text || || || generated from subject and pri || || || a fixed text || 
 || meta || meta og:description || site name & slogan || a fixed text || || || generated from subject and pri || || || a fixed text ||
 || facebook || meta og:type || website || catz:list || article || catz:list || catz:list || default "catz:photobrowse", in runmode pair on org, umb, breeder: non_profit, on nat: country, on loc: city, on others "catz:" + pri || catz:photo || catz:search ||  
-|| facebook || meta og:title || the site name || a fixed title || the date and the news title || a fixed title || in runmode all a title "n cat show photos", in runmode pair a title constructed from the subject and mode, in runmode search ... || ??? || ??? || a fixed title ||  
+|| facebook || meta og:title || the site name || a fixed title || the date and the news title || a fixed title || the page title || in runmode all a title "n cat show photos", in runmode pair a title constructed from the subject and mode, in runmode a fixed text + the search || ??? || a fixed title ||  
 || facebook || meta og:locality || || || || || || in runmode pair on loc contains the location name || in runmode pair on loc contains the location name || ||  
 || facebook || meta og:country-name || || || || || || in runmode pair on loc contains the country name || in runmode pair on loc contains the country name || ||
   
