@@ -4,7 +4,7 @@
 %#
 <% content 'metaadd' => begin %>
 <%
-my $ogtype = 'catz:photobrowse'; # default
+my $ogtype = 'catz:thumbnails'; # default
 if ( $runmode eq 'pair' ) {
  $ogtype = "catz:$pri";
  given ( $pri ) {
@@ -15,12 +15,14 @@ if ( $runmode eq 'pair' ) {
 }
 %>
 <meta name="og:type" content="<%= $ogtype %>">
-% if ( $runmode eq 'pair' and $pri eq 'loc' ) {
+% if ( $runmode eq 'pair' ) {
+%  if ( $pri eq 'loc' ) {
 <meta name="og:locality" content="<%= $sec %>">
 <meta name="og:country-name" content="<%= $t->{COUNTRY} %>">
+%  } 
 % }
 <%
-my $ogtitle = fmt ( $maxx, $lang ).' '.$t->{PHOTOA_CATSHOW}; # default
+my $ogtitle = "$maxx ".$t->{PHOTOA_CATSHOW}; # default
 if ( $runmode eq 'pair' ) {
  if ( $pri eq 'folder' ) {
   $ogtitle = $t->{ALBUM}.' '.$mapview->{$pri}->{$sec}->[1];
@@ -32,7 +34,7 @@ if ( $runmode eq 'pair' ) {
 } elsif ( $runmode eq 'search' ) {
  $ogtitle = $t->{SEARCH_RESULT}.' '.$what;  
 }
-stash ( 'ogtitle', $ogtitle ); # store for twitter use 
+stash ( 'tweettext', $ogtitle ); # store for twitter use 
 %>
 <meta name="og:title" content="<%== $ogtitle %>"> 
 <link rel="start" href="<%== include 'href/id', toid => $pin->[0] %>">
@@ -47,24 +49,30 @@ stash ( 'ogtitle', $ogtitle ); # store for twitter use
 %# --------------------
 %#
 <% content 'canon' => begin %>
+%# we pass $lang as $langa in these includes, and it is local to these includes
 % if ( $page == 1 ) {
-<link rel="canonical" href="<%== include 'href/id', toid => 0 %>">
-<meta name="og:url" content="<%== include 'href/id', toid => 0 %>">
+<link rel="canonical" href="<%== include 'href/id', langa => $lang, toid => 0 %>">
+<meta name="og:url" content="<%== include 'href/id', langa => $lang, toid => 0 %>">
 % } else {
-<link rel="canonical" href="<%== include 'href/id', toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]) %>">
-<meta name="og:url" content="<%== include 'href/id', toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]) %>">
+<link rel="canonical" href="<%== include 'href/id', langa => $lang, toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]) %>">
+<meta name="og:url" content="<%== include 'href/id', langa => $lang, toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]) %>">
 % }
 <% end %>
 %#
 %# --------------------
 %#
 <% content 'image' => begin %>
+% if ( ( $runmode eq 'pair' ) and ( $pri eq 'nat' ) ) {
+<link ref="image_src" href="<%== $flagbase.'/'.lc($sec).'.gif' %>">
+<meta name="og:image" value="<%== $flagbase.'/'.lc($sec).'.gif' %>">
+% } else {
 <link ref="image_src" href="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
 <meta name="og:image" value="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
+% }
 <% end %>
 %#
+%# --------------------
 %#
-#%
 <% content 'ptitleadd' => begin %>
 %== include 'elem/titlea';
 (<%= $t->{PAGE} %> <%= $page %>/<%= $pages %>)
@@ -115,8 +123,8 @@ stash ( 'ogtitle', $ogtitle ); # store for twitter use
 <% content 'pathadd' => begin %>
 <%== include 'elem/path' %>
 % if ( $page == 1 ) {
-%== include 'elem/twitter', twurl => $url, twtext => stash ( 'ogtitle' );
-%== include 'elem/facebook', fbhref => $url, fbref => $runmode eq 'pair' ? $pri : $runmode;
+%== include 'elem/twitter', twurl => $url, twtext => stash ( 'tweettext' );
+%== include 'elem/facebook', fburl => $url, fbref => $runmode eq 'pair' ? $pri : $runmode;
 % }
 <% end %>  
 %#

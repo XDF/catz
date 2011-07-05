@@ -11,9 +11,9 @@
 %# --------------------
 %#
 <% content 'metaadd' => begin %>
-<meta name="og:title" content="<%= $t->{SITE} %>">
-<meta name="description" content="<%= $t->{SITE} %> - <%= $t->{SLOGAN} %>">
-<meta name="og:description" content="<%= $t->{SITE} %> - <%= $t->{SLOGAN} %>">
+% my $ogtitle = $t->{SITE};
+% stash ( 'tweettext', $ogtitle );
+<meta name="og:title" content="<%= $ogtitle %>">
 <meta name="og:type" content="website">
 <% end %>
 %#
@@ -27,8 +27,8 @@
 %#
 <% content 'path' => begin %>
 <%== $t->{SLOGAN} %>
-%== include 'elem/twitter', twurl => $t->{URL_CATZA}, twtext => "$t->{SITE} - $t->{SLOGAN}", twcounturl => $t->{URL_CATZA};
-%== include 'elem/facebook', fbhref => $t->{URL_CATZA}, fbref => 'front'; 
+%== include 'elem/twitter', twurl => '/', twtext => stash ( 'tweettext' );
+%== include 'elem/facebook', fburl => '/', fbref => 'front'; 
 <% end %>
 %#
 %# --------------------
