@@ -2,6 +2,8 @@
 
 = The page metadata =
 
+The following tables describe the metadata provided on HTML pages. 
+
 == Forced by base/heavy.html.ep for all pages ==
 
 || *type* || *tag* || *explanation* ||
@@ -32,16 +34,16 @@
 == Page type specific metadata ==
  
 || *type* || *tag* || *front* || *news* || *news1* || *lists* || *list1* || *browse* || *view* || *search* ||
-|| meta || block canon || default || default || default || default || default || in id mode links to the same page without setup and by using first thumb's id, if on first page then to the same page without setup and without id || links to the same photo without setup on runmode all || default ||    
+|| meta || block canon || default || default || default || default || default || in no id mode links to the same page without setup, in id mode page > 1 links to the same page without setup and by using first thumb's id, in id mode page = 1 links to to the same page no id mode and without setup || links to the same photo without setup on runmode all with id || default ||    
 || meta || link index || || || links to news index || || links to lists index || || links to thumbnail page || ||
 || meta || link start || || || || || || links to first thumbnail page || links to first photo || ||
 || meta || link prev || || || links to previous article || || || links to previous thumbnail page || link to the previous photo || ||
 || meta || link next || || || links to next article || || || links to next thumbnail page || link to the next photo || ||
-|| meta || block image || use the first sample thumbnail on page || default || default || default || default || use the first thumbnail on page || use the photo thumbnail || default ||
-|| meta || meta description || site name & slogan || a fixed text || || || generated from subject and pri || || || a fixed text || 
-|| meta || meta og:description || site name & slogan || a fixed text || || || generated from subject and pri || || || a fixed text ||
-|| facebook || meta og:type || website || catz:list || article || catz:list || catz:list || default "catz:photobrowse", in runmode pair on org, umb, breeder: non_profit, on nat: country, on loc: city, on others "catz:" + pri || catz:photo || catz:search ||  
-|| facebook || meta og:title || the site name || a fixed title || the date and the news title || a fixed title || the page title || in runmode all a title "n cat show photos", in runmode pair a title constructed from the subject and mode, in runmode a fixed text + the search || ??? || a fixed title ||  
+|| meta || block image || default || default || default || default || default || use the first thumbnail on page, but if in pair mode pri nat use flag || use the photo thumbnail || default ||
+|| meta || meta description || || || || || generated from pri and subject || || || a fixed text || 
+|| meta || meta og:description || || || || || generated from pri and subject || || || a fixed text ||
+|| facebook || meta og:type || website || catz:list || article || catz:list || catz:list || default "catz:thumbnails", in runmode pair on org, umb, breeder: non_profit, on nat: country, on loc: city, on others "catz:" + pri || catz:photo || catz:search ||  
+|| facebook || meta og:title || the site name || a fixed title || the date and the news title || a fixed title || the page title || in runmode all a title "n cat show photos", in runmode pair a title constructed from the pri and subject, in runmode search a fixed text + the search || photo number always + photo text if exists || the page title ||  
 || facebook || meta og:locality || || || || || || in runmode pair on loc contains the location name || in runmode pair on loc contains the location name || ||  
 || facebook || meta og:country-name || || || || || || in runmode pair on loc contains the country name || in runmode pair on loc contains the country name || ||
   
@@ -70,7 +72,7 @@ Like button uses
 Twitter tweet uses
   * iFrame solution
   * current real url as href (hopefully this is matched to canonical by Twitter?)
-  * the og:title as text (when adding og:title a stash variable ogtitle is stored for use in twitter tweet generation)  
+  * the og:title as text (when adding og:title on pages having tweet button a stash variable tweettext is stored for use in twitter tweet generation)  
        
  
 
