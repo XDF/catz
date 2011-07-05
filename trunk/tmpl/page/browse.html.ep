@@ -62,11 +62,11 @@ stash ( 'tweettext', $ogtitle ); # store for twitter use
 %#
 <% content 'image' => begin %>
 % if ( ( $runmode eq 'pair' ) and ( $pri eq 'nat' ) ) {
-<link ref="image_src" href="<%== $flagbase.'/'.lc($sec).'.gif' %>">
-<meta name="og:image" value="<%== $flagbase.'/'.lc($sec).'.gif' %>">
+<link rel="image_src" href="<%== $flagbase.'/'.lc($sec).'.gif' %>">
+<meta name="og:image" content="<%== $flagbase.'/'.lc($sec).'.gif' %>">
 % } else {
-<link ref="image_src" href="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
-<meta name="og:image" value="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
+<link rel="image_src" href="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
+<meta name="og:image" content="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
 % }
 <% end %>
 %#

@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 %#
 %# --------------------
 %# An abstract template for all pages excluding the error & exception pages
@@ -25,7 +25,7 @@
 <link rel="shortcut icon" href="/favicon.ico">
 <%= content 'image' => begin %>
 <link rel="image_src" href="/catzlogo.png">
-<meta name="og:image" value="/catzlogo.png">
+<meta name="og:image" content="/catzlogo.png">
 <% end %>
 <meta name="author" content="<%== $t->{AUTHOR} %>">
 <meta name="copyright" content="<%= $t->{COPYRIGHT} %> <%= $t->{AUTHOR} %> <%= $t->{FIRSTYEAR} %>-<%= thisyear %>. <%= $t->{LICENCE} %>.">
@@ -46,11 +46,11 @@
 % }
 <%= content 'canon' => begin %>
 <link rel="canonical" href="<%== "/$lang".urirest ( $url ) %>">
-<meta name="og:url" href="<%== "/$lang".urirest ( $url ) %>">
+<meta name="og:url" content="<%== "/$lang".urirest ( $url ) %>">
 <% end %> 
 <link rel="alternate" title="<%= $t->{TRANSLATE} %>" lang="<%== $langother %>" hreflang="<%== $langother %>" href="<%== $urlother %>">
 <meta name="fb:admins" content="<%== $facebookkey %>">
-<link rel="me" content="<%== $t->{URL_FACEBOOK} %>"> 
+<link rel="me" href="<%== $t->{URL_FACEBOOK} %>"> 
 <%= content 'metaadd' %>
 <meta name="generator" content="<%= $t->{GENERATOR} %>">
 <meta name="loaded" content="<%= dtexpand ( $version, $lang ) %>">

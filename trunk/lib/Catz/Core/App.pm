@@ -456,7 +456,8 @@ sub after {
  # 
  # we purify html outputs
  #
- ( $self->res->headers->content_type =~ m|^text/html| ) and do {
+ my $ct = $self->res->headers->content_type // 'void';
+ ( $ct =~ m|^text/html| ) and do {
    
   my $str = $self->res->body;
   
