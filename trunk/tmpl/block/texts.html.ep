@@ -4,7 +4,7 @@
 % foreach my $th ( @{ $thumbs } ) {
 % defined $texts->{$th->[0]} and do {
 % my $toid = fullnum33 ( $th->[1], $th->[2] ); 
-<%= $i++ > 0 ? $sep : '' %> <%= $t->{PHOTO} %> <%== $from + $i %> <a href="<%== include 'href/actionid', toaction => 'auto', toid => $toid %>"><%= $texts->{$th->[0]} %></a>
+<%= $i++ > 0 ? $sep : '' %> <%= $t->{PHOTO} %> <%== $from + $i %> <a href="<%== include 'href/actionid', toaction => 'auto', langh => $langa, toid => $toid %>"><%= $texts->{$th->[0]} %></a>
 % };
 % $i++;
 % }

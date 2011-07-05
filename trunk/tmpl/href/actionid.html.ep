@@ -12,38 +12,38 @@
 % if ( $toid eq 'this' ) {
 %  given ( $runmode ) {
 %   when ( 'pair' ) { 
-location.href='/<%== $langa %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/'+this.options[this.selectedIndex].value+'/'
+location.href='/<%== $langh %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/'+this.options[this.selectedIndex].value+'/'
 %   } 
 %   when ( 'search' ) {
-location.href='/<%== $langa %>/<%== $toaction %>/'+this.options[this.selectedIndex].value+'/?q=<%== enurl($what) %>'
+location.href='/<%== $langh %>/<%== $toaction %>/'+this.options[this.selectedIndex].value+'/?q=<%== enurl($what) %>'
 %   } 
 %   default  { 
-location.href='/<%== $langa %>/<%== $toaction %>/'+this.options[this.selectedIndex].value+'/'
+location.href='/<%== $langh %>/<%== $toaction %>/'+this.options[this.selectedIndex].value+'/'
 %   }
 %  }   
 % } else {
 %  if ( $toid == 0 ) { # use no id, point to the root resource
 %   given ( $runmode ) {
 %    when ( 'pair' ) { 
-/<%== $langa %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/
+/<%== $langh %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/
 %    } 
 %    when ( 'search' ) {
-/<%== $langa %>/<%== $toaction %>?q=<%== enurl($what) %>
+/<%== $langh %>/<%== $toaction %>?q=<%== enurl($what) %>
 %    } 
 %    default  { 
-/<%== $langa %>/<%== $toaction %>/
+/<%== $langh %>/<%== $toaction %>/
 %    }
 %   }
 %  } else {
 %   given ( $runmode ) {
 %    when ( 'pair' ) { 
-/<%== $langa %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/<%== $toid %>/
+/<%== $langh %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/<%== $toid %>/
 %    } 
 %    when ( 'search' ) {
-/<%== $langa %>/<%== $toaction %>/<%== $toid %>?q=<%== enurl($what) %>
+/<%== $langh %>/<%== $toaction %>/<%== $toid %>?q=<%== enurl($what) %>
 %    } 
 %    default  { 
-/<%== $langa %>/<%== $toaction %>/<%== $toid %>/
+/<%== $langh %>/<%== $toaction %>/<%== $toid %>/
 %    }
 %   }
 %  }

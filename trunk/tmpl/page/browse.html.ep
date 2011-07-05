@@ -37,28 +37,25 @@ if ( $runmode eq 'pair' ) {
 stash ( 'tweettext', $ogtitle ); # store for twitter use 
 %>
 <meta name="og:title" content="<%= $ogtitle %>"> 
-<link rel="start" href="<%== include 'href/id', toid => $pin->[0] %>">
+<link rel="start" href="<%== include 'href/id', langh => $langa, toid => $pin->[0] %>">
 % if ( $page > 1 ) {
-<link rel="prev" href="<%== include 'href/id', toid => $pin->[$page-2] %>">
+<link rel="prev" href="<%== include 'href/id', langh => $langa, toid => $pin->[$page-2] %>">
 % }
 % if ( $page < $pages ) {
-<link rel="next" href="<%== include 'href/id', toid => $pin->[$page] %>">
+<link rel="next" href="<%== include 'href/id', langh => $langa, toid => $pin->[$page] %>">
 % }
 <% end %>
 %#
 %# --------------------
 %#
-<% content 'canon' => begin %>
-%# we store langa, change it and restore it right after...
-% my $canonstore = $langa; # store 
+<% content 'canon' => begin %> 
 % if ( $page == 1 ) {
-<link rel="canonical" href="<%== include 'href/id', langa => $lang, toid => 0 %>">
-<meta name="og:url" content="<%== include 'href/id', langa => $lang, toid => 0 %>">
+<link rel="canonical" href="<%== include 'href/id', langh => $lang, toid => 0 %>">
+<meta name="og:url" content="<%== include 'href/id', langh => $lang, toid => 0 %>">
 % } else {
-<link rel="canonical" href="<%== include 'href/id', langa => $lang, toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]) %>">
-<meta name="og:url" content="<%== include 'href/id', langa => $lang, toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]) %>">
+<link rel="canonical" href="<%== include 'href/id', langh => $lang, toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]) %>">
+<meta name="og:url" content="<%== include 'href/id', langh => $lang, toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]) %>">
 % }
-% $langa = $canonstore; # restore
 <% end %>
 %#
 %# --------------------
@@ -101,7 +98,7 @@ stash ( 'tweettext', $ogtitle ); # store for twitter use
 %  }
 %  if ( $runmode ne 'search' ) { 
 %   if ( scalar @{ $jump2date } > 1 ) {
-<select name="date" class="shade" onchange="<%== include 'href/id', toid => 'this' %>">
+<select name="date" class="shade" onchange="<%== include 'href/id', langh => $langa, toid => 'this' %>">
 <option selected value="<%== $id %>"><%= $t->{JUMP2DATE} %></option>
 %    foreach my $row ( @{ $jump2date } ) {
 % my $target = fullnum33( $row->[0], $row->[1] );
@@ -124,10 +121,7 @@ stash ( 'tweettext', $ogtitle ); # store for twitter use
 %#
 <% content 'pathadd' => begin %>
 <%== include 'elem/path' %>
-%# we store langa, change it and restore it right after...
-% my $encanstore = $langa; # store
-% my $encan = trim ( $self->render ( 'href/id', partial => 1, langa => 'en', toid => 0 ) );
-% $langa = $encanstore; # restore
+% my $encan = trim ( $self->render ( 'href/id', partial => 1, langh => 'en', toid => 0 ) );
 %== include 'elem/twitter', twurl => $encan, twtext => stash ( 'tweettext' );
 %== include 'elem/facebook', fburl => $encan, fbref => $runmode eq 'pair' ? $pri : $runmode;
 <% end %>  
@@ -144,13 +138,13 @@ stash ( 'tweettext', $ogtitle ); # store for twitter use
 % my $label1 = $t->{PAGE_FIRST};
 % my $label2 = $t->{PAGE_PREV};
 % if ( $page > 1 ) { # not first page -> active first & back
-<a href="<%== include 'href/id', toid => $pin->[0] %>"><%= $label1 %></a> <%= $sep %>
-<a href="<%== include 'href/id', toid => $pin->[$page-2] %>"><%= $label2 %></a>
+<a href="<%== include 'href/id', langh => $langa, toid => $pin->[0] %>"><%= $label1 %></a> <%= $sep %>
+<a href="<%== include 'href/id', langh => $langa, toid => $pin->[$page-2] %>"><%= $label2 %></a>
 % } else { # first page -> passive first & back 
 <%= $label1 %> <%= $sep %> <%= $label2 %> 
 % }
 <%= $sep %> <%= $t->{PAGE} %>   
-<select name="page" class="shade" onchange="<%== include 'href/id', toid => 'this' %>">
+<select name="page" class="shade" onchange="<%== include 'href/id', langh => $langa, toid => 'this' %>">
 % my $vol = scalar @{ $pin };
 % foreach my $i ( 0 .. ( scalar @{ $pin } -1 ) ) {
 % if ( $page == ( $i + 1 ) ) {
@@ -165,8 +159,8 @@ stash ( 'tweettext', $ogtitle ); # store for twitter use
 % $label1 = $t->{PAGE_NEXT};
 % $label2 = $t->{PAGE_LAST};
 % if ( $page < $pages ) {
-<a href="<%== include 'href/id', toid => $pin->[$page] %>"><%= $label1 %></a>  <%= $sep %>
-<a href="<%== include 'href/id', toid => $pin->[$pages-1] %>"><%= $label2 %></a>
+<a href="<%== include 'href/id', langh => $langa, toid => $pin->[$page] %>"><%= $label1 %></a>  <%= $sep %>
+<a href="<%== include 'href/id', langh => $langa, toid => $pin->[$pages-1] %>"><%= $label2 %></a>
 % } else { 
 <%= $label1 %> <%= $sep %> <%= $label2 %>
 % }
@@ -185,7 +179,7 @@ stash ( 'tweettext', $ogtitle ); # store for twitter use
 % my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
 % my $titl = dtexpand ( dtdate ( $th->[3] ), $lang ); # get date from folder name
 % defined $texts->{$th->[0]} and $titl = "$titl $sep " . $texts->{$th->[0]};  
-<a title="<%= $titl %>" href="<%== include 'href/actionid', toaction => 'auto', toid => $toid %>"><img alt="[<%= $t->{PHOTO} %> <%== $toid %>]" src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
+<a title="<%= $titl %>" href="<%== include 'href/actionid', toaction => 'auto', langh => $langa, toid => $toid %>"><img alt="[<%= $t->{PHOTO} %> <%== $toid %>]" src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
 % }
 </div>
 %#

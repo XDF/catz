@@ -11,13 +11,13 @@
 <meta name="og:country-name" content="<%= $t->{COUNTRY} %>">
 %  } 
 % } 
-<link rel="start" href="<%== include 'href/id', toid => $pin->[0] =%>">
-<link rel="index" href="<%== include 'href/action', toaction => 'auto' =%>">
+<link rel="start" href="<%== include 'href/id', langh => $langa, toid => $pin->[0] =%>">
+<link rel="index" href="<%== include 'href/action', toaction => 'auto', langh => $langa =%>">
 % if ( $pos > 1 ) {
-<link rel="prev" href="<%== include 'href/id', toid => $pin->[1] =%>">
+<link rel="prev" href="<%== include 'href/id', langh => $langa, toid => $pin->[1] =%>">
 % }
 % if ( $pos < $total ) {
-<link rel="next" href="<%== include 'href/id', toid => $pin->[2] =%>">
+<link rel="next" href="<%== include 'href/id', langh => $langa, toid => $pin->[2] =%>">
 % }
 % my $desc = $t->{PHOTO}." $id";
 % length ( $ttl ) > 0 and $desc = "$desc: $ttl";
@@ -100,19 +100,19 @@
 % my $label1 = $t->{PHOTO_FIRST};
 % my $label2 = $t->{PHOTO_PREV};
 % if ( $pos > 1 ) {
-<a title="<%= $label1 %>" href="<%== include 'href/id', toid => $pin->[0] %>"><%= $label1 %></a>
+<a title="<%= $label1 %>" href="<%== include 'href/id', langh => $langa, toid => $pin->[0] %>"><%= $label1 %></a>
 <%== $sep %>
-<a title="<%= $label2 %>" href="<%== include 'href/id', toid => $pin->[1] %>"><%= $label2 %></a>
+<a title="<%= $label2 %>" href="<%== include 'href/id', langh => $langa, toid => $pin->[1] %>"><%= $label2 %></a>
 % } else { 
 <%= $label1 %> <%== $sep %> <%= $label2 %>
 % }
-<%== $sep %> <a href="<%== include 'href/action', toaction => 'auto' %>"><%= $t->{THUMBS} %></a> <%== $sep %>
+<%== $sep %> <a href="<%== include 'href/action', toaction => 'auto', langh => $langa %>"><%= $t->{THUMBS} %></a> <%== $sep %>
 % $label1 = $t->{PHOTO_NEXT};
 % $label2 = $t->{PHOTO_LAST};
 % if ( $pos < $total ) {
-<a title="<%= $label1 %>" href="<%== include 'href/id', toid => $pin->[2] %>"><%= $label1 %></a>
+<a title="<%= $label1 %>" href="<%== include 'href/id', langh => $langa, toid => $pin->[2] %>"><%= $label1 %></a>
 <%== $sep %>
-<a title="<%= $label2 %>" href="<%== include 'href/id', toid => $pin->[3] %>"><%= $label2 %></a>
+<a title="<%= $label2 %>" href="<%== include 'href/id', langh => $langa, toid => $pin->[3] %>"><%= $label2 %></a>
 % } else { 
 <%= $label1 %> <%== $sep %> <%= $label2 %>
 % }
@@ -163,7 +163,7 @@
 <%= $j++ == 1 ? '' : $sep %>
 % $pdet =  $detail->[0];
 % $detail->[0] ne 'time' and do {
-<a href="<%== include 'href/actionpair', topri => $maplink->{$detail->[0]}->{ROOT} ? $maplink->{$detail->[0]}->{$detail->[1]}->[0] : $detail->[0], tosec => $maplink->{$detail->[0]}->{ROOT} ? $maplink->{$detail->[0]}->{$detail->[1]}->[1] : $detail->[1] %>">
+<a href="<%== include 'href/actionpair', langh => $langa, topri => $maplink->{$detail->[0]}->{ROOT} ? $maplink->{$detail->[0]}->{$detail->[1]}->[0] : $detail->[0], tosec => $maplink->{$detail->[0]}->{ROOT} ? $maplink->{$detail->[0]}->{$detail->[1]}->[1] : $detail->[1] %>">
 % };
 %== include 'elem/sec', a => $detail->[0], b => $detail->[1]; 
 % $detail->[0] ne 'time' and do {
