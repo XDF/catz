@@ -36,22 +36,21 @@ my $matrix = list_matrix;
 sub _all2date {
 
  my $self = shift;
-
+ 
+ # we allow jump to dates on current page to make things simpler and to utilize caching more 
  $self->dball('select min(s),min(n),substr(folder,1,8) from album natural join photo group by substr(folder,1,8) order by substr(folder,1,8) desc');
 
 }
 
 sub _pair2date {
 
- my ( $self, $pri, $sec, $lower, $upper ) = @_;
+ my ( $self, $pri, $sec ) = @_;
  
- # _secm instead?
-
- $self->dball('select min(s),min(n),substr(folder,1,8) from album natural join photo natural join _sid_x where sid=(select sid from sec_en where  pid=(select pid from pri where pri=?) and sec=?) and (substr(folder,1,8)>(select substr(folder,1,8) from photo natural join album where x=?) or substr(folder,1,8)<(select substr(folder,1,8) from photo natural join album where x=?)) group by substr(folder,1,8) order by substr(folder,1,8) desc',$pri,$sec,$lower,$upper);
+ # we allow jump to dates on current page to make things simpler and to utilize caching more
+ $self->dball('select min(s),min(n),substr(folder,1,8) from album natural join photo natural join _sid_x where sid=(select sid from sec_en where pid=(select pid from pri where pri=?) and sec=?) group by substr(folder,1,8) order by substr(folder,1,8) desc',$pri,$sec);
 
 } 
  
-
 sub _coverage { # how many photos have the given pri defined
 
  my ( $self, $pri, $sec, $target ) = @_;  my $lang = $self->{lang};

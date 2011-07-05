@@ -69,8 +69,9 @@
 <span class="lean"><%=  dtexpand ( $new1->[0], $lang ) %></span>
 % if ( ( dt2epoch ( dt ) - dt2epoch ( $new1->[0] ) ) < 60 * 60 * 24 * 90 ) {
 <span class="aero">
-%== include 'elem/twitter', twurl => $url, twtext => stash ( 'tweettext' );
-%== include 'elem/facebook', fburl => $url, fbref => 'news';
+% my $encan = '/en'.urirest ( $url );
+%== include 'elem/twitter', twurl => $encan, twtext => stash ( 'tweettext' );
+%== include 'elem/facebook', fburl => $encan, fbref => 'news';
 </span>
 % }
 </div>
