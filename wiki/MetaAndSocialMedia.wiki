@@ -34,6 +34,7 @@ The following tables describe the metadata provided on HTML pages.
 == Page type specific metadata ==
  
 || *type* || *tag* || *front* || *news* || *news1* || *lists* || *list1* || *browse* || *view* || *search* ||
+|| meta || meta robots || default || default || default || default || default || if q parameter given but no photos found then none otherwise default || default || if init parameter given then none otherwise default ||
 || meta || block canon || default || default || default || default || default || in no id mode links to the same page without setup, in id mode page > 1 links to the same page without setup and by using first thumb's id, in id mode page = 1 links to to the same page no id mode and without setup || links to the same photo without setup on runmode all with id || default ||    
 || meta || link index || || || links to news index || || links to lists index || || links to thumbnail page || ||
 || meta || link start || || || || || || links to first thumbnail page || links to first photo || ||
@@ -56,13 +57,12 @@ Currently metadata not provided is
 
 || *page* || *front* || *news* || *news1* || *lists* || *list1* || *browse* || *view* || *search* ||
 || *function* || like the site || || like the article not older than 90 days || || || on first page like the all photos / subject / search || like the photo || ||
-|| *ref* || front || || news || || || runmode: all, when pair then pri, search || photo || ||
+|| *ref* || front || || news || || || runmode: all, search but when pair then pri || photo || ||
 
 Like button uses
-  * iFrame solution
-  * current real url as href (Facebook should handle matching to canonical via or:url)
+  * iframe
+  * current real url as href relying on canonical on meta
   * like
-
 
 == Twitter tweet ==
 
@@ -70,9 +70,9 @@ Like button uses
 || tweet the site || || for articles not older than 90 days || || || on first page tweet all photos / subject /search || tweet the photo || ||
 
 Twitter tweet uses
-  * iFrame solution
-  * current real url as href (hopefully this is matched to canonical by Twitter?)
-  * the og:title as text (when adding og:title on pages having tweet button a stash variable tweettext is stored for use in twitter tweet generation)  
+  * iframe
+  * current real url as href relying on canonical on meta
+  * the og:title as text (when adding og:title on pages having tweet button a stash variable tweettext is set for use in twitter tweet generation)  
        
  
 
