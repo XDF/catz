@@ -33,7 +33,7 @@ The following tables describe the metadata provided on HTML pages.
 
 == Page type specific metadata ==
  
-|| *type* || *tag* || *front* || *news* || *news1* || *lists* || *list1* || *browse* || *view* || *search* ||
+|| *type* || *tag* || *front* || *new1* || *news1* || *lists* || *list1* || *browse* || *view* || *search* ||
 || meta || meta robots || default || default || default || default || default || if q parameter given but no photos found then none otherwise default || default || if init parameter given then none otherwise default ||
 || meta || block canon || default || default || default || default || default || in no id mode links to the same page without setup, in id mode page > 1 links to the same page without setup and by using first thumb's id, in id mode page = 1 links to to the same page no id mode and without setup || links to the same photo without setup on runmode all with id || default ||    
 || meta || link index || || || links to news index || || links to lists index || || links to thumbnail page || ||
@@ -55,24 +55,24 @@ Currently metadata not provided is
 
 == Facebook like ==
 
-|| *page* || *front* || *news* || *news1* || *lists* || *list1* || *browse* || *view* || *search* ||
-|| *function* || like the site || || like the article not older than 90 days || || || on first page like the all photos / subject / search || like the photo || ||
-|| *ref* || front || || news || || || runmode: all, search but when pair then pri || photo || ||
+|| *page* || *front* || *news* || *new1* || *lists* || *list1* || *browse* || *view* || *search* ||
+|| *function* || like the site || || like the article not older than 90 days || || || like all photos / subject / search || like the photo || ||
+|| *ref* || front || || news || || || in runmode all and search use runmode but with runmode pair use pri || photo || ||
 
 Like button uses
   * iframe
-  * current real url as href relying on canonical on meta
-  * like
+  * canonical english url pointing to the root resource 
+  * like (not recommend) mostly due to text length
 
 == Twitter tweet ==
 
 || *front* || *news* || *news1* || *lists* || *list1* || *browse* || *view* || *search* ||
-|| tweet the site || || for articles not older than 90 days || || || on first page tweet all photos / subject /search || tweet the photo || ||
+|| tweet the site || || for articles not older than 90 days || || || tweet all photos / subject /search || tweet the photo || ||
 
-Twitter tweet uses
+Twitter tweet button uses
   * iframe
-  * current real url as href relying on canonical on meta
-  * the og:title as text (when adding og:title on pages having tweet button a stash variable tweettext is set for use in twitter tweet generation)  
+  * canonical english url pointing to the root resource
+  * the og:title as text (when adding og:title on pages having tweet button a stash variable tweettext is set for use in tweet button generation)  
        
  
 
