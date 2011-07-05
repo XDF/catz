@@ -2,7 +2,7 @@
 
 = Deploy a new version of the service =
 
-== Preliminary phase on dev ==
+*on dev workstation*
 
   * make sure that you have made at least one database load compared to the version in production (data version must be changed forward), if not make a pseudo load
   * run tests, check that run.pl has production mode and memcached is on (fresh memcached start), all test should pass, check that the number of test and the time taken seems reasonable: Files=11, Tests=19759, 250 wallclock secs 
@@ -11,9 +11,9 @@
   * check what is in /temp and clean it
   * SVN commit if not yet done  
 
-== Deploy the new version ==
+*on prod server*
 
-  * detect if the production is running on catz1 or on catz2
+  * detect if the production is running on catz1 or on catz2 (html meta)
   * shutdown (init.d) the non-prodcution service
   * check that the production is still up and running :-D     
   * delete all stuff from the non-prod application directory rm -fR *
@@ -21,24 +21,29 @@
   * set db r/o  
   * run tests on prod, all should pass, check that stats are resonable: Files=11, Tests=19759, 195 wallclock secs
 
-== Switch the service ==
+*the switch*
      
-  * fire up the service (init.d)
+  * fire up the service ... set to autostart ... *edit*
   * test the service via ssh tunneled port that it appears to work as expected
   * edit nginx config to so that it points to the deployed service
   * test nginx config -t
   * reload nginx by kill -HUP $( cat /usr/local/nginx/logs/nginx.pid *edit* )
   * test via the public interface that the service works normally
-  * run a full backup as root . /usr/sbin/backup_full.sh                    
+  * run an incr backup as root . /usr/sbin/backup_incr.sh OR a full backup as root . /usr/sbin/backup_full.sh                    
 
 = Deploy a new version of the data (new SQLite database file with unchanged structure)
 
-  * the database structure must be unchanged compared to the current production version
-  * ...
-  * set db as r/o
-  * ...      
-  * run an incr backup as root . /usr/sbin/backup_incr.sh
-  *
+ the current implementation doesn't work since the prod has multiple processes that start and stop and might read the text file change / db before the actual switch - in practise this might not matter at all
+
+  * the database structure must be unchanged compared to the current production version or otherwise the production will fail
+  * detect if the production is running on catz1 or on catz2 (html meta)
+  * ship the database file to the production db folder    
+  * set the db file as r/o
+  * run the database verify tool (key in core conf)
+  * ship the database key file matching the new database
+  * delete the old database key file matching the old database in prod
+  * wait 10 seconds (auto-detection delay on prod service)
+  * check that the new data version is in production and production works                  
     
 = Misc random notes =
 

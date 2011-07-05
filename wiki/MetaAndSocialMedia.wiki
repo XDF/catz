@@ -21,6 +21,7 @@ The following tables describe the metadata provided on HTML pages.
 || facebook || link me || links to facebook fan page ||
 || misc || meta loaded || the language-specific time when the data was loaded ||
 || misc || meta rendered || the language-specific time when the HTML was rendered ||
+|| misc || meta environment || indicates the deployment environment in use ||
 || misc || meta credits || gives credits to some vital technologies used by the system || 
        
 == Default provided by base/heavy.html.ep but overloadable ==       
