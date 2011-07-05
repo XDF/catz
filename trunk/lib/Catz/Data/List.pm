@@ -34,7 +34,6 @@ package Catz::Data::List;
 # dividers - set dividers on and off on lists
 # refines - defines the pris and their order presented on browse for drill/jump 
 # jump - sets the drill to be a jump to subject rather than drill (search)
-# like - allow facebook like for of this conecpt combined with a subject
 
 use 5.10.0; use strict; use warnings;
 

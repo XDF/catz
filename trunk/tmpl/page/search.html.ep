@@ -5,6 +5,7 @@
 %# --------------------
 %#
 <% content 'metaadd' => begin %>
+<meta name="og:title" content="<%= $t->{SEARCH} %>">
 <meta name="description" content="<%= $t->{SEARCHING} %>">
 <meta name="og:description" content="<%= $t->{SEARCHING} %>">
 <meta name="og:type" content="catz:search"> 
@@ -13,9 +14,9 @@
 %# --------------------
 %#
 <% content 'ptitleadd' => begin %>
-% if ( length ( $what // '' ) > 0 ) { 
+% if ( length ( $what // '' ) > 0 ) {
 <%= $t->{SEARCH_NOTHING} %>
-% } else {
+% } else { 
 <%= $t->{SEARCH} %>
 % }
 <% end %>

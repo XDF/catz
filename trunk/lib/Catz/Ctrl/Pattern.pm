@@ -83,6 +83,9 @@ sub pattern {
   # data when the origin page is UTF-8 -> we decode the data now   
   utf8::decode ( $s->{init} );
 
+  # not for robots when with init parameter
+  $s->{init} and do {  $s->{meta_index} = 0; $s->{meta_follow} = 0 };
+
   # we don't allow '', we set it to undef
   $s->{init} eq '' and $s->{init} = undef;
  
@@ -153,7 +156,10 @@ sub guide {
  my $self = shift; my $s = $self->{stash};
  
  $s->{total} = 0;
-  
+
+ # if giving guide but search was made then it's not found -> not for robots 
+ $s->{what} and do {  $s->{meta_index} = 0; $s->{meta_follow} = 0 };
+ 
  $self->render( template => 'page/search' );
 
  return 1;

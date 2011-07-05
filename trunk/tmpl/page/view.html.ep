@@ -20,8 +20,8 @@
 <link rel="next" href="<%== include 'href/id', toid => $pin->[2] =%>">
 % }
 % my $desc = $t->{PHOTO}." $id";
-% length ( $ttl ) > 0 and $desc = "$ttl ($desc)";
-% stash ( 'ogtitle', $desc );
+% length ( $ttl ) > 0 and $desc = "$desc: $ttl";
+% stash ( 'tweettext', $desc );
 <meta name="og:title" content="<%= $desc %>">
 <meta name="og:type" content="catz:photo">   
 <% end %>
@@ -61,8 +61,8 @@
 <% content 'pathadd' => begin %>
 <%== include 'elem/path' %>
 <h1 class="mini"><%== include 'elem/titleb' %> (<%= $t->{PHOTO} %> <%== $pos %>/<%== $total %>)</h1>  
-%== include 'elem/twitter', twurl => $url, twtext => stash ( 'ogtitle' );
-%== include 'elem/facebook', fbhref => $url, fbref => 'photo';
+%== include 'elem/twitter', twurl => $url, twtext => stash ( 'tweettext' );
+%== include 'elem/facebook', fburl => $url, fbref => 'photo';
 <% end %>
 %#
 %# --------------------

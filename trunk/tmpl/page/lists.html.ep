@@ -3,7 +3,7 @@
 %# --------------------
 %#
 <% content 'metaadd' => begin %>
-<meta name="og:title" content="<%= $t->{LISTINGS} %>">
+<meta name="og:title" content="<%= $t->{LISTING_ALL} %>">
 <meta name="og:type" content="catz:list">  
 <% end %>
 %#

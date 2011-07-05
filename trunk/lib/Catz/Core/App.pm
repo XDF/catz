@@ -361,7 +361,7 @@ sub before {
   
   $s->{langa} = $1; $s->{lang} = $2;
     
-  $3 and do { # if running with non-default setup then no indexing
+  $3 and do { # if running with non-default setup then no indexing, no follow
    $s->{meta_index} = 0;
   };
   
@@ -452,7 +452,24 @@ sub after {
  ( 
   defined $s->{controller} and defined $s->{action} and defined $s->{url} 
  ) or return;
-
+ 
+ # 
+ # we purify html outputs
+ #
+ ( $self->res->headers->content_type =~ m|^text/html| ) and do {
+   
+  my $str = $self->res->body;
+  
+  $str =~ s|\r\n|\n|g; # convert windows newlines to unix newlines
+  $str =~ s|\s*\n\s*|\n|g; # convert whitespace constellations to one newline 
+  $str =~ s|\n\"|\"|g; # remove newlines that occur just before "
+  
+  $self->res->body( $str );
+  
+  { use bytes; $self->res->headers->content_length( length $str ) }
+  
+ };
+ 
  #
  # we use data version as last modified time
  #

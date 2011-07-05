@@ -5,8 +5,7 @@
 %# --------------------
 %#
 <html lang="<%== $lang %>"><head>
-<title><%= content 'ptitle' => begin %>
-<%= content 'ptitleadd' %> - <%= $t->{SITE} %><% end %></title>
+<title><%= content 'ptitle' => begin %><%= content 'ptitleadd' %> - <%= $t->{SITE} %><% end %></title>
 %#
 %# --------------------
 %#
@@ -25,11 +24,11 @@
 <meta http-equiv="content-language" content="<%== $lang %>">
 <link rel="shortcut icon" href="/favicon.ico">
 <%= content 'image' => begin %>
-<link ref="image_src" href="/catzlogo.png">
+<link rel="image_src" href="/catzlogo.png">
 <meta name="og:image" value="/catzlogo.png">
 <% end %>
 <meta name="author" content="<%== $t->{AUTHOR} %>">
-<meta name="copyright" content="<%== $t->{COPYRIGHT} %> <%== $t->{AUTHOR} %> <%== $t->{FIRSTYEAR} %>-<%== thisyear %>. <%= $t->{LICENCE} %>.">
+<meta name="copyright" content="<%= $t->{COPYRIGHT} %> <%= $t->{AUTHOR} %> <%= $t->{FIRSTYEAR} %>-<%= thisyear %>. <%= $t->{LICENCE} %>.">
 <link rel="copyright" href="<%== $t->{URL_LICENCE} %>"> 
 <meta name="og:site_name" content="<%= $t->{SITE} %>">
 % if ( $meta_index ) {
@@ -38,8 +37,7 @@
 %  } else {
 <meta name="robots" content="index,nofollow">
 %  }
-% } 
-% else {
+% } else {
 %  if ( $meta_follow ) {
 <meta name="robots" content="noindex,follow">
 %  } else {
@@ -54,10 +52,10 @@
 <meta name="fb:admins" content="<%== $facebookkey %>">
 <link rel="me" content="<%== $t->{URL_FACEBOOK} %>"> 
 <%= content 'metaadd' %>
-<meta name="generator" content="<%== $t->{GENERATOR} %>">
-<meta name="loaded" content="<%== dtexpand ( $version, $lang ) %>">
-<meta name="rendered" content="<%== $now %>">
-<meta name="credits" content="<%== $t->{CREDITS} %>">
+<meta name="generator" content="<%= $t->{GENERATOR} %>">
+<meta name="loaded" content="<%= dtexpand ( $version, $lang ) %>">
+<meta name="rendered" content="<%= $now %>">
+<meta name="credits" content="<%= $t->{CREDITS} %>">
 %== include 'elem/analytics';
 </head>
 %#
@@ -97,8 +95,8 @@
 %# --------------------
 %#
 <div id="bottom" class="section center shade shrink clearbefore">
-<a class="info" href=""></a> <%= $sep %> <%= $t->{COPYRIGHT} %> 
-<a href="<%== $t->{URL_AUTHOR} %>"><%= $t->{AUTHOR} %></a> <%== $t->{FIRSTYEAR} %>-<%== thisyear %> <%= $sep %>
+<a class="info" href=""></a> <%= $sep %> <%= $t->{COPYRIGHT} %>
+<a href="<%== $t->{URL_AUTHOR} %>"><%= $t->{AUTHOR} %></a> <%= $t->{FIRSTYEAR} %>-<%= thisyear %> <%= $sep %>
 <a href="<%== $t->{URL_LICENCE} %>"><%= $t->{LICENCE} %></a>
 </div>
 %#
