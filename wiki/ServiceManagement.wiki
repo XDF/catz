@@ -4,8 +4,8 @@
 
 == Preliminary phase on dev ==
 
-  * make sure that you have made at least one database load compared to the version in production (data version must be changed forward)
-  * run tests, check that run.pl has production mode and memcached is on (fresh memcached start), all test should pass 
+  * make sure that you have made at least one database load compared to the version in production (data version must be changed forward), if not make a pseudo load
+  * run tests, check that run.pl has production mode and memcached is on (fresh memcached start), all test should pass, check that the number of test and the time taken seems reasonable: Files=11, Tests=19759, 250 wallclock secs 
   * clean old database versions from /db
   * clean logs from /log
   * check what is in /temp and clean it
@@ -16,9 +16,10 @@
   * detect if the production is running on catz1 or on catz2
   * shutdown (init.d) the non-prodcution service
   * check that the production is still up and running :-D     
-  * delete all stuff from the application directory rm -fR *
-  * deploy the new version of the application by shipping all folders
-  * run tests, all should pass
+  * delete all stuff from the non-prod application directory rm -fR *
+  * deploy the new version of the application by shipping all folders'n'files (on slow connection consider gzipping the db before shipping and ungzipping it then on dev)
+  * set db r/o  
+  * run tests on prod, all should pass, check that stats are resonable: Files=11, Tests=19759, 195 wallclock secs
 
 == Switch the service ==
      
@@ -26,7 +27,27 @@
   * test the service via ssh tunneled port that it appears to work as expected
   * edit nginx config to so that it points to the deployed service
   * test nginx config -t
-  * reload nginx by kill -HUP $( cat /usr/local/nginx/logs/nginx.pid )
-  * test via the public interface that the service works normally                  
+  * reload nginx by kill -HUP $( cat /usr/local/nginx/logs/nginx.pid *edit* )
+  * test via the public interface that the service works normally
+  * run a full backup as root . /usr/sbin/backup_full.sh                    
 
 = Deploy a new version of the data (new SQLite database file with unchanged structure)
+
+  * the database structure must be unchanged compared to the current production version
+  * ...
+  * set db as r/o
+  * ...      
+  * run an incr backup as root . /usr/sbin/backup_incr.sh
+  *
+    
+= Misc random notes =
+
+hypnotoad stop: cat hypnotoad.pid | xargs kill -TERM
+
+Set to start at boot (many ways, this is quick'n'dirty):
+   * edit file /etc/rc.local
+   * add the following line to the end but before exit 0   
+   * su - <user> -c '. <userhome>/perl5/perlbrew/etc/bashrc; cd <userhome>/app/catz1/script; hypnotoad run.pl'
+   * 
+   *      
+       
