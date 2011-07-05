@@ -43,9 +43,9 @@
 % my $i = 1;
 % foreach my $tab ( @$idx ) {
 %  if ( $i++ == 1) {
-<option selected value="#idx<%== $tab %>"><%= $tab %></option>
+<option selected value="#idx<%== join '', map { ord } split //, $tab %>"><%= $tab %></option>
 %  } else {
-<option value="#idx<%== $tab %>"><%= $tab %></option>
+<option value="#idx<%== join '', map { ord } split //, $tab %>"><%= $tab %></option>
 %  }
 % }
 </select>
@@ -78,9 +78,9 @@
 % $matrix->{$subject}->{dividers} and do {
 <div class="bar outer stripebottom"><table class="full"><tr><td class="left">
 % if ( $mode eq 'top' ) {
-<h2 id="idx<%= $set->[0] %>"><%= $lang eq 'fi' ? $set->[0] . $sep : '#' . $set->[0] %></h2>
+<h2 id="idx<%= join '', map { ord } split //, $set->[0] %>"><%= $lang eq 'fi' ? $set->[0] . $sep : '#' . $set->[0] %></h2>
 % } else {
-<h2 id="idx<%= $set->[0] %>"><%= $set->[0] %></h2>
+<h2 id="idx<%= join '', map { ord } split //, $set->[0] %>"><%= $set->[0] %></h2>
 % }
 </td><td class="right">
 % my $sz = scalar ( @{ $set->[1] } ); # the size of this set   

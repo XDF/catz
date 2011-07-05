@@ -390,6 +390,10 @@ By default the advanced search looks for an exact match. To relax this rule use 
 %#
 %# --------------------
 %#
+</ul>
+%#
+%# --------------------
+%#
 <div class="bar">
 The instant find on <a href="/<%== $langa %>/">the front page</a> is aimed for all users and its purpose is to provide rapid access to photos. The advanced search is targeted to users having deeper understading of the data content and structure. The instant find and the advanced search have the following differences: 
 </div>
