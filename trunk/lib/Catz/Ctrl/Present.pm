@@ -202,16 +202,11 @@ sub multi {
  if ( $s->{runmode} eq 'all' ) {
  
   $s->{jump2date} = $self->fetch ( 'related#all2date' );
- 
+   
  } elsif ( $s->{runmode} eq 'pair' ) {
 
-  # upper and lower x of the photos on this page are used to limit 
-  # the dates so that there are no links to dates on this page
   $s->{jump2date} = $self->fetch ( 
-   'related#pair2date', 
-   $s->{pri}, $s->{sec}, 
-   $s->{xs}->[0], # first x 
-   $s->{xs}->[$#{$s->{xs}}] # last x 
+   'related#pair2date', $s->{pri}, $s->{sec},  
   );
 
  } else {

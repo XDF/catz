@@ -36,7 +36,7 @@ if ( $runmode eq 'pair' ) {
 }
 stash ( 'tweettext', $ogtitle ); # store for twitter use 
 %>
-<meta name="og:title" content="<%== $ogtitle %>"> 
+<meta name="og:title" content="<%= $ogtitle %>"> 
 <link rel="start" href="<%== include 'href/id', toid => $pin->[0] %>">
 % if ( $page > 1 ) {
 <link rel="prev" href="<%== include 'href/id', toid => $pin->[$page-2] %>">
@@ -49,7 +49,8 @@ stash ( 'tweettext', $ogtitle ); # store for twitter use
 %# --------------------
 %#
 <% content 'canon' => begin %>
-%# we pass $lang as $langa in these includes, and it is local to these includes
+%# we store langa, change it and restore it right after...
+% my $canonstore = $langa; # store 
 % if ( $page == 1 ) {
 <link rel="canonical" href="<%== include 'href/id', langa => $lang, toid => 0 %>">
 <meta name="og:url" content="<%== include 'href/id', langa => $lang, toid => 0 %>">
@@ -57,6 +58,7 @@ stash ( 'tweettext', $ogtitle ); # store for twitter use
 <link rel="canonical" href="<%== include 'href/id', langa => $lang, toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]) %>">
 <meta name="og:url" content="<%== include 'href/id', langa => $lang, toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]) %>">
 % }
+% $langa = $canonstore; # restore
 <% end %>
 %#
 %# --------------------
@@ -92,7 +94,7 @@ stash ( 'tweettext', $ogtitle ); # store for twitter use
 %# --------------------
 %#
 <% content 'bextra' => begin %> 
-% if ( $pri and $pri ne 'folder' and $pri ne 'date' ) {
+% if ( $runmode ne 'pair' or ( $pri ne 'folder' and $pri ne 'date' ) ) {
 <%= $t->{ONTHISPAGE} %> <%= dtexpand ( $latest, $lang ) %>
 %  if ( $earliest ne $latest ) {
 - <%= dtexpand ( $earliest, $lang ) %>
@@ -122,10 +124,12 @@ stash ( 'tweettext', $ogtitle ); # store for twitter use
 %#
 <% content 'pathadd' => begin %>
 <%== include 'elem/path' %>
-% if ( $page == 1 ) {
-%== include 'elem/twitter', twurl => $url, twtext => stash ( 'tweettext' );
-%== include 'elem/facebook', fburl => $url, fbref => $runmode eq 'pair' ? $pri : $runmode;
-% }
+%# we store langa, change it and restore it right after...
+% my $encanstore = $langa; # store
+% my $encan = trim ( $self->render ( 'href/id', partial => 1, langa => 'en', toid => 0 ) );
+% $langa = $encanstore; # restore
+%== include 'elem/twitter', twurl => $encan, twtext => stash ( 'tweettext' );
+%== include 'elem/facebook', fburl => $encan, fbref => $runmode eq 'pair' ? $pri : $runmode;
 <% end %>  
 %#
 %# --------------------
