@@ -25,7 +25,7 @@
 <link rel="shortcut icon" href="/favicon.ico">
 <%= content 'image' => begin %>
 <link rel="image_src" href="/catzlogo.png">
-<meta name="og:image" content="/catzlogo.png">
+<meta name="og:image" content="<%== $t->{URL_CATZA} %>catzlogo.png">
 <% end %>
 <meta name="author" content="<%== $t->{AUTHOR} %>">
 <meta name="copyright" content="<%= $t->{COPYRIGHT} %> <%= $t->{AUTHOR} %> <%= $t->{FIRSTYEAR} %>-<%= thisyear %>. <%= $t->{LICENCE} %>.">
@@ -46,7 +46,7 @@
 % }
 <%= content 'canon' => begin %>
 <link rel="canonical" href="<%== "/$lang".urirest ( $url ) %>">
-<meta name="og:url" content="<%== "/$lang".urirest ( $url ) %>">
+<meta name="og:url" content="<%== $t->{URL_CATZA}.'en'.urirest($url) %>">
 <% end %> 
 <link rel="alternate" title="<%= $t->{TRANSLATE} %>" lang="<%== $langother %>" hreflang="<%== $langother %>" href="<%== $urlother %>">
 <meta name="fb:admins" content="<%== $facebookkey %>">
