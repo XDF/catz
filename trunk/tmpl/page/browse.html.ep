@@ -65,8 +65,10 @@ stash ( 'tweettext', $ogtitle ); # store for twitter use
 <link rel="image_src" href="<%== $flagbase.'/'.lc($sec).'.gif' %>">
 <meta name="og:image" content="<%== $flagbase.'/'.lc($sec).'.gif' %>">
 % } else {
-<link rel="image_src" href="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
-<meta name="og:image" content="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
+%# using a random thumbnail image as the page's image
+% my $rdt = $thumbs->[ rand @{ $thumbs } ];
+<link rel="image_src" href="<%== $photobase %>/<%== $rdt->[3] %>/<%== $rdt->[4] %>">
+<meta name="og:image" content="<%== $photobase %>/<%== $rdt->[3] %>/<%== $rdt->[4] %>">
 % }
 <% end %>
 %#

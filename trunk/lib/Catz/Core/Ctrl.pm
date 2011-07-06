@@ -71,15 +71,16 @@ sub redirect_perm { # permanent redirect 301
 
  # this is a modified copy from Mojolicious core
 
- my $self = shift;
- my $res = $self->res;
+ my ( $self, $to ) = @_;
  
- $res->code(301);
-
+ my $res = $self->res; $res->code( 301 );
+ 
  my $headers = $res->headers;
- $headers->location($self->url_for(@_)->to_abs);
- $headers->content_length(0);
-
+ 
+ $headers->location( $to );
+ 
+ $headers->content_length( 0 ); 
+ 
  $self->rendered;
 
  return $self;
@@ -90,15 +91,16 @@ sub redirect_temp { # temporary redirect 302
 
  # this is a modified copy from Mojolicious core  
 
- my $self = shift;
- my $res = $self->res;
+ my ( $self, $to ) = @_;
  
- $res->code(302);
-
+ my $res = $self->res; $res->code( 302 );
+ 
  my $headers = $res->headers;
- $headers->location($self->url_for(@_)->to_abs);
- $headers->content_length(0);
-
+ 
+ $headers->location( $to );
+ 
+ $headers->content_length( 0 ); 
+ 
  $self->rendered;
 
  return $self;

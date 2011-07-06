@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 %#
 %# --------------------
 %# An abstract template for all pages excluding the error & exception pages
@@ -55,6 +55,9 @@
 <meta name="generator" content="<%= $t->{GENERATOR} %>">
 <meta name="loaded" content="<%= dtexpand ( $version, $lang ) %>">
 <meta name="rendered" content="<%= $now %>">
+% if ( length ( $pkey ) > 0 ) {
+<meta name="environment" content="catz<%= $pkey %>"> 
+% } 
 <meta name="credits" content="<%= $t->{CREDITS} %>">
 %== include 'elem/analytics';
 </head>

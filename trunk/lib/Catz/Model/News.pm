@@ -60,10 +60,10 @@ sub _latest {
 
  my ( $self, $limit ) = @_; my $lang = $self->{lang};
  
- ( $limit and $limit > 0 ) or $limit = 5; # default 
+ ( $limit and $limit > 0 ) or $limit = 5; # default to 5 if not given 
       
  return $self->dball( 
-  "select dt,title_$lang from mnews order by dt desc limit $limit" 
+  "select dt,title_$lang,text_$lang from mnews order by dt desc limit $limit" 
  );
         
 }

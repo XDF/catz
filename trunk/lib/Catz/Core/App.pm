@@ -30,7 +30,7 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Mojolicious';
 
-use Time::HiRes;
+use Time::HiRes qw ( time );
 
 use Catz::Core::Cache;
 use Catz::Core::Conf;
@@ -49,9 +49,6 @@ use Catz::Util::String qw (
 );
 
 my $time_page = 0;  # turns on timing on all HTTP requests
-
-my $version = undef; # data version stored static
-my $checked = undef; # epoch time of the last data version check
 
 sub startup {
 
@@ -110,12 +107,12 @@ sub startup {
  ### 
  
  # reset
- $r->route( '/style/reset' )->to( 'main#reset', hold => 8*60 );
+ $r->route( '/style/reset' )->to( 'main#reset', hold => 24*60 );
  
  # the single stylesheet contains all style definitions
  # it's color settings are dependent on the palette 
  $r->route( '/style/:palette', palette => qr/dark|neutral|bright/ )
-  ->to( 'main#base', hold => 2*60 );
+  ->to( 'main#base', hold => 24*60 );
  
  ###
  ### www.catshow.fi itegration
@@ -124,7 +121,7 @@ sub startup {
  # the interface provided for the purposes of www.catshow.fi
  # please note that although this can be used to other purposes
  # the interface is subject to changes and cannot be relied on
- $r->route( '/lastshow' )->to( 'main#lastshow',  hold => 30 );
+ $r->route( '/lastshow' )->to( 'main#lastshow',  hold => 15 );
  
  ###
  ### tools
@@ -156,7 +153,7 @@ sub startup {
  
  # single article
  $l->route( '/news/:article', article => qr/\d{14}/ )
-  ->to ( "news#one", hold => 30 );
+  ->to ( "news#one", hold => 60 );
 
  # RSS feed    
  $l->route( '/feed' )->to ( "news#feed", hold => 15 );
@@ -166,14 +163,14 @@ sub startup {
  ###
 
  # the list of lists (list index)
- $l->route( '/lists' )->to('locate#lists', hold => 30 );
+ $l->route( '/lists' )->to('locate#lists', hold => 60 );
 
  # a single list 
  $l->route( 
   '/list/:subject/:mode', 
   subject => qr/[a-z]{1,25}/,
   mode => qr/[a-z0-9]{1,25}/, 
- )->to('locate#list', hold => 30 );
+ )->to('locate#list', hold => 60 );
  
  ###
  ### photo browsing and viewing - 3 ways
@@ -182,7 +179,7 @@ sub startup {
  ### #1: browse all & view all
  
  my $a = $l->route( '/:action', action => qr/browseall|viewall/ )
-  ->to( hold => 30 );
+  ->to( hold => 60 );
   
  # with photo id
  $a->route( '/:id', id => qr/\d{6}/ )->to( controller => 'all' ); 
@@ -193,7 +190,7 @@ sub startup {
  ### #2: pair browse & pair view
 
  my $p = $l->route( '/:action', action => qr/browse|view/ )
-  ->to( hold => 30 );
+  ->to( hold => 60 );
   
  # with photo id
  $p->route( ':pri/:sec/:id', 
@@ -209,7 +206,7 @@ sub startup {
  ### #3: search browse & search view
 
  my $s = $l->route( '/:action', action => qr/search|display/ )
-  ->to( hold => 30 );   
+  ->to( hold => 60 );   
 
  # with photo id
  $s->route( '/:id', id => qr/\d{6}/ )->to( controller => 'pattern' ); 
@@ -222,18 +219,17 @@ sub startup {
  ###
 
  # the quick find AJAX interface 
- $l->route( '/find' )->to ( "locate#find", hold => 30 );
+ $l->route( '/find' )->to ( "locate#find", hold => 60 );
 
  # the show result AJAX interface
- $l->route( '/result' )->to ( "main#result",  hold => -19 );
- # when 19 is combined to maximum of 10 on model cache
- # and to the fact that page cache is bypassed
- # it is 29 and so it can be said that results are no
- # older than 30 minutes
+ $l->route( '/result' )->to ( "main#result",  hold => -15 );
+ # when 15 min is combined to maximum of 10 min on model cache
+ # and to the fact that page cache is bypassed (negative hold)
+ # it is 25 and so we can say that results refresh every 30 mins
  
  # the info base data provided AJAX interface
  $l->route( '/info/:cont', cont => qr/std/ )
-  ->to ( "main#info", hold => 120 );
+  ->to ( "main#info", hold => 24*60 );
       
  # add hooks to methods that are to be executed before and after the dispatch
  $self->hook ( before_dispatch => \&before );  
@@ -260,46 +256,54 @@ sub before {
   
  };
  
+ $s->{pkey} = conf ( 'pkey' ); # copy production enviroment key
+ 
  # default is not to cache so routing should set hold appropriately 
  $s->{hold} = 0; 
     
- # we can't export time since we use the standard time function also
- $time_page and $s->{time_start} = Time::HiRes::time();
-  
- ( $checked and ( ( $checked + 10 ) > time() ) ) or do {
+ $time_page and $s->{time_start} = time();
  
-   # never checked or not checked within last 10 seconds
-   # the check is fast but to be optimal we still prevent
-   # it to happen more often than in every 10 seconds
+ # 
+ # fetch the latest version key file
+ # 
+ # runs on every request and takes time
+ # 
+ # on slow windows workstation + USB hard drive
+ # spent 15.6ms making 11 calls to 
+ # Catz::Util::File::findlatest, avg 1.42ms/call
+ #
+ # this is a good candidate for improvement but the 
+ # previous attempts have not produced reliable results
+ #  
   
-   my $dbp = $ENV{MOJO_HOME}.'/db';
- 
-  ( defined $version and ( -f "$dbp/$version.txt" ) ) or do {
- 
-   # version not detected earlier or no longer valid
-  
-   # fetch the latest key file
-   my $keyf = findlatest ( $dbp, 'txt' );
-  
-   defined $keyf and do {
-  
-    # we make it very safe: if anything is wrong we continue to run
-    # with the old database and data version
-  
-    my $newv = substr ( pathcut ( $keyf ), 0, 14 );
-      
-    -f "$dbp/$newv.db" and $version = $newv; 
-   
-   };   
-  
-  };
-  
-  $checked = time();
-  
- };
- 
- $s->{version} = $version; # data version
+ my $keyf = findlatest ( $ENV{MOJO_HOME}.'/db', 'txt' );
 
+ if ( $keyf and $keyf =~ m|(\d{14})\.txt$| ) { 
+ 
+  $s->{version} = $1;
+  
+ } else { # panic and nothing we can do about it
+ 
+   $s->{version} = -1;
+   
+   my $msg = '500 Suddenly, the dungeon collapses.'; 
+   
+   $self->app->log->error( "$msg Got '$keyf'." ); 
+     
+   $self->res->code(500);
+   $self->res->body ( $msg );
+   $self->res->headers->content_type ( 'text/plain' );
+   
+   { use bytes;    
+    $self->res->headers->content_length ( length $msg );
+   }
+    
+   $self->rendered;
+   
+   return;
+   
+ } 
+ 
  #
  # require urls to end with slash when there is no query params
  # you may ask why but I think this is cool
@@ -340,6 +344,7 @@ sub before {
   # no need to send response, the old response is still ok
  
   $self->res->code(304);
+  $self->res->body('');
   $self->res->headers->content_length(0);
   $self->rendered;
   return; 
@@ -386,15 +391,16 @@ sub before {
  if ( my $res = cache_get ( cachekey ( $self ) ) ) {  # cache hit
  
   $self->res->code(200);
-  $self->res->headers->content_type( $res->[0] );
+  defined $res->[0] and $self->res->headers->content_type( $res->[0] );
   defined $res->[1] and $self->res->headers->content_length( $res->[1] );
-  defined $res->[2] and $self->res->headers->header( 'Cache-Control' => $res->[2] );
-  defined $res->[3] and $self->res->headers->header( 'Last-Modified' => $res->[3] );
-  $self->res->body( ${ $res->[4] } ); # scalar ref to prevent copying
+  defined $res->[2] and $self->res->headers->header( 'Expires' => $res->[2] );
+  defined $res->[3] and $self->res->headers->header( 'Cache-Control' => $res->[3] );
+  defined $res->[4] and $self->res->headers->header( 'Last-Modified' => $res->[4] );
+  $self->res->body( ${ $res->[5] } ); # scalar ref to prevent copying
   $self->rendered;
   $s->{cached} = 1; # mark that the content came from cache
   
-  $time_page and $s->{time_end} = Time::HiRes::time();
+  $time_page and $s->{time_end} = time();
  
   $time_page and warn "PAGE $s->{url} -> " . round ( ( ( $s->{time_end} - $s->{time_start}  ) * 1000 ), 0 ) . ' ms (cache)' ;
   
@@ -437,16 +443,43 @@ sub before {
 sub after {
 
  my $self = shift; my $s = $self->{stash};
- 
+  
  $s->{isstatic} and do {
+ 
+  # for static content we just mess with caching headers and exit
+  
+  my $age = 60*60; # the default is 1 h
+  
+  given ( $self->req->url->path->to_string ) {
+  
+   when ( [ qw ( /robots.txt /favicon.ico /catzlogo.png ) ] ) {
+    $age = 60*60*24*7; # 7 d
+   }
    
-  $self->res->headers->header( # 2 hours of lifetime
-   'Cache-Control' => 'max-age=' . ( 60 * 60 * 2 ) . ', public' 
+   when ( m|^/js_lib| ) {
+    $age = 60*60*24; # 1 d
+   }
+  
+  }  
+   
+  $self->res->headers->header(
+   'Cache-Control' => 'max-age=' .  $age . ', public' 
+  );
+
+  $self->res->headers->header(
+   'Expires' => epoch2http ( $age + ( dt2epoch dt ) ) 
   );
  
   return; # for static content we just set one header and exit 
  
  };
+
+ # no recaching: if the result came from server side the cache 
+ # then don't cache it again
+ $s->{cached} and return;
+ 
+ # prevent erros to go to caching
+ $self->res->code == 200 or return;
  
  # we require the basics to be available for further processing   
  ( 
@@ -470,8 +503,26 @@ sub after {
   { use bytes; $self->res->headers->content_length( length $str ) }
   
  };
+   
+ # from seconds to minutes, and 0 * 60 is still 0
+ $s->{hold} = $s->{hold} * 60;
+     
+ # set cache response headers, use absolute hold (can be negative)
+  
+ $self->res->headers->header(
+  'Cache-Control' => 'max-age=' .  abs ( $s->{hold} ) . ', public' 
+ );
+
+ $self->res->headers->header(
+  'Expires' => epoch2http ( abs ( $s->{hold} ) + ( dt2epoch dt ) ) 
+ );
+ 
+ # continue only if server side page caching is needed
+ $s->{hold} > 0 or return;
  
  #
+ # if no page caching then no Last-Modified
+ # 
  # we use data version as last modified time
  #
  $self->res->headers->header(
@@ -481,40 +532,21 @@ sub after {
  # this means that deployments of the system must always deploy 
  # an new data version, otherwise cache logic gets broken
  #
- 
- # from seconds to minutes, and 0 * 60 is still 0
- $s->{hold} = $s->{hold} * 60;
-     
- # set cache response header to use the defined max-age
- $self->res->headers->header(
-  'Cache-Control' => 'max-age=' .  abs ( $s->{hold} ) . ', public' 
- );
- 
- # continue only if server side page caching is needed
- $s->{hold} > 0 or return; 
-
- # no recaching: if the result came from server side the cache 
- # then don't cache it again
- $s->{cached} and return;
- 
- # we cache only GET and with 200 OK to be safe
- if ( $self->req->method eq 'GET' and $self->res->code == 200 ) {
-
-  cache_set (
+  
+ cache_set (
    
-   cachekey ( $self ),
-   [ 
-    $self->res->headers->content_type,
-    $self->res->headers->content_length // undef,
-    $self->res->headers->header('Cache-Control') // undef,
-    $self->res->headers->header('Last-Modified') // undef,
-    \$self->res->body # scalar ref to prevent copying
-   ]
-  );
+  cachekey ( $self ),
+  [ 
+   $self->res->headers->content_type // undef,
+   $self->res->headers->content_length // undef,
+   $self->res->headers->header('Expires') // undef,
+   $self->res->headers->header('Cache-Control') // undef,
+   $self->res->headers->header('Last-Modified') // undef,
+   \$self->res->body # scalar ref to prevent copying
+  ]
+ );
   
- }
-  
- $time_page and $s->{time_end} = Time::HiRes::time();
+ $time_page and $s->{time_end} = time();
  
  $time_page and warn "PAGE $s->{url} -> " . round ( ( ( $s->{time_end} - $s->{time_start}  ) * 1000 ), 0 ) . ' ms (real)' ;
    
