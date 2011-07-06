@@ -30,7 +30,7 @@
 %#
 <% content 'canon' => begin %>
 <link rel="canonical" href="/<%== $lang %>/viewall/<%== $id %>/">
-<meta name="og:url" content="/<%== $lang %>/viewall/<%== $id %>/">
+<meta name="og:url" content="<%== $t->{URL_CATZA} %><%== $lang %>/viewall/<%== $id %>/">
 <% end %>
 %#
 %# --------------------

@@ -11,7 +11,7 @@
 %# --------------------
 %#
 <% content 'metaadd' => begin %>
-% my $ogtitle = $t->{SITE};
+% my $ogtitle = $t->{SITE}.' - '.$t->{SLOGAN};
 % stash ( 'tweettext', $ogtitle );
 <meta name="og:title" content="<%= $ogtitle %>">
 <meta name="og:type" content="website">
@@ -19,9 +19,7 @@
 %#
 %# --------------------
 %#
-<% content 'ptitle' => begin %>
-<%= $t->{SITE} %> - <%== $t->{SLOGAN} %> 
-<% end %>
+<% content 'ptitle' => begin %><%= $t->{SITE} %> - <%== $t->{SLOGAN} %> <% end %>
 %#
 %# --------------------
 %#
