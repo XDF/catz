@@ -1,0 +1,22 @@
+#summary Caching principles and implementation
+
+= Some caching documentation =
+
+== HTTP cache headers ==
+
+|| *resource(s)* || *lifetime* || *headers* ||
+|| /static  || 7 d || set by nginx, includes Last-Modified that comes into play after 7 days is passed ||
+|| /robots.txt /favicon.ico /catzlogo.png || 7 d || application set Expires and Cache-Control, Mojolicious sets Last-Modified ||
+|| /js_lib ||  1 d || application set Expires and Cache-Control, Mojolicious sets Last-Modified || 
+|| /js_site || 1 h || application set Expires and Cache-Control, Mojolicious sets Last-Modified ||
+|| style info || 1 d || application set Expires and Cache-Control in absolute, Last-Modified based on data version ||
+|| new1 lists list1 browse view search find || 1 h || application set Expires and Cache-Control in absolute, Last-Modified based on data version ||   
+|| front news feed lastshow || 15 min || application set Expires and Cache-Control in absolute, Last-Modified based on data version ||
+|| result || 15 min || application set Expires and Cache-Control in absolute, Last-Modified not set || 
+|| detect tools || 0 || Cache-Control max-age 0 set by the application ||
+ 
+== The caching architecture ==
+
+  * four levels of caching (on client, on server page level, model level, database level) 
+  * server side uses Memcached
+  

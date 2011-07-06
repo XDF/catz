@@ -41,7 +41,7 @@ The following tables describe the metadata provided on HTML pages.
 || meta || link start || || || || || || links to first thumbnail page || links to first photo || ||
 || meta || link prev || || || links to previous article || || || links to previous thumbnail page || link to the previous photo || ||
 || meta || link next || || || links to next article || || || links to next thumbnail page || link to the next photo || ||
-|| meta || block image || default || default || default || default || default || use the first thumbnail on page, but if in pair mode pri nat use flag || use the photo thumbnail || default ||
+|| meta || block image || default || default || default || default || default || use a random thumnail on page, but if in pair mode pri nat use flag || use the photo thumbnail || default ||
 || meta || meta description || || || || || generated from pri and subject || || || a fixed text || 
 || meta || meta og:description || || || || || generated from pri and subject || || || a fixed text ||
 || facebook || meta og:type || website || catz:list || article || catz:list || catz:list || default "catz:thumbnails", in runmode pair on org, umb, breeder: non_profit, on nat: country, on loc: city, on others "catz:" + pri || catz:photo || catz:search ||  
