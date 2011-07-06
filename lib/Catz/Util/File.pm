@@ -149,14 +149,14 @@ sub finddirs { sort grep { -d } glob ( $_[0] . '/*' ) }
 # if the file names are timestamps then the latest file is returned
 #
 # in: folder name, file extension
-# out: "the largest" file
+# out: "the largest" file = the latest file
 #
-sub findlatest {
-   
- my @dbs = reverse grep { -f } glob ( $_[0] . '/*.' . $_[1] );
-    
- defined $dbs[0] ? $dbs[0] : undef;
-  
+sub findlatest { 
+
+ my @dbs = grep { -f } glob ( $_[0] . '/*.' . $_[1] );
+
+ defined $dbs[ $#dbs ] ? $dbs[ $#dbs ] : undef;  
+ 
 }
 
 sub findphotos { 

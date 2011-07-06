@@ -42,16 +42,17 @@ my $langs = [ 'en', 'fi' ];
 my $i18n = 
  I18N::AcceptLanguage->new( defaultLangauge => 'en', strict => 0 );
 
-# the language detection based on the request headers
-sub detect { 
+sub detect { # the language detection based on the request headers 
  
  my $self = shift;
  
- $self->redirect_temp( 
-  '/'.
-  $i18n->accepts( $self->req->headers->accept_language, $langs )
-  .'/'
- );
+ my $target = $i18n->accepts( $self->req->headers->accept_language, $langs );
+ 
+ # it was noted with some wget tests that the target can be unset
+ # so we must check it and default to English if needed 
+ ( $target and length ( $target ) > 1 ) or $target = 'en'; 
+ 
+ $self->redirect_temp ( "/$target/" );
 
 }
 
@@ -124,9 +125,6 @@ sub result {
  # current dt down to 10 minutes, so this parameter changes in every
  # 10 minutes and this makes cached model data live at most 10 minutes
  my $pseudo = substr ( dt, 0, -3 );
- # combined to the bypassed page cache and max-age 9 minutes it is
- # 19 minutes and so it can be said that results are no older than 20
- # minutes
   
  my $count = $self->fetch ( 'net#count', $keys[0], $keys[1], $pseudo ) // 0;
   

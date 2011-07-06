@@ -104,9 +104,11 @@ sub enurl { uri_escape $_[0] }
 #
 # limits string length to a given length, if truncates then adds '...'
 #
-sub limit { 
+sub limit {
 
- length $_[0] < $_[1] and return $_[0];
+ $_[0] or return; # no work on undef 
+
+ ( length $_[0] < $_[1] ) and return $_[0];
  
  return substr ( $_[0], 0, $_[1] - 3 ) . '...';
 

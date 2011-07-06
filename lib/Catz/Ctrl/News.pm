@@ -77,6 +77,7 @@ sub feed { # RSS feed of news
 
  $rss->channel(
   title => $s->{t}->{SITE},
+  description => $s->{t}->{SLOGAN},
   link => $s->{t}->{URL_CATZA},
   language => $s->{lang},
   lastBuildDate => epoch2rfc822 dt2epoch dt,
@@ -85,11 +86,12 @@ sub feed { # RSS feed of news
  foreach my $item (@$news) {
   $rss->add_item(
    title =>  $item->[1],
-   link => 'http://' . $s->{t}->{SITE} . '/' . $s->{lang} . '/news/'.$item->[0].'/',
-   description => limit ( $item->[2], 160 ),
+   link => $s->{t}->{URL_CATZA}.$s->{lang}.'/news/'.$item->[0].'/',
+   description => limit ( $item->[2], 100 ),
    pubDate => epoch2rfc822 dt2epoch $item->[0],
   );
  }
+ 
  
  $self->render ( text => $rss->as_string, format => 'xml' )
  
