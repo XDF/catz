@@ -1,5 +1,5 @@
 %# parameters: fburl (local), fbref
-<iframe class="facebook" src="http://www.facebook.com/plugins/like.php?href=<%== enurl ( $t->{URL_CATZA}.substr($fburl,1) ) %>&amp;ref=<%== $fbref %>&amp;send=false&amp;layout=button_count&amp;width=90&amp;show_faces=false&amp;action=like&amp;colorscheme=<%== $palette eq 'dark' ? 'dark' : 'light' %>&amp;font=verdana&amp;height=20&amp;locale=<%== $lang eq 'fi' ? 'fi_FI' : 'en_US' %>" scrolling="no" frameborder="0" allowtransparency="true"></iframe>
+<iframe class="facebook facebook_<%== $lang %>" src="http://www.facebook.com/plugins/like.php?href=<%== enurl ( $t->{URL_CATZA}.substr($fburl,1) ) %>&amp;ref=<%== $fbref %>&amp;send=false&amp;layout=button_count&amp;width=90&amp;show_faces=false&amp;action=like&amp;colorscheme=<%== $palette eq 'dark' ? 'dark' : 'light' %>&amp;font=verdana&amp;height=20&amp;locale=<%== $lang eq 'fi' ? 'fi_FI' : 'en_US' %>" scrolling="no" frameborder="0" allowtransparency="true"></iframe>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

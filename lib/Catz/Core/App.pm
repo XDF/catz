@@ -443,6 +443,29 @@ sub before {
 sub after {
 
  my $self = shift; my $s = $self->{stash};
+ 
+ 
+ $self->res->code == 200 or do {
+
+   ( ( $self->res->code == 404 ) or ( $self->res->code == 500 ) ) and do {
+   
+    # force no caching on errors
+   
+    $self->res->headers->header( 
+     'Cache-Control' => 'max-age=0, must-revalidate' 
+    );
+        
+    $self->res->headers->header(
+     'Expires' => epoch2http ( dt2epoch dt ) 
+    );
+  
+  };
+  
+  # prevent erros for further processing 
+  # like more headers setting or caching 
+  return;
+ 
+ };
   
  $s->{isstatic} and do {
  
@@ -477,10 +500,7 @@ sub after {
  # no recaching: if the result came from server side the cache 
  # then don't cache it again
  $s->{cached} and return;
- 
- # prevent erros to go to caching
- $self->res->code == 200 or return;
- 
+  
  # we require the basics to be available for further processing   
  ( 
   defined $s->{controller} and defined $s->{action} and defined $s->{url} 

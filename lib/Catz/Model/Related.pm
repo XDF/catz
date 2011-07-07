@@ -64,9 +64,11 @@ sub _refine {
  my ( $self, $pri, $sec, $target ) = @_;  my $lang = $self->{lang};
  
  # maximum number of items in a set, use 15 if not specific
- my $n = $matrix->{$pri}->{limit}->{$target} // 15; 
-
- my $sql = qq{select sec from (select s2.sec,p2.disp,s2.sort from pri p1,sec_$lang s1,_secm m, _relate r,sec_$lang s2, pri p2 where p1.pri=? and p1.pid=s1.pid and s1.sec=? and s2.sid=m.sid and s1.sid=r.source and s2.sid=r.target and s2.pid=p2.pid and p2.pri=? order by cntphoto desc limit $n) order by sort}; 
+ my $n = $matrix->{$pri}->{limit}->{$target} // 15;
+ 
+ # this is 0 - 1 ms on english on DBI, 70 - 90 ms on Finnish on DBI
+ # so could be better on Finnish
+ my $sql = qq{select sec from (select s2.sec,s2.sort from _secm m,_relate r,sec_$lang s1,sec_$lang s2 where s1.pid=(select pid from pri where pri=?) and s1.sec=? and s2.sid=m.sid and s1.sid=r.source and s2.sid=r.target and s2.pid=(select pid from pri where pri=?) order by cntphoto desc limit $n) order by sort}; 
 
  return $self->dbcol( $sql, $pri, $sec, $target );
 
