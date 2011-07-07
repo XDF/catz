@@ -45,7 +45,7 @@ The following tables describe the metadata provided on HTML pages.
 || meta || meta description || || || || || generated from pri and subject || || || a fixed text || 
 || meta || meta og:description || || || || || generated from pri and subject || || || a fixed text ||
 || facebook || meta og:type || website || catz:list || article || catz:list || catz:list || default "catz:thumbnails", in runmode pair on org, umb, breeder: non_profit, on nat: country, on loc: city, on others "catz:" + pri || catz:photo || catz:search ||  
-|| facebook || meta og:title || the site name || a fixed title || the date and the news title || a fixed title || the page title || in runmode all a title "n cat show photos", in runmode pair a title constructed from the pri and subject, in runmode search a fixed text + the search || photo number always + photo text if exists || the page title ||  
+|| facebook || meta og:title || site name & slogan || a fixed title || the date and the news title || a fixed title || the page title || in runmode all a title "n cat show photos", in runmode pair a title constructed from the pri and subject, in runmode search a fixed text + the search || photo number always + photo text if exists || the page title ||  
 || facebook || meta og:locality || || || || || || in runmode pair on loc contains the location name || in runmode pair on loc contains the location name || ||  
 || facebook || meta og:country-name || || || || || || in runmode pair on loc contains the country name || in runmode pair on loc contains the country name || ||
   
