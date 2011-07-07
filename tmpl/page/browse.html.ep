@@ -33,8 +33,7 @@ if ( $runmode eq 'pair' ) {
  }
 } elsif ( $runmode eq 'search' ) {
  $ogtitle = $t->{SEARCH_RESULT}.' '.$what;  
-}
-stash ( 'tweettext', $ogtitle ); # store for twitter use 
+} 
 %>
 <meta name="og:title" content="<%= $ogtitle %>"> 
 <link rel="start" href="<%== include 'href/id', langh => $langa, toid => $pin->[0] %>">
@@ -120,12 +119,7 @@ stash ( 'tweettext', $ogtitle ); # store for twitter use
 %#
 %# --------------------
 %#
-<% content 'pathadd' => begin %>
-<%== include 'elem/path' %>
-% my $encan = trim ( $self->render ( 'href/id', partial => 1, langh => 'en', toid => 0 ) );
-%== include 'elem/twitter', twurl => $encan, twtext => stash ( 'tweettext' );
-%== include 'elem/facebook', fburl => $encan, fbref => $runmode eq 'pair' ? $pri : $runmode;
-<% end %>  
+<% content 'pathadd' => begin %><%== include 'elem/path' %><% end %>  
 %#
 %# --------------------
 %#

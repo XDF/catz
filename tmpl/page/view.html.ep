@@ -61,9 +61,6 @@
 <% content 'pathadd' => begin %>
 <%== include 'elem/path' %>
 <h1 class="mini"><%== include 'elem/titleb' %> (<%= $t->{PHOTO} %> <%== $pos %>/<%== $total %>)</h1>
-% my $encan = "/en/viewall/$id/";  
-%== include 'elem/twitter', twurl => $encan, twtext => stash ( 'tweettext' );
-%== include 'elem/facebook', fburl => $encan, fbref => 'photo';
 <% end %>
 %#
 %# --------------------
@@ -177,6 +174,10 @@
 </span>
 % } 
 % if ( $display ne 'none' ) {
+% my $encan = "/en/viewall/$id/";
+<%= $sep %>  
+%== include 'elem/twitter', twurl => $encan, twtext => stash ( 'tweettext' );
+%== include 'elem/facebook', fburl => $encan, fbref => 'photo';
 </div>
 % }
 %#
