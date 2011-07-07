@@ -191,13 +191,17 @@ a:hover {
 }
 
 /* facebook like button's iframe */
+
 .facebook {
  border: none;
- overflow: hidden; 
- width: 90px; 
+ overflow: hidden;  
  height: 20px;
  vertical-align: middle;
 }
+
+.facebook_fi { width: 100px; }
+
+.facebook_en { width: 95px; }
 
 /* twitter tweet button's iframe */
 .twitter {
