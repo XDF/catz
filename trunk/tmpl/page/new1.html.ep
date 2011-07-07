@@ -67,7 +67,7 @@
 % } 
 <div class="bar outer">
 <span class="lean"><%=  dtexpand ( $new1->[0], $lang ) %></span>
-% if ( ( dt2epoch ( dt ) - dt2epoch ( $new1->[0] ) ) < 60 * 60 * 24 * 90 ) {
+% if ( ( dt2epoch ( dt ) - dt2epoch ( $new1->[0] ) ) < 60 * 60 * 24 * 30 ) {
 <span class="aero">
 % my $encan = '/en'.urirest ( $url );
 %== include 'elem/twitter', twurl => $encan, twtext => stash ( 'tweettext' );
