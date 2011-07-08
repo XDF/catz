@@ -34,19 +34,16 @@
   * change prod to autostart at /etc/rc.local (details of that later)
   * run an incr backup as root . /usr/sbin/backup_incr.sh OR a full backup as root . /usr/sbin/backup_full.sh                    
 
-= Deploy a new version of the data (new SQLite database file with unchanged structure)
-
- the current implementation doesn't work since the prod has multiple processes that start and stop and might read the text file change / db before the actual switch - in practise this might not matter at all
+= Deploy a new version of the data (new SQLite database file with unchanged structure) =
 
   * the database structure must be unchanged compared to the current production version or otherwise the production will fail
   * detect if the production is running on catz1 or on catz2 (html meta)
   * ship the database file to the production db folder    
   * set the db file as r/o
-  * run the database verify tool (key in core conf)
-  * ship the database key file matching the new database
-  * delete the old database key file matching the old database in prod
-  * wait 10 seconds (auto-detection delay on prod service)
-  * check that the new data version is in production and production works                  
+  * run the database verify tool (get the key from core conf), should give OK
+  * ship the database key file matching the new database - the production switches immediately to the new database
+  * check that the new data version is in production (HTML meta tags) and that production works
+  * revert the deployment by deleting the latest database key file just shipped (should revert the production immediately to the previous database version)                  
     
 = Misc random notes =
 

@@ -1,38 +1,38 @@
 #summary My brief opinionated comparison on Catalyst, Dancer and Mojolicious
 #labels Catalyst,Dancer,Mojolicious,Perl
 
+The background for this comparison comes from the fact that I've used all three frameworks during the project. I started with Catalyst, tried some Dancer for a while and finally settled with Mojolicious. The production at http://catza.net/ runs with Mojolicious using nginx at front and Hypnotoad at the back. 
+
 = Catalyst =
   * Very flexible: Moose can be used to extend controllers, sessions can be handled every way you like, choose almost any templating system and there already a CPAN module to do that
   * Mature
   * The most documented Perl MVC framework  
   * Inintial startup on a new project takes some time
-  * Heavyweight with lots of dependencies
-  * Tons of plugins
+  * Heavyweight with lots of dependencies so it might even happen that you can't install it due to conflicting dependencies
+  * Tons of plugins available
   * Gigantic user community
-  * Routing rules are spread to controllers which I don't like
-  * Feature-list is long. What I really like is a natural automatic loading of Models and to access them without a hassle.
-  * Very hard to get the idea behind Chained actions: there are various simple examples but I still don't get it how to use them in my cases
-  * Restart is a real restart: slower than with Mojolicious reload but appears to work in every case
+  * Routing rules are spread all over the controllers which I don't like
+  * What I really like is a natural automatic loading of Models and to access them without a hassle.
+  * Very hard to get the idea behind Chained actions: there are various simple examples but I never understood how to use them in my case
 
 = Dancer =
-  * Sits nicely between the component-based Catalyst and web-in-a-box Mojolicious
+  * Sits nicely between the component-based Catalyst and box-like Mojolicious
   * Weights much less than Catalyst  
   * Very easy to start work with
-  * DSL features are a two-sided sword - depends on what you like - I prefer pure Perl against DSL
+  * DSL features are a two-sided coin, depends on what you like, I prefer pure Perl against DSL
   * Has stabilized to the level that can be used in production
   * Active user community
 
 = Mojolicious =
   * Very easy to start work with due to the web-in-a-box design
-  * Excellent dispatcher: route definitions are in one place, they are compact and the routing syntax is very expressive
-  * Lightweight
+  * Excellent dispatcher: route definitions are in one place, they are compact and the routing syntax is very expressive including callbacks
+  * Lightweight compared to Catalyst
   * Has stabilized to the level that can be used in production
   * Active user community
-  * Enough documentation at least for a user on my level
-  * Nice integrated template engine allowing embedded Perl   
-  * Reload is very fast but is not as bullet-proof as Catalyst restart
-  * Development is driven by one main developer - this is both a pro and a con
-  * Lots of nice features to speed up the development and to make developer's life easier (like auto-localization of stash variables in templates)  
-  * Simplicity has been taken to extremes: almost everything is accessed thru $self, Catalyst separation between $self and $c might be clearer
-  * Some issues rise due to the fact that when you are running router or before/after hook, you are not running a controller and so $self doesn't provide all the services available for controllers
-  * API changes break things ($self->render(status => 404) became useless and had to be globally replaced with $self->render_not_found)     
+  * Documentation has been getting better and better
+  * Nice integrated template engine which I recommend allowing embedded Perl  
+  * Development is driven by one main developer (this is both a pro and a con)
+  * Lots of nice features to speed up the development and to make life easier (like auto-localization of stash variables in templates)  
+  * Some issues rise due to the fact that when you are running router or before/after hook, you are not running a controller and so $self doesn't provide all the services available for controllers. This in practice means more code.
+  * API changes between versions sometimes break things. On the other hand it is an evolving system and that's good in the long run.
+  * The integrated Hypnotoad web server works very well and seems to be highly reliable

@@ -1,24 +1,22 @@
 #summary A word or two about technology selections
-#labels Perl,Mojolicious,SQLite,CHI 
+#labels Perl,Mojolicious,SQLite 
 
 = Technologies =
 
-Here are some technologies that I'm using in my project. I've also listed some technologies that I've evaluated or tested for this project but then decided not to use them. These are (marked this way).
+Here are some technologies that I'm using in my project. I'm following the KISS (Keep It Simple Stupid) principle. 
 
-  * Language: Perl (PHP, Python, Ruby)
-  * Framework: Mojolicious (Mason, Dancer, Catalyst) 
-  * Database: SQLite (PostgreSQL, Redis, BerkeleyDB)
-  * Caching: CHI with file backend (Memcached, Redis)
+  * Language: Perl
+  * Web Framework: Mojolicious
+  * Database: SQLite
+  * Caching: Memcached
 
 = Implementation =
 
-   * Model-View-Controller paradigm   
-   * Prefer using Mojolicious/Mojo standard features to custon code
-   * Prefer using CPAN modules to custom code          
-   * URLs shouldn't use GET parameters
-   * URL to a photo should also be a permanent URL
-   * all text strings are to be separated from the logic and the layout
-   * user-configurable features stored in cookie (by default Mojolicious session implementation) 
-   * database access via DBI and a result set caching layer above it
-   * database rows accessed positionally (access by name needs hash construction on DBI and according to my test impose a significant overhead with large datasets)
-   * implement automatic system tests for all actions (Test::Mojo)                   
+   * Model-View-Controller paradigm
+   * Using both procedural and object-oriented programming
+   * stateless application where the URL contains all the information (no cookies, no sessions)  
+   * all text strings are separated from the logic and the layout
+   * database access via DBI
+   * four levels of caching: Last-Modified header to utilize client caching, server-side page caching, server-side model caching, server-side database result set caching (server-side caching uses Memcached)
+   * database rows accessed positionally (since access by name needs hash construction on DBI and according to my test impose a significant overhead with large result sets)
+   * comprehensive automated tests using Mojo::Test                   
