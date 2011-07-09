@@ -39,9 +39,17 @@ sub _bits {
  # create a bit vector of xs for a pri-sec pair
  # language dependent
 
- my ( $self, $pri, $sec ) = @_;
+ my ( $self, $pri, $sec ) = @_; my $lang = $self->{lang};
  
- return $self->base( $pri, $sec );
+ my $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec_$lang where pid=(select pid from pri where pri=?) and sec=?)", $pri, $sec);
+
+ # creating an empty bit vector one larger than there are photos
+ # since 0 index in not used      
+ my $vec = Bit::Vector->new( $self->maxx  + 1 );
+   
+ $vec->Index_List_Store ( @$res ); # store the x indexes as bits
+  
+ return $vec;    
 
 }
 

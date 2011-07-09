@@ -84,7 +84,7 @@ scalar @ARGV == 0 and do {
 $guide{'folder'} or goto SKIP_FOLDER;
 
 my @folders =  
- grep { /\d{8}[a-z0-9]+$/ } finddirs ( '../../file/photo' );
+ grep { /\d{8}[a-z0-9]+$/ } finddirs ( '../../static/photo' );
 
 logit ( 'verifying ' . scalar ( @folders ) . ' folders' );
 

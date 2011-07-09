@@ -109,7 +109,7 @@ my $sql = {
 };
 
 my $secsql = [
-  
+
  # creating and populcating pri statistics table 
  qq{drop table if exists _prim},
  qq{create table _prim (pid integer primary key not null,cntpri integer not null)},
@@ -146,11 +146,6 @@ my $secsql = [
  qq{create index _sid_x2 on _sid_x(x)},
    
 ]; 
-
-# defined the correct table truncation order
-# only tables defined here will be trunacated
-# (if there is _trn SQL but the table is not here the SQL is not used)
-my @trnorder = qw ( inexif sec album ); 
 
 my $stm = {}; # variable to hold prepared SQL statements
 
@@ -358,7 +353,7 @@ sub get_sid {
  my $sid = load_exec ( 'sec_one', $pid, $sec_en );
  
  defined $sid or do {
- 
+
   ( ( $sort_fi eq $sec_fi ) or ( $sort_fi eq $sort_en ) ) and $sort_fi = undef;
   $sec_fi eq $sec_en and $sec_fi = undef;
   $sort_en eq $sec_en and $sort_en = undef;
@@ -496,7 +491,7 @@ sub load_simple {
    when ( 'mnat' ) {
    
     # verify that a flag file is present
-    my $fflag = '../../file/flag/' . lc ( $lines[0] ) . '.gif'; 
+    my $fflag = '../../static/flag/' . lc ( $lines[0] ) . '.gif'; 
     -f $fflag or die "unable to locate flag file '$fflag' for '$lines[0]'"; 
     
    }
