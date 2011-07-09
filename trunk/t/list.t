@@ -90,9 +90,9 @@ foreach my $lang ( qw ( en fi en234212 ) ) {
    if ( $matrix->{$list}->{dividers} ) {
    
     $t->get_ok("/$lang/list/$list/$mode/")
-      ->element_exists('html body div[class~="outer"]');
+      ->element_exists('html body div div div[class~="outer"]');
     
-    $c += 2;
+     $c += 2;
    
    }
   

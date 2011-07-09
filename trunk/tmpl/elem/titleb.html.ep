@@ -12,5 +12,5 @@
 % } elsif ( $runmode eq 'search' ) {
 <%= limit ( $what, 100 ) %>
 % } else { # default to runmode 'all' 
-<%= $maxx %> <%= $t->{PHOTOA_CATSHOW} %>
+<%= $t->{ALL} %> <%= $t->{PHOTOS} %>
 % }

@@ -201,12 +201,14 @@ sub multi {
 
  if ( $s->{runmode} eq 'all' ) {
  
-  $s->{jump2date} = $self->fetch ( 'related#all2date' );
+  $s->{jump2date} = $self->fetch ( 
+   'related#all2date', $s->{earliest}, $s->{latest}
+  );
    
  } elsif ( $s->{runmode} eq 'pair' ) {
 
   $s->{jump2date} = $self->fetch ( 
-   'related#pair2date', $s->{pri}, $s->{sec},  
+   'related#pair2date', $s->{pri}, $s->{sec}, $s->{earliest}, $s->{latest}  
   );
 
  } else {

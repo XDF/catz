@@ -8,7 +8,7 @@
 %  }
 % } elsif ( $runmode eq 'search' ) {
 <%= $t->{SEARCH_RESULT} %> <%= limit ( $what, 100 ) %>
-% } else { # default to runmode 'all' 
+% } else { # default to runmode 'all'
 <%= $t->{ALL} %> <%= $t->{PHOTOS} %>
 % }
 %#

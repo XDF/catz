@@ -35,19 +35,45 @@ my $matrix = list_matrix;
 
 sub _all2date {
 
- my $self = shift;
+ my ( $self, $lower, $upper ) = @_;
  
- # we allow jump to dates on current page to make things simpler and to utilize caching more 
- $self->dball('select min(s),min(n),substr(folder,1,8) from album natural join photo group by substr(folder,1,8) order by substr(folder,1,8) desc');
+ # we fetch all dates from db (utilizing db caching more)
+ 
+ my $res = $self->dball('select min(s),min(n),substr(folder,1,8) from album natural join photo group by substr(folder,1,8) order by substr(folder,1,8) desc');
+
+ # filter out the not needed
+
+ my @out = ();
+
+ foreach my $row ( @$res ) {
+
+  ( $row->[2] < $lower or $row->[2] > $upper ) and push @out, $row;
+
+ }
+
+ return \@out;
 
 }
 
 sub _pair2date {
 
- my ( $self, $pri, $sec ) = @_;
+ my ( $self, $pri, $sec, $lower, $upper ) = @_;
  
- # we allow jump to dates on current page to make things simpler and to utilize caching more
- $self->dball('select min(s),min(n),substr(folder,1,8) from album natural join photo natural join _sid_x where sid=(select sid from sec_en where pid=(select pid from pri where pri=?) and sec=?) group by substr(folder,1,8) order by substr(folder,1,8) desc',$pri,$sec);
+ # we fetch all dates from db (utilizing db caching more)
+
+ my $res = $self->dball('select min(s),min(n),substr(folder,1,8) from album natural join photo natural join _sid_x where sid=(select sid from sec_en where pid=(select pid from pri where pri=?) and sec=?) group by substr(folder,1,8) order by substr(folder,1,8) desc',$pri,$sec);
+
+ # filter out the not needed
+
+ my @out = ();
+
+ foreach my $row ( @$res ) {
+
+  ( $row->[2] < $lower or $row->[2] > $upper ) and push @out, $row;
+
+ }
+
+ return \@out;
 
 } 
  

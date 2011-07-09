@@ -12,7 +12,7 @@
 % if ( $toid eq 'this' ) {
 %  given ( $runmode ) {
 %   when ( 'pair' ) { 
-location.href='/<%== $langh %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/'+this.options[this.selectedIndex].value+'/'
+location.href='/<%== $langh %>/<%== $toaction %>/<%== $pri %>/<%== encode ( $lang eq $langh ? $sec : $trans ) %>/'+this.options[this.selectedIndex].value+'/'
 %   } 
 %   when ( 'search' ) {
 location.href='/<%== $langh %>/<%== $toaction %>/'+this.options[this.selectedIndex].value+'/?q=<%== enurl($what) %>'
@@ -25,7 +25,7 @@ location.href='/<%== $langh %>/<%== $toaction %>/'+this.options[this.selectedInd
 %  if ( $toid == 0 ) { # use no id, point to the root resource
 %   given ( $runmode ) {
 %    when ( 'pair' ) { 
-/<%== $langh %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/
+/<%== $langh %>/<%== $toaction %>/<%== $pri %>/<%== encode ( $lang eq $langh ? $sec : $trans ) %>/
 %    } 
 %    when ( 'search' ) {
 /<%== $langh %>/<%== $toaction %>?q=<%== enurl($what) %>
@@ -37,7 +37,7 @@ location.href='/<%== $langh %>/<%== $toaction %>/'+this.options[this.selectedInd
 %  } else {
 %   given ( $runmode ) {
 %    when ( 'pair' ) { 
-/<%== $langh %>/<%== $toaction %>/<%== $pri %>/<%== encode($sec) %>/<%== $toid %>/
+/<%== $langh %>/<%== $toaction %>/<%== $pri %>/<%== encode ( $lang eq $langh ? $sec : $trans ) %>/<%== $toid %>/
 %    } 
 %    when ( 'search' ) {
 /<%== $langh %>/<%== $toaction %>/<%== $toid %>?q=<%== enurl($what) %>
