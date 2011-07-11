@@ -103,6 +103,13 @@ sub startup {
  $r->route('/')->to( "main#detect", hold => 0 );
  
  ###
+ ### rerouting of old site's pages and resources
+ ###
+ $r->route( '/reroute/*src' )->to( 'reroute#reroute', hold => 0 );
+ $r->route( '/reroute' )->to( 'reroute#reroute', hold => 0 );
+ 
+ 
+ ###
  ### the stylesheets 
  ### 
  
@@ -241,6 +248,8 @@ sub before {
 
  my $self = shift; my $s = $self->{stash};
  
+ $s->{url} = $self->req->url;  # let the url be in the stash also
+  
  # setting the analytics key  must be done first and also for static requests 
  # since if a static request fails it renders a template that contains a 
  # use of the key 
@@ -249,10 +258,14 @@ sub before {
 
  $s->{isstatic} = 0;
 
- ( $self->req->url->path->to_string  =~ /\..{2,4}$/ ) and do {
-
-  # we skip all further preprocessing for static files 
-  $s->{isstatic} = 1; return;
+ ( $self->req->url->path->to_string =~ /\..{2,4}$/ ) and do {
+ 
+  ( $s->{url} =~ m|^/reroute| ) or do {  
+  
+   # we skip all further preprocessing for static files 
+   $s->{isstatic} = 1; return;
+   
+  };
   
  };
  
@@ -275,9 +288,9 @@ sub before {
  # this is a good candidate for improvement but the 
  # previous attempts have not produced reliable results
  #  
-  
+      
  my $keyf = findlatest ( $ENV{MOJO_HOME}.'/db', 'txt' );
-
+ 
  if ( $keyf and $keyf =~ m|(\d{14})\.txt$| ) { 
  
   $s->{version} = $1;
@@ -312,23 +325,27 @@ sub before {
  # and the mechanism for redirect was copied from there
  #
  
-  if ( scalar @{ $self->req->query_params->params } == 0 ) {
+ ( scalar @{ $self->req->query_params->params } == 0 ) and do {
+ 
+  ( $s->{url} =~ m|^/reroute| ) or do { 
   
-  $self->req->url->path->trailing_slash or do {
+   $self->req->url->path->trailing_slash or do {
+  
+    $self->res->code(301); # a permanent redirect
 
-   $self->res->code(301); # a permanent redirect
-
-   $self->res->headers->location(
-    $self->req->url->path->to_string.'/' # add a slash
-   );
+    $self->res->headers->location(
+     $s->{url}.'/' # add a slash
+    );
    
-   $self->res->headers->content_length(0); 
-   $self->rendered;
-   return;
+    $self->res->headers->content_length(0); 
+    $self->rendered;
+    return;
+    
+   };
 
   };
 
- }
+ };
 
  # Some cache control logic
  
@@ -351,8 +368,6 @@ sub before {
  
  }
    
- $s->{url} = $self->req->url;  # let the url be in the stash also
-
  $s->{lang} = 'en'; # default to English
  $s->{langa} = 'en';
 
