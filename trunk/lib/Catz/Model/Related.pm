@@ -57,11 +57,11 @@ sub _all2date {
 
 sub _pair2date {
 
- my ( $self, $pri, $sec, $lower, $upper ) = @_;
+ my ( $self, $pri, $sec, $lower, $upper ) = @_; my $lang = $self->{lang};
  
  # we fetch all dates from db (utilizing db caching more)
 
- my $res = $self->dball('select min(s),min(n),substr(folder,1,8) from album natural join photo natural join _sid_x where sid=(select sid from sec_en where pid=(select pid from pri where pri=?) and sec=?) group by substr(folder,1,8) order by substr(folder,1,8) desc',$pri,$sec);
+ my $res = $self->dball("select min(s),min(n),substr(folder,1,8) from album natural join photo natural join _sid_x where sid=(select sid from sec_$lang where pid=(select pid from pri where pri=?) and sec=?) group by substr(folder,1,8) order by substr(folder,1,8) desc",$pri,$sec);
 
  # filter out the not needed
 

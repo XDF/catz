@@ -89,6 +89,7 @@ foreach my $path ( qw (
  /breeders/Wanderd-252ne-039s.html /breeders/-197bodas.html
  /ems/TUV.html /ems/tuv.html /ems/tuv.html /ems/AbY.htm 
  /ems/bos.html /ems/mco.html /ems/hcs.htm /ems/hcl.html
+ /ems/pku.html /ems/pkx.html /ems/lkn.html /ems/lku.html
  /xdf/mimosa /xdf/mimosa%20~0004 /xdf/pilli%20pulla%20monni
  /xdf/%7Bsatinante%7D%20%7Btammikatin%7D%20-%5Bmco%5D%20-%5Bsib%5D
  /xdf/%5Be%5D%20%5Bes%5D%20-(j%F6rgen)%20-(tarzan)%20-j%E4%E4mies%20-unicorn%20-bonus
@@ -100,6 +101,8 @@ foreach my $path ( qw (
  /xdf/%2B%5Bn%5D%20%2Bmagic%20%7Bhanni%7D%20%7Bnight%7D 
  /xdf/%2Btassu%20vir%20xin%20bal%20~0001
  /xdf/%2Btassu%20vir%20xin%20bal
+ /xdf/%7Bstream%7D%20%7Bmaya%7D%20%7Bcoast%7D%20%2B%7Bgold%7D
+ /xdf/%7Bstream%7D%20%7Bmaya%7D%20%7Bcoast%7D%20%2B%7Bgold%7D%20~0001
 ) ) {
 
  $t->get_ok("/reroute$path")
@@ -177,6 +180,8 @@ foreach my $static ( qw (
  /20110313helsinki/CFA_6640.JPG
  /20100606hyvinkaa/ERY59700.JPG
  /20080518tampere/IMG_1471.JPG
+ /20100606hyvinkaa/ERY59700.jpg
+ /20080518tampere/IMG_1471.jpg
 ) ) {
  
  $t->get_ok("/reroute$static")

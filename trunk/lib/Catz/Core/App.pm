@@ -30,6 +30,8 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Mojolicious';
 
+use Mojo::Util qw ( html_escape );
+
 use Time::HiRes qw ( time );
 
 use Catz::Core::Cache;
@@ -67,8 +69,8 @@ sub startup {
  # map utility subs from different modules to Mojolicious helpers
  # we use dynamically generated subs as bridges
  foreach my $sub ( 
-  qw ( dt dt2epoch dtdate dttime dtexpand fmt clean enurl limit trim 
-  fullnum33 thisyear encode decode round urirest ) 
+  qw ( dt dt2epoch dtdate dttime dtexpand fmt clean enurl html_escape limit 
+  trim fullnum33 thisyear encode decode round urirest ) 
  ) {
 
   $self->helper ( $sub => eval qq{ sub {
@@ -108,7 +110,6 @@ sub startup {
  $r->route( '/reroute/*src' )->to( 'reroute#reroute', hold => 0 );
  $r->route( '/reroute' )->to( 'reroute#reroute', hold => 0 );
  
- 
  ###
  ### the stylesheets 
  ### 
@@ -119,7 +120,7 @@ sub startup {
  # the single stylesheet contains all style definitions
  # it's color settings are dependent on the palette 
  $r->route( '/style/:palette', palette => qr/dark|neutral|bright/ )
-  ->to( 'main#base', hold => 24*60 );
+  ->to( 'main#base', hold => 60 );
  
  ###
  ### www.catshow.fi itegration
@@ -149,21 +150,21 @@ sub startup {
   );
  
  # the front page is at the root under the language
- $l->route( '/' )->to( 'main#front', hold => 15 );
+ $l->route( '/' )->to( 'main#front', hold => 60 );
  
  ###
  ### the news service
  ###
  
  # the index page of all articles
- $l->route( '/news' )->to ( "news#index", hold => 15 );
+ $l->route( '/news' )->to ( "news#index", hold => 60 );
  
  # single article
  $l->route( '/news/:article', article => qr/\d{14}/ )
   ->to ( "news#one", hold => 60 );
 
  # RSS feed    
- $l->route( '/feed' )->to ( "news#feed", hold => 15 );
+ $l->route( '/feed' )->to ( "news#feed", hold => 60 );
 
  ###
  ### the lists
@@ -554,9 +555,8 @@ sub after {
  
  # continue only if server side page caching is needed
  $s->{hold} > 0 or return;
- 
- #
  # if no page caching then no Last-Modified
+ 
  # 
  # we use data version as last modified time
  #
