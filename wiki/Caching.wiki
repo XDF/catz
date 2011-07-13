@@ -21,9 +21,12 @@ There are five groups of Expires / max-age settings:
 || *resource(s)* || *lifetime* || *headers* ||
 || /static  || 7 d || served and set by nginx, includes Last-Modified that comes into play after the 7 days is passed ||
 || /robots.txt /favicon.ico /catzlogo.png || 7 d || application set Expires and Cache-Control, Mojolicious sets Last-Modified ||
-|| /js_lib /style/reset info || 1 d || application set Expires and Cache-Control, Mojolicious sets Last-Modified || 
-|| /js_site /style/palette new1 lists list1 browse view search find front news feed || 1 h || application set Expires and Cache-Control in absolute, Last-Modified based on data version ||
-|| lastshow result || 15 min || application set Expires and Cache-Control in absolute, Last-Modified not set || 
+|| /js_lib || 1 d || application set Expires and Cache-Control, Mojolicious sets Last-Modified ||
+|| /style/reset info || 1 d || application set Expires and Cache-Control in absolute, Last-Modified based on data version ||
+|| /js_site || 1 h || application set Expires and Cache-Control, Mojolicious sets Last-Modified ||
+/style/palette new1 lists list1 browse view search find front news feed || 1 h || application set Expires and Cache-Control in absolute, Last-Modified based on data version ||
+|| lastshow || 15 min || application set Expires and Cache-Control in absolute, Last-Modified based on data version ||
+|| result || 15 min || application set Expires and Cache-Control in absolute, Last-Modified not set || 
 || detect reroute tools || 0 || Cache-Control max-age 0 set by the application ||
  
   
