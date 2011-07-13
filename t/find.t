@@ -41,6 +41,7 @@ foreach my $lang ( qw ( en fi ) ) {
  foreach my $find ( map { enurl $_ } qw (
   i il ilt ilta 2 20 201 2011 T TÄHTI Tähti 50mm tassu CRX fish FISH ÖRppI öRP    
   30 5 kää HYVINkää HyVINkÄÄ jÄMSä åker SUROK surok pirok FIFE FifE TIcA TicA
+  SIG SIGM SIGMA mim mimo mimos imo imos imosa caNO aNo 10mm 200mm f/2 ISO
  ) ) {
   
  $t->get_ok("/$lang/find?s=$find")
@@ -51,22 +52,7 @@ foreach my $lang ( qw ( en fi ) ) {
  $c += 4;
   
  }
- 
- # also some wildcards should work
- 
- foreach my $find ( map { enurl $_ } qw (
-  SIGM* ??GMA ??GMA ?rppi ÖRPP? ÖR* *Ö* ??? ???? ????? ?????? mimos? mimo* *san
- ) ) {
   
- $t->get_ok("/$lang/find?s=$find")
-   ->status_is(200)
-   ->content_type_like(qr/text\/html/)
-   ->element_exists('div[class~="rounded"] a');
-   
- $c += 4;
-  
- }
- 
  # should return no results but should still give 200 
 
  foreach my $find ( map { enurl $_ } qw (

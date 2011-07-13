@@ -217,12 +217,13 @@ sub _find {
 
  my ( $self, $pattern, $limit ) = @_; my $lang = $self->{lang};
  
- # allow ? and * to go thru but convert them to db wildcard chars
- $pattern =~ tr/?*/_%/; 
+ # escape like wildcards to prevent them going thru
+ $pattern =~ s|\_|\\_|; 
+ $pattern =~ s|\%|\\%|;
  
  $pattern = '%' . $pattern . '%';
    
- $self->dball(qq{select pri,sec,cntphoto,sid from (select p.pri,s.sec,m.cntphoto,f.sid,s.sort from pri p,sec_fi s,_secm m,_find_$lang f where p.pid=s.pid and s.sid=m.sid and s.sid=abs(f.sid) and f.sec like ? order by f.rowid limit $limit) order by lower(sort),cntphoto},$pattern);
+ $self->dball(qq{select pri,sec,cntphoto,sid from (select p.pri,s.sec,m.cntphoto,f.sid,s.sort from pri p,sec_fi s,_secm m,_find_$lang f where p.pid=s.pid and s.sid=m.sid and s.sid=abs(f.sid) and f.sec like ? escape '\\' order by f.rowid limit $limit) order by lower(sort),cntphoto},$pattern);
 
 }
 

@@ -158,9 +158,17 @@ sub reroute { # does the job
   }   
 
   when ( m|^ems/([a-zA-Z]{3,3})\.htm(l)?$| ) {
- 
-   my $br = uc $1;
   
+   my $br = uc $1;
+      
+   ( $br eq 'PKU' ) and $br = 'HCL';
+   ( $br eq 'PKN' ) and $br = 'HCL';
+   ( $br eq 'PKX' ) and $br = 'HCL';
+   
+   ( $br eq 'LKU' ) and $br = 'HCS';
+   ( $br eq 'LKN' ) and $br = 'HCS';
+   ( $br eq 'LKX' ) and $br = 'HCS'; 
+   
    if ( $self->fetch("reroute#isbreed",$br) ) {
 
     return $self->redirect_perm ("/$lang/browse/breed/$br/");   
@@ -185,14 +193,14 @@ sub reroute { # does the job
    return $self->redirect_perm ( "/$lang/search/" ); 
   }
  
-  when ( m|^xdf/(.{1,600}?)(\~\d{4})?$| ) {
+  when ( m|^xdf/(.{1,777}?)(\~\d{4})?$| ) {
   
    my $tgt = xdf2search ( $1 );
   
    $tgt or return $self->not_found; # not found if conversion failed 
   
    $tgt = enurl $tgt;
-  
+     
    return $self->redirect_perm ( "/$lang/search?q=$tgt" );
    
   }
@@ -235,9 +243,11 @@ sub reroute { # does the job
     
      return $self->redirect_perm ( "/$lang/view/folder/$folder/$id/" );
    
-    } elsif ( $tail =~ /^(.+\.JPG)$/ ) {
+    } elsif ( $tail =~ /^(.+\.(JPG|jpg))$/ ) {
+    
+     my $tgt = uc $1;
    
-     return $self->redirect_perm ( "$t->{URL_CATZA}static/photo/$folder/$1" );
+     return $self->redirect_perm ( "$t->{URL_CATZA}static/photo/$folder/$tgt" );
    
     } else { return $self->not_found }
     
