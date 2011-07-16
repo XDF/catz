@@ -46,6 +46,7 @@ sub all {
  $s->{breedernat} = undef; $s->{breederurl} = undef;
  $s->{origin} = 'none'; # to indiate that origin was not processed
  $s->{trans} = undef;
+ $s->{viz_rank} = undef;
              
  $self->pre or return 0;
  

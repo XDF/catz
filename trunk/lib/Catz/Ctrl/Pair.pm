@@ -28,6 +28,10 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Catz::Ctrl::Present';
 
+use Catz::Data::Viz;
+
+use Catz::Util::Number qw ( round );
+
 sub pair {
 
  my $self = shift; my $s = $self->{stash};
@@ -48,6 +52,7 @@ sub pair {
  $s->{refines} = undef;
  $s->{breedernat} = undef;
  $s->{breederurl} = undef;
+ $s->{viz_rank} = undef;
  $s->{origin} = 'none'; # to indiate that origin was not processed
  
  $self->pre or return 0;
@@ -81,6 +86,11 @@ sub pair {
   }; 
  
  }
+ 
+ my $rank = $self->fetch ( "related#rank", $s->{pri}, $s->{sec} );
+  
+ $s->{pri} ne 'date' and $s->{pri} ne 'folder' and
+  $s->{viz_rank} = viz_rank ( $s->{t}, $s->{pri}, $s->{sec}, $rank, $s->{palette} );
   
  return 1;
 

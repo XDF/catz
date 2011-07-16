@@ -211,3 +211,8 @@ a:hover {
  height: 20px;
  vertical-align: middle;
 }
+
+.viz {
+ float: right;
+ margin: 7px;
+}
