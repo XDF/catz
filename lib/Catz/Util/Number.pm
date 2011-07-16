@@ -32,7 +32,7 @@ use Memoize;
 
 use base 'Exporter';
 
-our @EXPORT_OK = qw( float fmt fullnum3 fullnum4 fullnum33 minnum minnum33 round ); 
+our @EXPORT_OK = qw( float fmt fullnum3 fullnum4 fullnum33 minnum minnum33 round log2 ); 
 
 # Static creation of Number::Format objects, used later in formatting sub
 
@@ -110,5 +110,7 @@ sub minnum33 {
 # out: the rounded float
 #
 sub round { sprintf '%.' . ( defined $_[1] ? $_[1] : 0 ) . 'f', $_[0] }
+
+sub log2 {  log ( $_[0] ) / log ( 2 ) }
 
 1;

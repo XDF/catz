@@ -180,6 +180,14 @@ if ( $runmode eq 'pair' ) {
 %#
 %# --------------------
 %#
+% if ( $runmode eq 'pair' and $viz_rank ) {
+<div class="viz inline center">
+<img src="<%== $viz_rank->[0] %>" width="<%== $viz_rank->[1] %>" height="<%== $viz_rank->[2] %>">
+</div>
+% }
+%#
+%# --------------------
+%#
 <div class="bar">
 <%== include 'elem/titlea' %> <%= $sep %>
 % if ( defined $breederurl ) {

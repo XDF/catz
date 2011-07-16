@@ -31,6 +31,8 @@ use parent 'Catz::Model::Common';
 use Catz::Data::Search;
 use Catz::Data::List;
 
+use Catz::Util::Number qw ( round );
+
 my $matrix = list_matrix;
 
 sub _all2date {
@@ -87,7 +89,7 @@ sub _coverage { # how many photos have the given pri defined
 
 sub _refine {
 
- my ( $self, $pri, $sec, $target ) = @_;  my $lang = $self->{lang};
+ my ( $self, $pri, $sec, $target ) = @_; my $lang = $self->{lang};
  
  # maximum number of items in a set, use 15 if not specific
  my $n = $matrix->{$pri}->{limit}->{$target} // 15;
@@ -120,9 +122,24 @@ sub _refines {
 
 sub _date {
 
- my ( $self, $x ) = @_;
+ my ( $self, $x ) = @_; 
  
  $self->dbone('select substr(folder,1,8) from album natural join photo where x=?',$x);   
+ 
+}
+
+
+sub _rank {
+
+ my ( $self, $pri, $sec ) = @_; my $lang = $self->{lang}; 
+
+ my $stat = $self->dbrow('select avg(cntphoto),max(cntphoto),avg(cntdate),max(cntdate) from _secm natural join sec where pid=(select pid from pri where pri=?)', $pri );
+    
+ my $curr = $self->dbrow("select cntphoto,cntdate from _secm natural join sec_$lang where pid=(select pid from pri where pri=?) and sec=?",$pri,$sec);
+ 
+ [ 
+  $curr->[0], $stat->[0], $stat->[1], $curr->[1], $stat->[2], $stat->[3]
+ ];
  
 }
 
