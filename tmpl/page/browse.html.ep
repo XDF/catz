@@ -180,9 +180,13 @@ if ( $runmode eq 'pair' ) {
 %#
 %# --------------------
 %#
-% if ( $runmode eq 'pair' and $viz_rank ) {
+% if ( $viz ) {
 <div class="viz inline center">
-<img src="<%== $viz_rank->[0] %>" width="<%== $viz_rank->[1] %>" height="<%== $viz_rank->[2] %>">
+%  if ( $viz->[0] eq 'rank' ) {
+<img src="<%== $viz->[1] %>" width="<%== $viz->[2] %>" height="<%== $viz->[3] %>" title="<%= $t->{uc($pri)} %> <%= $sec %> <%= $sep %> <%= $viz->[4] %> <%= $sep %> <%= $viz->[5] %>">
+% } elsif ( $viz->[0] eq 'ddist' ) {
+<img src="<%== $viz->[1] %>" width="<%== $viz->[2] %>" height="<%== $viz->[3] %>">
+% }
 </div>
 % }
 %#

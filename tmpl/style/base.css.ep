@@ -93,6 +93,9 @@ pre { display: inline; }
 .middle { vertical-align: middle; }
 .bottom { vertical-align: middle; }
 
+/* makes sure that no floated elements overlap */
+.clearbefore { clear: both; }
+
 /* form input fields */
 .field { 
  color: <%== $st->{color}->{$palette}->{field_front} %>;

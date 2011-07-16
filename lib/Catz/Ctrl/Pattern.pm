@@ -45,7 +45,6 @@ sub pattern {
  $s->{breederurl} = undef;
  $s->{origin} = 'none';  # to indiate that origin was not processed
  $s->{trans} = undef; 
- $s->{viz_rank} = undef;
  
  # defaults
  $s->{args_array} = [];

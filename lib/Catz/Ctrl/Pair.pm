@@ -28,8 +28,6 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Catz::Ctrl::Present';
 
-use Catz::Data::Viz;
-
 use Catz::Util::Number qw ( round );
 
 sub pair {
@@ -86,12 +84,7 @@ sub pair {
   }; 
  
  }
- 
- my $rank = $self->fetch ( "related#rank", $s->{pri}, $s->{sec} );
-  
- $s->{pri} ne 'date' and $s->{pri} ne 'folder' and
-  $s->{viz_rank} = viz_rank ( $s->{t}, $s->{pri}, $s->{sec}, $rank, $s->{palette} );
-  
+
  return 1;
 
 }
