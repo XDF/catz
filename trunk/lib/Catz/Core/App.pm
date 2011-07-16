@@ -179,7 +179,7 @@ sub startup {
   subject => qr/[a-z]{1,25}/,
   mode => qr/[a-z0-9]{1,25}/, 
  )->to('locate#list', hold => 60 );
-  
+ 
  ###
  ### photo browsing and viewing - 3 ways
  ###
