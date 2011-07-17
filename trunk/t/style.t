@@ -32,7 +32,7 @@ use Catz::Data::Style;
 
 use Catz::Util::String qw ( enurl );
     
-my $t = Test::Mojo->new( app => 'Catz::Core::App' );
+my $t = Test::Mojo->new( 'Catz::Core::App' );
 
 my $c = 0;
 

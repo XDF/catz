@@ -28,7 +28,7 @@ use 5.10.0; use strict; use warnings;
 use Test::More;
 use Test::Mojo;
 
-my $t = Test::Mojo->new( app => 'Catz::Core::App' );
+my $t = Test::Mojo->new( 'Catz::Core::App' );
 
 my $c = 0;
 

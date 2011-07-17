@@ -35,7 +35,6 @@ use parent 'Catz::Core::Ctrl';
               
 use Catz::Data::Result;
 use Catz::Data::Search;
-use Catz::Data::Viz;
 
 sub pre {
 
@@ -225,44 +224,6 @@ sub multi {
  
  $s->{fresh} = $self->fetch ( 'related#date', $s->{xfirst} );
  $s->{ancient} = $self->fetch ( 'related#date', $s->{xlast} );
-
- # generate visualizations
-
- $s->{viz} = undef;
-
- if ( $s->{runmode} ne 'search' ) {
-
-  if ( 
-   $s->{runmode} eq 'pair' and $s->{pri} ne 'folder' and $s->{pri} ne 'date'
-  ) {
-
-   if ( $s->{pri} eq 'nat' ) {
-   
-    $s->{viz} = viz_nat ( 
-     $s->{sec}, $s->{mapdual}->{$s->{pri}}->{$s->{sec}}->[1], $s->{palette} 
-    );
-
-   } else {
-
-    my $rank = $self->fetch ( "related#rank", $s->{pri}, $s->{sec} );
-
-    $s->{viz} = viz_rank ( 
-     $s->{lang}, $s->{t}, $s->{pri}, $s->{sec}, $rank, $s->{palette}
-    );
-
-   }
-
-  } else { # all or folder or date
-
-   $s->{viz} = viz_ddist ( 
-    $s->{lang}, $s->{t}, 
-    $s->{cover_notext}, $s->{cover_nocat}, $s->{total}, 
-    $s->{palette} 
-   );
-
-  }
-
- }
 
  # finally render the browsing page
   

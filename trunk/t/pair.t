@@ -32,7 +32,7 @@ use Catz::Core::Text;
 
 use Catz::Util::String qw ( encode );
 
-my $t = Test::Mojo->new( app => 'Catz::Core::App' );
+my $t = Test::Mojo->new( 'Catz::Core::App' );
 
 my $c = 0;
 

@@ -30,7 +30,7 @@ use Test::Mojo;
 
 use Catz::Core::Text;
 
-my $t = Test::Mojo->new( app => 'Catz::Core::App' );
+my $t = Test::Mojo->new( 'Catz::Core::App' );
                   
 my $c = 0;
 

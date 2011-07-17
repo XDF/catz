@@ -180,30 +180,6 @@ if ( $runmode eq 'pair' ) {
 %#
 %# --------------------
 %#
-% if ( $viz ) {
-<div class="viz inline center">
-%  if ( $viz->[0] eq 'rank' ) {
-<img alt="<%= $t->{VIZ_RANK_NAME} %>" src="<%== $viz->[1] %>" width="<%== $viz->[2] %>" height="<%== $viz->[3] %>" title="<%= $t->{VIZ_RANK_NAME} %> <%= $sep %> <%= $t->{uc($pri)} %> <%= $sec %> <%= $sep %> <%= $viz->[4] %> <%= $sep %> <%= $viz->[5] %>">
-%  } elsif ( $viz->[0] eq 'ddist' ) {
-% my $tt = "$t->{ALL} $t->{PHOTOS}";
-% if ( $runmode eq 'pair' ) {
-%  if ( $pri eq 'folder' ) {
-%   $tt = "$t->{ALBUM} ".$mapview->{$pri}->{$sec}->[1];
-%  } elsif ( $pri eq 'date' ) {
-%   $tt= "$t->{DATE} ".dtexpand ( $sec, $lang );
-%  } else {
-%   $tt= $t->{uc($pri)}." $sec"; 
-%  }
-% }
-<img alt="<%= $t->{VIZ_DDIST_NAME} %>" src="<%== $viz->[1] %>" width="<%== $viz->[2] %>" height="<%== $viz->[3] %>" title="<%= $t->{VIZ_DDIST_NAME} %> <%= $sep %> <%= $tt %> <%= $sep %> <%= $t->{VIZ_DDIST_FULL} %> <%= fmt($viz->[4],$lang) %> % <%= $sep %> <%= $t->{VIZ_DDIST_BREED} %> <%= fmt($viz->[5],$lang) %> % <%= $sep %> <%= $t->{VIZ_DDIST_NONE} %> <%= fmt($viz->[6],$lang) %> %"> 
-%  } elsif ( $viz->[0] eq 'nat' ) {
-<img alt="<%= $mapdual->{$pri}->{$sec}->[1] %>" title="<%= $mapdual->{$pri}->{$sec}->[1] %>" src="<%== $viz->[1] %>" width="<%== $viz->[2] %>" height="<%== $viz->[3] %>">
-%  }
-</div>
-% }
-%#
-%# --------------------
-%#
 <div class="bar">
 <%== include 'elem/titlea' %> <%= $sep %>
 % if ( defined $breederurl ) {

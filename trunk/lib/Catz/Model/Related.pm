@@ -128,21 +128,6 @@ sub _date {
  
 }
 
-sub _rank {
-
- my ( $self, $pri, $sec ) = @_; my $lang = $self->{lang}; 
-
- my $stat = $self->dbrow('select avg(cntphoto),avg(cntdate),max(cntphoto),max(cntdate) from _secm natural join sec where pid=(select pid from pri where pri=?)', $pri );
-    
- my $curr = $self->dbrow("select cntphoto,cntdate from _secm natural join sec_$lang where pid=(select pid from pri where pri=?) and sec=?",$pri,$sec);
- 
- [ 
-  $curr->[0], $curr->[1],
-  $stat->[0], $stat->[1], $stat->[2], $stat->[3]
- ];
- 
-}
-
 sub _breedermeta { 
 
  my ( $self, $breeder ) = @_;
