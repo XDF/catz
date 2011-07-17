@@ -537,7 +537,8 @@ sub load_exif {
 
    # quick fixes
    if ( $lines[2] eq 'etime' ) {
-    $lines[3] eq '32/10 s' and $lines[3] eq '3.2 s'; 
+    $lines[3] eq '2.0 s' and $lines[3] = '2 s';
+    $lines[3] eq '32/10 s' and $lines[3] = '3.2 s';  
     $lines[3] =~ m|^(\d+)\/1 s| and $lines[3] = "$1 s";
    }
 

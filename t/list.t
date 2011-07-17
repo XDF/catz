@@ -32,7 +32,7 @@ use Catz::Core::Text;
 
 use Catz::Data::List;
 
-my $t = Test::Mojo->new( app => 'Catz::Core::App' );
+my $t = Test::Mojo->new( 'Catz::Core::App' );
 
 my $matrix = list_matrix;
 
