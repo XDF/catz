@@ -58,7 +58,7 @@ sub pre_ddist {
 
  $s->{charturl} = conf ( 'url_chart' );
  
- $s->{width} = 180; $s->{height} = 240; # these must match to img tag
+ $s->{width} = 180; $s->{height} = 220; # these must match to img tag
 
 }
 
@@ -76,7 +76,7 @@ sub ddist_pair {
 
  my $self = shift; my $s = $self->{stash};
 
- $self->pre_pair or $self->not_found;
+ $self->pre_pair or return $self->not_found;
  
  $self->pre_ddist;
 
@@ -116,7 +116,7 @@ sub rank_pair {
 
  my $self = shift; my $s = $self->{stash};
 
- $self->pre_pair or $self->not_found;
+ $self->pre_pair or return $self->not_found;
  
  $s->{style} = style_get ( $s->{palette} ); 
 
@@ -134,6 +134,26 @@ sub rank_pair {
   
  return $self->redirect_perm ( $vurl );
  
+}
+
+sub cover {
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ $s->{maxx} = $self->fetch ( 'all#maxx' );
+
+ $s->{total} > $s->{maxx} and return $self->not_found;
+ 
+ $s->{style} = style_get ( $s->{palette} ); 
+
+ $s->{charturl} = conf ( 'url_chart' );
+ 
+ $s->{width} = 180; $s->{height} = 220; # these must match to img tag
+ 
+ my $vurl = $self->render ( 'viz/cover', format => 'txt', partial => 1 );
+  
+ return $self->redirect_perm ( $vurl ); 
+
 }
 
 1;

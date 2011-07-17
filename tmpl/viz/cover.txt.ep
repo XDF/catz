@@ -1,0 +1,7 @@
+% my $tyes = $t->{'VIZ_COVER_YES'};
+% my $dyes = round ( ( ( $total / $maxx ) * 100 ), 1 ); 
+% utf8::encode ( $tyes );
+% my $tno = $t->{'VIZ_COVER_NO'};
+% my $dno = round ( ( ( ( $maxx - $total ) / $maxx ) * 100 ), 1 );
+% utf8::encode ( $tno );
+<%== $charturl %>?cht=p&chs=<%== $width %>x<%== $height %>&chco=<%== substr($style->{color}->{$palette}->{xtra},1) %>,<%== substr($style->{color}->{$palette}->{shade},1) %>&chf=bg,s,<%== substr($style->{color}->{$palette}->{back},1) %>&chd=t:<%== $dyes %>,<%== $dno %>&chdl=<%== enurl $tyes.' '.fmt($dyes,$lang).' %' %>|<%== enurl $tno.' '.fmt($dno,$lang).' %' %>&chdlp=b|l&chdls=<%== substr($style->{color}->{$palette}->{text},1) %>,15

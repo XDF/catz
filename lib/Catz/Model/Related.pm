@@ -31,7 +31,7 @@ use parent 'Catz::Model::Common';
 use Catz::Data::Search;
 use Catz::Data::List;
 
-use Catz::Util::Number qw ( round logn );
+use Catz::Util::Number qw ( round );
 
 my $matrix = list_matrix;
 
@@ -153,12 +153,16 @@ sub _ranks {
  
  my $maxp = $self->dbone ('select max(cntphoto) from _secm natural join sec where pid=(select pid from pri where pri=?)',$pri);
  
+ $maxp < 2 and $maxp = 2;
+ 
  my $maxd = $self->dbone ('select max(cntdate) from _secm natural join sec where pid=(select pid from pri where pri=?)',$pri);
  
- my $arr = $self->dball("select cntphoto,cntdate from pri natural join sec_$lang natural join _secm where pri=? and sec<>? order by random() limit 200",$pri,$sec);
+ $maxd < 2 and $maxd = 2;
+ 
+ my $arr = $self->dball("select cntphoto,cntdate from sec_$lang natural join _secm where pid=(select pid from pri where pri=?) order by random() limit 200",$pri);
 
- my $outp =  round ( logn ( $cntp, 2 ) / logn ( $maxp, 2 ) * 100 );
- my $outd =  round ( logn ( $cntd, 2 ) / logn ( $maxd, 2 ) * 100 );
+ my $outp =  round ( log ( $cntp ) / log ( $maxp ) * 100 );
+ my $outd =  round ( log ( $cntd ) / log ( $maxd ) * 100 );
  
  my $i = -1;
  
@@ -166,18 +170,18 @@ sub _ranks {
  
   my $s;
   
-  $arr->[$i]->[0] = round ( logn ( $arr->[$i]->[0], 2 ) / logn ( $maxp, 2 ) * 100 );
+  $arr->[$i]->[0] = round ( log ( $arr->[$i]->[0] ) / log ( $maxp ) * 100 );
   
   do { # adding noise 
-   $s = $arr->[$i]->[0] + ( int ( rand ( 10 ) ) + 1 ) - 5; 
+   $s = $arr->[$i]->[0] + int ( rand ( 7 ) ) - 3; 
   } until ( $s < $maxp and $s > 0 );
   
   $arr->[$i]->[0] = $s;  
    
-  $arr->[$i]->[1] = round ( logn ( $arr->[$i]->[1], 2 ) / logn ( $maxd, 2 ) * 100 );
+  $arr->[$i]->[1] = round ( log ( $arr->[$i]->[1] ) / log ( $maxd ) * 100 );
 
   do { # adding noise 
-   $s = $arr->[$i]->[1] + int ( rand ( 4 ) ) - 2; 
+   $s = $arr->[$i]->[1] + int ( rand ( 7 ) ) - 3; 
   } until ( $s < $maxp and $s > 0 );
   
   $arr->[$i]->[1] = $s; 
