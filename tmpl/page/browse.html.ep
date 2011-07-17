@@ -183,10 +183,22 @@ if ( $runmode eq 'pair' ) {
 % if ( $viz ) {
 <div class="viz inline center">
 %  if ( $viz->[0] eq 'rank' ) {
-<img src="<%== $viz->[1] %>" width="<%== $viz->[2] %>" height="<%== $viz->[3] %>" title="<%= $t->{uc($pri)} %> <%= $sec %> <%= $sep %> <%= $viz->[4] %> <%= $sep %> <%= $viz->[5] %>">
-% } elsif ( $viz->[0] eq 'ddist' ) {
-<img src="<%== $viz->[1] %>" width="<%== $viz->[2] %>" height="<%== $viz->[3] %>">
+<img alt="<%= $t->{VIZ_RANK_NAME} %>" src="<%== $viz->[1] %>" width="<%== $viz->[2] %>" height="<%== $viz->[3] %>" title="<%= $t->{VIZ_RANK_NAME} %> <%= $sep %> <%= $t->{uc($pri)} %> <%= $sec %> <%= $sep %> <%= $viz->[4] %> <%= $sep %> <%= $viz->[5] %>">
+%  } elsif ( $viz->[0] eq 'ddist' ) {
+% my $tt = "$t->{ALL} $t->{PHOTOS}";
+% if ( $runmode eq 'pair' ) {
+%  if ( $pri eq 'folder' ) {
+%   $tt = "$t->{ALBUM} ".$mapview->{$pri}->{$sec}->[1];
+%  } elsif ( $pri eq 'date' ) {
+%   $tt= "$t->{DATE} ".dtexpand ( $sec, $lang );
+%  } else {
+%   $tt= $t->{uc($pri)}." $sec"; 
+%  }
 % }
+<img alt="<%= $t->{VIZ_DDIST_NAME} %>" src="<%== $viz->[1] %>" width="<%== $viz->[2] %>" height="<%== $viz->[3] %>" title="<%= $t->{VIZ_DDIST_NAME} %> <%= $sep %> <%= $tt %> <%= $sep %> <%= $t->{VIZ_DDIST_FULL} %> <%= fmt($viz->[4],$lang) %> % <%= $sep %> <%= $t->{VIZ_DDIST_BREED} %> <%= fmt($viz->[5],$lang) %> % <%= $sep %> <%= $t->{VIZ_DDIST_NONE} %> <%= fmt($viz->[6],$lang) %> %"> 
+%  } elsif ( $viz->[0] eq 'nat' ) {
+<img alt="<%= $t->{VIZ_GLOBE_NAME} %>" src="<%== $viz->[1] %>" width="<%== $viz->[2] %>" height="<%== $viz->[3] %>">
+%  }
 </div>
 % }
 %#
@@ -202,17 +214,11 @@ if ( $runmode eq 'pair' ) {
 % if ( $fresh ne $ancient ) {
 - <%= dtexpand ( $fresh, $lang ) %>
 % }
-% if ( defined $cover_notext ) {
-<%= $sep %> <%= $t->{COVER_TEXT} %> <%== fmt ( round ( ( 100 - ( $cover_notext / $total ) * 100 ), 1 ), $lang ) %> %
-%  if ( $cover_notext > 0 ) {
+% if ( $cover_notext ) {
 <%= $sep %> <a href="/<%== $langa %>/search?q=<%== enurl ( $url_notext ) %>"><%== fmt ( $cover_notext, $lang ) %> <%= $cover_notext == 1 ? $t->{NOTEXT} :  $t->{NOTEXTA} %></a>
-%  }
 % }
-% if ( defined $cover_nocat ) {
-<%= $sep %> <%= $t->{COVER_CAT} %> <%== fmt ( round ( ( 100 - ( ( $cover_nocat + $cover_notext ) / $total ) * 100 ), 1 ), $lang ) %> %
-%  if ( $cover_nocat > 0 ) { 
+% if ( $cover_nocat ) {
 <%= $sep %> <a href="/<%== $langa %>/search?q=<%== enurl ( $url_nocat ) %>"><%== fmt ( $cover_nocat, $lang ) %> <%= $cover_nocat == 1 ? $t->{NOCAT} :  $t->{NOCATA} %></a>
-%  }
 % }
 % if ( $runmode eq 'search' ) {
 <%= $sep %> <%== include 'block/explain' %>

@@ -166,8 +166,10 @@ sub multi {
  $s->{cover_notext} = undef; $s->{url_notext} = undef;
  $s->{cover_nocat} = undef; $s->{url_nocat} = undef;
  
- if ( $s->{runmode} ne 'search' ) { # coverage not provided in search results
-  
+ if ( 
+  $s->{runmode} eq 'all' or ( $s->{runmode} eq 'pair' and 
+   ( $s->{pri} eq 'folder' or $s->{pri} eq 'date' ) )
+  ) {  # coverage provided for limited combinations  
   # 1/2: the textless photos
   
   my @extra = qw ( -has text );
@@ -234,14 +236,24 @@ sub multi {
    $s->{runmode} eq 'pair' and $s->{pri} ne 'folder' and $s->{pri} ne 'date'
   ) {
 
-   my $rank = $self->fetch ( "related#rank", $s->{pri}, $s->{sec} );
+   if ( $s->{pri} eq 'nat' ) {
 
-   $s->{viz} = viz_rank ( $s->{t}, $s->{pri}, $s->{sec}, $rank, $s->{palette} );
+    $s->{viz} = viz_nat ( $s->{sec}, $s->{palette} );
+
+   } else {
+
+    my $rank = $self->fetch ( "related#rank", $s->{pri}, $s->{sec} );
+
+    $s->{viz} = viz_rank ( 
+     $s->{lang}, $s->{t}, $s->{pri}, $s->{sec}, $rank, $s->{palette}
+    );
+
+   }
 
   } else { # all or folder or date
 
    $s->{viz} = viz_ddist ( 
-    $s->{t}, 
+    $s->{lang}, $s->{t}, 
     $s->{cover_notext}, $s->{cover_nocat}, $s->{total}, 
     $s->{palette} 
    );
@@ -250,9 +262,6 @@ sub multi {
 
  }
 
-  
-  
- 
  # finally render the browsing page
   
  $self->render( template => 'page/browse' );

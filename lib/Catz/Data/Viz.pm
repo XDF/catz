@@ -28,12 +28,12 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( viz_rank viz_ddist );
+our @EXPORT = qw ( viz_rank viz_ddist viz_globe viz_nat );
 
 use Catz::Core::Conf;
 use Catz::Data::Style;
 
-use Catz::Util::Number qw ( log2 round );
+use Catz::Util::Number qw ( fmt log2 round );
 use Catz::Util::String qw ( enurl limit );
 
 my $head = conf ( 'url_chart' ) . '?';
@@ -68,23 +68,21 @@ sub prep {
  
 }
 
-my $width = 250;
-
-my $height = 250;
-
 sub viz_rank {
 
  # creates URL for rank visualization
  
- my ( $t, $pri, $sec, $rank, $palette ) = @_;
+ my ( $lang, $t, $pri, $sec, $rank, $palette ) = @_;
+
+ my $width = 200;
+ my $height = 200;
     
  my $ctext = substr($s->{color}->{$palette}->{text},1);
  my $cback = substr($s->{color}->{$palette}->{back},1);
  my $chigh = substr($s->{color}->{$palette}->{high},1);
-
+ my $cxtra = substr($s->{color}->{$palette}->{xtra},1);
  my $cdim = substr($s->{color}->{$palette}->{dim},1); 
- $palette eq 'dark' and
-  $cdim = substr($s->{color}->{$palette}->{shade},1);
+ my $cshade = substr($s->{color}->{$palette}->{shade},1);
  
  # photos rank
  my $p = calc ( $rank->[0], $rank->[4] ); 
@@ -98,8 +96,6 @@ sub viz_rank {
  # average days rank
  my $da = calc ( $rank->[3], $rank->[5] );  
   
- my $tmain =  prep ( $t->{uc($pri).'G'} . ' ' . $t->{VIZ_RANK_NAME} );
-
  my $tthis = prep $sec;
  
  my $tavg = prep $t->{VIZ_RANK_AVG}; 
@@ -114,10 +110,8 @@ sub viz_rank {
  my $vurl = $head . ( join '&', (
   'cht=s', # chart type 
   'chs='.$width.'x'.$height, # chart dimensions
-  "chtt=$tmain", # chart main title 
-  "chts=$ctext,18,c", # chart main title layout
   "chd=t:$p,$pa|$d,$da", # the data 
-  "chco=$chigh|$cdim", # data dot colors
+  "chco=$chigh|$cshade", # data dot colors
   "chf=bg,s,$cback", # chart background
   'chg=20,20', # gridlines 
   "chdl=$tthis|$tavg", # labels
@@ -137,7 +131,10 @@ sub viz_ddist {
 
  # creates URL for data distribution
  
- my ( $t, $notext, $nocat, $total, $palette ) = @_;
+ my ( $lang, $t, $notext, $nocat, $total, $palette ) = @_;
+
+ my $width = 180;
+ my $height = 240;
     
  my $ctext = substr($s->{color}->{$palette}->{text},1);
  my $cback = substr($s->{color}->{$palette}->{back},1);
@@ -148,22 +145,79 @@ sub viz_ddist {
  $palette eq 'dark' and
   $cdim = substr($s->{color}->{$palette}->{shade},1);
 
- my ( $a, $b, $c ) = dis ( $notext, $nocat, $total ); 
+ my ( $none, $breed, $full ) = dis ( $notext, $nocat, $total );
 
+ my $tfull = 
+  prep "$t->{VIZ_DDIST_FULL} ".fmt($full,$lang).' %';
+  
+ my $tbreed = 
+  prep "$t->{VIZ_DDIST_BREED} ".fmt($breed,$lang).' %'; 
+
+ my $tnone = 
+   prep "$t->{VIZ_DDIST_NONE} ".fmt($none,$lang).' %';
+ 
  my $vurl = $head . ( join '&', (
   'cht=p', # chart type 
   'chs='.$width.'x'.$height, # chart dimensions
-  "chtt=TITLE", # chart main title 
-  "chts=$ctext,18,c", # chart main title layout
-  "chd=t:$a,$b,$c", # the data 
-  "chco=$cxtra|$ctext|$cdim", # data dot colors
+  "chd=t:$full,$breed,$none", # the data 
+  "chco=$cdim|$ctext|$cxtra", # data dot colors
   "chf=bg,s,$cback", # chart background
-  "chdl=lbl1|lbl2|lbl3", # labels
+  "chdl=$tfull|$tbreed|$tnone", # labels
   'chdlp=b|l', # legend position (on bottom) and order 
   "chdls=$ctext,15.0" # legend text
  ) ); 
 
- [ 'ddist', $vurl, $width, $height ]
+ [ 'ddist', $vurl, $width, $height, $full, $breed, $none ]
+
+}
+
+sub viz_globe {
+
+ my ( $nats, $palette ) = @_;
+ 
+ my $width = 300;
+ my $height = 200;
+
+ my $c0 = substr($s->{color}->{$palette}->{shade},1);
+ my $c1 = substr($s->{color}->{$palette}->{xtra},1);
+ my $cback = substr($s->{color}->{$palette}->{back},1);
+
+ my $to = scalar @$nats - 1;
+
+ my $cl = join '|', map { $c1 } ( 1 .. $to );
+
+ my $vurl = $head . ( join '&', (
+  'cht=map', # chart type 
+  'chs='.$width.'x'.$height, # chart dimensions
+  'chld='.(join '|',@$nats), # the countries to be shown 
+  "chco=$c0|$cl", # colors
+  "chf=bg,s,$cback" # chart background
+ ) ); 
+
+ [ 'globe', $vurl, $width, $height, $to + 1 ]
+
+}
+
+sub viz_nat {
+ 
+ my ( $nat, $palette ) = @_;
+ 
+ my $width = 200;
+ my $height = 200;
+
+ my $c0 = substr($s->{color}->{$palette}->{shade},1);
+ my $c1 = substr($s->{color}->{$palette}->{xtra},1);
+ my $cback = substr($s->{color}->{$palette}->{back},1);
+
+ my $vurl = $head . ( join '&', (
+  'cht=map', # chart type 
+  'chs='.$width.'x'.$height, # chart dimensions
+  "chld=$nat", # the countries to be shown 
+  "chco=$c0|$c1", # colors
+  "chf=bg,s,$cback" # chart background
+ ) ); 
+
+ [ 'nat', $vurl, $width, $height ]
 
 }
 
