@@ -164,7 +164,7 @@ if ( $runmode eq 'pair' ) {
 %#
 %# --------------------
 %#
-<% content 'main' => begin %>
+<% content 'main' => begin %> 
 %#
 %# --------------------
 %#
@@ -177,6 +177,16 @@ if ( $runmode eq 'pair' ) {
 <a title="<%= $titl %>" href="<%== include 'href/actionid', toaction => 'auto', langh => $langa, toid => $toid %>"><img alt="[<%= $t->{PHOTO} %> <%== $toid %>]" src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
 % }
 </div>
+%#
+%# --------------------
+%#
+% if ( $runmode eq 'pair' and ( $pri eq 'folder' or $pri eq 'date' ) ) {
+%# !!! height and width must match to visualizer settings !!!
+<img alt="<%= $t->{VIZ_DDIST_NAME} %>" title="<%= $t->{VIZ_DDIST_NAME} %>" class="viz" width="180" height="240" src="/<%== $langa %>/viz/ddist/<%== $pri %>/<%== encode $sec %>/<%== $version %>/">
+% } elsif ( $runmode eq 'all' ) {
+%# !!! height and width must match to visualizer settings !!!
+<img alt="<%= $t->{VIZ_DDIST_NAME} %>" title="<%= $t->{VIZ_DDIST_NAME} %>" class="viz" width="180" height="240" src="/<%== $langa %>/viz/ddist/<%== $version %>/">
+% }
 %#
 %# --------------------
 %#
