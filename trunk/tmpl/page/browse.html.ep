@@ -186,6 +186,9 @@ if ( $runmode eq 'pair' ) {
 % } elsif ( $runmode eq 'all' ) {
 %# !!! height and width must match to visualizer settings !!!
 <img alt="<%= $t->{VIZ_DDIST_NAME} %>" title="<%= $t->{VIZ_DDIST_NAME} %>" class="viz" width="180" height="240" src="/<%== $langa %>/viz/ddist/<%== $version %>/">
+% } elsif ( $vizrank ) {
+%# !!! height and width must match to visualizer settings !!!
+<img alt="<%= $t->{VIZ_RANK_NAME} %>" title="<%= $t->{VIZ_RANK_NAME} %>" class="viz" width="200" height="200" src="/<%== $langa %>/viz/rank/<%== $pri %>/<%== encode $sec %>/<%== $version %>/">
 % }
 %#
 %# --------------------

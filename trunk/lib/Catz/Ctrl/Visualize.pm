@@ -34,6 +34,22 @@ use Catz::Data::Style;
 
 use Catz::Util::String qw ( enurl limit );
 
+sub pre_pair {
+
+ my $self = shift; my $s = $self->{stash};
+
+ $self->fetch('pair#verify',$s->{pri}) or return 0;
+ 
+ $s->{sec} = $self->decode ( $s->{sec} ); # using decode helper
+ 
+ $s->{total} = $self->fetch('pair#count',$s->{pri},$s->{sec});
+ 
+ $s->{total} > 0 or return 0;
+ 
+ return 1;
+
+}
+
 sub pre_ddist {
 
  my $self = shift; my $s = $self->{stash};
@@ -60,13 +76,7 @@ sub ddist_pair {
 
  my $self = shift; my $s = $self->{stash};
 
- $self->fetch('pair#verify',$s->{pri}) or return $self->not_found;
- 
- $s->{sec} = $self->decode ( $s->{sec} ); # using decode helper
- 
- $s->{total} = $self->fetch('pair#count',$s->{pri},$s->{sec});
- 
- $s->{total} > 0 or return $self->not_found;
+ $self->pre_pair or $self->not_found;
  
  $self->pre_ddist;
 
@@ -100,6 +110,30 @@ sub ddist_all {
      
  return $self->post_ddist;
 
+}
+
+sub rank_pair {
+
+ my $self = shift; my $s = $self->{stash};
+
+ $self->pre_pair or $self->not_found;
+ 
+ $s->{style} = style_get ( $s->{palette} ); 
+
+ $s->{charturl} = conf ( 'url_chart' );
+ 
+ $s->{width} = 200; $s->{height} = 200; # these must match to img tag
+
+ my $ranks = $self->fetch ( "related#ranks", $s->{pri}, $s->{sec} );
+ 
+ $s->{rank} = shift @$ranks;
+ 
+ $s->{ranks} = $ranks;
+ 
+ my $vurl = $self->render ( 'viz/rank', format => 'txt', partial => 1 );
+  
+ return $self->redirect_perm ( $vurl );
+ 
 }
 
 1;
