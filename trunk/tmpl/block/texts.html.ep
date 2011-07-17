@@ -1,12 +1,13 @@
 % if ( scalar keys %{ $texts } > 0 ) {
 <div class="bar">
-% my $i = 0;
+% my $real = 0; my $shown = 0; 
 % foreach my $th ( @{ $thumbs } ) {
 % defined $texts->{$th->[0]} and do {
 % my $toid = fullnum33 ( $th->[1], $th->[2] ); 
-<%= $i > 0 ? $sep : '' %> <%= $t->{PHOTO} %> <%== $from + $i %> <a href="<%== include 'href/actionid', toaction => 'auto', langh => $langa, toid => $toid %>"><%= $texts->{$th->[0]} %></a>
+<%= $shown > 0 ? $sep : '' %> <%= $t->{PHOTO} %> <%== $from + $real %> <a href="<%== include 'href/actionid', toaction => 'auto', langh => $langa, toid => $toid %>"><%= $texts->{$th->[0]} %></a>
+% $shown++;
 % };
-% $i++;
+% $real++;
 % }
 </div>
 % }

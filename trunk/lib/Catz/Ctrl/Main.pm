@@ -31,9 +31,12 @@ use parent 'Catz::Core::Ctrl';
 use I18N::AcceptLanguage;
 
 use Catz::Core::Conf;
+
 use Catz::Data::Result;
 use Catz::Data::Setup;
 use Catz::Data::Style;
+use Catz::Data::Viz;
+
 use Catz::Util::Number qw ( fmt round );
 use Catz::Util::Time qw ( dt );
 
@@ -78,6 +81,8 @@ sub front {
  my $th = $self->fetch ( 'photo#thumb', @{ $samp } );
 
  $s->{thumbs} = $th->[0];
+
+ $s->{viz} = viz_globe ( $self->fetch ( 'related#nats' ), $s->{palette} );
  
  $s->{texts} = $self->fetch ( 'photo#texts', @{ $samp } );
  

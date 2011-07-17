@@ -40,7 +40,7 @@
 %# --------------------
 %#
 <% content 'bextra' => begin %>
-<a class="shrink" href="/<%== $langa %>/search?q=<%= enurl('+has=breed -has=cat') %>"><%= $t->{DONATE_CAT} %></a>
+<a href="/<%== $langa %>/search?q=<%= enurl('+has=breed -has=cat') %>"><%= $t->{DONATE_CAT} %></a>
 <% end %>
 %#
 %# --------------------
@@ -58,6 +58,10 @@
 %# --------------------
 %#
 <div class="find bar" id="found"></div>
+%#
+%# --------------------
+%#
+<div class="viz inline center"><a title="<%= fmt ( $viz->[4], $lang ) %> <%= $t->{NATA}  %>" href="/<%== $langa %>/list/nat/a2z/"><img alt="<%= $t->{VIZ_GLOBE_NAME} %>" src="<%== $viz->[1] %>" width="<%== $viz->[2] %>" height="<%== $viz->[3] %>"></a></div> 
 %#
 %# --------------------
 %#

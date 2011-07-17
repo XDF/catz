@@ -151,4 +151,12 @@ sub _breedermeta {
  
 }
 
+sub _nats { # bulk list of all nations
+
+ my $self = shift;
+
+ $self->dbcol("select sec_en from sec natural join _secm where pid=(select pid from pri where pri='nat') and cntphoto>0");
+
+}
+
 1;
