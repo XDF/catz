@@ -224,6 +224,17 @@ sub multi {
  
  $s->{fresh} = $self->fetch ( 'related#date', $s->{xfirst} );
  $s->{ancient} = $self->fetch ( 'related#date', $s->{xlast} );
+ 
+ $s->{vizrank} = undef;
+ 
+ if ( 
+   $s->{runmode} eq 'pair' and $s->{pri} ne'folder' or $s->{pri} eq 'date' 
+ ) {
+ 
+  # add visualization marker to present ranking visualization
+  $self->fetch ( 'related#seccnt', $s->{pri} ) > 9 and $s->{vizrank} = 1;
+  
+ }
 
  # finally render the browsing page
   

@@ -31,7 +31,7 @@ use parent 'Catz::Model::Common';
 use Catz::Data::Search;
 use Catz::Data::List;
 
-use Catz::Util::Number qw ( round );
+use Catz::Util::Number qw ( round logn );
 
 my $matrix = list_matrix;
 
@@ -134,6 +134,60 @@ sub _breedermeta {
  
  $self->dbrow('select nat,url from mbreeder where breeder=?', $breeder );
  
+}
+
+sub _seccnt {
+
+ my ( $self, $pri ) = @_;
+ 
+ $self->dbone('select count(*) from sec where pid=(select pid from pri where pri=?)', $pri );
+
+}
+
+sub _ranks {
+
+ my ( $self, $pri, $sec ) = @_;  my $lang = $self->{lang};
+ 
+ my ( $cntp, $cntd ) = 
+  @{ $self->dbrow ("select cntphoto,cntdate from _secm natural join sec_$lang where pid=(select pid from pri where pri=?) and sec=?",$pri,$sec) };
+ 
+ my $maxp = $self->dbone ('select max(cntphoto) from _secm natural join sec where pid=(select pid from pri where pri=?)',$pri);
+ 
+ my $maxd = $self->dbone ('select max(cntdate) from _secm natural join sec where pid=(select pid from pri where pri=?)',$pri);
+ 
+ my $arr = $self->dball("select cntphoto,cntdate from pri natural join sec_$lang natural join _secm where pri=? and sec<>? order by random() limit 200",$pri,$sec);
+
+ my $outp =  round ( logn ( $cntp, 2 ) / logn ( $maxp, 2 ) * 100 );
+ my $outd =  round ( logn ( $cntd, 2 ) / logn ( $maxd, 2 ) * 100 );
+ 
+ my $i = -1;
+ 
+ while ( ++$i < scalar @{ $arr } ) {
+ 
+  my $s;
+  
+  $arr->[$i]->[0] = round ( logn ( $arr->[$i]->[0], 2 ) / logn ( $maxp, 2 ) * 100 );
+  
+  do { # adding noise 
+   $s = $arr->[$i]->[0] + ( int ( rand ( 10 ) ) + 1 ) - 5; 
+  } until ( $s < $maxp and $s > 0 );
+  
+  $arr->[$i]->[0] = $s;  
+   
+  $arr->[$i]->[1] = round ( logn ( $arr->[$i]->[1], 2 ) / logn ( $maxd, 2 ) * 100 );
+
+  do { # adding noise 
+   $s = $arr->[$i]->[1] + int ( rand ( 4 ) ) - 2; 
+  } until ( $s < $maxp and $s > 0 );
+  
+  $arr->[$i]->[1] = $s; 
+
+ }
+ 
+ unshift @$arr, [ $outp, $outd ];
+  
+ return $arr; 
+
 }
 
 1;
