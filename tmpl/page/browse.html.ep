@@ -197,7 +197,7 @@ if ( $runmode eq 'pair' ) {
 % }
 <img alt="<%= $t->{VIZ_DDIST_NAME} %>" src="<%== $viz->[1] %>" width="<%== $viz->[2] %>" height="<%== $viz->[3] %>" title="<%= $t->{VIZ_DDIST_NAME} %> <%= $sep %> <%= $tt %> <%= $sep %> <%= $t->{VIZ_DDIST_FULL} %> <%= fmt($viz->[4],$lang) %> % <%= $sep %> <%= $t->{VIZ_DDIST_BREED} %> <%= fmt($viz->[5],$lang) %> % <%= $sep %> <%= $t->{VIZ_DDIST_NONE} %> <%= fmt($viz->[6],$lang) %> %"> 
 %  } elsif ( $viz->[0] eq 'nat' ) {
-<img alt="<%= $t->{VIZ_GLOBE_NAME} %>" src="<%== $viz->[1] %>" width="<%== $viz->[2] %>" height="<%== $viz->[3] %>">
+<img alt="<%= $mapdual->{$pri}->{$sec}->[1] %>" title="<%= $mapdual->{$pri}->{$sec}->[1] %>" src="<%== $viz->[1] %>" width="<%== $viz->[2] %>" height="<%== $viz->[3] %>">
 %  }
 </div>
 % }

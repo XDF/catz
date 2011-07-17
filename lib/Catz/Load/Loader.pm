@@ -43,7 +43,7 @@ use Catz::Util::Time qw ( dtexpand );
 use Catz::Util::File qw ( filehead filesize filethumb findphotos pathcut );
 use Catz::Util::Image qw ( widthheight );
 use Catz::Util::Log qw ( logit logadd logdone );
-use Catz::Util::Number qw ( fullnum33 );
+use Catz::Util::Number qw ( fullnum33 round );
 use Catz::Util::String qw ( trim );
 
 my $sql = { 
@@ -534,7 +534,13 @@ sub load_exif {
     foreach ( 0 .. 3 );
 
    my $aid = get_aid ( $lines[0] );
-   
+
+   # quick fixes
+   if ( $lines[2] eq 'etime' ) {
+    $lines[3] eq '32/10 s' and $lines[3] eq '3.2 s'; 
+    $lines[3] =~ m|^(\d+)\/1 s| and $lines[3] = "$1 s";
+   }
+
    put_exif ( 'meta', $aid, $lines[1], $lines[2], $lines[3] );
   
   }
