@@ -1,5 +1,7 @@
 #summary Short notes and checklists for service management and service deployment
 
+These notes are not written in a form intented for general public.
+
 = Deploy a new version of the service =
 
 *on dev workstation*
@@ -17,7 +19,7 @@
   * detect if the production is running on catz1 or on catz2 (html meta)
   * shutdown the non-prodcution service: cat hypnotoad.pid | xargs kill -TERM
   * check that the production is still up and running :-D     
-  * delete all stuff from the non-prod application directory rm -fR *
+  * delete all stuff from the non-prod application directory rm -fR \*
   * deploy the new version of the application by shipping all folders'n'files (on slow connection consider gzipping the db before shipping and ungzipping it then on dev)
   * set db r/o  
   * run tests on prod, all should pass, check that stats are resonable: Files=11, Tests=19759, 195 wallclock secs
@@ -44,6 +46,15 @@
   * ship the database key file matching the new database - the production switches immediately to the new database
   * check that the new data version is in production (HTML meta tags) and that production works
   * revert the deployment by deleting the latest database key file just shipped (should revert the production immediately to the previous database version)                  
+
+= Update Hypnotoad on the fly =
+
+  * there are two ways to do this, we use sending the signal
+  * update Mojolicious on perl on perlbrew by using cpan
+  * check the hypnotoad pid number
+  * issue kill -USR2 xyz
+  * production.log should merely indicate an new start [Sun Jul 17 18:39:38 2011] [info] Server listening (...)
+  * hypnotoad.pid shows a new pid
     
 = Misc random notes =
 
