@@ -35,7 +35,6 @@ use Catz::Core::Conf;
 use Catz::Data::Result;
 use Catz::Data::Setup;
 use Catz::Data::Style;
-use Catz::Data::Viz;
 
 use Catz::Util::Number qw ( fmt round );
 use Catz::Util::Time qw ( dt );
@@ -82,8 +81,6 @@ sub front {
 
  $s->{thumbs} = $th->[0];
 
- $s->{viz} = viz_globe ( $self->fetch ( 'related#nats' ), $s->{palette} );
- 
  $s->{texts} = $self->fetch ( 'photo#texts', @{ $samp } );
  
  # overriding the user's setting for the front page

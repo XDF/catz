@@ -237,8 +237,10 @@ sub multi {
   ) {
 
    if ( $s->{pri} eq 'nat' ) {
-
-    $s->{viz} = viz_nat ( $s->{sec}, $s->{palette} );
+   
+    $s->{viz} = viz_nat ( 
+     $s->{sec}, $s->{mapdual}->{$s->{pri}}->{$s->{sec}}->[1], $s->{palette} 
+    );
 
    } else {
 

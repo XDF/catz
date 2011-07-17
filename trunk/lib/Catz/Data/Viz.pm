@@ -171,47 +171,25 @@ sub viz_ddist {
 
 }
 
-sub viz_globe {
-
- my ( $nats, $palette ) = @_;
- 
- my $width = 300;
- my $height = 200;
-
- my $c0 = substr($s->{color}->{$palette}->{shade},1);
- my $c1 = substr($s->{color}->{$palette}->{xtra},1);
- my $cback = substr($s->{color}->{$palette}->{back},1);
-
- my $to = scalar @$nats - 1;
-
- my $cl = join '|', map { $c1 } ( 1 .. $to );
-
- my $vurl = $head . ( join '&', (
-  'cht=map', # chart type 
-  'chs='.$width.'x'.$height, # chart dimensions
-  'chld='.(join '|',@$nats), # the countries to be shown 
-  "chco=$c0|$cl", # colors
-  "chf=bg,s,$cback" # chart background
- ) ); 
-
- [ 'globe', $vurl, $width, $height, $to + 1 ]
-
-}
-
 sub viz_nat {
  
- my ( $nat, $palette ) = @_;
+ my ( $nat, $title, $palette ) = @_;
  
- my $width = 200;
- my $height = 200;
+ my $width = 125;
+ my $height = 150;
+ 
+ $title = prep $title;
 
- my $c0 = substr($s->{color}->{$palette}->{shade},1);
+ my $c0 = substr($s->{color}->{$palette}->{back},1);
  my $c1 = substr($s->{color}->{$palette}->{xtra},1);
+ my $ct = substr($s->{color}->{$palette}->{high},1);
  my $cback = substr($s->{color}->{$palette}->{back},1);
 
  my $vurl = $head . ( join '&', (
   'cht=map', # chart type 
   'chs='.$width.'x'.$height, # chart dimensions
+  "chtt=$title",
+  "chts=$ct,15,c",
   "chld=$nat", # the countries to be shown 
   "chco=$c0|$c1", # colors
   "chf=bg,s,$cback" # chart background
