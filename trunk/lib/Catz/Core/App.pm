@@ -223,6 +223,21 @@ sub startup {
  $s->route( '/' )->to( controller => 'pattern', id => undef );
  
  ###
+ ### Visualizations
+ ###
+ 
+ $l->route( 
+  '/viz/ddist/:pri/:sec/:vkey',
+  # vkey is required to make request version unique but is not used
+  pri => qr/[a-z]{1,25}/, sec => qr/[A-ZA-z0-9_-]{1,500}/, vkey => qr/\d{14}/
+ )->to( 'visualize#ddist_pair', hold => 0 );
+
+ $l->route( 
+  '/viz/ddist/:vkey', vkey => qr/\d{14}/
+  # vkey is required to make request version unique but is not used
+ )->to( 'visualize#ddist_all', hold => 0 );
+ 
+ ###
  ### AJAX interface(s)
  ###
 

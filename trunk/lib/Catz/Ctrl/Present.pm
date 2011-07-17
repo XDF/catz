@@ -179,7 +179,7 @@ sub multi {
   
   # if there where those then prepare the url to see them
   $s->{cover_notext} > 0 and
-  $s->{url_notext} = args2search (  @{ $s->{args_array} }, @extra );
+  $s->{url_notext} = args2search ( @{ $s->{args_array} }, @extra );
   
   # 2/2: the photos with breed but without a cat
   
@@ -192,7 +192,7 @@ sub multi {
   # if there where those then prepare the url to see them
   $s->{cover_nocat} > 0 and
   $s->{url_nocat} =
-   args2search (  @{ $s->{args_array} }, @extra );
+   args2search ( @{ $s->{args_array} }, @extra );
   
  }
  
