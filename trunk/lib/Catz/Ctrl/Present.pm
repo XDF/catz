@@ -225,15 +225,32 @@ sub multi {
  $s->{fresh} = $self->fetch ( 'related#date', $s->{xfirst} );
  $s->{ancient} = $self->fetch ( 'related#date', $s->{xlast} );
  
- $s->{vizrank} = undef;
+ $s->{vizmode} = 'none';
  
- if ( 
-   $s->{runmode} eq 'pair' and $s->{pri} ne'folder' or $s->{pri} eq 'date' 
- ) {
+ if ( $s->{runmode} eq 'all' ) {
  
-  # add visualization marker to present ranking visualization
-  $self->fetch ( 'related#seccnt', $s->{pri} ) > 9 and $s->{vizrank} = 1;
+  $s->{vizmode} = 'all'; 
+ 
+ } elsif ( $s->{runmode} eq 'pair' ) { 
+ 
+  if ( $s->{pri} eq 'folder' or $s->{pri} eq 'date' ) {
   
+   $s->{vizmode} = 'pair';
+  
+  } else {
+
+   if ( $self->fetch ( 'related#seccnt', $s->{pri} ) > 9 ) {
+  
+    $s->{vizmode} = 'rank';
+   
+   } else {
+  
+    $s->{vizmode} = 'cover';
+   
+   }
+   
+  }
+    
  }
 
  # finally render the browsing page
