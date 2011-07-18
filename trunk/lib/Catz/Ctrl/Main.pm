@@ -85,6 +85,9 @@ sub front {
  
  # overriding the user's setting for the front page
  $s->{thumbsize} = 100; # 100px
+
+ # load style for globe img tag height and width 
+ $s->{style} = style_get ( $s->{palette} );
      
  $self->render( template => 'page/front' );
  

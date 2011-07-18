@@ -138,7 +138,8 @@ foreach my $folder ( qw (
 }
 
 foreach my $folder ( qw ( 
- 20110612hyvinkaa 20100327turku2 20091010kirkkonummi 20100327turku1 
+ 20110612hyvinkaa 20100327turku2 20100327turku_panel 
+ 20091010kirkkonummi 20100327turku1 20100327turku_misc 
  ) ) {
  
  foreach my $file ( qw ( 

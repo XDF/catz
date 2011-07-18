@@ -110,6 +110,18 @@ $style->{color} = {
   
 };
 
+$style->{viz}->{cover}->{width} = 180;
+$style->{viz}->{cover}->{height} = 220;
+
+$style->{viz}->{dist}->{width} = 180;
+$style->{viz}->{dist}->{height} = 220;
+
+$style->{viz}->{globe}->{width} = 300 ;
+$style->{viz}->{globe}->{height} = 170 ;
+
+$style->{viz}->{rank}->{width} = 200 ;
+$style->{viz}->{rank}->{height} = 200 ;
+
 sub style_get { $style }
 
 1;

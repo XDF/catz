@@ -208,7 +208,25 @@ sub reroute { # does the job
   default { # process leftover folders
  
    my ( $folder, $tail ) = split /\//, $p;
-  
+   
+   $tail or $tail = '';
+   
+   # ghost url mappings _misc _panel _gala
+   
+   if ( $folder =~ m|^(\d{8}[a-z]+)_misc$| ) {
+   
+    $folder = $1.'1';
+   
+   } elsif ( $folder =~ m|^(\d{8}[a-z]+)_panel$| ) {
+   
+    $folder = $1.'2';
+   
+   } elsif ( $folder =~ m|^(\d{8}[a-z]+)_gala$| ) {
+   
+    $folder = $1.'2';
+   
+   }
+   
    if ( $classic{$folder} ) { # this is an classic folder still in .com
   
     return $self->redirect_perm ( "$t->{URL_AUTHOR}photos/$folder/$tail" );

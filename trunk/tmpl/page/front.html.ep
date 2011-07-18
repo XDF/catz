@@ -61,6 +61,10 @@
 %#
 %# --------------------
 %#
+<a class="viz" href="/<%== $langa %>/list/nat/a2z/"><img alt="<%= $t->{VIZ_GLOBE_NAME} %>" title="<%= $t->{VIZ_GLOBE_NAME} %>" width="<%== $style->{viz}->{globe}->{width} %>" height="<%== $style->{viz}->{globe}->{height} %>" src="/<%== $langa %>/viz/globe/<%== $version %>/"></a>
+%#
+%# --------------------
+%#
 <div class="bar"><h2><%= $t->{SUBJECTS} %></h2>
 %#
 <a href="/<%== $langa %>/browseall/"><%= fmt ( $maxx, $lang )  %> <%== $t->{PHOTOA_CATSHOW} %></a>

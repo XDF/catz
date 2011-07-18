@@ -28,46 +28,50 @@ use 5.10.0; use strict; use warnings;
 use Test::More;
 use Test::Mojo;
 
-use Catz::Core::Text;
-
-use Catz::Util::String qw ( encode enurl );
-
 my $t = Test::Mojo->new( 'Catz::Core::App' );
+
+$t->max_redirects( 2 );
 
 my $c = 0;
 
-# bare root, should do temp redirect
+foreach my $lang ( qw ( en fi en264312 fi384322 ) ) {
 
-$t->get_ok('/')
-  ->status_is(302);
+ $t->get_ok("/$lang/viz/dist/20/30/40/20011012123456/")
+  ->status_is(200)
+  ->content_type_like(qr/image\/png/);
   
-$c += 2;
+ $c += 3;
 
-foreach my $lang ( qw ( en fi en211211 fi171212 ) ) {
+ $t->get_ok("/$lang/viz/rank/iso/ISO_1600/20011012123456/")
+  ->status_is(200)
+  ->content_type_like(qr/image\/png/);
+  
+ $c += 3;
+ 
+ $t->get_ok("/$lang/viz/rank/breed/ACS/20011012123456/")
+  ->status_is(200)
+  ->content_type_like(qr/image\/png/);
+  
+ $c += 3;
 
- my $txt = text ( substr ( $lang, 0, 2 ) );
- 
- # front page
-   
- $t->get_ok("/$lang/")
-   ->status_is(200)
-   ->content_type_like(qr/text\/html/)
-   ->element_exists('html body h1')
-   ->content_like(qr/$txt->{NOSCRIPT}/)
-   ->content_like(qr/$txt->{VIZ_GLOBE_NAME}/)
-   ->content_like(qr/href=\"\/$lang\/list\/breeder\/a2z\/\"/)
-   ->content_like(qr/alt="\[(kuva|photo) \d{6}\]"/)
-   ->content_like(qr/\.JPG/);
-   
- $c += 9;  
- 
- # without slash should do perm redirect
- 
- $t->get_ok("/$lang")
-   ->status_is(301);
-   
- $c += 2;
- 
-} 
+ $t->get_ok("/$lang/viz/rank/loc/Espoo/20011012123456/")
+  ->status_is(200)
+  ->content_type_like(qr/image\/png/);
+  
+ $c += 3;
 
-done_testing( $c );
+ $t->get_ok("/$lang/viz/cover/2240/20011012123456/")
+  ->status_is(200)
+  ->content_type_like(qr/image\/png/);
+  
+ $c += 3;
+
+ $t->get_ok("/$lang/viz/globe/20011012123456/")
+  ->status_is(200)
+  ->content_type_like(qr/image\/png/);
+  
+ $c += 3;
+ 
+}
+
+done_testing($c);

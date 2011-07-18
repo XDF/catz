@@ -35,6 +35,7 @@ use parent 'Catz::Core::Ctrl';
               
 use Catz::Data::Result;
 use Catz::Data::Search;
+use Catz::Data::Style;
 
 sub pre {
 
@@ -229,13 +230,13 @@ sub multi {
  
  if ( $s->{runmode} eq 'all' ) {
  
-  $s->{vizmode} = 'all'; 
+  $s->{vizmode} = 'dist'; 
  
  } elsif ( $s->{runmode} eq 'pair' ) { 
  
   if ( $s->{pri} eq 'folder' or $s->{pri} eq 'date' ) {
   
-   $s->{vizmode} = 'pair';
+   $s->{vizmode} = 'dist';
   
   } else {
 
@@ -250,9 +251,12 @@ sub multi {
    }
    
   }
-    
- }
 
+ }
+ 
+ # load style (for viz img tags)
+ $s->{style} = style_get ( $s->{palette} );
+  
  # finally render the browsing page
   
  $self->render( template => 'page/browse' );
