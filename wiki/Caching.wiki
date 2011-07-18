@@ -27,6 +27,6 @@ There are five groups of Expires / max-age settings:
 || /style/palette new1 lists list1 browse view search find front news feed || 1 h || application set Expires and Cache-Control in absolute, Last-Modified based on data version ||
 || lastshow || 15 min || application set Expires and Cache-Control in absolute, Last-Modified based on data version ||
 || result || 15 min || application set Expires and Cache-Control in absolute, Last-Modified not set || 
-|| detect reroute tools || 0 || Cache-Control max-age 0 set by the application ||
+|| detect reroute tools viz || 0 || Cache-Control max-age 0 set by the application ||
  
   

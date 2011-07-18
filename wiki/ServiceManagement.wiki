@@ -11,7 +11,7 @@ These notes are not written in a form intented for general public.
   * clean old database versions from /db (leave only the latest and the latest key file)
   * clean logs from /log
   * check what is in /temp and clean it    
-  * check that run.pl has production mode for win and fresh start memcached, run tests, all test should pass, check that the number of test and the time taken seems reasonable: Files=11, Tests=19759, 250 wallclock secs 
+  * check that run.pl has production mode for win and fresh start memcached, run tests, all test should pass, check that the number of test and the time taken seems reasonable: Files=13, Tests=20894, 279 wallclock secs 
   * SVN commit if not yet committed  
 
 *on prod server*
@@ -22,7 +22,7 @@ These notes are not written in a form intented for general public.
   * delete all stuff from the non-prod application directory rm -fR \*
   * deploy the new version of the application by shipping all folders'n'files (on slow connection consider gzipping the db before shipping and ungzipping it then on dev)
   * set db r/o  
-  * run tests on prod, all should pass, check that stats are resonable: Files=11, Tests=19759, 195 wallclock secs
+  * run tests on prod, all should pass, check that stats are resonable: Files=13, Tests=20894, 195 wallclock secs
 
 *the switch*
      
