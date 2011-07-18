@@ -138,6 +138,15 @@ foreach my $lang ( qw ( en fi en264312 fi384322 ) ) {
 
    $c += 5;
    
+   $mode eq 'browse' and do { # check that visualization exists
+   
+    $t->get_ok("/$lang/$mode/$elem[0]/$elem[1]/$elem[2]/")
+     ->content_like(qr/ class=\"viz/);
+   
+    $c += 2;
+    
+   };
+   
   }
 
   foreach my $set ( @bad ) {

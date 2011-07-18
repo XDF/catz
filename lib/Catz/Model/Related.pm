@@ -94,11 +94,13 @@ sub _refine {
  # maximum number of items in a set, use 15 if not specific
  my $n = $matrix->{$pri}->{limit}->{$target} // 15;
  
- # this is 0 - 1 ms on english on DBI, 70 - 90 ms on Finnish on DBI
- # so could be better on Finnish
- my $sql = qq{select sec from (select s2.sec,s2.sort from _secm m,_relate r,sec_$lang s1,sec_$lang s2 where s1.pid=(select pid from pri where pri=?) and s1.sec=? and s2.sid=m.sid and s1.sid=r.source and s2.sid=r.target and s2.pid=(select pid from pri where pri=?) order by cntphoto desc limit $n) order by sort}; 
-
- return $self->dbcol( $sql, $pri, $sec, $target );
+ my $me = $self->dbone ("select sid from sec_$lang where pid=(select pid from pri where pri=?) and sec=?",$pri,$sec);
+ 
+ my $tg = $self->dbone ("select pid from pri where pri=?",$target);
+ 
+ my $sql = qq{select sec from (select sec,sort from sec_$lang natural join _secm where sid in (select target from _relate inner join sec on (target=sid) natural join pri where source=? and pid=?) order by cntphoto desc limit 15) order by sort};
+ 
+ return $self->dbcol( $sql, $me, $tg );
 
 }
 
@@ -110,7 +112,7 @@ sub _refines {
  
  foreach my $target ( @targets ) {
   
-  my $data = $self->refine($pri,$sec,$target);
+  my $data = $self->refine ($pri, $sec, $target );
 
   push @res, [ $target, $data ]; 
 
@@ -140,58 +142,82 @@ sub _seccnt {
 
  my ( $self, $pri ) = @_;
  
- $self->dbone('select count(*) from sec where pid=(select pid from pri where pri=?)', $pri );
+ $self->dbone('select count(*) from sec natural join pri where pri=?', $pri );
 
 }
 
-sub _ranks {
+sub _maxcntphoto {
+
+ my ( $self, $pri ) = @_;
+
+ my $max = $self->dbone ('select max(cntphoto) from _secm natural join sec natural join pri where pri=?',$pri);
+ 
+ $max < 2 ? 2 : $max;
+
+}
+
+sub _maxcntdate {
+
+ my ( $self, $pri ) = @_;
+
+ my $max = $self->dbone ('select max(cntdate) from _secm natural join sec natural join pri where pri=?',$pri);
+ 
+ $max < 2 ? 2 : $max;
+ 
+}
+
+sub _rank {
 
  my ( $self, $pri, $sec ) = @_;  my $lang = $self->{lang};
  
  my ( $cntp, $cntd ) = 
   @{ $self->dbrow ("select cntphoto,cntdate from _secm natural join sec_$lang where pid=(select pid from pri where pri=?) and sec=?",$pri,$sec) };
- 
- my $maxp = $self->dbone ('select max(cntphoto) from _secm natural join sec where pid=(select pid from pri where pri=?)',$pri);
- 
- $maxp < 2 and $maxp = 2;
- 
- my $maxd = $self->dbone ('select max(cntdate) from _secm natural join sec where pid=(select pid from pri where pri=?)',$pri);
- 
- $maxd < 2 and $maxd = 2;
- 
- my $arr = $self->dball("select cntphoto,cntdate from sec_$lang natural join _secm where pid=(select pid from pri where pri=?) order by random() limit 200",$pri);
+  
+ $cntp < 1 and $cntp = 1;
+ $cntd < 1 and $cntd = 1; 
+   
+ my $outp =  round ( ( log ( $cntp ) / log ( $self->maxcntphoto ( $pri ) ) ) * 100 );
+ my $outd =  round ( ( log ( $cntd ) / log ( $self->maxcntdate ( $pri ) ) ) * 100 );
+   
+ return [ $outp, $outd ]; 
 
- my $outp =  round ( log ( $cntp ) / log ( $maxp ) * 100 );
- my $outd =  round ( log ( $cntd ) / log ( $maxd ) * 100 );
+}
+
+sub _ranks {
+
+ my ( $self, $pri ) = @_;
+  
+ my $maxp = $self->maxcntphoto ( $pri );
+ my $maxd = $self->maxcntdate ( $pri );
+ 
+ my $arr = $self->dball("select cntphoto,cntdate from sec natural join _secm natural join pri where pri=? order by random() limit 200",$pri);
  
  my $i = -1;
  
  while ( ++$i < scalar @{ $arr } ) {
  
-  my $s;
-  
-  $arr->[$i]->[0] = round ( log ( $arr->[$i]->[0] ) / log ( $maxp ) * 100 );
-  
-  do { # adding noise 
-   $s = $arr->[$i]->[0] + int ( rand ( 7 ) ) - 3; 
-  } until ( $s < $maxp and $s > 0 );
-  
-  $arr->[$i]->[0] = $s;  
+  $arr->[$i]->[0] < 1 and $arr->[$i]->[0] = 1;
+  $arr->[$i]->[0] > $maxp and $arr->[$i]->[0] = $maxp; 
    
-  $arr->[$i]->[1] = round ( log ( $arr->[$i]->[1] ) / log ( $maxd ) * 100 );
-
-  do { # adding noise 
-   $s = $arr->[$i]->[1] + int ( rand ( 7 ) ) - 3; 
-  } until ( $s < $maxp and $s > 0 );
+  $arr->[$i]->[0] = round ( ( log ( $arr->[$i]->[0] ) / log ( $maxp ) ) * 100 );
   
-  $arr->[$i]->[1] = $s; 
+  $arr->[$i]->[1] < 1 and $arr->[$i]->[1] = 1;
+  $arr->[$i]->[1] > $maxd and $arr->[$i]->[1] = $maxd; 
+   
+  $arr->[$i]->[1] = round ( ( log ( $arr->[$i]->[1] ) / log ( $maxd ) ) * 100 );
 
  }
- 
- unshift @$arr, [ $outp, $outd ];
   
  return $arr; 
 
+}
+
+sub _nats {
+
+ my $self = shift; # not using lang, assuming nats to be language independent
+ 
+ $self->dbcol("select sec_en from sec where pid=(select pid from pri where pri='nat')"); 
+ 
 }
 
 1;

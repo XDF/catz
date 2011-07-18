@@ -57,7 +57,6 @@ sub new {
  
 }
 
-
 sub fetch {
 
  my ( $self, $newver, $lang, $sub, @args ) = @_;
@@ -75,9 +74,11 @@ sub fetch {
    $db = DBI->connect (
     'dbi:SQLite:dbname='.$ENV{MOJO_HOME}."/db/$newver.db",
      undef, undef, { AutoCommit => 1, RaiseError => 1, PrintError => 1 }
-    ) || die ( $DBI::errstr ); 
- 
-  $currver = $newver;
+    ) || die ( $DBI::errstr );
+     
+   # store the new version as current version
+   
+   $currver = $newver;
  
  }
        

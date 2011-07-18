@@ -32,107 +32,20 @@ use Catz::Core::Conf;
 
 use Catz::Data::Style;
 
-use Catz::Util::String qw ( enurl limit );
 
-sub pre_pair {
-
- my $self = shift; my $s = $self->{stash};
-
- $self->fetch('pair#verify',$s->{pri}) or return 0;
- 
- $s->{sec} = $self->decode ( $s->{sec} ); # using decode helper
- 
- $s->{total} = $self->fetch('pair#count',$s->{pri},$s->{sec});
- 
- $s->{total} > 0 or return 0;
- 
- return 1;
-
-}
-
-sub pre_ddist {
+sub do {
 
  my $self = shift; my $s = $self->{stash};
 
  $s->{style} = style_get ( $s->{palette} ); 
 
  $s->{charturl} = conf ( 'url_chart' );
- 
- $s->{width} = 180; $s->{height} = 220; # these must match to img tag
 
-}
-
-sub post_ddist {
-
- my $self = shift;
-
- my $vurl = $self->render ( 'viz/ddist', format => 'txt', partial => 1 );
+ my $vurl = $self->render ( 
+  "viz/$s->{action}", format => 'txt', partial => 1 
+ );
   
- return $self->redirect_perm ( $vurl );
-
-}
-
-sub ddist_pair {
-
- my $self = shift; my $s = $self->{stash};
-
- $self->pre_pair or return $self->not_found;
- 
- $self->pre_ddist;
-
- my @extra = qw ( -has text );
-
- $s->{cover_notext} = 
-  $self->fetch ( "search#count", "+$s->{pri}", $s->{sec}, @extra );
-   
- @extra = qw ( +has breed -has cat );
-
- $s->{cover_nocat} = 
-   $self->fetch ( "search#count", "+$s->{pri}", $s->{sec}, @extra );
-
- return $self->post_ddist;
-       
-}
-
-sub ddist_all {
-
- my $self = shift; my $s = $self->{stash};
-
- $s->{total} = $self->fetch('all#count');
-  
- $self->pre_ddist;
- 
- $s->{cover_notext} = 
-  $self->fetch ( "search#count", qw ( -has text ) );
-   
- $s->{cover_nocat} = 
-  $self->fetch ( "search#count", qw ( +has breed -has cat ) );
-     
- return $self->post_ddist;
-
-}
-
-sub rank_pair {
-
- my $self = shift; my $s = $self->{stash};
-
- $self->pre_pair or return $self->not_found;
- 
- $s->{style} = style_get ( $s->{palette} ); 
-
- $s->{charturl} = conf ( 'url_chart' );
- 
- $s->{width} = 200; $s->{height} = 200; # these must match to img tag
-
- my $ranks = $self->fetch ( "related#ranks", $s->{pri}, $s->{sec} );
- 
- $s->{rank} = shift @$ranks;
- 
- $s->{ranks} = $ranks;
- 
- my $vurl = $self->render ( 'viz/rank', format => 'txt', partial => 1 );
-  
- return $self->redirect_perm ( $vurl );
+ return $self->redirect_perm ( $vurl ); 
  
 }
 
@@ -144,16 +57,51 @@ sub cover {
 
  $s->{total} > $s->{maxx} and return $self->not_found;
  
- $s->{style} = style_get ( $s->{palette} ); 
+ return $self->do;
+ 
+}
 
- $s->{charturl} = conf ( 'url_chart' );
+sub dist {
+
+ my $self = shift; my $s = $self->{stash};
  
- $s->{width} = 180; $s->{height} = 220; # these must match to img tag
+ $s->{total} = $s->{full} + $s->{breed} + $s->{none};
  
- my $vurl = $self->render ( 'viz/cover', format => 'txt', partial => 1 );
+ $s->{maxx} = $self->fetch ( 'all#maxx' );
+ 
+ # the total number of photos must be less or equal to all photos
+ $s->{total} <= $s->{maxx} or return $self->not_found;
+ 
+ return $self->do;
+ 
+}
+
+sub globe {
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ $s->{nats} = $self->fetch ( 'related#nats' );
+ 
+ return $self->do;
+
+}
+
+sub rank {
+
+ my $self = shift; my $s = $self->{stash};
+
+ $self->fetch( 'pair#verify',$s->{pri} ) or return $self->not_found;
+ 
+ $s->{sec} = $self->decode ( $s->{sec} ); # using decode helper
+ 
+ $s->{total} = $self->fetch('pair#count',$s->{pri},$s->{sec});
+ 
+ $s->{rank} = $self->fetch ( "related#rank", $s->{pri}, $s->{sec} );
+ 
+ $s->{ranks} = $self->fetch ( "related#ranks", $s->{pri} );
   
- return $self->redirect_perm ( $vurl ); 
-
+ return $self->do;
+ 
 }
 
 1;

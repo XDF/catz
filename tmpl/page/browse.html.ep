@@ -180,21 +180,15 @@ if ( $runmode eq 'pair' ) {
 %#
 %# --------------------
 %#
-%# !!!
-%# !!! height and width must match to visualizer settings
-%# !!!
 % given ( $vizmode ) {
-%  when ( 'all' ) {
-<img alt="<%= $t->{VIZ_DDIST_NAME} %>" title="<%= $t->{VIZ_DDIST_NAME} %>" class="viz" width="180" height="220" src="/<%== $langa %>/viz/ddist/<%== $version %>/">
-%  }
-%  when ( 'pair' ) {
-<img alt="<%= $t->{VIZ_DDIST_NAME} %>" title="<%= $t->{VIZ_DDIST_NAME} %>" class="viz" width="180" height="220" src="/<%== $langa %>/viz/ddist/<%== $pri %>/<%== encode $sec %>/<%== $version %>/">
+%  when ( 'dist' ) {
+<img alt="<%= $t->{VIZ_DIST_NAME} %>" title="<%= $t->{VIZ_DIST_NAME} %>" class="viz" width="<%== $style->{viz}->{$vizmode}->{width} %>" height="<%== $style->{viz}->{$vizmode}->{height} %>" src="/<%== $langa %>/viz/dist/<%== $total - $cover_nocat - $cover_notext %>/<%== $cover_nocat %>/<%== $cover_notext %>/<%== $version %>/">
 %  }
 %  when ( 'rank' ) {
-<img alt="<%= $t->{VIZ_RANK_NAME} %>" title="<%= $t->{VIZ_RANK_NAME} %> <%= $sep %> <%= $t->{VIZ_RANK_DESC1} %> <%= $sep %> <%= $t->{VIZ_RANK_DESC2} %>" class="viz" width="200" height="220" src="/<%== $langa %>/viz/rank/<%== $pri %>/<%== encode $sec %>/<%== $version %>/">
+<img alt="<%= $t->{VIZ_RANK_NAME} %>" title="<%= $t->{VIZ_RANK_NAME} %> <%= $sep %> <%= $t->{VIZ_RANK_DESC} %>" class="viz" width="<%== $style->{viz}->{$vizmode}->{width} %>" height="<%== $style->{viz}->{$vizmode}->{height} %>" src="/<%== $langa %>/viz/rank/<%== $pri %>/<%== encode $sec %>/<%== $version %>/">
 %  }
 %  when ( 'cover' ) {
-<img alt="<%= $t->{VIZ_COVER_NAME} %>" title="<%= $t->{VIZ_COVER_NAME} %>" class="viz" width="180" height="220" src="/<%== $langa %>/viz/cover/<%== $total %>/<%== $version %>/">
+<img alt="<%= $t->{VIZ_COVER_NAME} %>" title="<%= $t->{VIZ_COVER_NAME} %>" class="viz" width="<%== $style->{viz}->{$vizmode}->{width} %>" height="<%== $style->{viz}->{$vizmode}->{height} %>" src="/<%== $langa %>/viz/cover/<%== $total %>/<%== $version %>/">
 %  }
 % }
 %#
