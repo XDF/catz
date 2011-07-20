@@ -461,8 +461,7 @@ sub before {
  
  $s->{setup_values} = setup_values ( $s->{langa} );
  
- $s->{facebookkey} = conf ( 'key_facebook' );
- 
+ $s->{facebookkey} = conf ( 'key_facebook' ); 
  $s->{twitterkey} = conf ( 'key_twitter' );
   
  # the global layout separator characters
