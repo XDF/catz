@@ -3,10 +3,10 @@
 % my $thigh = $t->{VIZ_RANK_HIGH};
 % utf8::encode ( $thigh );
 % my $r0 = round(($rank->[0]/100),2);
-% $r0 > 0.93 and $r0 = 0.93;
+% $r0 > 0.96 and $r0 = 0.96;
 % my $r1 = round(($rank->[1]/100),2);
-% $r1 > 0.93 and $r1 = 0.93;
-<%== $charturl %>?cht=s&chs=<%== $style->{viz}->{$action}->{width} %>x<%== $style->{viz}->{$action}->{height} %>&chco=<%== substr($style->{color}->{$palette}->{shade},1) %>&chg=20,20&chf=bg,s,<%== substr($style->{color}->{$palette}->{back},1) %>&chem=y;s=text_outline;d=<%== substr($style->{color}->{$palette}->{xtra},1) %>,25,l,<%== substr($style->{color}->{$palette}->{back},1) %>,_,<%== enurl 'X' %>;po=<%== $r0 %>,<%== $r1 %>;py=0.95|y;s=text_outline;d=<%== substr($style->{color}->{$palette}->{text},1) %>,17,l,<%== substr($style->{color}->{$palette}->{back},1) %>,_,<%== enurl $tlow %>;po=0.02,0.02;py=0.76|y;s=text_outline;d=<%== substr($style->{color}->{$palette}->{text},1) %>,17,r,<%== substr($style->{color}->{$palette}->{back},1) %>,_,<%== enurl $thigh %>;po=0.98,0.92;py=0.78&chd=t:<%== join ',', map { $_->[0] <= 93 ? $_->[0] : 93 } @$ranks %>|<%== join ',', map { $_->[1] <= 93 ? $_->[1] : 93 } @$ranks %>
+% $r1 > 0.96 and $r1 = 0.96;
+<%== $charturl %>?cht=s&chs=<%== $style->{viz}->{$action}->{width} %>x<%== $style->{viz}->{$action}->{height} %>&chco=<%== substr($style->{color}->{$palette}->{shade},1) %>&chg=20,20&chf=bg,s,<%== substr($style->{color}->{$palette}->{back},1) %>&chem=y;s=text_outline;d=<%== substr($style->{color}->{$palette}->{xtra},1) %>,25,l,<%== substr($style->{color}->{$palette}->{back},1) %>,_,<%== enurl 'X' %>;po=<%== $r0 %>,<%== $r1 %>;py=0.95|y;s=text_outline;d=<%== substr($style->{color}->{$palette}->{text},1) %>,17,l,<%== substr($style->{color}->{$palette}->{back},1) %>,_,<%== enurl $tlow %>;po=0.02,0.02;py=0.76|y;s=text_outline;d=<%== substr($style->{color}->{$palette}->{text},1) %>,17,r,<%== substr($style->{color}->{$palette}->{back},1) %>,_,<%== enurl $thigh %>;po=0.98,0.92;py=0.78&chd=t:<%== join ',', map { $_->[0] <= 96 ? $_->[0] : 96 } @$ranks %>|<%== join ',', map { $_->[1] <= 96 ? $_->[1] : 96 } @$ranks %>
 %#
 %# --------------------
 %#

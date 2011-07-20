@@ -190,21 +190,29 @@ sub _ranks {
  my $maxp = $self->maxcntphoto ( $pri );
  my $maxd = $self->maxcntdate ( $pri );
  
- my $arr = $self->dball("select cntphoto,cntdate from sec natural join _secm natural join pri where pri=? order by random() limit 200",$pri);
+ my $arr = $self->dball("select cntphoto,cntdate from (select cntphoto,cntdate from sec natural join _secm natural join pri where pri=? order by random() limit 200) group by cntphoto,cntdate",$pri);
  
  my $i = -1;
  
  while ( ++$i < scalar @{ $arr } ) {
  
+  # let's be paranoid, prevent log 0
   $arr->[$i]->[0] < 1 and $arr->[$i]->[0] = 1;
+   
   $arr->[$i]->[0] > $maxp and $arr->[$i]->[0] = $maxp; 
    
   $arr->[$i]->[0] = round ( ( log ( $arr->[$i]->[0] ) / log ( $maxp ) ) * 100 );
   
+  $arr->[$i]->[0] < 1 and $arr->[$i]->[0] = 1;
+  
+  # let's be paranoid, prevent log 0
   $arr->[$i]->[1] < 1 and $arr->[$i]->[1] = 1;
+  
   $arr->[$i]->[1] > $maxd and $arr->[$i]->[1] = $maxd; 
    
   $arr->[$i]->[1] = round ( ( log ( $arr->[$i]->[1] ) / log ( $maxd ) ) * 100 );
+  
+  $arr->[$i]->[1] < 1 and $arr->[$i]->[1] = 1;
 
  }
   
