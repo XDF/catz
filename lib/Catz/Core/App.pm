@@ -434,7 +434,15 @@ sub before {
   $self->res->code(200);
   defined $res->[0] and $self->res->headers->content_type( $res->[0] );
   defined $res->[1] and $self->res->headers->content_length( $res->[1] );
-  defined $res->[2] and $self->res->headers->header( 'Expires' => $res->[2] );
+  defined $res->[2] and do {
+  
+   # Expires must be recalcuated to correspond the durrent date
+   
+   $self->res->headers->header(
+    'Expires' => epoch2http ( abs ( $res->[2] ) + ( dt2epoch dt ) ) 
+   );
+   
+  };
   defined $res->[3] and $self->res->headers->header( 'Cache-Control' => $res->[3] );
   defined $res->[4] and $self->res->headers->header( 'Last-Modified' => $res->[4] );
   $self->res->body( ${ $res->[5] } ); # scalar ref to prevent copying
@@ -557,7 +565,7 @@ sub after {
   $str =~ s|\r\n|\n|g; # convert windows newlines to unix newlines
   $str =~ s|\s*\n\s*|\n|g; # convert whitespace constellations to one newline 
   $str =~ s|\n\"|\"|g; # remove newlines that occur just before "
-  
+    
   $self->res->body( $str );
   
   { use bytes; $self->res->headers->content_length( length $str ) }
@@ -598,7 +606,7 @@ sub after {
   [ 
    $self->res->headers->content_type // undef,
    $self->res->headers->content_length // undef,
-   $self->res->headers->header('Expires') // undef,
+   $s->{hold} // undef,
    $self->res->headers->header('Cache-Control') // undef,
    $self->res->headers->header('Last-Modified') // undef,
    \$self->res->body # scalar ref to prevent copying
