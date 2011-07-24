@@ -37,7 +37,7 @@ My application's unit tests complete in 153 wallclock secs with EQ 4 and in 193 
 The disk testing with dd using big block sizes show rather weak results for VQ 19. I'd say that these are just benchmark numbers. The tests with smaller block sizes are closer to real life and there VQ 19 performs adequately. My application should run fine on VQ 19. For IO intense applications I'd say take EQ 4 instead of VQ 19.
 
 || *the test* || *EQ 4* || *VQ 19* ||
-|| nice dd if=/dev/zero of=test bs=2M count=2000 || server: 4194304000 bytes (4.2 GB) copied, 30.1258 s, 139 MB/s || 4194304000 bytes (4.2 GB) copied, 241.968 s, 17.3 MB/s ||
+|| nice dd if=/dev/zero of=test bs=2M count=2000 || 4194304000 bytes (4.2 GB) copied, 30.1258 s, 139 MB/s || 4194304000 bytes (4.2 GB) copied, 241.968 s, 17.3 MB/s ||
 || dd if=/dev/zero of=test bs=2M count=2000 || 4194304000 bytes (4.2 GB) copied, 32.5151 s, 129 MB/s || 4194304000 bytes (4.2 GB) copied, 298.434 s, 14.1 MB/s ||
 || dd if=/dev/zero of=test bs=385K count=7000 || 2759680000 bytes (2.8 GB) copied, 13.7199 s, 201 MB/s || 2759680000 bytes (2.8 GB) copied, 149.822 s, 18.4 MB/s ||
 || dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync || 1073741824 bytes (1.1 GB) copied, 11.4975 s, 93.4 MB/s || 1073741824 bytes (1.1 GB) copied, 30.2424 s, 35.5 MB/s ||
