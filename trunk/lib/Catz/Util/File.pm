@@ -27,8 +27,6 @@ package Catz::Util::File;
 use strict;
 use warnings;
 
-use Archive::Zip;
-use Archive::Zip::MemberRead;
 use File::Copy;
 use File::stat;
 
@@ -171,21 +169,5 @@ sub findphotos {
 #
 sub pathcut { $_[0] =~ /^.*\/(.+?)$/; defined $1 ? $1 : $_[0]; }
 
-sub zipread {
-
- my ( $zname, $fname ) = @_;
- 
- -f $zname or die "zip file '$zname' not found or not a file";
- 
- my $zip = Archive::Zip->new( $zname );
-
- my $h  = Archive::Zip::MemberRead->new( $zip, $fname );
- 
- my $out = ''; my $line;
-  
- while ( defined ( $line = $h->getline() ) ) { $out .= $line . "\n" };
-
- return $out;
-}
 
 1;
