@@ -14,7 +14,7 @@ I've been running [http://catza.net/ catza.net] on [http://www.hetzner.de/en/ He
 
 Here are the main features found in EQ 4 and VQ 19 with my comments. Notice that the features listed reflect the Hetzner's offerings as of 2011-07-24. 
 
-|| *Feature* || *Hetzner EQ 4* || *Hetzner VQ 19* || My comments ||
+|| *Feature* || *Hetzner EQ 4* || *Hetzner VQ 19* || *My comments* ||
 || Price per month || 49 euros (has a setup fee) || 19 euros (no setup fee) || Both are cheap compared to the specs and Hetzner's good reputation. But this whole comparison is really not fair since EQ costs 2,5 times the VQ. VQ's lower price is very tempting. ||
 || Traffic included (if exceeded the network connection is switched to a slower one) || 10 TB || 4 TB || 10 TB is much more than I need and it is very unlikely that I would hit the 4 TB limit. So this is not a factor for me. ||
 || RAM || 8 GB || 2 GB || 2 GB is enough to run [http://catza.net/ catza.net] even when on a high load. 8 GB is a huge space and due to disk buffering EQ 4 mostly servers my content from RAM. So both are fine for me. ||
@@ -38,7 +38,7 @@ The disk testing with dd using big block sizes show rather weak results for VQ 1
 
 || *the test* || *EQ 4* || *VQ 19* ||
 || nice dd if=/dev/zero of=test bs=2M count=2000 || server: 4194304000 bytes (4.2 GB) copied, 30.1258 s, 139 MB/s || 4194304000 bytes (4.2 GB) copied, 241.968 s, 17.3 MB/s ||
-|| dd if=/dev/zero of=test bs=2M count=2000 || 4194304000 bytes (4.2 GB) copied, 32.5151 s, 129 MB/s || VPS single core: 4194304000 bytes (4.2 GB) copied, 298.434 s, 14.1 MB/s ||
+|| dd if=/dev/zero of=test bs=2M count=2000 || 4194304000 bytes (4.2 GB) copied, 32.5151 s, 129 MB/s || 4194304000 bytes (4.2 GB) copied, 298.434 s, 14.1 MB/s ||
 || dd if=/dev/zero of=test bs=385K count=7000 || 2759680000 bytes (2.8 GB) copied, 13.7199 s, 201 MB/s || 2759680000 bytes (2.8 GB) copied, 149.822 s, 18.4 MB/s ||
 || dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync || 1073741824 bytes (1.1 GB) copied, 11.4975 s, 93.4 MB/s || 1073741824 bytes (1.1 GB) copied, 30.2424 s, 35.5 MB/s ||
 || dd if=/dev/zero of=test bs=32k count=32k || 1073741824 bytes (1.1 GB) copied,  1.06718 s, 1.0 GB/s || 1073741824 bytes (1.1 GB) copied, 19.782 s, 54.3 MB/s || 
