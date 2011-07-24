@@ -225,9 +225,9 @@ Percentage of the requests served within a certain time (ms)
  100%    642 (longest request)
 }}}
 
-from another Hetzner server: ab -n 1000 -c 10
+From another Hetzner server: ab -n 1000 -c 10
 
-{{{}
+{{{
 Concurrency Level:      10
 Time taken for tests:   1.856 seconds
 Complete requests:      1000
@@ -327,9 +327,9 @@ Percentage of the requests served within a certain time (ms)
  100%    390 (longest request)
 }}}
 
-{{{
 From the same server: ab -n 2000 -c 100
 
+{{{
 Concurrency Level:      100
 Time taken for tests:   1.242 seconds
 Complete requests:      2000
@@ -401,6 +401,7 @@ Percentage of the requests served within a certain time (ms)
 === VQ 19 ===
 
 From a remote host in Finland: ab -n 300 -c 10 ... 
+
 {{{
 Concurrency Level:      10
 Time taken for tests:   19.739 seconds
