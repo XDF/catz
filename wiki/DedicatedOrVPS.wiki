@@ -1,0 +1,612 @@
+#summary My notes on choosing between Virtual Private Server and Dedicated Server
+
+*This page is under construction*
+
+I've been running [http://catza.net/ catza.net] on [http://www.hetzner.de/en/ Hetzner's] dedicated server EQ 4 and have been extremely satisfied with the service. The EQ 4 offers plenty of CPU power, memory and disk for my needs. Now that Hetzner has started to offer Virtual Private Servers (vServer) I checked my service's usage statistics against the specs of both EQ 4 and VQ 19 and it appears that http://catza.net/ catza.net] should run fine on both. The VQ was so much cheaper that I decided to downgrade from EQ 4 to VQ 19.        
+
+Notice that the features listed reflect the Hetzner's offerings of 2011-07-24. 
+
+|| Feature || Hetzner EQ 4 || Hetzner VQ 19 || My comments ||
+|| Price per month || 49 € || 19 € || Both are cheap compared to the specs and Hetzner's good reputation. This comparison is really not fair since EQ costs 2,5 times the VQ. ||
+|| Traffic included (if exceeded the network connections is switched to a slower one) || 10 TB || 4 TB || 10 TB is much more than I need and it is very unlikely that I would hit the 4 TB limit. ||
+|| RAM || 8 GB || 2 GB || 2 GB is enough to run [http://catza.net/ catza.net] even on a high user load. 8 GB is a huge space and due to disk buffering EQ 4 mostly servers my content from RAM. ||
+|| Disk space || 750 GB software mirrored || 80 GB on some sort of RAID || Both are plenty for me. ||  
+|| Backup space || 100 GB included || none || This is a strong point for me to choose EQ 4 agains VQ 19. I have plenty of content and it cannot be uploaded from home (uplink limited) or in travel (3G) in a reasonable time. With VQ 19 I would need to use S3 or similar storage solution. ||
+|| CPU || Intel i7-920 4core || Single virtual core || Intel i7 makes [http://catza.net/ catza.net] fly. Single virtual core is sufficient since it is a quaranteed share (not dependent on other VPS's that run on the same host). ||  
+|| Management || Full control. Feature-rich robot. Multiple OS images available. || Full control. Feature-rich robot. Multiple OS images available. || The services offer similar management features and freedom of configuration. ||
+
+= The peformance test results =
+
+== Disk comparison ==
+
+Notes:
+  * EQ 4 is a dedicated server and costs 2,5 times the monthly price of VPS VQ 19*
+  * The disk testing with dd doesn't give good results on VQ 19 with large blocks. This is most likely insignificant in normal web service use. The test results with smaller block sizes matter. 
+
+|| test || EQ 4 || VQ 19 ||
+|| nice perl run.pl test (my application's tests, 2nd run) || 153 wallclock secs || 193 wallclock secs ||
+|| nice dd if=/dev/zero of=test bs=2M count=2000 || server: 4194304000 bytes (4.2 GB) copied, 30.1258 s, 139 MB/s || 4194304000 bytes (4.2 GB) copied, 241.968 s, 17.3 MB/s ||
+|| dd if=/dev/zero of=test bs=2M count=2000 || 4194304000 bytes (4.2 GB) copied, 32.5151 s, 129 MB/s || VPS single core: 4194304000 bytes (4.2 GB) copied, 298.434 s, 14.1 MB/s ||
+|| dd if=/dev/zero of=test bs=385K count=7000 || 2759680000 bytes (2.8 GB) copied, 13.7199 s, 201 MB/s || 2759680000 bytes (2.8 GB) copied, 149.822 s, 18.4 MB/s ||
+|| dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync || 1073741824 bytes (1.1 GB) copied, 11.4975 s, 93.4 MB/s || 1073741824 bytes (1.1 GB) copied, 30.2424 s, 35.5 MB/s ||
+|| dd if=/dev/zero of=test bs=32k count=32k || 1073741824 bytes (1.1 GB) copied,  1.06718 s, 1.0 GB/s || 1073741824 bytes (1.1 GB) copied, 19.782 s, 54.3 MB/s ||
+|| hdparm -t on root || 76 MB in  3.41 seconds =  22.31 MB/sec || 332 MB in  3.00 seconds = 110.54 MB/sec || 
+|| dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync || 1073741824 bytes (1.1 GB) copied, 21.3517 s, 50.3 MB/s || 1073741824 bytes (1.1 GB) copied, 14.2246 s, 75.5 MB/s ||
+
+== UnixBench EQ 4 ==
+
+Notes:
+  * These numbers are excellent. EQ 4 is CPU vice a high performance server suitable for many uses.
+
+{{{
+========================================================================
+   BYTE UNIX Benchmarks (Version 5.1.3)
+
+   System: Catz: GNU/Linux
+   OS: GNU/Linux -- 2.6.32-5-amd64 -- #1 SMP Tue Jun 14 09:42:28 UTC 2011
+   Machine: x86_64 (unknown)
+   Language: en_US.utf8 (charmap="UTF-8", collate="UTF-8")
+   CPU 0: Intel(R) Core(TM) i7 CPU 920 @ 2.67GHz (5346.9 bogomips)
+          Hyper-Threading, x86-64, MMX, Physical Address Ext, SYSENTER/SYSEXIT, SYSCALL/SYSRET, Intel virtualization
+   CPU 1: Intel(R) Core(TM) i7 CPU 920 @ 2.67GHz (5346.3 bogomips)
+          Hyper-Threading, x86-64, MMX, Physical Address Ext, SYSENTER/SYSEXIT, SYSCALL/SYSRET, Intel virtualization
+   CPU 2: Intel(R) Core(TM) i7 CPU 920 @ 2.67GHz (5346.3 bogomips)
+          Hyper-Threading, x86-64, MMX, Physical Address Ext, SYSENTER/SYSEXIT, SYSCALL/SYSRET, Intel virtualization
+   CPU 3: Intel(R) Core(TM) i7 CPU 920 @ 2.67GHz (5346.3 bogomips)
+          Hyper-Threading, x86-64, MMX, Physical Address Ext, SYSENTER/SYSEXIT, SYSCALL/SYSRET, Intel virtualization
+   CPU 4: Intel(R) Core(TM) i7 CPU 920 @ 2.67GHz (5346.3 bogomips)
+          Hyper-Threading, x86-64, MMX, Physical Address Ext, SYSENTER/SYSEXIT, SYSCALL/SYSRET, Intel virtualization
+   CPU 5: Intel(R) Core(TM) i7 CPU 920 @ 2.67GHz (5346.3 bogomips)
+          Hyper-Threading, x86-64, MMX, Physical Address Ext, SYSENTER/SYSEXIT, SYSCALL/SYSRET, Intel virtualization
+   CPU 6: Intel(R) Core(TM) i7 CPU 920 @ 2.67GHz (5346.3 bogomips)
+          Hyper-Threading, x86-64, MMX, Physical Address Ext, SYSENTER/SYSEXIT, SYSCALL/SYSRET, Intel virtualization
+   CPU 7: Intel(R) Core(TM) i7 CPU 920 @ 2.67GHz (5346.3 bogomips)
+          Hyper-Threading, x86-64, MMX, Physical Address Ext, SYSENTER/SYSEXIT, SYSCALL/SYSRET, Intel virtualization
+   12:47:28 up 19 days,  9:58,  2 users,  load average: 0.00, 0.04, 0.08; runlevel
+
+------------------------------------------------------------------------
+Benchmark Run: Sun Jul 24 2011 12:47:28 - 13:15:49
+8 CPUs in system; running 1 parallel copy of tests
+
+Dhrystone 2 using register variables       27380319.9 lps   (10.0 s, 7 samples)
+Double-Precision Whetstone                     3514.0 MWIPS (10.0 s, 7 samples)
+Execl Throughput                               2350.5 lps   (29.8 s, 2 samples)
+File Copy 1024 bufsize 2000 maxblocks        997464.6 KBps  (30.0 s, 2 samples)
+File Copy 256 bufsize 500 maxblocks          275827.6 KBps  (30.0 s, 2 samples)
+File Copy 4096 bufsize 8000 maxblocks       2008339.0 KBps  (30.0 s, 2 samples)
+Pipe Throughput                             2389575.4 lps   (10.0 s, 7 samples)
+Pipe-based Context Switching                 111529.9 lps   (10.0 s, 7 samples)
+Process Creation                               9869.8 lps   (30.0 s, 2 samples)
+Shell Scripts (1 concurrent)                   5207.8 lpm   (60.0 s, 2 samples)
+Shell Scripts (8 concurrent)                   3838.8 lpm   (60.0 s, 2 samples)
+System Call Overhead                        4065280.4 lps   (10.0 s, 7 samples)
+
+System Benchmarks Index Values               BASELINE       RESULT    INDEX
+Dhrystone 2 using register variables         116700.0   27380319.9   2346.2
+Double-Precision Whetstone                       55.0       3514.0    638.9
+Execl Throughput                                 43.0       2350.5    546.6
+File Copy 1024 bufsize 2000 maxblocks          3960.0     997464.6   2518.8
+File Copy 256 bufsize 500 maxblocks            1655.0     275827.6   1666.6
+File Copy 4096 bufsize 8000 maxblocks          5800.0    2008339.0   3462.7
+Pipe Throughput                               12440.0    2389575.4   1920.9
+Pipe-based Context Switching                   4000.0     111529.9    278.8
+Process Creation                                126.0       9869.8    783.3
+Shell Scripts (1 concurrent)                     42.4       5207.8   1228.3
+Shell Scripts (8 concurrent)                      6.0       3838.8   6397.9
+System Call Overhead                          15000.0    4065280.4   2710.2
+                                                                   ========
+System Benchmarks Index Score                                        1475.4
+
+------------------------------------------------------------------------
+Benchmark Run: Sun Jul 24 2011 13:15:49 - 13:44:22
+8 CPUs in system; running 8 parallel copies of tests
+
+Dhrystone 2 using register variables      118476442.5 lps   (10.0 s, 7 samples)
+Double-Precision Whetstone                    22621.1 MWIPS (9.9 s, 7 samples)
+Execl Throughput                              25881.9 lps   (29.8 s, 2 samples)
+File Copy 1024 bufsize 2000 maxblocks        770590.3 KBps  (30.0 s, 2 samples)
+File Copy 256 bufsize 500 maxblocks          207984.5 KBps  (30.0 s, 2 samples)
+File Copy 4096 bufsize 8000 maxblocks       1917802.5 KBps  (30.0 s, 2 samples)
+Pipe Throughput                            10128644.1 lps   (10.0 s, 7 samples)
+Pipe-based Context Switching                2158629.6 lps   (10.0 s, 7 samples)
+Process Creation                              78972.4 lps   (30.0 s, 2 samples)
+Shell Scripts (1 concurrent)                  37648.5 lpm   (60.0 s, 2 samples)
+Shell Scripts (8 concurrent)                   4931.6 lpm   (60.0 s, 2 samples)
+System Call Overhead                       13513932.8 lps   (10.0 s, 7 samples)
+
+System Benchmarks Index Values               BASELINE       RESULT    INDEX
+Dhrystone 2 using register variables         116700.0  118476442.5  10152.2
+Double-Precision Whetstone                       55.0      22621.1   4112.9
+Execl Throughput                                 43.0      25881.9   6019.0
+File Copy 1024 bufsize 2000 maxblocks          3960.0     770590.3   1945.9
+File Copy 256 bufsize 500 maxblocks            1655.0     207984.5   1256.7
+File Copy 4096 bufsize 8000 maxblocks          5800.0    1917802.5   3306.6
+Pipe Throughput                               12440.0   10128644.1   8142.0
+Pipe-based Context Switching                   4000.0    2158629.6   5396.6
+Process Creation                                126.0      78972.4   6267.7
+Shell Scripts (1 concurrent)                     42.4      37648.5   8879.4
+Shell Scripts (8 concurrent)                      6.0       4931.6   8219.3
+System Call Overhead                          15000.0   13513932.8   9009.3
+                                                                   ========
+System Benchmarks Index Score                                        5173.9
+}}}
+
+== UnixBench VQ 19 ==
+
+Notes
+  * These number are excellent considering that it is a single virtual core VPS. The result matches EQ 4. 
+
+{{{
+========================================================================
+   BYTE UNIX Benchmarks (Version 5.1.3)
+
+   System: catz: GNU/Linux
+   OS: GNU/Linux -- 2.6.32-5-amd64 -- #1 SMP Tue Jun 14 09:42:28 UTC 2011
+   Machine: x86_64 (unknown)
+   Language: en_US.utf8 (charmap="UTF-8", collate="UTF-8")
+   CPU 0: QEMU Virtual CPU version 0.12.3 (5614.1 bogomips)
+          x86-64, MMX, Physical Address Ext, SYSENTER/SYSEXIT, SYSCALL/SYSRET
+   12:49:25 up  9:35,  2 users,  load average: 0.00, 0.07, 0.63; runlevel
+
+------------------------------------------------------------------------
+Benchmark Run: Sun Jul 24 2011 12:49:25 - 13:17:39
+1 CPU in system; running 1 parallel copy of tests
+
+Dhrystone 2 using register variables       24018510.7 lps   (10.0 s, 7 samples)
+Double-Precision Whetstone                     3249.5 MWIPS (9.6 s, 7 samples)
+Execl Throughput                               3626.4 lps   (30.0 s, 2 samples)
+File Copy 1024 bufsize 2000 maxblocks        869488.0 KBps  (30.0 s, 2 samples)
+File Copy 256 bufsize 500 maxblocks          281563.1 KBps  (30.0 s, 2 samples)
+File Copy 4096 bufsize 8000 maxblocks       1935461.3 KBps  (30.0 s, 2 samples)
+Pipe Throughput                             2321830.6 lps   (10.0 s, 7 samples)
+Pipe-based Context Switching                 402036.6 lps   (10.0 s, 7 samples)
+Process Creation                              14754.2 lps   (30.0 s, 2 samples)
+Shell Scripts (1 concurrent)                   6023.6 lpm   (60.0 s, 2 samples)
+Shell Scripts (8 concurrent)                    753.1 lpm   (60.0 s, 2 samples)
+System Call Overhead                        3682241.3 lps   (10.0 s, 7 samples)
+
+System Benchmarks Index Values               BASELINE       RESULT    INDEX
+Dhrystone 2 using register variables         116700.0   24018510.7   2058.1
+Double-Precision Whetstone                       55.0       3249.5    590.8
+Execl Throughput                                 43.0       3626.4    843.3
+File Copy 1024 bufsize 2000 maxblocks          3960.0     869488.0   2195.7
+File Copy 256 bufsize 500 maxblocks            1655.0     281563.1   1701.3
+File Copy 4096 bufsize 8000 maxblocks          5800.0    1935461.3   3337.0
+Pipe Throughput                               12440.0    2321830.6   1866.4
+Pipe-based Context Switching                   4000.0     402036.6   1005.1
+Process Creation                                126.0      14754.2   1171.0
+Shell Scripts (1 concurrent)                     42.4       6023.6   1420.7
+Shell Scripts (8 concurrent)                      6.0        753.1   1255.2
+System Call Overhead                          15000.0    3682241.3   2454.8
+                                                                   ========
+System Benchmarks Index Score                                        1493.3
+}}}
+
+== Web access ==
+
+Notes:
+  * ab from Apache was used
+  * used a typical [http://catza.net/ catza.net] page that is of dynamic nature but due to multi-level caching is mostly server just from Memcached without disk IO
+  * a scenario causing lots of disk IO would be more interesting but currenlty very hard to conduct since my application is mostly read only and EQ 4 has 8 GB RAM that caches the content minimizing true IO
+  
+=== EQ 4 ===
+
+From a remote host in Finland: ab -n 300 -c 10 ...
+
+{{{
+Concurrency Level:      10
+Time taken for tests:   18.275 seconds
+Complete requests:      300
+Failed requests:        0
+Write errors:           0
+Total transferred:      4450500 bytes
+HTML transferred:       4350900 bytes
+Requests per second:    16.42 [#/sec] (mean)
+Time per request:       609.168 [ms] (mean)
+Time per request:       60.917 [ms] (mean, across all concurrent requests)
+Transfer rate:          237.82 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:       55   60   3.8     59      84
+Processing:   178  536  49.7    541     581
+Waiting:       60  292 130.7    296     562
+Total:        240  596  49.6    601     642
+
+Percentage of the requests served within a certain time (ms)
+  50%    601
+  66%    607
+  75%    611
+  80%    614
+  90%    618
+  95%    623
+  98%    634
+  99%    637
+ 100%    642 (longest request)
+}}}
+
+from another Hetzner server: ab -n 1000 -c 10
+
+{{{}
+Concurrency Level:      10
+Time taken for tests:   1.856 seconds
+Complete requests:      1000
+Failed requests:        0
+Write errors:           0
+Total transferred:      14786000 bytes
+HTML transferred:       14454000 bytes
+Requests per second:    538.73 [#/sec] (mean)
+Time per request:       18.562 [ms] (mean)
+Time per request:       1.856 [ms] (mean, across all concurrent requests)
+Transfer rate:          7778.96 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    3   1.7      3      20
+Processing:     4   15   5.3     16      33
+Waiting:        0   11   5.0     10      31
+Total:          5   18   4.8     18      35
+
+Percentage of the requests served within a certain time (ms)
+  50%     18
+  66%     20
+  75%     22
+  80%     22
+  90%     24
+  95%     26
+  98%     28
+  99%     30
+ 100%     35 (longest request)
+}}}
+
+From another Hetzner server: ab -n 2000 -c 20 ...
+
+{{{
+Concurrency Level:      20
+Time taken for tests:   3.187 seconds
+Complete requests:      2000
+Failed requests:        0
+Write errors:           0
+Total transferred:      29572000 bytes
+HTML transferred:       28908000 bytes
+Requests per second:    627.59 [#/sec] (mean)
+Time per request:       31.868 [ms] (mean)
+Time per request:       1.593 [ms] (mean, across all concurrent requests)
+Transfer rate:          9062.01 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    6   3.9      6      26
+Processing:     6   25   9.6     24      72
+Waiting:        2   16   8.0     14      69
+Total:         12   31   8.3     31      78
+
+Percentage of the requests served within a certain time (ms)
+  50%     31
+  66%     34
+  75%     36
+  80%     37
+  90%     40
+  95%     43
+  98%     48
+  99%     73
+ 100%     78 (longest request)
+}}}
+
+From another Hetzner server: ab -n 2000 -c 100
+
+{{{
+Concurrency Level:      100
+Time taken for tests:   3.135 seconds
+Complete requests:      2000
+Failed requests:        0
+Write errors:           0
+Total transferred:      29572000 bytes
+HTML transferred:       28908000 bytes
+Requests per second:    637.86 [#/sec] (mean)
+Time per request:       156.773 [ms] (mean)
+Time per request:       1.568 [ms] (mean, across all concurrent requests)
+Transfer rate:          9210.42 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0   34  15.8     33      87
+Processing:    10   91  39.3     89     341
+Waiting:        7   51  26.6     48     266
+Total:         29  125  44.1    127     390
+
+Percentage of the requests served within a certain time (ms)
+  50%    127
+  66%    141
+  75%    150
+  80%    154
+  90%    168
+  95%    179
+  98%    216
+  99%    301
+ 100%    390 (longest request)
+}}}
+
+{{{
+From the same server: ab -n 2000 -c 100
+
+Concurrency Level:      100
+Time taken for tests:   1.242 seconds
+Complete requests:      2000
+Failed requests:        0
+Write errors:           0
+Total transferred:      29572000 bytes
+HTML transferred:       28908000 bytes
+Requests per second:    1609.87 [#/sec] (mean)
+Time per request:       62.117 [ms] (mean)
+Time per request:       0.621 [ms] (mean, across all concurrent requests)
+Transfer rate:          23245.69 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.8      0       6
+Processing:     7   60   8.8     61      80
+Waiting:        7   60   8.8     60      80
+Total:         12   61   8.2     61      80
+
+Percentage of the requests served within a certain time (ms)
+  50%     61
+  66%     62
+  75%     64
+  80%     64
+  90%     68
+  95%     72
+  98%     75
+  99%     78
+ 100%     80 (longest request)
+}}}
+
+From the same server: ab -n 50000 -c 500 ...
+
+{{{
+Concurrency Level:      500
+Time taken for tests:   43.283 seconds
+Complete requests:      50000
+Failed requests:        793
+   (Connect: 0, Receive: 0, Length: 793, Exceptions: 0)
+Write errors:           0
+Non-2xx responses:      793
+Total transferred:      727832890 bytes
+HTML transferred:       711377326 bytes
+Requests per second:    1155.18 [#/sec] (mean)
+Time per request:       432.835 [ms] (mean)
+Time per request:       0.866 [ms] (mean, across all concurrent requests)
+Transfer rate:          16421.37 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   1.2      0      16
+Processing:     9  316 1466.0     80   33017
+Waiting:        9  316 1465.9     80   33017
+Total:         25  317 1466.4     80   33027
+
+Percentage of the requests served within a certain time (ms)
+  50%     80
+  66%     84
+  75%     87
+  80%     89
+  90%    103
+  95%    123
+  98%   5000
+  99%   5008
+ 100%  33027 (longest request)
+
+}}} 
+
+=== VQ 19 ===
+
+From a remote host in Finland: ab -n 300 -c 10 ... 
+{{{
+Concurrency Level:      10
+Time taken for tests:   19.739 seconds
+Complete requests:      300
+Failed requests:        0
+Write errors:           0
+Total transferred:      4450500 bytes
+HTML transferred:       4350900 bytes
+Requests per second:    15.20 [#/sec] (mean)
+Time per request:       657.971 [ms] (mean)
+Time per request:       65.797 [ms] (mean, across all concurrent requests)
+Transfer rate:          220.18 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:       56   65  13.3     61     161
+Processing:   176  579  93.3    562     975
+Waiting:       61  326 153.6    310     909
+Total:        235  643  99.5    626    1036
+
+Percentage of the requests served within a certain time (ms)
+  50%    626
+  66%    645
+  75%    654
+  80%    657
+  90%    693
+  95%    860
+  98%    975
+  99%   1026
+ 100%   1036 (longest request)
+}}}
+
+From another Hetzner server: ab -n 1000 -c 10 ...
+
+{{{
+Concurrency Level:      10
+Time taken for tests:   19.916 seconds
+Complete requests:      1000
+Failed requests:        4
+   (Connect: 0, Receive: 0, Length: 4, Exceptions: 0)
+Write errors:           0
+Non-2xx responses:      1
+Total transferred:      14773515 bytes
+HTML transferred:       14441702 bytes
+Requests per second:    50.21 [#/sec] (mean)
+Time per request:       199.161 [ms] (mean)
+Time per request:       19.916 [ms] (mean, across all concurrent requests)
+Transfer rate:          724.40 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    1   0.6      0       9
+Processing:     4  199 1408.9     45   14391
+Waiting:        3  188 1408.7     35   14389
+Total:          5  199 1408.9     46   14391
+WARNING: The median and mean for the initial connection time are not within a normal deviation
+        These results are probably not that reliable.
+
+Percentage of the requests served within a certain time (ms)
+  50%     46
+  66%     60
+  75%     71
+  80%     81
+  90%    111
+  95%    140
+  98%    248
+  99%  13440
+ 100%  14391 (longest request)
+}}}
+
+From another Hetzner server: ab -n 2000 -c 20 ...
+
+{{{
+Concurrency Level:      20
+Time taken for tests:   9.023 seconds
+Complete requests:      2000
+Failed requests:        0
+Write errors:           0
+Total transferred:      29576000 bytes
+HTML transferred:       28912000 bytes
+Requests per second:    221.66 [#/sec] (mean)
+Time per request:       90.227 [ms] (mean)
+Time per request:       4.511 [ms] (mean, across all concurrent requests)
+Transfer rate:          3201.12 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    1   0.5      0      19
+Processing:     4   89  48.6     85     262
+Waiting:        3   67  38.4     62     227
+Total:          5   90  48.7     86     262
+WARNING: The median and mean for the initial connection time are not within a normal deviation
+        These results are probably not that reliable.
+
+Percentage of the requests served within a certain time (ms)
+  50%     86
+  66%    106
+  75%    121
+  80%    131
+  90%    157
+  95%    180
+  98%    203
+  99%    218
+ 100%    262 (longest request)
+}}}
+
+From another Hetzner server: ab -n 2000 -c 100 ...
+
+{{{
+Concurrency Level:      100
+Time taken for tests:   9.621 seconds
+Complete requests:      2000
+Failed requests:        0
+Write errors:           0
+Total transferred:      29576000 bytes
+HTML transferred:       28912000 bytes
+Requests per second:    207.87 [#/sec] (mean)
+Time per request:       481.065 [ms] (mean)
+Time per request:       4.811 [ms] (mean, across all concurrent requests)
+Transfer rate:          3001.97 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0   55 399.0      0    3004
+Processing:    20  422 224.3    374    1386
+Waiting:       12  315 165.0    276    1120
+Total:         20  477 524.8    376    4389
+
+Percentage of the requests served within a certain time (ms)
+  50%    376
+  66%    458
+  75%    526
+  80%    600
+  90%    726
+  95%    830
+  98%   1263
+  99%   3994
+ 100%   4389 (longest request)
+}}}
+
+From same server: ab -n 2000 -c 100 ...
+
+{{{
+Concurrency Level:      100
+Time taken for tests:   9.145 seconds
+Complete requests:      2000
+Failed requests:        0
+Write errors:           0
+Total transferred:      29576000 bytes
+HTML transferred:       28912000 bytes
+Requests per second:    218.70 [#/sec] (mean)
+Time per request:       457.243 [ms] (mean)
+Time per request:       4.572 [ms] (mean, across all concurrent requests)
+Transfer rate:          3158.37 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    3  13.6      0     339
+Processing:    18  447 283.2    344    1494
+Waiting:        3  444 283.0    341    1494
+Total:         55  451 281.3    345    1494
+
+Percentage of the requests served within a certain time (ms)
+  50%    345
+  66%    378
+  75%    468
+  80%    548
+  90%    827
+  95%   1356
+  98%   1434
+  99%   1441
+ 100%   1494 (longest request)
+}}}
+
+From same server: ab -n 50000 -c 500 ...
+
+{{{
+Concurrency Level:      500
+Time taken for tests:   154.968 seconds
+Complete requests:      50000
+Failed requests:        3040
+   (Connect: 0, Receive: 0, Length: 3040, Exceptions: 0)
+Write errors:           0
+Non-2xx responses:      3040
+Total transferred:      695434200 bytes
+HTML transferred:       679387920 bytes
+Requests per second:    322.65 [#/sec] (mean)
+Time per request:       1549.676 [ms] (mean)
+Time per request:       3.099 [ms] (mean, across all concurrent requests)
+Transfer rate:          4382.43 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    1   9.3      0     120
+Processing:     0 1482 2226.2    439   33053
+Waiting:        0 1479 2225.5    436   33053
+Total:          0 1483 2229.7    439   33157
+
+Percentage of the requests served within a certain time (ms)
+  50%    439
+  66%    537
+  75%   3362
+  80%   3406
+  90%   3575
+  95%   5002
+  98%   6579
+  99%   9209
+ 100%  33157 (longest request)
+}}}         

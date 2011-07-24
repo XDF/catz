@@ -1,9 +1,37 @@
 #summary Short process descriptions, notes and checklists for catza.net service management and service deployment
 
-Please note that this page is provided as public for common interest and to give me an online access to the service management notes 24/7 around the globe. The langauge used here is not polished for general public. The tasks and commands run as root and other users are all presented as a list without information what user to use.
+Please note that this page is provided as public for both due to common interest and to give me an online access to the service management notes 24/7 around the globe. The langauge used here is not polished and the notes are not complete. The tasks and commands run as root and other users are all presented as a list without information what user to use.
 
-Backup notes are to be added (backup routines under development). 
+= Deploy a new version of the data (new SQLite database file but unchanged schema structure) =
 
+  * detect what is the current production environment (from HTML meta)
+  * ship the database file to the production db folder (but not the key file)    
+  * set database file to read only  
+  * run the database verify tool (get the auth key from core conf), the verification should return OK
+  * ship the database key file matching the new database and the production switches immediately to use the new database
+  * check that the new data version is really in production (from HTML meta)
+  * browse a few pages to make sure the production works properly
+  * run the incremental backup or a full backup (full is run when a gallery is completed)
+{{{
+backup_incr.sh
+}}}       
+{{{
+backup_full.sh
+}}}
+
+= Revert the deployment of the data = 
+
+  * check that the database key file to revert exists and delete any newer files and the production switches immediately to the older data version
+  * run the incremental backup
+{{{
+backup_incr.sh
+}}}       
+
+= Deploy a new static content with a new version of the data =
+
+  * ship the static content
+  * procees using the instructions for deploying a new version of the data            
+      
 = Deploy a new version of the service =
 
 == on dev ==
@@ -20,7 +48,9 @@ Backup notes are to be added (backup routines under development).
 
 == on prod ==
 
-  * detect what is the current production environment (from HTML meta)     
+  * detect what is the current production environment (from HTML meta)
+  * cd to the non-production enviroment  
+  * verify that there is no hypnotoad.pid file in scripts directory (that would indicate that this service is running and might be in production)       
   * delete all stuff from the non-production application directory 
 {{{ 
 rm -fR *
@@ -51,33 +81,27 @@ cat hypnotoad.pid | xargs kill -TERM
 {{{
 pico /etc/rc.local
 }}}
+  * run the incremental backup
+{{{
+backup_incr.sh
+}}}       
 
-= Deploy a new version of the data (new SQLite database file but unchanged schema structure) =
-
-  * detect what is the current production environment (from HTML meta)
-  * ship the database file to the production db folder (but not the key file)    
-  * set database file to read only  
-  * run the database verify tool (get the auth key from core conf), the verification should return OK
-  * ship the database key file matching the new database and the production switches immediately to use the new database
-  * check that the new data version is really in production (from HTML meta)
-  * browse a few pages to make sure the production works properly  
-
-= Revert the deployment of the data = 
-
-  * check that the database key file to revert exists and delete any newer files and the production switches immediately to the older data version
-
-= Deploy a new static content with a new version of the data =
-
-  * ship the static content
-  * procees using the instructions for deploying a new version of the data            
-     
 = Update Hypnotoad on the fly =
 
-  * update Mojolicious on perl on perlbrew by using cpan
-  * check the hypnotoad pid number
-  * issue kill -USR2 xyz
-  * production.log should merely indicate an new start [Sun Jul 17 18:39:38 2011] [info] Server listening (...)
-  * hypnotoad.pid shows a new pid
+  * update Mojolicious via CPAN
+  * restart Hypnotoad
+{{{    
+kill -USR2 <pid>
+}}}
+  * log/production.log should indicate an new start 
+{{{
+[Sun Jul 17 18:39:38 2011] [info] Server listening (...)
+}}}
+  * hypnotoad.pid should show a fresh pid
+  * run the incremental backup
+{{{
+backup_incr.sh
+}}}       
 
 = Update Perl =
 
@@ -100,4 +124,9 @@ perlbrew switch perl-x.yy.z
   * restart hypnotoad
 {{{
 kill -USR2 <pid>
-}}}        
+}}}
+  * run the incremental backup
+{{{
+backup_incr.sh
+}}}       
+        
