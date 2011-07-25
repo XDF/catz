@@ -11,6 +11,8 @@ I've been running [http://catza.net/ catza.net] on [http://www.hetzner.de/en/ He
   * My service provides no income but I pay all the fees. The monthly fee is a factor and a VPS generally costs less than a Dedi.        
   * Running a dedicated server when VPS is enough is a waste of natural resources and a form of consumerism.
 
+While reading this comparison please keep in mind that we are talking about cheap servers intended for small scale use. When I write things like _excellent performance_ and _fast disk IO_ they should be interpreted the server level in mind. The enterprise stuff is a different story. At my day job we have ordered a database server that can run disk IO at level of 4 gigabytes per second (approximately 40 gigabits per second). The server is not Hetzner's EQ or VQ series ;-D 
+
 = The features list =
 
 Here are the main features found in EQ 4 and VQ 19 with my comments. Notice that the features listed reflect the Hetzner's offerings as of 2011-07-24. 
