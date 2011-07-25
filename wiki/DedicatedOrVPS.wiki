@@ -1,14 +1,15 @@
-#summary My notes on choosing between Hetzner's Dedicated Server EQ 4 and Virtual Private Server VQ 19 
+#summary My notes on choosing between Hetzner's Dedicated Server EQ 4 and Virtual Private Server VQ 19
 
 <wiki:toc max_depth="3" />
 
 = Introduction =
 
-I've been running [http://catza.net/ catza.net] on [http://www.hetzner.de/en/ Hetzner's] dedicated server EQ 4 and have been very satisfied with the service. EQ 4 offers plenty of CPU power, memory and disk and has a low price tag. I've had no issues. But there were several factors that made me thinking of downgrading to a VPS:  
+I've been running [http://catza.net/ catza.net] on [http://www.hetzner.de/en/ Hetzner's] dedicated server EQ 4 and have been very satisfied with the server and the service. EQ 4 offers plenty of CPU power, memory and disk and has a low price tag. I've had no issues. But there were several factors that made me thinking of downgrading to a VPS:  
   * Hetzner has started to offer some interesting VPS's (vServer). I was interested in VQ 19.
   * I used a VPS before EQ 4 and it worked fine so I generally have nothing against the idea of a VPS.
   * I checked my [http://catza.net/ service's] usage statistics against the specs of both EQ 4 and VQ 19 and it should run fine on both. The service is not a high traffic service and the technical architecture is lightweight including a multi-level caching scheme. It requires some RAM but with that should run smoothly even on a VPS.
   * My service provides no income but I pay all the fees. The monthly fee is a factor and a VPS generally costs less than a Dedi.        
+  * Running a dedicated server when VPS is enough is a waste of natural resources and a form of consumerism.
 
 = The features list =
 
@@ -16,25 +17,29 @@ Here are the main features found in EQ 4 and VQ 19 with my comments. Notice that
 
 || *Feature* || *Hetzner EQ 4* || *Hetzner VQ 19* || *My comments* ||
 || Price per month || 49 euros (has a setup fee) || 19 euros (no setup fee) || Both are cheap compared to the specs and Hetzner's good reputation. But this whole comparison is really not fair since EQ costs 2,5 times the VQ. VQ's lower price is very tempting. ||
-|| Traffic included (if exceeded the network connection is switched to a slower one) || 10 TB || 4 TB || 10 TB is much more than I need and it is very unlikely that I would hit the 4 TB limit. So this is not a factor for me. ||
-|| RAM || 8 GB || 2 GB || 2 GB is enough to run [http://catza.net/ catza.net] even when on a high load. 8 GB is a huge space and due to disk buffering EQ 4 mostly servers my content from RAM. So both are fine for me. ||
-|| Disk space || 750 GB software mirrored || 80 GB on some sort of RAID || Both are plenty for me. Both have a some sort for RAID protection. ||  
-|| Backup space || 100 GB included || none || This is a strong point to choose EQ 4 instead of VQ 19. I have lot of photo content and it cannot be uploaded from home (uplink is very limited) or when on travel (3G) in a reasonable time. With VQ 19 I would need to use Amazon's S3 or similar internet storage solution and this adds to the price tag. ||
-|| CPU || Intel i7-920 4 cores || Single virtual core || Intel i7 makes [http://catza.net/ catza.net] fly. Single virtual core is sufficient since it is a quaranteed share (not dependent on other VPS's that run on the same host). ||  
-|| Management || Full control. Feature-rich robot. Multiple OS images available. || Full control. Feature-rich robot. Multiple OS images available. || The services offer similar management features and freedom of configuration. ||
-|| The hardware || Consumer-grade components || Consumer-grade components || Nothing special here. With these price tags don't expect to get enteprice class hardware. I'd bet that in practice four VQ 19's run on a single EQ 4. ||
+|| Traffic included (if exceeded the network connection is switched to a slower one) || 10 TB || 4 TB || 10 TB is much more than I need and it is very unlikely that I would hit the 4 TB limit. So this is not a deciding factor for me. ||
+|| RAM || 8 GB || 2 GB || So both are fine for me. 8 GB is a huge space and due to disk buffering EQ 4 mostly servers my content from RAM. 2 GB is enough to run [http://catza.net/ catza.net] even when on a high load. ||
+|| Disk space || 750 GB software mirrored || 80 GB on some sort of RAID || 80 GB is enough to fit the system, the service, the content and a couple of copies of them. Both have a some sort for RAID protection. ||  
+|| Backup space || 100 GB included || none || This is a strong point to choose EQ 4 instead of VQ 19. I have lot of photo content and it cannot be uploaded from home (limited uplink) or when on travel (3G) in a reasonable time. With VQ 19 I would need to use Amazon's S3 or similar internet storage solution and this adds to the price tag. ||
+|| CPU || Intel i7-920 4 cores || Single virtual core || Intel i7 makes [http://catza.net/ catza.net] fly. Single virtual core is sufficient since it is a guaranteed share (not dependent on other VPS's that run on the same host). ||  
+|| Management || Full control. Feature-rich management robot including monitoring and rescue features. Multiple OS images available. || Full control. Feature-rich management robot including monitoring and rescue features. Multiple OS images available. || The services offer similar management features and freedom of configuration. ||
+|| The hardware || Consumer-grade components. || Consumer-grade components. || Nothing special here. With these price tags do not expect to get enterprise class hardware. For us not running an enterprise consumer-grade hardware gives the best performance compared to the price. I'd bet that in practice four VQ 19's run on a single EQ class server. ||
 
 = The test results =
 
-I had a day to spare so I ordered VQ 19. The setup process seems to be automatic since I orderd it the middle of the night during a weekend and on a holiday season and it was up and running in 15 minutes. 
+I had a day to spare so I ordered VQ 19. The setup process seems to be automatic since I ordered it the middle of the night during a weekend and during a holiday season and it was up and running in 15 minutes. Then I installed Debian 64 bit minimal, configured the system and shipped the whole [http://catza.net catza.net] from EQ's backup space.
 
-The test results are pretty much as I expected. VQ 19 has a good performance. EQ 4 of course clearly beats it in numbers. I practice considering my application I'd say the difference in small.
+The test results are pretty much as I expected. VQ 19 has an excellent CPU performance and an adequate IO performance. EQ of course beats VQ in numbers. But in practice considering my application I'd say the difference in small.
 
-My application's unit tests complete in 153 wallclock secs with EQ 4 and in 193 wallclock secs with VQ 19.  
+My application's unit tests complete in 153 wall clock seconds with EQ 4 and in 193 wall clock seconds with VQ 19.  
 
 == Disk performance ==
 
-The disk testing with dd using big block sizes show rather weak results for VQ 19. I'd say that these are just benchmark numbers. The tests with smaller block sizes are closer to real life and there VQ 19 performs adequately. My application should run fine on VQ 19. For IO intense applications I'd say take EQ 4 instead of VQ 19.
+Disk performance testing with dd is a crude method. Yes it gives some performance figures but the load don't match a typical web application.
+
+Using big block sizes show rather weak results for VQ 19. I'd say that these are just benchmark numbers. The tests with smaller block sizes are closer to real life and there VQ 19 performs adequately. 
+
+My application should run fine on VQ 19. But for IO intense applications take EQ 4 instead of VQ 19.
 
 || *the test* || *EQ 4* || *VQ 19* ||
 || nice dd if=/dev/zero of=test bs=2M count=2000 || 4194304000 bytes (4.2 GB) copied, 30.1258 s, 139 MB/s || 4194304000 bytes (4.2 GB) copied, 241.968 s, 17.3 MB/s ||
@@ -42,11 +47,11 @@ The disk testing with dd using big block sizes show rather weak results for VQ 1
 || dd if=/dev/zero of=test bs=385K count=7000 || 2759680000 bytes (2.8 GB) copied, 13.7199 s, 201 MB/s || 2759680000 bytes (2.8 GB) copied, 149.822 s, 18.4 MB/s ||
 || dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync || 1073741824 bytes (1.1 GB) copied, 11.4975 s, 93.4 MB/s || 1073741824 bytes (1.1 GB) copied, 30.2424 s, 35.5 MB/s ||
 || dd if=/dev/zero of=test bs=32k count=32k || 1073741824 bytes (1.1 GB) copied,  1.06718 s, 1.0 GB/s || 1073741824 bytes (1.1 GB) copied, 19.782 s, 54.3 MB/s || 
-|| hdparm -t on root || 76 MB in  3.41 seconds =  22.31 MB/sec || 332 MB in  3.00 seconds = 110.54 MB/sec ||
+|| hdparm -t on root || 332 MB in  3.00 seconds = 110.54 MB/sec || 76 MB in  3.41 seconds =  22.31 MB/sec ||
 
 == Unix Bench ==
 
-EQ 4 is CPU-vice a high performance server. VQ 19 shows excellent results too matching the EQ 4 single core results-
+EQ 4 is CPU-vice a high performance server. VQ 19 shows excellent results too matching the EQ's single core results.
 
 === EQ 4 ===
 
@@ -193,7 +198,9 @@ System Benchmarks Index Score                                        1493.3
 
 == Web access ==
 
-Apache ab was used with a typical [http://catza.net/ catza.net] page that is of dynamic nature but due to multi-level caching is mostly served from Memcached without any disk IO.  With my application both servers scale very well. EQ 4's scalability seems astronomical. A scenario causing lots of disk IO (especially writes) would be more interesting. It should widen the peformance gap between EQ 4 and VQ 19 seen in these results.
+Apache ab was used with a typical [http://catza.net/ catza.net] page that is of dynamic nature but due to multi-level caching is served from Memcached without any disk IO.
+
+With my application both servers scale very well. EQ 4's scalability seems astronomical. A scenario causing lots of disk IO (especially writes) would be interesting. It should widen the performance gap between EQ 4 and VQ 19 seen in these results.
   
 === EQ 4 ===
 
@@ -231,7 +238,7 @@ Percentage of the requests served within a certain time (ms)
  100%    642 (longest request)
 }}}
 
-From another Hetzner server: ab -n 1000 -c 10
+From another Hetzner server: ab -n 1000 -c 10 ...
 
 {{{
 Concurrency Level:      10
@@ -299,7 +306,7 @@ Percentage of the requests served within a certain time (ms)
  100%     78 (longest request)
 }}}
 
-From another Hetzner server: ab -n 2000 -c 100
+From another Hetzner server: ab -n 2000 -c 100 ...
 
 {{{
 Concurrency Level:      100
@@ -333,7 +340,7 @@ Percentage of the requests served within a certain time (ms)
  100%    390 (longest request)
 }}}
 
-From the same server: ab -n 2000 -c 100
+From the same server: ab -n 2000 -c 100 ...
 
 {{{
 Concurrency Level:      100
@@ -620,8 +627,8 @@ Percentage of the requests served within a certain time (ms)
 
 = The decision =
 
-VQ 19 appears to be very suitable to run [http://catza.net/ catza.net] without any performance issues. I would save 30 euros per month in switching to it. Still I deciced to keep EQ 4 and let VQ 19 go for following reasons:
+VQ 19 appears to be very suitable to run [http://catza.net/ catza.net] without performance issues. I would save 30 euros per month if switching to it. Still I decided to keep EQ 4 and let VQ 19 go for several reasons:
    * VQ 19 is a single core server. While the core performs excellent the single core solution has its potential to become a bottleneck. When I run unit tests the CPU is fully consumed. When I check database integrity the CPU is fully consumed. When I make a backup the CPU is fully consumed (encryption, compression). If a Linux process hangs the CPU is fully consumed. These situations have an immediate effect on the application performance. With EQ 4 I can run my tasks, have a hung process and there are still two cores left to serve the web users. I sleep my nights better with multiple cores. I wonder if Hetzner could update the VQ's to have one quaranteed core, four burstable cores? 
-   * Since the application is lightweight VQ 19 could handle all the load [http://catza.net/ catza.net] is due to face. But EQ 4 offers more headroom for unforseen situations and extreme peak times. I serve photos and the photos get [http://en.wikipedia.org/wiki/Inline_linking inline linked] around the web. I don't mind since I have plenty of headroom for that.
+   * Since the application is lightweight VQ 19 could handle all the load [http://catza.net/ catza.net] is due to face. But EQ 4 offers more headroom for unforeseen situations, extreme peak times and future expansion. I serve photos and the photos get [http://en.wikipedia.org/wiki/Inline_linking inline linked] around the web. I don't mind since I have plenty of headroom for that.
    * VQ 19 has no backup space. EQ 4 has and it works fine (have tried both making backups and restoring them). External backup space adds to VQ 19's price.
    * For a casual web service admin VQ 19 is a Mercedes Benz. EQ 4 is a Rolls-Royce.
