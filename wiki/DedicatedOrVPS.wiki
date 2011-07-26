@@ -33,7 +33,9 @@ I had a day to spare so I ordered VQ 19. The setup process seems to be automatic
 
 The test results are pretty much as I expected. VQ 19 has an excellent CPU performance and an adequate IO performance. EQ of course beats VQ in numbers. But in practice considering my application I'd say the difference in small.
 
-My application's unit tests complete in 153 wall clock seconds with EQ 4 and in 193 wall clock seconds with VQ 19.  
+My application's unit tests complete in 153 wall clock seconds with EQ 4 and in 193 wall clock seconds with VQ 19.
+
+*Important: In addition to results on this page there are also ServerBenchmarks.*  
 
 == Disk performance ==
 
@@ -41,7 +43,7 @@ Disk performance testing with dd is a crude method. Yes it gives some performanc
 
 Using big block sizes show rather weak results for VQ 19. I'd say that these are just benchmark numbers. The tests with smaller block sizes are closer to real life and there VQ 19 performs adequately. 
 
-My application should run fine on VQ 19. But for IO intense applications take EQ 4 instead of VQ 19.
+My application should run fine on VQ 19. EQ 4 offers more IO power. But if you have something really IO demanding maybe the standard EQ disk system is not enough for you.
 
 || *the test* || *EQ 4* || *VQ 19* ||
 || nice dd if=/dev/zero of=test bs=2M count=2000 || 4194304000 bytes (4.2 GB) copied, 30.1258 s, 139 MB/s || 4194304000 bytes (4.2 GB) copied, 241.968 s, 17.3 MB/s ||
