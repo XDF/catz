@@ -21,16 +21,18 @@
 % }
 % my $desc = $t->{PHOTO}." $id";
 % length ( $ttl ) > 0 and $desc = "$desc: $ttl";
-% stash ( 'tweettext', $desc );
 <meta name="og:title" content="<%= $desc %>">
-<meta name="og:type" content="catz:photo">   
+<meta name="og:type" content="catz:photo">
+% stash ( 'desc', $desc );   
 <% end %>
 %#
 %# --------------------
 %#
 <% content 'canon' => begin %>
-<link rel="canonical" href="/<%== $lang %>/viewall/<%== $id %>/">
-<meta name="og:url" content="<%== $t->{URL_CATZA} %><%== $lang %>/viewall/<%== $id %>/">
+% my $cn = qq{/$lang/viewall/$id/};
+<link rel="canonical" href="<%== $cn %>">
+<meta name="og:url" content="<%== $cn %>">
+% stash ( 'cn', $cn );
 <% end %>
 %#
 %# --------------------
@@ -168,18 +170,14 @@
 % };
 % }
 <%= $sep %> <%= $t->{PHOTO_ID} %> <%== fullnum33 ( $image->[0], $image->[1] ) %>
+<%= $sep %>
+%== include 'elem/ig', igurl => stash ( 'cn' ), igtext => stash ( 'desc' );
 % if ( $peek eq 'on' ) {
 <%= $sep %> <%= $t->{PHOTO_REF} %> <%== $image->[2] %>:P<%== $image->[1] %> 
-% }
+% } 
 </span>
 % } 
-% if ( $display ne 'none' ) {
-% my $encan = "/en/viewall/$id/";
-<%= $sep %>  
-%== include 'elem/twitter', twurl => $encan, twtext => stash ( 'tweettext' );
-%== include 'elem/facebook', fburl => $encan, fbref => 'photo';
 </div>
-% }
 %#
 %# --------------------
 %#

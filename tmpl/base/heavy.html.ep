@@ -45,8 +45,9 @@
 %  }
 % }
 <%= content 'canon' => begin %>
-<link rel="canonical" href="<%== "/$lang".urirest ( $url ) %>">
-<meta name="og:url" content="<%== $t->{URL_CATZA}.'en'.urirest($url) %>">
+% my $cn = "/$lang".urirest ( $url );
+<link rel="canonical" href="<%== $cn %>">
+<meta name="og:url" content="<%== $cn %>">
 <% end %> 
 <link rel="alternate" title="<%= $t->{TRANSLATE} %>" lang="<%== $langother %>" hreflang="<%== $langother %>" href="<%== $urlother %>">
 <meta name="fb:admins" content="<%== $facebookkey %>">

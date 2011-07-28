@@ -22,7 +22,7 @@
 %#
 <% content 'metaadd' => begin %>
 % my $ogtitle = dtexpand ( dtdate ( $new1->[0] ), $lang ).': '.$new1->[1];
-% stash ( 'tweettext', $ogtitle );
+% stash ( 'ogt', $ogtitle );
 <meta name="og:title" content="<%== $ogtitle %>">
 <meta name="og:type" content="article">
 <link rel="index" href="/<%== $langa %>/news/">
@@ -68,11 +68,8 @@
 <div class="bar outer">
 <span class="lean"><%=  dtexpand ( $new1->[0], $lang ) %></span>
 % if ( ( dt2epoch ( dt ) - dt2epoch ( $new1->[0] ) ) < 60 * 60 * 24 * 30 ) {
-<span class="aero">
-% my $encan = '/en'.urirest ( $url );
-%== include 'elem/twitter', twurl => $encan, twtext => stash ( 'tweettext' );
-%== include 'elem/facebook', fburl => $encan, fbref => 'news';
-</span>
+<%= $sep %>
+%== include 'elem/ig', igurl => "/$lang".urirest ( $url ), igtext => stash ( 'ogt' );
 % }
 </div>
 <% end %> 
