@@ -56,8 +56,8 @@ Currently metadata not provided is
 
 == Facebook share ==
 
-|| *page* || *front* || *news* || *new1* || *lists* || *list1* || *browse* || *view* || *search* ||
-|| *function* || share the front page || || share the article (not older than 90 days) || || || || share the photo || ||
+|| *front* || *news* || *new1* || *lists* || *list1* || *browse* || *view* || *search* ||
+|| share the front page || || share the article (not older than 90 days) || || || || share the photo || ||
 
 Share uses
   * the deprecated share API
