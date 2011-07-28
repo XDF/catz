@@ -12,7 +12,6 @@
 %#
 <% content 'metaadd' => begin %>
 % my $ogtitle = $t->{SITE}.' - '.$t->{SLOGAN};
-% stash ( 'tweettext', $ogtitle );
 <meta name="og:title" content="<%= $ogtitle %>">
 <meta name="og:type" content="website">
 <% end %>
@@ -24,9 +23,8 @@
 %# --------------------
 %#
 <% content 'path' => begin %>
-<%== $t->{SLOGAN} %>
-%== include 'elem/twitter', twurl => '/', twtext => stash ( 'tweettext' );
-%== include 'elem/facebook', fburl => '/', fbref => 'front'; 
+<%== $t->{SLOGAN} %> <%= $sep %> 
+%== include 'elem/ig', igurl =>  "/$lang".urirest ( $url ), igtext => $t->{SITE}.' - '.$t->{SLOGAN}; 
 <% end %>
 %#
 %# --------------------

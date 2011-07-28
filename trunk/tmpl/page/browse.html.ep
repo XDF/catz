@@ -47,13 +47,15 @@ if ( $runmode eq 'pair' ) {
 %#
 %# --------------------
 %#
-<% content 'canon' => begin %> 
+<% content 'canon' => begin %>
+% my $cn; 
 % if ( $page == 1 ) {
-<link rel="canonical" href="<%== include 'href/id', langh => $lang, toid => 0 %>">
+%  $cn = $self->render('href/id', langh => $lang, toid => 0, partial => 1 );
 % } else {
-<link rel="canonical" href="<%== include 'href/id', langh => $lang, toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]) %>">
+%  $cn = $self->render('href/id', langh => $lang, toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]), partial => 1 );
 % }
-<meta name="og:url" content="<%== $t->{URL_CATZX} %><%== include 'href/id', langh => 'en', toid => 0 %>">
+<link rel="canonical" href="<%== $cn %>">
+<meta name="og:url" content="<%== $cn %>">
 <% end %>
 %#
 %# --------------------
