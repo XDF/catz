@@ -21,8 +21,8 @@ The following tables describe the metadata provided on HTML pages.
 || facebook || link me || links to facebook fan page ||
 || misc || meta loaded || the language-specific time when the data was loaded ||
 || misc || meta rendered || the language-specific time when the HTML was rendered ||
-|| misc || meta environment || indicates the deployment environment in use ||
-|| misc || meta credits || gives credits to some vital technologies used by the system || 
+|| misc || meta environment || indicates the production environment in use ||
+|| misc || meta credits || gives credits to some vital technologies that the system is based on || 
        
 == Default provided by base/heavy.html.ep but overloadable ==       
 
@@ -54,26 +54,26 @@ Currently metadata not provided is
  
 = Social media integration =
 
-== Facebook like ==
+== Facebook share ==
 
 || *page* || *front* || *news* || *new1* || *lists* || *list1* || *browse* || *view* || *search* ||
-|| *function* || like the site || || like the article not older than 90 days || || || like all photos / subject / search || like the photo || ||
-|| *ref* || front || || news || || || in runmode all and search use runmode but with runmode pair use pri || photo || ||
+|| *function* || share the front page || || share the article (not older than 90 days) || || || || share the photo || ||
 
-Like button uses
-  * iframe
-  * canonical english url pointing to the root resource 
-  * like (not recommend) mostly due to text length
-
+Share uses
+  * the deprecated share API
+  * text hyperlink  
+  * canonical url as url
+  * the og:title as text
+  
 == Twitter tweet ==
 
 || *front* || *news* || *news1* || *lists* || *list1* || *browse* || *view* || *search* ||
-|| tweet the site || || for articles not older than 90 days || || || tweet all photos / subject /search || tweet the photo || ||
+|| tweet the front page || || tweet the article (for articles not older than 90 days) || || || || tweet the photo || ||
 
 Twitter tweet button uses
-  * iframe
-  * canonical english url pointing to the root resource
-  * the og:title as text (when adding og:title on pages having tweet button a stash variable tweettext is set for use in tweet button generation)  
+  * text hyperlink
+  * canonical url as url
+  * the og:title as text    
        
  
 
