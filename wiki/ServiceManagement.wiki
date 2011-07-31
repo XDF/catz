@@ -2,8 +2,9 @@
 
 Please note that this page is provided as public for both due to common interest and to give me an online access to the service management notes 24/7 around the globe. The langauge used here is not polished and the notes are not complete. The tasks and commands run as root and other users are all presented as a list without information what user to use.
 
-= Deploy a new version of the data (new SQLite database file but unchanged schema structure) =
+= Deploy a new version of the data
 
+  * database structures should not have changed, only the data in them
   * detect what is the current production environment (from HTML meta)
   * ship the database file to the production db folder (but not the key file)    
   * set database file to read only  
@@ -30,7 +31,7 @@ backup_incr.sh
 = Deploy a new static content with a new version of the data =
 
   * ship the static content
-  * procees using the instructions for deploying a new version of the data            
+  * progres using the instructions for deploying a new version of the data            
       
 = Deploy a new version of the service =
 
