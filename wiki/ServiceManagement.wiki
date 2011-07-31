@@ -2,7 +2,7 @@
 
 Please note that this page is provided as public for both due to common interest and to give me an online access to the service management notes 24/7 around the globe. The langauge used here is not polished and the notes are not complete. The tasks and commands run as root and other users are all presented as a list without information what user to use.
 
-= Deploy a new version of the data
+= Deploy a new version of the data =
 
   * database structures should not have changed, only the data in them
   * detect what is the current production environment (from HTML meta)
