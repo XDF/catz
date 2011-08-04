@@ -87,9 +87,13 @@ pico /etc/rc.local
 backup_incr.sh
 }}}       
 
-= Update Hypnotoad on the fly =
+= Update Mojolicious & Hypnotoad on the fly =
 
+  * do the Mojolicious update on dev first to find out any issues
   * update Mojolicious via CPAN
+  * run tests, although this has a limited meaning since
+     * if something works incorrectly, the result goes to cache and is server from there thereafter
+     * if Hypnotoad on production restarts workers, it assumably uses the new version
   * restart Hypnotoad
 {{{    
 kill -USR2 <pid>
@@ -99,6 +103,7 @@ kill -USR2 <pid>
 [Sun Jul 17 18:39:38 2011] [info] Server listening (...)
 }}}
   * hypnotoad.pid should show a fresh pid
+  * check that the service appears to work
   * run the incremental backup
 {{{
 backup_incr.sh
