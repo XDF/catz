@@ -133,7 +133,7 @@
 %   $j++ > 1 and do {
 <%= $sep %>
 % };
-% if ( index ( $comm, '[' ) == 0 ) { # must be just a code
+% if ( $comm =~ m|^\[[A-Z]{3}| ) { # is just a code
 <%= $comm %> 
 <span class="shrink"><%= $t->{NO_CAT_A} %> <%== $id %> <%= $t->{NO_CAT_B} %> <a class="infox" title="<%= $t->{MAILTO_HEAD} %> <%== $id %>" href=""></a></span>
 % } else { # not just a code, has more data
@@ -170,7 +170,11 @@
 % };
 % }
 <%= $sep %> <%= $t->{PHOTO_ID} %> <%== fullnum33 ( $image->[0], $image->[1] ) %>
+% }
+% if ( $display ne 'none' ) {
+%  $display eq 'full' and do {
 <%= $sep %>
+%  };
 %== include 'elem/ig', igurl => stash ( 'cn' ), igtext => stash ( 'desc' );
 % if ( $peek eq 'on' ) {
 <%= $sep %> <%= $t->{PHOTO_REF} %> <%== $image->[2] %>:P<%== $image->[1] %> 

@@ -23,7 +23,7 @@
 %# --------------------
 %#
 <% content 'path' => begin %>
-<%== $t->{SLOGAN} %> <%= $sep %> 
+<%== $t->{SLOGAN} %>
 %== include 'elem/ig', igurl =>  "/$lang".urirest ( $url ), igtext => $t->{SITE}.' - '.$t->{SLOGAN}; 
 <% end %>
 %#

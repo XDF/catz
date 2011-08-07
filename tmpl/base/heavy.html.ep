@@ -24,8 +24,8 @@
 <meta http-equiv="content-language" content="<%== $lang %>">
 <link rel="shortcut icon" href="/favicon.ico">
 <%= content 'image' => begin %>
-<link rel="image_src" href="/catzlogo.png">
-<meta name="og:image" content="<%== $t->{URL_CATZA} %>catzlogo.png">
+<link rel="image_src" href="/img/catz.png">
+<meta name="og:image" content="<%== $t->{URL_CATZA} %>img/catz.png">
 <% end %>
 <meta name="author" content="<%== $t->{AUTHOR} %>">
 <meta name="copyright" content="<%= $t->{COPYRIGHT} %> <%= $t->{AUTHOR} %> <%= $t->{FIRSTYEAR} %>-<%= thisyear %>. <%= $t->{LICENCE} %>.">

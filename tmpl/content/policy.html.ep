@@ -1,3 +1,4 @@
+%== include 'elem/cc';
 % if ( $lang eq 'fi' ) {
 Kaikki kuvat ovat heti käytettävissä sekä ei-kaupallisiin että kaupallisiin tarkoituksiin <a href="<%== $t->{URL_LICENCE} %>"><%= $t->{LICENCEG} %></a> mukaisesti ilman tarkempaa sopimista tai rahallista korvausta. Nimenä on mainittava <span class="lean"><%= $t->{AUTHOR} %></span>, <span class="lean"><%= $t->{SITE} %></span> tai <span class="lean"><%= $t->{SITEOLD} %></span> (valitse vapaasti).
 % } else {

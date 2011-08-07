@@ -1,0 +1,1 @@
+<a class="cca" title="<%== $t->{LICENCE} %>" href="<%== $t->{URL_LICENCE} %>"><img class="cc" src="/img/cc.png" height="31" width="88" alt="<%== $t->{LICENCE} %>"></a> 
