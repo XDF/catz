@@ -523,11 +523,15 @@ sub after {
   
   given ( $self->req->url->path->to_string ) {
   
-   when ( [ qw ( /robots.txt /favicon.ico /catzlogo.png ) ] ) {
+   when ( [ qw ( /robots.txt /favicon.ico ) ] ) {
+    $age = 60*60*24*7; # 7 d
+   }
+
+   when ( m|^/img/| ) {
     $age = 60*60*24*7; # 7 d
    }
    
-   when ( m|^/js_lib| ) {
+   when ( m|^/js_lib/| ) {
     $age = 60*60*24; # 1 d
    }
   
