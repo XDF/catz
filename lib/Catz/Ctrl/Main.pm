@@ -139,7 +139,7 @@ sub result {
  my $res = $self->fetch ( 'net#data', @keys, $pseudo );
  
  defined $res and do {
- 
+  
   $s->{result} = $res->[0];
   $s->{attrib} = $res->[1];
  
@@ -163,18 +163,6 @@ sub lastshow {
  
  $self->render( template => 'block/lastshow', format => 'txt' );
  
-}
-
-sub verify {
-
- my $self = shift; my $s = $self->{stash};
- 
- $s->{auth} eq conf ( 'key_tools' ) or ( $self->not_found and return );
-
- my $out = $self->fetch ( 'tool#verify' );   
-  
- $self->render( text => $out, format => 'txt' );
-
 }
 
 my $cset = [ (
