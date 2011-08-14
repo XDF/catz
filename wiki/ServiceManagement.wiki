@@ -40,11 +40,9 @@ backup_incr.sh
 = Deploy a new static content with a new version of the data =
 
   * ship the static content
-  * progress using the instructions for deploying a new version of the data            
+  * progress using the instructions for data update           
       
 = Deploy a new version of the service =
-
-*Requires an update*
 
 == on dev ==
 
@@ -52,31 +50,37 @@ backup_incr.sh
   * roll to the latest database version 
   * clean old database versions from /db (leave only the latest and the latest key file)
   * clean logs from /log
-  * check what is in /temp and clean it if needed    
-  * check that run.pl has production mode for win 
+  * check what is in /temp and clean it if needed     
   * fresh start memcached
-  * run tests, all test should pass without warnings, check that the number of test and the time taken seems reasonable: Files=13, Tests=20894, 279 wallclock secs
+  * run tests
+    * all test should pass without warnings
+    * check that the stats are resonable (Files=13, Tests=20894, 279 wallclock secs)
   * SVN commit the project if not yet committed  
 
 == on prod ==
 
-  * detect what is the current production environment (from HTML meta)
-  * cd to the non-production enviroment  
-  * verify that there is no hypnotoad.pid file in scripts directory (that would indicate that this service is running and might be in production)       
-  * delete all stuff from the non-production application directory 
+  * detect what is the production environment's path
+{{{
+ps -ef | grep catz
+}}}
+  * delete all stuff from the non-production environment directory 
 {{{ 
+...
 rm -fR *
 }}}
-  * deploy the new version of the application by shipping all files (on slow connection consider gzipping the database before shipping and then ugzipping)
-  * set database file to read only  
-  * run tests on prod, all should pass without warnings, check that the stats are resonable: Files=13, Tests=20894, 195 wallclock secs     
+  * deploy the new version of the application by shipping all files
+    * on slow connection consider gzipping the database before shipping and then ungzipping
+  * set the database file to read only  
+  * run tests
+    * all should pass without warnings
+    * check that the stats are resonable (Files=13, Tests=20894, 195 wallclock secs)     
   * fire up the service
 {{{
 hypnotoad run.pl
 }}} 
   * test the service via ssh tunneled port that it appears to work as expected
   * edit nginx config to so that the proxying points to the deployed service
-  * test the nginx config 
+  * test nginx config 
 {{{
 nginx -t
 }}}
@@ -84,7 +88,7 @@ nginx -t
 {{{
 kill -HUP $( cat /var/run/nginx.pid )
 }}}   
-  * test via the public interface that the service works normally and it runs on the correct enviroment (from HTML meta)
+  * test via the public interface that the service works normally and that it runs on the correct enviroment (from HTML meta)
   * shutdown the non-production
 {{{
 cat hypnotoad.pid | xargs kill -TERM
