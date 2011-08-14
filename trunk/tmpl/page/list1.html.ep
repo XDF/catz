@@ -136,8 +136,12 @@
 <%= $sep %> <%= dtexpand ( $row->[4], $lang ) %>
 % } else {
 %  if ( $subject eq 'album' or $subject eq 'date' ) { # if album or date then print time only
+%   my $tmp4 = dttime ( $row->[4] );
+%   my $tmp5 = dttime ( $row->[5] );
+%   length ( $tmp4 ) == 6 and length ( $tmp5 ) == 6 and do {
 <%= $sep %> <%= dtexpand ( dttime ( $row->[4] ) , $lang ) %>
 <%= dttime ( $row->[4] ) eq dttime ( $row->[5] ) ? '' : ' - ' . dtexpand ( dttime ( $row->[5] ), $lang ) %>
+%   };
 %  } else { # otherwise print date only
 <%= $sep %> <%= dtexpand ( dtdate ( $row->[4] ), $lang ) %>
 <%= ( dtdate ( $row->[4] ) eq dtdate ( $row->[5] ) ) ? '' : ' - ' . dtexpand ( dtdate ( $row->[5] ), $lang ) %>

@@ -26,6 +26,7 @@ use 5.10.0; use strict; use warnings;
 
 use lib '../lib'; use lib '../libi';
 
+use Catz::Core::Conf;
 use Catz::Util::File qw ( fileread filewrite fileremove findlatest pathcut );
 
 my $rolled = 0;
@@ -72,4 +73,10 @@ if ( not defined $dtold ) {
  
 }
 
-
+if ( $rolled and conf ( 'lin' ) ) {
+ 
+ chmod ( 0444, $dbnew ) || die $!;
+  
+ say "set read only '$dbnew'";
+    
+}

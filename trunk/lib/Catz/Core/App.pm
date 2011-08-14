@@ -131,14 +131,6 @@ sub startup {
  # the interface is subject to changes and cannot be relied on
  $r->route( '/lastshow' )->to( 'main#lastshow',  hold => 15 );
  
- ###
- ### tools
- ###
- 
- # the database verifier service (simple non-destructive routine)
- $r->route( '/tools/verify/:auth', auth => qr/[a-z0-9]{16}/ )
-  ->to( 'main#verify', hold => 0 );
-
  # all site's true content is under /:langa where langa is 'en' or 'fi'
  # and it can be extended by magic code defining the user settings
  #
