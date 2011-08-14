@@ -2,17 +2,25 @@
 
 Please note that this page is provided as public for both due to common interest and to give me an online access to the service management notes 24/7 around the globe. The langauge used here is not polished and the notes are not complete. The tasks and commands run as root and other users are all presented as a list without information what user to use.
 
-= Deploy a new version of the data =
+= Update data =
 
-  * database structures should not have changed, only the data in them
-  * detect what is the current production environment (from HTML meta)
-  * ship the database file to the production db folder (but not the key file)    
-  * set database file to read only  
-  * run the database verify tool (get the auth key from core conf), the verification should return OK
-  * ship the database key file matching the new database and the production switches immediately to use the new database
-  * check that the new data version is really in production (from HTML meta)
+  * changes in source data format are NOT allowed
+  * detect what is the production environment's path
+{{{
+ps -ef | grep catz
+}}}
+  * ship the source data files to the production enviroment's data directory
+  * run database loader on meta and post (if static content has changed then include folders)
+{{{
+perl load.pl meta post
+}}}    
+  * if the load is successfull then roll to the latest version (production switches to it immediately)
+{{{
+perl roll.pl
+}}} 
+  * check that the production effectively runs on the new data (from HTML meta enviroment tag)
   * browse a few pages to make sure the production works properly
-  * run the incremental backup or a full backup (full is run when a gallery is completed)
+  * run incremental backup or a full backup (full is run when a gallery is completed)
 {{{
 backup_incr.sh
 }}}       
@@ -22,8 +30,9 @@ backup_full.sh
 
 = Revert the deployment of the data = 
 
-  * check that the database key file to revert exists and delete any newer files and the production switches immediately to the older data version
-  * run the incremental backup
+  * check that the database key file to revert to exists
+  * delete any newer key files (production switches immediately)
+  * run incremental backup
 {{{
 backup_incr.sh
 }}}       
@@ -31,9 +40,11 @@ backup_incr.sh
 = Deploy a new static content with a new version of the data =
 
   * ship the static content
-  * progres using the instructions for deploying a new version of the data            
+  * progress using the instructions for deploying a new version of the data            
       
 = Deploy a new version of the service =
+
+*Requires an update*
 
 == on dev ==
 
