@@ -84,10 +84,15 @@ sub feed { # RSS feed of news
  );
   
  foreach my $item (@$news) {
+ 
+  my $tx = $item->[2];
+  $tx =~ s/\|/ /g; # paragraph changes replaced by space in feed
+  $tx = limit ( $tx, 100 ); # limit to 100 characters  
+  
   $rss->add_item(
    title =>  $item->[1],
    link => $s->{t}->{URL_CATZA}.$s->{lang}.'/news/'.$item->[0].'/',
-   description => limit ( $item->[2], 100 ),
+   description => $tx,
    pubDate => epoch2rfc822 dt2epoch $item->[0],
   );
  }

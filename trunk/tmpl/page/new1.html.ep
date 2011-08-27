@@ -61,7 +61,12 @@
 %# --------------------
 %#
 <%= content 'main' => begin %>
-<div class="bar outer"><%= $new1->[2] %></div>
+% my @pa = split /\|/, $new1->[2]; # split to paragraphs
+% foreach my $p ( @pa ) {
+<div class="bar outer">
+<%= $p %>
+</div>
+% }
 % if ( $new1->[3] ) {
 <div class="bar outer"><a href="<%== $new1->[3] %>"><%= $new1->[3] %></a></div>
 % } 
