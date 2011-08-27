@@ -628,6 +628,9 @@ sub org {
   
   when ( /korat cat/i ) 
    { return 'Korat Association','Korat-yhdistys' }
+
+  when ( /cats of tuuri/i ) 
+   { return 'The Sacred Birmans in Finland','Pyhä Birman Kissa -yhdistys' }
   
   when ( /InCat/ ) { return 'InCat','InCat' }
           
