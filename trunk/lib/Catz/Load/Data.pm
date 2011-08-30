@@ -310,7 +310,7 @@ sub lens {
    
    $lens = 'sigma50'; 
    
-   $date eq '20110828' and $lens = 'canon50ii';
+   $date eq '20110828' and $lens = 'canon50usm';
       
   }
   when ( 85 )  { $lens = 'sigma85' }
