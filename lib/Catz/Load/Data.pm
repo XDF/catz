@@ -294,7 +294,7 @@ memoize ( 'lens' );
 sub lens {
 
  my ( $album, $flen, $fnum ) = @_;
-   
+    
  my $date = substr ( $album, 0, 8 ); # use only date part
 
  $flen =~ s/ mm$//g; # remove ' mm'
@@ -306,7 +306,13 @@ sub lens {
  
   when ( 17 )  { $lens = 'tokina17' }
   when ( 28 )  { $lens = 'sigma28' }
-  when ( 50 )  { $lens = 'sigma50' }
+  when ( 50 )  { 
+   
+   $lens = 'sigma50'; 
+   
+   $date eq '20110828' and $lens = 'canon50ii';
+      
+  }
   when ( 85 )  { $lens = 'sigma85' }
   when ( 135 ) { $lens = 'canon135l' }   
   when ( 200 ) { $lens = 'canon200l' }
