@@ -410,7 +410,7 @@ sub load_folder {
  
  load_exec ( 'inexif_file_null_upd', $aid );
   
- my $n = 1; # photos are numbered staring from 1
+ my $n = 1; # photos are numbered starting from 1
  
  foreach my $photo (@photos) {
       
