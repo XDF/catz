@@ -1,26 +1,31 @@
 #summary Short process descriptions, notes and checklists for catza.net service management and service deployment
 
-Please note that this page is provided as public for both due to common interest and to give me an online access to the service management notes 24/7 around the globe. The langauge used here is not polished and the notes are not complete. The tasks and commands run as root and other users are all presented as a list without information what user to use.
+Please note that this page is provided as public for both due to common interest and to give me an online access to the service management notes 24/7 around the globe. The language used here is not polished and the notes are not complete. The tasks and commands run as root and other users are all presented as a list without information what user to use.
 
-= Update data =
-
-  * changes in source data format are NOT allowed
+= Update data (unchanged structures) =
+  
+  * run database loader on dev on meta and post (if static content has changed then include folders by not specifying any parameters)
+{{{
+perl load.pl meta post
+}}}    
+  * if the load is successfull then roll to the latest version
+{{{
+perl roll.pl
+}}}
+  * fire up the service on dev and check that all looks good
+{{{
+perl run.pl daemon
+}}}        
   * detect what is the production environment's path
 {{{
 ps -ef | grep catz
 }}}
-  * ship the source data files to the production enviroment's data directory
-  * run database loader on meta and post (if static content has changed then include folders)
-{{{
-perl load.pl meta post
-}}}    
-  * if the load is successfull then roll to the latest version (production switches to it immediately)
-{{{
-perl roll.pl
-}}} 
+  * ship the database file to the production db folder (but NOT the key file)
+  * after a succesfull shipping set the database file to read only
+  * ship the database key file matching the database file (and the production switches immediately to use the new data)           
   * check that the production effectively runs on the new data (from HTML meta enviroment tag)
   * browse a few pages to make sure the production works properly
-  * run incremental backup or a full backup (full is run when a gallery is completed)
+  * run incremental backup or a full backup (full should be run when a gallery is completed)
 {{{
 backup_incr.sh
 }}}       
@@ -30,8 +35,8 @@ backup_full.sh
 
 = Revert the deployment of the data = 
 
-  * check that the database key file to revert to exists
-  * delete any newer key files (production switches immediately)
+  * check that both the database file and the key file to revert to exists
+  * delete any newer key files (and the production switches immediately)
   * run incremental backup
 {{{
 backup_incr.sh
@@ -40,7 +45,7 @@ backup_incr.sh
 = Deploy a new static content with a new version of the data =
 
   * ship the static content
-  * progress using the instructions for data update           
+  * progress using the instructions for update data           
       
 = Deploy a new version of the service =
 
@@ -106,9 +111,7 @@ backup_incr.sh
 
   * do the Mojolicious update on dev first to find out any issues
   * update Mojolicious via CPAN
-  * run tests, although this has a limited meaning since
-     * if something works incorrectly, the result goes to cache and is server from there thereafter
-     * if Hypnotoad on production restarts workers, it assumably uses the new version
+  * run tests, although this has a limited meaning since if something is broken , the results goes to cache and is served from there thereafter
   * restart Hypnotoad
 {{{    
 kill -USR2 <pid>
@@ -126,7 +129,7 @@ backup_incr.sh
 
 = Update Perl =
 
-  * install the latest stable Perl, this will run for a while
+  * install the latest stable Perl (this will run for a while)
 {{{  
 perlbrew install perl-x.yy.z
 }}}
@@ -149,5 +152,4 @@ kill -USR2 <pid>
   * run the incremental backup
 {{{
 backup_incr.sh
-}}}       
-        
+}}}             
