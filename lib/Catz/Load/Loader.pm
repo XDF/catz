@@ -96,9 +96,7 @@ my $sql = {
  
  seq_one => 'select seq_init(1)', # initialize sequence to 1
  
- album_null_upd => 'update album set s=null',
- album_col => 'select rowid from album order by fsort(folder)',
- album_upd => 'update album set s=seq_incr() where rowid=?',
+ album_upd => 'update album set s=? where aid=?',
  
  photo_null_upd => 'update photo set x=null',
  photo_col => 'select photo.rowid from photo natural join album order by s desc,n asc',
@@ -158,18 +156,6 @@ my $seq = undef;
 sub seq_init { $seq = $_[0] // 1 }
 
 sub seq_incr { $seq++ }
-
-sub fsort {
-
- if ( $_[0] =~ /^(.+)(\d)$/ ) { # if folder ends with a number
- 
-  # reverse the number for sorting 1 -> 9, 2 -> 8 etc
-    
-  return $1 . ( 10 - int ( $2 ) ); 
-  
- } else { return $_[0] } # as is  
-
-}
 
 sub load_begin {
 
@@ -481,13 +467,7 @@ sub load_simple {
   my @lines = map { $_ eq '?' ? undef : $_ } tolines ( $pile );
   
   given ( $table  ) {
-  
-   # skip the photo URL which comes last  
-   when ( 'mbreed' ) { pop @lines };
-   
-   # skip the photo URL that comes as third value
-   when ( 'mbreeder' ) { @lines = ( $lines[0], $lines[1], $lines[3] ) };
-   
+     
    when ( 'mnat' ) {
    
     # verify that a flag file is present
@@ -563,8 +543,12 @@ sub load_complex {
    
  my $aid = get_aid ( $album );
  
+ # store s sorter
+ 
+ load_exec ( 'album_upd', $d->{s}, $aid );
+ 
  load_exec ( 'inalbum_del', $aid );
-
+ 
  # loading album level elements
    
  my $date = substr ( $album, 0, 8 );
@@ -751,18 +735,13 @@ sub load_post {
 
  my $i = 0;
  
- foreach my $tbl ( qw ( album photo ) ) {
+ load_exec ( 'photo_null_upd' ); # clear old s
  
-  load_exec ( $tbl . '_null_upd' ); # clear old s
- 
-  load_exec ( 'seq_one' ); # initialize sequence to 1 
+ load_exec ( 'seq_one' ); # initialize sequence to 1 
 
-  do { load_exec ( $tbl . '_upd', $_ ) }
-   foreach load_exec ( $tbl . '_col' );
+ do { load_exec ( 'photo_upd', $_ ) } foreach load_exec ( 'photo_col' );
 
-  $i++; logadd ( '.' );
- 
- }
+ $i++; logadd ( '.' );
   
  load_do('delete from album where aid not in ( select aid from inalbum union select aid from inexif union select aid from inpos union select aid from photo )');
  $i++; logadd ( '.' );

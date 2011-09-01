@@ -84,7 +84,7 @@ sub _full {
   when ( 'cron' ) {
   
    # special ordering where missing HHMMSS is assumed to be 000000 so is the first photo on that date  
-   my $res = $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by  substr(first,1,8)||replace(substr(first,9,6),'','000000') desc}, $pri );
+   my $res = $self->dball( qq{select $cols from sec_$lang natural join _secm natural join pri where pri=? order by substr(first,1,8)||replace(substr(first,9,6),'','000000') desc}, $pri );
    
    my @idx = (); my @sets = (); my @set = (); my $prev = ''; my $i = 1;
    
