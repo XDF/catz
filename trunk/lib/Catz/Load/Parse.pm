@@ -269,11 +269,8 @@ sub parse_pile {
  my $d = {};
  
  # proceed line by line (shift from @lines)
- 
- # if the first line is a section then skip it
- substr ( $lines[0], 0, 1 ) eq '!' and shift @lines;
- 
- my $album = shift @lines;
+  
+ my $album = substr ( shift @lines, 4 ); # the folder name
   
  $album =~ /^(20\d{6})([a-z]+)(\d{0,1})$/ or
   die "invalid album name '$album'";
@@ -285,13 +282,11 @@ sub parse_pile {
  ( $d->{loc_en}, $d->{loc_fi} ) = loc ( $2 ); # location part follows
  # $3 might be 1,2,3 ... to specify multiple albums but is not stored 
  
- shift @lines; # the second line in the pile is deprecated
+ $d->{s} = substr ( shift @lines, 4 ); # the sorter
  
- ( $d->{created}, $d->{modified} ) = split /\//, shift @lines; 
-
- $d->{album_en} = shift @lines;
+ $d->{album_en} = substr ( shift @lines, 4 );
  
- $d->{album_fi} = shift @lines;
+ $d->{album_fi} = substr ( shift @lines, 4 );
  
  # currently the model and the scripts support only one organization per album
  # the database is build proactively so that it could store multiples
@@ -299,11 +294,8 @@ sub parse_pile {
  
  defined $d->{org_en} and 
   ( $d->{umb_en}, $d->{umb_fi} ) = umb ( $d->{org_en}, $album );
-   
- # skip descrption lines, they are deprecated
- shift @lines; shift @lines;
- 
- # @lines should now containg only data and exif lines
+    
+ # @lines should now containg only data P and exif L lines
  # if there are no data yet for a new album there are no lines left
  
  # pass the lines forward to 'set' to get two arrayrefs,

@@ -32,7 +32,7 @@ use Catz::Core::Conf;
 
 use Catz::Load::Loader;
 use Catz::Load::Parse;
-use Catz::Load::Data qw ( topiles );
+use Catz::Load::Data qw ( topiles topilex );
 
 use Catz::Util::File qw ( 
  dnafolder filecopy fileread finddirs filewrite findlatest pathcut 
@@ -133,29 +133,25 @@ foreach my $head ( @metafiles ) {
  
   if ( $head eq 'metacore' ) { # complex loading
   
-   # reverse makes the oldest gallery to load first and get the smallest S
-   foreach my $pile ( reverse topiles ( $data ) ) {  
+   foreach my $pile ( topilex ( $data ) ) {  
    
-    if ( $pile =~ /^(\!.+?\n)?(20\d{6}[a-z]+\d{0,1})\n/g ) {
-    
-     # cat show gallery    
-    
-     my $album = $2;
+    $pile =~ /^\>{3}\s+(20\d{6}[a-z]+\d{0,1})\n/g or 
+     die "malformed album beginning";
+             
+    my $album = $1;
      
-     my $dnaa = dna ( $pile ); 
+    my $dnaa = dna ( $pile ); 
     
-     if ( load_nomatch ( 'album', $album, $dnaa ) ) { # loading required
+    if ( load_nomatch ( 'album', $album, $dnaa ) ) { # loading required
       
-      load_complex ( $album, $pile );
+     load_complex ( $album, $pile );
         
-      $loaded->{ $album } = 1;  
+     $loaded->{ $album } = 1;  
     
-     } 
-
     }
     
-   }
-      
+   } 
+         
   } else { # simple loading
   
    my $table;
