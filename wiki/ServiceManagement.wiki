@@ -59,7 +59,7 @@ backup_incr.sh
   * fresh start memcached
   * run tests
     * all test should pass without warnings
-    * check that the stats are resonable (Files=13, Tests=20894, 279 wallclock secs)
+    * check that the stats are resonable (Files=13, Tests=20894, 279 - 372 wallclock secs)
   * SVN commit the project if not yet committed  
 
 == on prod ==
@@ -78,7 +78,7 @@ rm -fR *
   * set the database file to read only  
   * run tests
     * all should pass without warnings
-    * check that the stats are resonable (Files=13, Tests=20894, 195 wallclock secs)     
+    * check that the stats are resonable (Files=13, Tests=20894, 195 - 236 wallclock secs)     
   * fire up the service
 {{{
 hypnotoad run.pl
