@@ -61,7 +61,8 @@ sub fetch {
 
  my ( $self, $newver, $lang, $sub, @args ) = @_;
  
- length ( $newver ) == 14 or die "invalid version '$newver'";  
+ length ( $newver ) == 14 or 
+  die 'invalid version on fetch ' . ( join ' ', @_ );  
 
  $self->{lang} = $lang;
 
