@@ -411,9 +411,7 @@ sub before {
   # returns true if success                                                                                  
   setup_init ( $self, $s->{langa} ) or do {
   
-   $self->res->code(404);
-   $self->res->headers->content_length(0);
-   $self->rendered;
+   $self->render_not_found;
    return; 
  
   };

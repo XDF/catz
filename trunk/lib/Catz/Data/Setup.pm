@@ -127,7 +127,7 @@ sub setup_init { # initialize the setup to application stash
  my $app = shift; # Mojolicious application
  
  my $langa = shift; # the full lang & config string
- 
+  
  my $config = $default;
  
  if ( length $langa == ( 2 + scalar @{ $conf } ) ) {
