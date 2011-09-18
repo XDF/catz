@@ -669,6 +669,8 @@ sub org {
   when ( /FINTICAt/ ) { return 'FINTICAt','FINTICAt' }
  
   when ( /Alfa Felis/i ) { return 'Alfa Felis','Alfa Felis' }
+  
+  when ( /VANGORA/ ) { return 'VANGORA','VANGORA' }
  
   default { return undef,undef }
   

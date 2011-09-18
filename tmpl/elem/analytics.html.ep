@@ -1,3 +1,6 @@
+% if ( defined $analyticscode ) {
+<%== $analyticscode %>
+% } 
 % if ( defined $analyticskey ) {
 <script type="text/javascript">
 
