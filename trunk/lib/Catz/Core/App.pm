@@ -268,11 +268,18 @@ sub before {
  
  $s->{url} = $self->req->url;  # let the url be in the stash also
   
- # setting the analytics key  must be done first and also for static requests 
- # since if a static request fails it renders a template that contains a 
- # use of the key 
- $s->{analyticskey} = undef; 
- conf ( 'lin' ) and  $s->{analyticskey} = conf ( 'key_analytics' );     
+ # setting the analytics keys and codes
+ # must be done first and also for static requests 
+ # since if a static request fails it renders a template that 
+ # contains a use of the key 
+ $s->{analyticskey} = undef; $s->{analyticscode} = undef;
+  
+ conf ( 'lin' ) and do { 
+  
+  $s->{analyticskey} = conf ( 'key_analytics' );     
+  $s->{analyticscode} = conf ( 'code_analytics' );
+  
+ };
 
  $s->{isstatic} = 0;
 
