@@ -1,8 +1,8 @@
 %== include 'elem/cc';
 % if ( $lang eq 'fi' ) {
-Kaikki kuvat ovat heti käytettävissä sekä ei-kaupallisiin että kaupallisiin tarkoituksiin <a href="<%== $t->{URL_LICENCE} %>"><%= $t->{LICENCEG} %></a> mukaisesti ilman tarkempaa sopimista tai rahallista korvausta. Nimenä on mainittava <span class="lean"><%= $t->{AUTHOR} %></span>, <span class="lean"><%= $t->{SITE} %></span> tai <span class="lean"><%= $t->{SITEOLD} %></span> (valitse vapaasti).
+Kaikki kuvat &copy; <%= $t->{AUTHOR} %>. Kuvat ovat heti käytettävissä sekä ei-kaupallisiin että kaupallisiin tarkoituksiin <a href="<%== $t->{URL_LICENCE} %>"><%= $t->{LICENCEG} %></a> mukaisesti ilman tarkempaa sopimista tai rahallista korvausta. Nimenä on mainittava <span class="lean"><%= $t->{AUTHOR} %></span>, <span class="lean"><%= $t->{SITE} %></span> tai <span class="lean"><%= $t->{SITEOLD} %></span> (valitse vapaasti).
 % } else {
-All photos are immediately available for both non-commercial and commercial uses under the <a href="<%== $t->{URL_LICENCE} %>"><%= $t->{LICENCEG} %></a>. There is no need to get a more specific permission or to pay money. The attribution is <span class="lean"><%= $t->{AUTHOR} %></span>, <span class="lean"><%= $t->{SITE} %></span> or <span class="lean"><%= $t->{SITEOLD} %></span> (feel free to choose). 
+All photos &copy; <%= $t->{AUTHOR} %>. The photos are immediately available for both non-commercial and commercial uses under the <a href="<%== $t->{URL_LICENCE} %>"><%= $t->{LICENCEG} %></a>. There is no need to get a more specific permission or to pay money. The attribution is <span class="lean"><%= $t->{AUTHOR} %></span>, <span class="lean"><%= $t->{SITE} %></span> or <span class="lean"><%= $t->{SITEOLD} %></span> (feel free to choose). 
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine

@@ -30,7 +30,7 @@ use parent 'Catz::Ctrl::Present';
 
 use Catz::Data::Search;
 
-use Catz::Util::String qw ( clean trim );
+use Catz::Util::String qw ( clean noxss trim );
 
 sub pattern {
 
@@ -59,13 +59,13 @@ sub pattern {
   # sanity check
   ( length $s->{what} > 1234 ) and return 0;
 
-  # remove all unnecessary spaces   
-  $s->{what} = clean trim $s->{what};
-  
   # it appears that browsers typcially send UTF-8 encoded 
   # data when the origin page is UTF-8 -> we decode the data now   
   utf8::decode ( $s->{what} );
-  
+
+  # remove all unnecessary whitespaces     
+  $s->{what} = noxss clean trim $s->{what};
+    
   # we don't allow '', we set it to undef
   $s->{what} eq '' and $s->{what} = undef;
  
@@ -76,13 +76,13 @@ sub pattern {
   # sanity check
   ( length $s->{init} > 1234 ) and return 0;
 
-  # remove all unnecessary spaces   
-  $s->{init} = clean trim $s->{init};
-  
   # it appears that browsers typcially send UTF-8 encoded 
   # data when the origin page is UTF-8 -> we decode the data now   
   utf8::decode ( $s->{init} );
 
+  # remove all unnecessary whitespaces and prevent XSS   
+  $s->{init} = noxss clean trim $s->{init};
+    
   # not for robots when with init parameter
   $s->{init} and do {  $s->{meta_index} = 0; $s->{meta_follow} = 0 };
 
