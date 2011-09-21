@@ -1,0 +1,19 @@
+% my $label1 = $t->{PHOTO_FIRST};
+% my $label2 = $t->{PHOTO_PREV};
+% if ( $pos > 1 ) {
+<a title="<%= $label1 %>" href="<%== include 'href/id', langh => $langa, toid => $pin->[0] %>"><%= $label1 %></a>
+<%== $sep %>
+<a title="<%= $label2 %>" href="<%== include 'href/id', langh => $langa, toid => $pin->[1] %>"><%= $label2 %></a>
+% } else { 
+<%= $label1 %> <%== $sep %> <%= $label2 %>
+% }
+<%== $sep %> <a href="<%== include 'href/action', toaction => 'auto', langh => $langa %>"><%= $t->{THUMBS} %></a> <%== $sep %>
+% $label1 = $t->{PHOTO_NEXT};
+% $label2 = $t->{PHOTO_LAST};
+% if ( $pos < $total ) {
+<a title="<%= $label1 %>" href="<%== include 'href/id', langh => $langa, toid => $pin->[2] %>"><%= $label1 %></a>
+<%== $sep %>
+<a title="<%= $label2 %>" href="<%== include 'href/id', langh => $langa, toid => $pin->[3] %>"><%= $label2 %></a>
+% } else { 
+<%= $label1 %> <%== $sep %> <%= $label2 %>
+% }

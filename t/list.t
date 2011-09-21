@@ -28,11 +28,18 @@ use 5.10.0; use strict; use warnings;
 use Test::More;
 use Test::Mojo;
 
+use Catz::Core::Conf;
 use Catz::Core::Text;
-
 use Catz::Data::List;
 
 my $t = Test::Mojo->new( 'Catz::Core::App' );
+
+ # to prevent timeouts and so false test failures 
+if ( conf ( 'win' ) ) {
+ $t->ua->ioloop->connect_timeout(15);
+} else {
+ $t->ua->ioloop->connect_timeout(5);
+}
 
 my $matrix = list_matrix;
 

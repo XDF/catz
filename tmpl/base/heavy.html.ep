@@ -89,7 +89,9 @@
 %# --------------------
 %#
 <td class="left middle"><%= content 'btitle' %></td><td class="right middle"><%= content 'bextra' %></td></tr></table></div>
-<%= content 'sub' %>
+% defined $self->{stash}->{'mojo.content'}->{up} and do {
+<div class="stripetop"><%= content 'up' %></div>
+% };
 </div>
 %#
 %# --------------------
@@ -98,11 +100,15 @@
 %#
 %# --------------------
 %#
-<div id="bottom" class="section center shade shrink clearbefore">
+<div id="bottom" class="section shade clearbefore">
+% defined $self->{stash}->{'mojo.content'}->{down} and do {
+<div class="stripebottom"><%= content 'down' %></div>
+% };
+<div class="shrink center">
 <a class="info" href=""></a> <%= $sep %> <%= $t->{COPYRIGHT} %>
 <a href="<%== $t->{URL_AUTHOR} %>"><%= $t->{AUTHOR} %></a> <%= $t->{FIRSTYEAR} %>-<%= thisyear %> <%= $sep %>
 <a href="<%== $t->{URL_LICENCE} %>"><%= $t->{LICENCE} %></a>
-</div>
+</div></div>
 %#
 %# --------------------
 %#  

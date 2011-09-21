@@ -67,6 +67,8 @@ sub front {
  $s->{mapview} = $self->fetch ( 'map#view' );
  $s->{mapdual} = $self->fetch ( 'map#dual' );
  
+ $s->{protected} = conf ( 'code_protected' );
+ 
  $s->{news} = $self->fetch ( 'news#latest', 8 );
  
  $s->{folders} = $self->fetch ( 'locate#folder', 8 );

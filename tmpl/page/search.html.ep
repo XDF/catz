@@ -34,8 +34,8 @@
 %#
 %# --------------------
 %#
-<% content 'sub' => begin %>
-<div class="center bar stripetop">
+<% content 'up' => begin %>
+<div class="center bar">
 %== include 'block/search';
 </div>
 <% end %>

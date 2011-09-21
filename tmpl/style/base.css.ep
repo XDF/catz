@@ -110,13 +110,13 @@ pre { display: inline; }
 
 .stripetop {
  border-top: 1px;
- border-style: solid none none none;
+ border-top-style: solid;
  border-top-color: <%== $st->{color}->{$palette}->{dim} %>;
 }
 
 .stripebottom {
  border-bottom: 1px;
- border-style: none none solid none;
+ border-bottom-style: solid;
  border-bottom-color: <%== $st->{color}->{$palette}->{dim} %>;
 }
 

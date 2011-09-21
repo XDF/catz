@@ -162,8 +162,8 @@ sub macro {
    my $en = $key; 
    my $fi = $key; 
  
-   $fi =~ tr/\,/\,/;
-   $en =~ tr/\./\,/;
+   $fi =~ tr/\./\,/; # in Finnish use commas
+   $en =~ tr/\,/\./; # in English use dots
   
    $en =~ s/y/ years /;
    $en =~ s/m/ months /;
@@ -594,7 +594,8 @@ my $locs =  {
  seinajoki => 'seinäjoki',
  jarvenpaa => 'järvenpää',
  siilinjarvi => 'siilinjärvi',
- riihimaki => 'riihimäki'
+ riihimaki => 'riihimäki',
+ kemio => 'kemiö'
 };
   
 memoize ( 'loc' );

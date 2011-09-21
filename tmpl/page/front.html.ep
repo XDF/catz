@@ -43,8 +43,8 @@
 %#
 %# --------------------
 %#
-<% content 'sub' => begin %>
-<div class="bar find stripetop center"><h2 class="aero"><%= $t->{FIND} %></h2>
+<% content 'up' => begin %>
+<div class="bar find center"><h2 class="aero"><%= $t->{FIND} %></h2>
 <input class="aero field" type="text" id="find" size="35">
 <a class="aero" href="/<%== $langa %>/search/"><%= $t->{SEARCH} %></a></div>
 <% end %>
@@ -59,7 +59,12 @@
 %#
 %# --------------------
 %#
-<a class="viz" href="/<%== $langa %>/list/nat/a2z/"><img alt="<%= $t->{VIZ_GLOBE_NAME} %>" title="<%= $t->{VIZ_GLOBE_NAME} %>" width="<%== $style->{viz}->{globe}->{width} %>" height="<%== $style->{viz}->{globe}->{height} %>" src="/<%== $langa %>/viz/globe/<%== $version %>/"></a>
+<table class="viz">
+<tr><td>
+%== $protected;
+</td></tr>
+<tr><td><a href="/<%== $langa %>/list/nat/a2z/"><img alt="<%= $t->{VIZ_GLOBE_NAME} %>" title="<%= $t->{VIZ_GLOBE_NAME} %>" width="<%== $style->{viz}->{globe}->{width} %>" height="<%== $style->{viz}->{globe}->{height} %>" src="/<%== $langa %>/viz/globe/<%== $version %>/"></a></td></tr>
+</table>
 %#
 %# --------------------
 %#
