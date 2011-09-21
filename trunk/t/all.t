@@ -40,6 +40,7 @@ my @ok = qw (
 my @bad = qw (
  001600 002600 003600 888888 888000 000000 000001 001000 999000 000999 1 12 
  13 567 98798 12345 abcde a -123123 ===!!! $$~~ CRX TUV lens=Sigma* *he??o*
+ 1233.3 uiLEADRSJJSKLJLKJi3 + ++ +++ - -- --- -12345 hello=world text=*pa*
 ); 
 
 foreach my $lang ( qw ( en fi en394211 fi211111 ) ) {
@@ -77,7 +78,6 @@ foreach my $lang ( qw ( en fi en394211 fi211111 ) ) {
    $c += 2;
   
   }
- 
  
  }
  

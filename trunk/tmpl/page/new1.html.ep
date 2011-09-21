@@ -40,8 +40,8 @@
 %#
 %# --------------------
 %#
-<% content 'sub' => begin %>
-<div class="center stripetop">
+<% content 'up' => begin %>
+<div class="center">
 % if ( $prev ) {
 <a href="/<%== $langa %>/news/<%== $prev %>/"><%= $t->{PREV_NEW1} %></a>
 % } else {

@@ -26,11 +26,11 @@
 %#
 %# --------------------
 %#
-<% content 'sub' => begin %>
+<% content 'up' => begin %>
 %#
 %# --------------------
 %#
-<div class="center stripetop">
+<div class="center">
 % my $i = 1;
 % foreach my $tom ( @{ $matrix->{$subject}->{modes} } ) {
 %  if ( $i++ > 1) {
