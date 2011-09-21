@@ -30,7 +30,7 @@ use base 'Exporter';
 
 our @EXPORT_OK = qw ( 
  clean decode deurl dna encode enurl lcc limit label
- nobreak trim ucc ucclcc urirest
+ nobreak noxss trim ucc ucclcc urirest
 ); 
 
 use Digest::MD5 qw ( md5_base64 );
@@ -123,6 +123,21 @@ sub lcc { $_ = $_[0]; tr|ÜÅÄÖ|üåäö|; lc }
 # converts all spaces in a string to HTML nbsp entities
 #
 sub nobreak { $_ = $_[0]; s/ /\&nbsp;/g; $_; }
+
+#
+# filters search query parameter to be included into HTML
+# this is not XSS prevention - this is cosmetic
+#
+sub noxss {
+
+ $_ = $_[0];
+ 
+ s|src\=||gi; 
+ s|http\:\/\/||gi;
+ 
+ $_;
+
+};
 
 #
 # trims all whitespace chars from the beginning and from the end

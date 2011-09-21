@@ -67,7 +67,8 @@ sub front {
  $s->{mapview} = $self->fetch ( 'map#view' );
  $s->{mapdual} = $self->fetch ( 'map#dual' );
  
- $s->{protected} = conf ( 'code_protected' );
+ $s->{seal_host} = conf ( 'seal_host' );
+ $s->{seal_id} = conf ( 'seal_id' );
  
  $s->{news} = $self->fetch ( 'news#latest', 8 );
  
@@ -77,7 +78,7 @@ sub front {
 
  $s->{maxx} = $self->fetch ( 'all#maxx' );
  
- my $samp = $self->fetch ( 'all#array_rand_n', 45 );
+ my $samp = $self->fetch ( 'all#array_rand_n', 40 );
  
  my $th = $self->fetch ( 'photo#thumb', @{ $samp } );
 
