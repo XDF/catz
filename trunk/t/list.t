@@ -34,12 +34,12 @@ use Catz::Data::List;
 
 my $t = Test::Mojo->new( 'Catz::Core::App' );
 
- # to prevent timeouts and so false test failures 
-if ( conf ( 'win' ) ) {
- $t->ua->ioloop->connect_timeout(15);
-} else {
- $t->ua->ioloop->connect_timeout(5);
-}
+# to prevent timeouts and so false test failures 
+#if ( conf ( 'win' ) ) {
+# $t->ua->ioloop->timeout(15);
+#} else {
+# $t->ua->ioloop->timeout(5);
+#}
 
 my $matrix = list_matrix;
 

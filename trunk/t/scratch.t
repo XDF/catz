@@ -28,6 +28,7 @@ use 5.10.0; use strict; use warnings;
 use Test::More;
 use Test::Mojo;
 
+use Catz::Core::Conf;
 use Catz::Core::Text;
 
 use Catz::Util::String qw ( encode enurl );
@@ -69,6 +70,8 @@ foreach my $uri ( qw ( oiuy//&?? *345== HEU@^^ !?+09~ *-ÅÄÖåäö ) ) {
   $t->get_ok("/$lang/$url/")->status_is(404); $c += 2;
   $t->get_ok("/$lang/$url/$url/")->status_is(404); $c += 2;
   $t->get_ok("/$lang/$url/$url/$url/")->status_is(404); $c += 2;
+
+  $t->get_ok("/e/")->status_is(404); $c += 2;
 
  }
  
@@ -126,5 +129,24 @@ foreach my $i ( 1 .. 100 ) {
  
 }
 
-done_testing( $c );
+foreach my $lang ( qw ( en fi en264312 fi264322 en897123 fi189492 fi2643a2 en12 ) ) {
+  
+  # added 2011-09-22 to make sure that the static/dynamic 
+  # dispatch detection never again fails
+   
+  $t->get_ok("/$lang/viewall.txt")->status_is(404); $c += 2;
+  $t->get_ok("/$lang/browseall.txt")->status_is(404); $c += 2;
+  $t->get_ok("/$lang/search.xs?q=mimosan")->status_is(404); $c += 2;
+  $t->get_ok("/$lang/search.js?q=mimo.san")->status_is(404); $c += 2;
+   
+}
 
+# 2011-09-22 testing that static resources get dispatched properly
+
+foreach my $path ( keys %{ conf ( 'static' ) } ) {
+
+ $t->get_ok($path)->status_is(200); $c += 2;
+
+}
+
+done_testing( $c );

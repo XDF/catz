@@ -262,6 +262,8 @@ sub startup {
  
 }
 
+my $static = conf ( 'static' );
+
 sub before {
 
  my $self = shift; my $s = $self->{stash};
@@ -283,17 +285,26 @@ sub before {
 
  $s->{isstatic} = 0;
 
- ( $self->req->url->path->to_string =~ /\..{2,4}$/ ) and do {
+ my $path = $self->req->url->path->to_string; 
+
+ # static URLs server by Mojolicious must be pre-defined
+ defined $static->{$path} and do {
  
-  ( $s->{url} =~ m|^/reroute| ) or do {  
-  
-   # we skip all further preprocessing for static files 
-   $s->{isstatic} = 1; return;
-   
-  };
+  $s->{isstatic} = 1; return;
   
  };
  
+ $path =~ m|^/reroute| or do { 
+ 
+  index ( $path, '.' ) > -1 and do {
+ 
+   # reject non-static urls having dot in path
+   $self->render_not_found; return; 
+ 
+  };
+  
+ }; 
+  
  $s->{pkey} = conf ( 'pkey' ); # copy production enviroment key
  
  # default is not to cache so routing should set hold appropriately 
@@ -418,8 +429,7 @@ sub before {
   # returns true if success                                                                                  
   setup_init ( $self, $s->{langa} ) or do {
   
-   $self->render_not_found;
-   return; 
+   $self->render_not_found; return; 
  
   };
     
