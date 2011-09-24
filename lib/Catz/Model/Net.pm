@@ -51,7 +51,7 @@ $net->keep_alive_timeout(10); # use 10 s
 sub urlc {
 
  my ( $head, $date, $loc ) = @_;
-
+ 
  $head . 
   '?' . $key_date . '=' . enurl ( $date ) . 
   '&' . $key_loc . '=' . enurl ( $loc );

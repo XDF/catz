@@ -129,7 +129,15 @@ sub startup {
  # the interface provided for the purposes of www.catshow.fi
  # please note that although this can be used to other purposes
  # the interface is subject to changes and cannot be relied on
+ 
+ # basic case: latest album with sufficient number of data
  $r->route( '/lastshow' )->to( 'main#lastshow',  hold => 15 );
+ 
+ # new case 2011-09-24 
+ $r->route( 
+  '/anyshow/:date/:loc', date => qr/\d{4}\-\d{2}\-\d{2}/,
+  loc => qr/[a-zåäöA-ZÅÄÖ0-9-]{1,30}/ 
+ )->to( 'main#anyshow', hold => 15 );
  
  # all site's true content is under /:langa where langa is 'en' or 'fi'
  # and it can be extended by magic code defining the user settings
@@ -274,14 +282,14 @@ sub before {
  # must be done first and also for static requests 
  # since if a static request fails it renders a template that 
  # contains a use of the key 
- $s->{analyticskey} = undef; $s->{analyticscode} = undef;
+ $s->{analyticskey} = undef; $s->{traffickey} = undef;
   
- conf ( 'lin' ) and do { 
+ #conf ( 'lin' ) and do { 
   
   $s->{analyticskey} = conf ( 'key_analytics' );     
-  $s->{analyticscode} = conf ( 'code_analytics' );
+  $s->{traffickey} = conf ( 'key_traffic' );
   
- };
+ #};
 
  $s->{isstatic} = 0;
 

@@ -1,5 +1,14 @@
 <script type="text/javascript">
-//<![CDATA[
-var sealServer=document.location.protocol+"//seals.websiteprotection.com/sealws/<%== $seal_id %>.gif";var certServer=document.location.protocol+"//certs.websiteprotection.com/sealws/?sealId=<%== $seal_id %>";var hostName="<%== $seal_host %>";document.write(unescape('<a target="_blank" href="'+certServer+'&pop=true" style="display:inline-block;"><img src="'+sealServer+'" alt="Website Protection&#153; Site Scanner protects this website from security threats." title="This Website Protection site seal is issued to '+ hostName +'. Copyright &copy; 2011, all rights reserved."oncontextmenu="alert(\'Copying Prohibited by Law\'); return false;" border="0" /></a>'));
-//]]>
+ var sealServer = document.location.protocol+"//seals.websiteprotection.com/sealws/<%== $seal_id %>.gif";
+ var certServer = document.location.protocol+"//certs.websiteprotection.com/sealws/?sealId=<%== $seal_id %>";
+ var hostName = "<%== $t->{SITE} %>";
+ var sealOwner = "<%== $t->{SEAL_OWNER} %> "; 
+ var sealCopy = ". <%== $t->{SEAL_COPYRIGHT} %>";
+ document.write( unescape (  
+  '%3Ca target="_blank" href="' + certServer + '&pop=true" class="inline"%3E' +
+  '%3Cimg src="' + sealServer + '" alt="<%= $t->{SEAL_INFO} %>" '+
+  'title="' + sealOwner + hostName + sealCopy + 
+  '" oncontextmenu="alert(\'<%== $t->{SEAL_COPYRIGHT} %>\'); return false;" ' + 
+  'class="thumb"%3E%3C/a%3E'
+ ) );
 </script>

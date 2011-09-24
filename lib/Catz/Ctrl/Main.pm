@@ -67,7 +67,6 @@ sub front {
  $s->{mapview} = $self->fetch ( 'map#view' );
  $s->{mapdual} = $self->fetch ( 'map#dual' );
  
- $s->{seal_host} = conf ( 'seal_host' );
  $s->{seal_id} = conf ( 'seal_id' );
  
  $s->{news} = $self->fetch ( 'news#latest', 8 );
@@ -158,13 +157,31 @@ sub lastshow {
 
  my $self = shift; my $s = $self->{stash};
  
- my $cont = $self->fetch ( 'locate#lastshow' );
+ my $aid = $self->fetch ( 'locate#lastshow' ) // undef;
  
- $s->{list} = $cont;
+ defined $aid or ( $self->not_found and return );
+ 
+ $s->{list} = $self->fetch ( 'locate#dumpshow', $aid );
+  
+ $s->{site} = conf ( 'url_site' );
+ 
+ $self->render( template => 'block/dumpshow', format => 'txt' );
+ 
+}
+
+sub anyshow {
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ my $aid = $self->fetch ( 'locate#anyshow', $s->{date}, $s->{loc} ) // undef;
+ 
+ defined $aid or ( $self->not_found and return );
+ 
+ $s->{list} = $self->fetch ( 'locate#dumpshow', $aid );
  
  $s->{site} = conf ( 'url_site' );
  
- $self->render( template => 'block/lastshow', format => 'txt' );
+ $self->render( template => 'block/dumpshow', format => 'txt' );
  
 }
 
