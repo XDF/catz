@@ -60,7 +60,6 @@
 <meta name="environment" content="catz<%= $pkey %>"> 
 % } 
 <meta name="credits" content="<%= $t->{CREDITS} %>">
-%== include 'elem/analytics';
 </head>
 %#
 %# --------------------
@@ -111,8 +110,10 @@
 </div></div>
 %#
 %# --------------------
-%#  
-</div></body></html>
+%#
+</div>
+%== include 'elem/analytics';
+</body></html>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
