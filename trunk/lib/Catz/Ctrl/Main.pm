@@ -32,7 +32,6 @@ use I18N::AcceptLanguage;
 
 use Catz::Core::Conf;
 
-use Catz::Data::Result;
 use Catz::Data::Setup;
 use Catz::Data::Style;
 
@@ -92,96 +91,6 @@ sub front {
  $s->{style} = style_get ( $s->{palette} );
      
  $self->render( template => 'page/front' );
- 
-}
-
-sub reset { $_[0]->render ( template => 'style/reset', format => 'css' ) }
-
-sub base {
-
- my $self = shift; my $s = $self->{stash};
-  
- $s->{st} = style_get; # copy style hashref to stash for stylesheet processing
-  
- $self->render ( template => 'style/base', format => 'css' );
-
-}
-
-use constant RESULT_NA => '<!-- N/A -->';
-
-sub result {
-
- my $self = shift; my $s = $self->{stash};
- 
- # result available only without setup
- $s->{langa} ne $s->{lang} and ( $self->not_found and return );
-
- my $key = $self->param( 'x' ) // undef;
-
- (
-   defined $key and length $key < 2000 
-   and $key =~ /^CATZ\-([A-Z2-7]+)\-([0-9A-F]{32,32})$/ 
- ) or $self->render( text => RESULT_NA ) and return;
-
- my @keys = result_unpack ( $key );
-   
- scalar @keys == 3 or 
-  $self->render( text => RESULT_NA ) and return;
- 
- # this is a pseudo parameter passed to the model that contains the
- # current dt down to 10 minutes, so this parameter changes in every
- # 10 minutes and this makes cached model data live at most 10 minutes
- my $pseudo = substr ( dt, 0, -3 );
-  
- my $count = $self->fetch ( 'net#count', $keys[0], $keys[1], $pseudo ) // 0;
-  
- $count == 0 and 
-  $self->render( text => RESULT_NA ) and return;
-
- my $res = $self->fetch ( 'net#data', @keys, $pseudo );
- 
- defined $res and do {
-  
-  $s->{result} = $res->[0];
-  $s->{attrib} = $res->[1];
- 
-  $self->render( template => 'elem/result' ) and return;
- 
- };
- 
- $self->render( text => RESULT_NA );
- 
-}
-
-sub lastshow {
-
- my $self = shift; my $s = $self->{stash};
- 
- my $aid = $self->fetch ( 'locate#lastshow' ) // undef;
- 
- defined $aid or ( $self->not_found and return );
- 
- $s->{list} = $self->fetch ( 'locate#dumpshow', $aid );
-  
- $s->{site} = conf ( 'url_site' );
- 
- $self->render( template => 'block/dumpshow', format => 'txt' );
- 
-}
-
-sub anyshow {
-
- my $self = shift; my $s = $self->{stash};
- 
- my $aid = $self->fetch ( 'locate#anyshow', $s->{date}, $s->{loc} ) // undef;
- 
- defined $aid or ( $self->not_found and return );
- 
- $s->{list} = $self->fetch ( 'locate#dumpshow', $aid );
- 
- $s->{site} = conf ( 'url_site' );
- 
- $self->render( template => 'block/dumpshow', format => 'txt' );
  
 }
 
