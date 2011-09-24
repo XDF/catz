@@ -47,6 +47,14 @@ if ( $runmode eq 'pair' ) {
 %#
 %# --------------------
 %#
+<% content 'jsadd' => begin %>
+% if ( ( $runmode eq 'pair' ) or ( $runmode eq 'all' ) ) {
+<%== include 'elem/js', jstype => 'site', jsfile => 'maker' %>
+% }
+<% end %>
+%#
+%# --------------------
+%#
 <% content 'canon' => begin %>
 % my $cn; 
 % if ( $page == 1 ) {
@@ -199,6 +207,12 @@ if ( $runmode eq 'pair' ) {
 <div class="bar">
 %== include 'content/policy';
 </div>
+%#
+%# --------------------
+%#
+% if ( ( $runmode eq 'pair' ) or ( $runmode eq 'all' ) ) {
+%== include 'block/maker';
+% }
 %#
 %# --------------------
 %#

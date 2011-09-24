@@ -1,0 +1,19 @@
+% extends 'base/banner';
+%#
+%# --------------------
+%#
+<% content 'ptitleadd' => begin %><%= $t->{uc($pri)} %> <%= $sec %><% end %>
+<% content 'main' => begin %>
+% my $cumu = 0;
+% foreach my $th ( @{ $thumbs } ) {
+%  my $toid = fullnum33 ( $th->[1], $th->[2] );
+%  my $wi = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
+%  if ( $cumu + $wi < $width ) { 
+%   my $titl = dtexpand ( dtdate ( $th->[3] ), $lang ); # get date from folder name
+%   defined $texts->{$th->[0]} and $titl = "$titl $sep " . $texts->{$th->[0]};
+%   $titl = "$titl $sep $t->{SITE}";  
+<a target="_blank" title="<%= $titl %>" href="/<%== $lang %>/view/<%== $pri %>/<%== encode $sec %>/<%== $toid %>/"><img src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $wi %>" height="<%== $thumbsize %>"></a>
+%  }
+%  $cumu += $wi;
+% }
+<% end %>

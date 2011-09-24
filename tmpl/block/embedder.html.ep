@@ -1,0 +1,5 @@
+% my $emb = $self->render('block/embed',partial=>1);
+<%= $t->{BANNER_EMBED} %>
+<div><pre>
+<%= $emb %>
+</pre></div>
