@@ -113,18 +113,15 @@ sub startup {
  ###
  ### the stylesheets 
  ### 
-
- # a stylesheet for banners - background color as a parameter
- $r->route( '/style/banner' )->to( 'style#banner', hold => 60 );
-   
+ 
  # reset
- $r->route( '/style/reset' )->to( 'style#reset', hold => 24*60 );
+ $r->route( '/style/reset' )->to( 'main#reset', hold => 24*60 );
  
  # the single stylesheet contains all style definitions
  # it's color settings are dependent on the palette 
  $r->route( '/style/:palette', palette => qr/dark|neutral|bright/ )
-  ->to( 'style#base', hold => 60 );
-  
+  ->to( 'main#base', hold => 60 );
+ 
  ###
  ### www.catshow.fi itegration
  ###
@@ -134,13 +131,13 @@ sub startup {
  # the interface is subject to changes and cannot be relied on
  
  # basic case: latest album with sufficient number of data
- $r->route( '/lastshow' )->to( 'catshow#lastshow',  hold => 15 );
+ $r->route( '/lastshow' )->to( 'main#lastshow',  hold => 15 );
  
  # new case 2011-09-24 
  $r->route( 
   '/anyshow/:date/:loc', date => qr/\d{4}\-\d{2}\-\d{2}/,
   loc => qr/[a-zåäöA-ZÅÄÖ0-9-]{1,30}/ 
- )->to( 'catshow#anyshow', hold => 15 );
+ )->to( 'main#anyshow', hold => 15 );
  
  # all site's true content is under /:langa where langa is 'en' or 'fi'
  # and it can be extended by magic code defining the user settings
@@ -226,34 +223,6 @@ sub startup {
  $s->route( '/' )->to( controller => 'pattern', id => undef );
  
  ###
- ### banners
- ###
-
- $l->route( # the banner itself 
-  '/banner/:pri/:sec/:width/:height', 
-  pri => qr/[a-z]{1,25}/, 
-  sec => qr/[A-ZA-z0-9_-]{1,500}/,
-  width => qr/\d{2,4}/,
-  height => qr/\d{2,4}/  
- )->to('banner#banner', hold => 60 );
-
- $l->route( # the example code for embedding 
-  '/embed/:pri/:sec/:width/:height', 
-  pri => qr/[a-z]{1,25}/, 
-  sec => qr/[A-ZA-z0-9_-]{1,500}/,
-  width => qr/\d{2,4}/,
-  height => qr/\d{2,4}/  
- )->to('banner#embed', hold => 60 );
- 
- $l->route( # the example code for embedding 
-  '/preview/:pri/:sec/:width/:height', 
-  pri => qr/[a-z]{1,25}/, 
-  sec => qr/[A-ZA-z0-9_-]{1,500}/,
-  width => qr/\d{2,4}/,
-  height => qr/\d{2,4}/  
- )->to('banner#preview', hold => 60 );
-  
- ###
  ### Visualizations
  ###
 
@@ -286,7 +255,7 @@ sub startup {
  $l->route( '/find' )->to ( "locate#find", hold => 60 );
 
  # the show result AJAX interface
- $l->route( '/result' )->to ( "catshow#result",  hold => -15 );
+ $l->route( '/result' )->to ( "main#result",  hold => -15 );
  # when 15 min is combined to maximum of 10 min on model cache
  # and to the fact that page cache is bypassed (negative hold)
  # it is 25 and so we can say that results refresh every 30 mins

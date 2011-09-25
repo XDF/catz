@@ -37,7 +37,7 @@ my $LR = '_LR.JPG';
 sub _thumb {
 
  my ( $self, @xs ) = @_;
-  
+ 
  my $min = 99999999;
  my $max = 00000000; 
  

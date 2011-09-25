@@ -98,7 +98,7 @@ sub pre {
 
 sub single {
 
- # present a large photo, returns
+ # presenet a large photo, returns
  # returns 1 in success 
  # returns 0 on reject
  

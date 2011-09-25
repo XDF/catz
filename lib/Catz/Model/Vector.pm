@@ -119,21 +119,6 @@ sub _array { # vector as an array of indexes
  
 }
 
-sub _array_n { # vector as array of indexes limited 
-
- my ( $self, @args ) = @_;
- 
- my $n = pop @args // 5; # default to 5
-
- my $arr = $self->array ( @args );
- 
- scalar @$arr > $n and 
-  return [ @{ $arr } [ 0 .. $n - 1 ] ];
-  
- return $arr; 
-
-}
-
 sub _array_rand { # vector as array of indexes in random order 
 
  my ( $self, @args ) = @_;
@@ -146,7 +131,7 @@ sub _array_rand_n { # vector as array of indexes in random order limited
 
  my ( $self, @args ) = @_;
  
- my $n = pop @args // 5; # default to 5
+ my $n = pop @args // 5;
 
  my $rand = $self->array_rand ( @args );
  
