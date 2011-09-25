@@ -1,0 +1,39 @@
+#summary Description and user's guide of the bulk interface provided
+
+*Please note that the interfaces described here are targeted to be used by 
+[http://www.catshow.fi/ www.catshow.fi]. 
+While the interfaces are public they are
+always subject to sudden changes negotiated solely between 
+[http://catza.net/ catza.net] and [http://www.catshow.fi/ www.catshow.fi].*
+
+The interfaces are used via HTTP GET and return plain text documents. The first
+line returned is an informational header. The following lines contain the
+data using the pipe character as a field separator.
+
+= Photos of the latest album =
+
+You can fetch a list of photos in the latest album via 
+http://catza.net/lastshow/. It will find the latest album having at least
+10 photos that have an indentified cat. It then returns a list of all
+photos in that album that have an identified cat.
+
+= Photos of any album =
+
+You can fetch a list of photos in the any album via 
+http://catza.net/anyshow/2011-07-30/Espoo/ where "2011-07-30" is the
+date of the album in YYYY-MM-DD format and "Espoo" is the location where the
+photos where shot at. It returns a list of all photos in that album that have
+an identified cat. In case of an error (invalid requests or album not found)
+404 is returned.
+
+Examples of working requests:
+  * http://catza.net/anyshow/2004-08-01/Helsinki/
+  * http://catza.net/anyshow/2010-09-05/Tampere/
+  * http://catza.net/anyshow/2010-03-07/Sein%E4joki/    
+
+Examples of non-working request returning 404:
+  * http://catza.net/anyshow/2004-08-01/Leps%E4m%E4/ (album not found)
+  * http://catza.net/anyshow/1957-01-01/Helsinki/ (album not found)  
+  * http://catza.net/anyshow/2004-0801/Helsinki/ (invalid request)
+  * http://catza.net/anyshow/20040801helsinki/ (invalid request)
+  * http://catza.net/anyshow/ (invalid request)                   
