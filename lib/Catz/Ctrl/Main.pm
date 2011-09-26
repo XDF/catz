@@ -153,38 +153,6 @@ sub result {
  
 }
 
-sub lastshow {
-
- my $self = shift; my $s = $self->{stash};
- 
- my $aid = $self->fetch ( 'locate#lastshow' ) // undef;
- 
- defined $aid or ( $self->not_found and return );
- 
- $s->{list} = $self->fetch ( 'locate#dumpshow', $aid );
-  
- $s->{site} = conf ( 'url_site' );
- 
- $self->render( template => 'block/dumpshow', format => 'txt' );
- 
-}
-
-sub anyshow {
-
- my $self = shift; my $s = $self->{stash};
- 
- my $aid = $self->fetch ( 'locate#anyshow', $s->{date}, $s->{loc} ) // undef;
- 
- defined $aid or ( $self->not_found and return );
- 
- $s->{list} = $self->fetch ( 'locate#dumpshow', $aid );
- 
- $s->{site} = conf ( 'url_site' );
- 
- $self->render( template => 'block/dumpshow', format => 'txt' );
- 
-}
-
 my $cset = [ (
  ( 0 .. 9 ),
  ( 'a' .. 'z' ),
