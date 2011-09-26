@@ -5,7 +5,9 @@
 is constantly subject to sudden changes negotiated solely between 
 [http://catza.net/ catza.net] and [http://www.catshow.fi/ www.catshow.fi].*
 
-= Listing the photos of an album
+<wiki:toc max_depth="2" />
+
+= Listing the photos of an album =
 
 The request is sent as HTTP GET and a plain text document is retured. The first
 line returned is an informational header. The following lines contain the
@@ -16,14 +18,14 @@ data using the pipe character as a column separator. The fields retuned are
 
 In case of an error 404 is returned.
 
-== Photos of the latest album =
+== Photos of the latest album ==
 
 URL http://catza.net/en/bulk/photolist/ returns a list of the photos of
 the latest album having at least ten photos that have an indentified cat. 
 The links to pages point to English pages. To get links to Finnish pages
 use http://catza.net/fi/bulk/photolist/. 
 
-== Photos of any album by date and location
+== Photos of any album by date and location ==
 
 By providing additional parameters you can get a similar list of photos
 in any album. The required parameters are
@@ -45,3 +47,4 @@ Examples of non-working request returning 404:
   * http://catza.net/en/bulk/photolist?d=2010-03-07 (only date supplied)
   * http://catza.net/en/bulk/photolist&l=seinajoki (only location supplied)
 
+Please verify the handling of the non-ASCII characters both in the request URL and in the response. Request http://catza.net/en/bulk/photolist?d=2010-03-07&l=Sein%E4joki contains an enocded _ä_ and returns a result that includes a cat name _Pörkarvan JakeSonOfJonatan_ that contains _ö_ that can be used in verifying the data handling.

@@ -94,11 +94,7 @@ nginx -t
 {{{
 kill -HUP $( cat /var/run/nginx.pid )
 }}}   
-  * test via the public interface that the service works normally and that it runs on the correct enviroment (from HTML meta)
-  * shutdown the non-production
-{{{
-cat hypnotoad.pid | xargs kill -TERM
-}}}        
+  * test via the public interface that the service works normally and that it runs on the correct enviroment (from HTML meta)       
   * change the enviroment in the boot time startup script 
 {{{
 pico /etc/rc.local
@@ -107,6 +103,10 @@ pico /etc/rc.local
 {{{
 backup_incr.sh
 }}}       
+  * shutdown the non-production
+{{{
+cat hypnotoad.pid | xargs kill -TERM
+}}} 
 
 = Update Mojolicious & Hypnotoad on the fly =
 
