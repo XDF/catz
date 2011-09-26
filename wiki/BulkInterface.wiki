@@ -1,39 +1,47 @@
-#summary Description and user's guide of the bulk interface provided
+#summary Description of and user's guide to the bulk interface
 
-*Please note that the interfaces described here are targeted to be used by 
-[http://www.catshow.fi/ www.catshow.fi]. 
-While the interfaces are public they are
-always subject to sudden changes negotiated solely between 
+*Please note that the bulk interface described here are targeted to be used by 
+[http://www.catshow.fi/ www.catshow.fi]. While the interface is made public it 
+is constantly subject to sudden changes negotiated solely between 
 [http://catza.net/ catza.net] and [http://www.catshow.fi/ www.catshow.fi].*
 
-The interfaces are used via HTTP GET and return plain text documents. The first
+= Listing the photos of an album
+
+The request is sent as HTTP GET and a plain text document is retured. The first
 line returned is an informational header. The following lines contain the
-data using the pipe character as a field separator.
+data using the pipe character as a column separator. The fields retuned are
+  # URL to hires photo file
+  # URL to the correspoding page on catza.net
+  # The name of the cat in the photo    
 
-= Photos of the latest album =
+In case of an error 404 is returned.
 
-You can fetch a list of photos in the latest album via 
-http://catza.net/lastshow/. It will find the latest album having at least
-10 photos that have an indentified cat. It then returns a list of all
-photos in that album that have an identified cat.
+== Photos of the latest album =
 
-= Photos of any album =
+URL http://catza.net/en/bulk/photolist/ returns a list of the photos of
+the latest album having at least ten photos that have an indentified cat. 
+The links to pages point to English pages. To get links to Finnish pages
+use http://catza.net/fi/bulk/photolist/. 
 
-You can fetch a list of photos in the any album via 
-http://catza.net/anyshow/2011-07-30/Espoo/ where "2011-07-30" is the
-date of the album in YYYY-MM-DD format and "Espoo" is the location where the
-photos where shot at. It returns a list of all photos in that album that have
-an identified cat. In case of an error (invalid requests or album not found)
-404 is returned.
+== Photos of any album by date and location
 
+By providing additional parameters you can get a similar list of photos
+in any album. The required parameters are
+  * d = date (YYYYMMDD or YYYY-MM-DD)
+  * l = location  
+     
 Examples of working requests:
-  * http://catza.net/anyshow/2004-08-01/Helsinki/
-  * http://catza.net/anyshow/2010-09-05/Tampere/
-  * http://catza.net/anyshow/2010-03-07/Sein%E4joki/    
+  * http://catza.net/en/bulk/photolist?d=2004-08-01&l=Helsinki
+  * http://catza.net/fi/bulk/photolist?d=20040801&l=helsinki  
+  * http://catza.net/fi/bulk/photolist?l=tampere&d=2010-09-05
+  * http://catza.net/en/bulk/photolist?d=2010-03-07&l=Sein%E4joki
+  * http://catza.net/en/bulk/photolist?d=20100307&l=seinajoki      
 
 Examples of non-working request returning 404:
-  * http://catza.net/anyshow/2004-08-01/Leps%E4m%E4/ (album not found)
-  * http://catza.net/anyshow/1957-01-01/Helsinki/ (album not found)  
-  * http://catza.net/anyshow/2004-0801/Helsinki/ (invalid request)
-  * http://catza.net/anyshow/20040801helsinki/ (invalid request)
-  * http://catza.net/anyshow/ (invalid request)                   
+  * http://catza.net/en/bulk/photolist?d=2003-08-01&l=Helsinki (album not found)
+  * http://catza.net/en/bulk/photolist?d=20101224&l=Sein%E4joki (album not found)   
+  * http://catza.net/fi/bulk/photolist?d=2004081&l=helsinki (invalid date)  
+  * http://catza.net/fi/bulk/photolist?l=tampere&d=2010-209-05 (invalid date)
+  * http://catza.net/en/bulk/photolist?d=2010-03-07 (only date supplied)
+  * http://catza.net/en/bulk/photolist&l=seinajoki (only location supplied)
+

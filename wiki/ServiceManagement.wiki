@@ -1,6 +1,7 @@
 #summary Short process descriptions, notes and checklists for catza.net service management and service deployment
+#labels Mojolicious,perlbrew,Perl,Linux
 
-Please note that this page is provided as public for both due to common interest and to give me an online access to the service management notes 24/7 around the globe. The language used here is not polished and the notes are not complete. The tasks and commands run as root and other users are all presented as a list without information what user to use.
+This page is provided as public to show an example how Perl/Mojolicious-based application can be managed and to give me online access to these notes 24/7 around the globe. The notes are not complete nor polished.
 
 = Update data (unchanged structures) =
   
@@ -59,7 +60,7 @@ backup_incr.sh
   * fresh start memcached
   * run tests
     * all test should pass without warnings
-    * check that the stats are resonable (Files=13, Tests=21086, 279 - 372 wallclock secs)
+    * check that the stats are reasonable (Files=13, Tests=22167, 279 - 400 wallclock secs)
   * SVN commit the project if not yet committed  
 
 == on prod ==
@@ -78,7 +79,7 @@ rm -fR *
   * set the database file to read only  
   * run tests
     * all should pass without warnings
-    * check that the stats are resonable (Files=13, Tests=21086, 195 - 236 wallclock secs)     
+    * check that the stats are reasonable (Files=13, Tests=22167, 195 - 236 wallclock secs)     
   * fire up the service
 {{{
 hypnotoad run.pl
@@ -140,7 +141,7 @@ perlbrew use perl-x.yy.z
   * install the latest CPAN
   * reload cpan
   * install the required Perl modules
-  * run tests, all should pass without warnings, check that the stats are resonable: Files=13, Tests=20894, 195 wallclock secs         
+  * run tests, all should pass without warnings, check that the stats are reasonable     
   * switch to the new perl
 {{{
 perlbrew switch perl-x.yy.z
