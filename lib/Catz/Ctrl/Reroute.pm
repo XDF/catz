@@ -129,10 +129,6 @@ sub reroute { # does the job
    return $self->redirect_perm ( "/$lang/list/loc/a2z/" );
   } 
 
-  when ( [ qw ( lastshow.htm lastshow.html ) ] ) {  
-   return $self->redirect_perm ( '/lastshow/' );
-  } 
-
   when ( [ qw ( breeders breeders/ breeders/index.htm breeders/index.html ems/breeders.htm ems/breeders.html ) ] ) {  
    return $self->redirect_perm ( "/$lang/list/breeder/a2z/" );
   } 

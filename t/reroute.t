@@ -71,19 +71,6 @@ foreach my $path ( qw (
 }
 
 foreach my $path ( qw ( 
- /lastshow.htm /lastshow.html
-) ) {
-
- $t->get_ok("/reroute$path")
-   ->status_is(200)
-   ->content_type_like(qr/text\/plain/)
-   ->content_like(qr/ rows/);
-   
- $c += 4;
-
-}
-
-foreach my $path ( qw ( 
  /breeders/Bodhidharma-039s.html /breeders/MegaMiaow-039s.html
  /breeders/Sic-039an.html /breeders/Is-228-045Brownin.html
  /breeders/Wanderd-252ne-039s.html /breeders/-197bodas.html
