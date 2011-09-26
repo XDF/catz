@@ -1,7 +1,7 @@
-% my $date = dtexpand ( dt, 'en' );
-# list generated at <%== $date %> folder <%== $list->[0]->[2] %> <%== scalar @$list %> rows
+% my $date = dtexpand ( dt, $lang );
+# <%= $t->{BULK_GENERATED} %> <%== $date %> <%= $t->{BULK_FOLDER} %> <%== $list->[0]->[2] %> <%== scalar @$list %> <%= $t->{BULK_ROWS} %>
 % foreach my $row ( @$list ) {
-<%== $photobase %>/<%== $row->[2] %>/<%== $row->[3] %>.JPG|<%== $site %>fi/view/folder/<%== $row->[2] %>/<%== fullnum33 ( $row->[0], $row->[1] ) %>/|<%== $row->[4] %>  
+<%== $photobase %>/<%== $row->[2] %>/<%== $row->[3] %>.JPG|<%== $site %><%== $lang %>/view/folder/<%== $row->[2] %>/<%== fullnum33 ( $row->[0], $row->[1] ) %>/|<%== $row->[4] %>  
 % } 
 %#
 %# Catz - the world's most advanced cat show photo engine

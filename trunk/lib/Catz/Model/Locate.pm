@@ -228,45 +228,6 @@ sub _find {
 
 }
 
-sub _lastshow {
-
- my $self = shift;
- 
- # find latest gallery having at least 10 photos with cat names
- 
- return $self->dbone("select aid from album where s=(select max(s) from album where aid in (select aid from inpos natural join sec natural join pri where pri='cat' group by aid having count(distinct n)>9))");
- 
-}
-
-sub _anyshow {
-
- my ( $self, $date, $loc ) = @_; 
- 
- # check the existence of a gallery and get it id
- 
- $date =~ m|(\d{4})\-(\d{2})\-(\d{2})|;
- 
- $date = "$1$2$3";
- 
- $loc = lcc $loc;
- 
- $loc =~ tr|едц|aao|;  
- 
- return $self->dbone('select aid from album where folder=?',"$date$loc");
- 
-}
-
-
-sub _dumpshow {
-
- my ( $self, $aid ) = @_; 
- 
- # get the photos by aid
- 
- $self->dball("select s,photo.n,folder,file,sec_en from photo natural join album natural join inpos natural join sec natural join pri where p=1 and pri='cat' and album.aid=? order by photo.n asc",$aid); 
-  
-}
-
 sub _prims {
 
  my $self = shift;
