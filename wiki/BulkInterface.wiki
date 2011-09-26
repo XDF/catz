@@ -47,4 +47,4 @@ Examples of non-working request returning 404:
   * http://catza.net/en/bulk/photolist?d=2010-03-07 (only date supplied)
   * http://catza.net/en/bulk/photolist&l=seinajoki (only location supplied)
 
-Please verify the handling of the non-ASCII characters both in the request URL and in the response. Request http://catza.net/en/bulk/photolist?d=2010-03-07&l=Sein%E4joki contains an enocded _ä_ and returns a result that includes a cat name _Pörkarvan JakeSonOfJonatan_ that contains _ö_ that can be used in verifying the data handling.
+Please verify the handling of the non-ASCII characters both in the request URL and in the response. Request http://catza.net/en/bulk/photolist?d=2010-03-07&l=Sein%E4joki contains an enocded _Ã¤_ and returns a result that includes a cat name _PÃ¶rkarvan JakeSonOfJonatan_ that contains _Ã¶_ that can be used in verifying the data handling.
