@@ -24,9 +24,7 @@
 
 package Catz::Util::Log;
 
-use 5.10.0;
-use strict;
-use warnings;
+use strict; use warnings; use 5.10.0; 
 
 use parent 'Exporter';
 
@@ -66,5 +64,4 @@ sub logopen {
 
  open LOG, ">$logfile" or die "unable to open logfile '$logfile' for writing";
 
-} 
-
+}
