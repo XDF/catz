@@ -32,7 +32,7 @@ use Catz::Core::Conf;
 use Catz::Load::Check;
 
 use Catz::Util::Log qw ( logadd logclose logopen logit logdone );
-use Catz::Util::Time qw ( dt dtexpand s2dhms );
+use Catz::Util::Time qw ( dt dtexpand s2dhms dt2epoch );
 
 sub ok {
 
@@ -92,19 +92,33 @@ my $rounds = 3;
 
 foreach my $r ( 1 .. $rounds ) {
 
- logit "check round $r/$rounds";
+ logit "--- check round $r/$rounds";
 
  foreach my $b ( shuffle @{ $s->{bers} } ) {
-    
+      
   if ( $s->{breeders}->{$b}->{done} == 0 ) {
-  
+
    logit "$b ...";
+      
+   if ( 
+   defined $s->{breeders}->{$b}->{url_ok} and (
+   (
+    dt2epoch ( $s->{started} ) - 
+    dt2epoch ( $s->{breeders}->{$b}->{url_ok} . '000000' ) )  
+    < 60 * 60 * 24 * $s->{fresh} # skip for 180 days
+   ) ) {
    
-   my $status = check_url $s->{breeders}->{$b}->{url};
+    ok ( $s, $b, 'FRESH' )
+    
+   } else {
    
-   if ( $status eq 'OK' ) { ok ( $s, $b, $status ) } 
-    elsif ( $r == $rounds ) { failf ( $s, $b, $status ) }
-    else { fail ( $s, $b, $status ) }
+    my $status = check_url $s->{breeders}->{$b}->{url};
+   
+    if ( $status eq 'OK' ) { ok ( $s, $b, $status ) } 
+     elsif ( $r == $rounds ) { failf ( $s, $b, $status ) }
+     else { fail ( $s, $b, $status ) }
+     
+    }
     
   }
    
@@ -122,89 +136,5 @@ print REPORT check_report $s;
 close REPORT;
 
 logit "----- catza.net bcheck finished at $s->{ended_en}";
-
-__END__
-
-
-
-
-
-
-foreach my $r ( 1 .. 3 ) {
-
- logit "round $r/3";
-
- foreach my $b ( shuffle keys %{ $s } ) {
-    
-  if ( $s->{$b}->{done} == 0 ) {
-  
-   logit "$b ...";
- 
-
-  }
- }  
-}
-
-my $end = dt;
-
-logit 'generating report'; 
- 
-my $mt = Mojo::Template->new;
-
-my $rep = $mt->render(<<'THEEND',$s,$start,$end);
-<!doctype html><html>
-% use Catz::Core::Text;
-% my $t = text('en');
-% use Catz::Util::Time qw ( dtexpand dt2epoch s2dhms );
-% my ( $s, $start, $end ) = @_;
-% my $exp = { 
-%  NOURL => 'URL not defined',
-%  BADSYNTAX => 'URL syntax error',
-%  NOTFOUND => 'page not found',
-%  TOOSMALL => 'content too small',
-%  TOOLARGE => 'content too large',
-%  CONTENT => 'content indicates an error',
-%  OK => 'OK',
-%  ODDCODE => 'unexpected response code (3 attempts)',
-%  NOCONN => 'unable to connect (3 attempts)'
-% };
-<head><title><%= $t->{SITE} %> verifier</title></head>
-<hr>
-<body><h1><%= $t->{SITE} %> verifier</h1>
-<div>
-started <%= dtexpand $start, 'en' %><br>
-finished <%= dtexpand $end, 'en' %><br>
-% my @arr = s2dhms ( $end - $start );
-<%= "$arr[0] days $arr[1] hours $arr[2] minutes $arr[3] seconds" %><br>
-total <%= scalar keys %{ $s } %> breeders
-</div>
-% foreach my $status ( qw ( 
-% BADSYNTAX NOTFOUND NOCONN TOOSMALL TOOLARGE CONTENT ODDCODE OK NOURL ) ) {
-<hr width="100%">
-<h2><%= $exp->{$status} %></h2>
-<table>
-%  foreach my $breeder ( sort keys %{ $s } ) {
-%   if ( $s->{$breeder}->{status} eq $status ) {
-<tr><td align="right"><%= $breeder %></td> 
-%    if ( $s->{$breeder}->{url} ) {
-<td align="left"><a target="_blank" href="<%= $s->{$breeder}->{url} %>"><%= $s->{$breeder}->{url} %></a></td>
-%    } else {
-<td>&nbsp;</tD<
-% }
-<tr>
-%   }
-%  }
-</table>
-% }
-<hr>
-</body>
-</html>
-THEEND
-
-print REPORT $rep;
-
-close REPORT;
-
-logit "----- catza.net bcheck verifier finished at " . dtlang ( 'en' );
 
 logclose;

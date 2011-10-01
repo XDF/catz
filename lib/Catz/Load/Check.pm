@@ -38,7 +38,8 @@ use Catz::Core::Text;
 use Catz::Util::File qw ( findlatest );
 
 our $status = [ qw (
- BADSYNTAX NOTFOUND FORBIDDEN NOCONN TOOSMALL TOOLARGE CONTENT ODDCODE OK NOURL
+ BADSYNTAX NOTFOUND FORBIDDEN NOCONN TOOSMALL 
+ TOOLARGE CONTENT ODDCODE NOURL FRESH OK
 ) ];
 
 our $strings = { 
@@ -52,6 +53,7 @@ our $strings = {
  OK => 'OK',
  ODDCODE => 'unexpected response code',
  NOCONN => 'unable to connect',
+ FRESH => 'marked and fresh'
 };
 
 do {
@@ -72,6 +74,8 @@ sub check_init {
  my $s = shift;
  
  $s->{status} = $status; $s->{strings} = $strings;
+ 
+ $s->{fresh} = 180; # a mark is fresh for 180 days
 
  my $dbfile = findlatest ( '../db', 'db' );
 
@@ -85,7 +89,7 @@ sub check_init {
   $dbc->selectall_hashref ( qq {
    select breeder as breeder,url as url,nat as nat,url_ok as url_ok,
    nat_ok as nat_ok,0 as done, 'UNVERIFIED' as status,0 as failcount  
-   from mbreeder order by random() desc limit 25 
+   from mbreeder order by breeder
   }, 'breeder' );
   
  # we also store an array of breeder names
@@ -147,43 +151,82 @@ sub check_report {
 
  return $mt->render( 
   ( join "\n", map { chomp $_; $_ } <DATA> ), 
-  $_[0], text('en') );
+  $_[0], text('en') 
+ );
    
 }
+
+1;
  
 __DATA__
 % my ( $s, $t ) = @_;
+% use Catz::Util::String qw ( enurl );
+<% my $google = begin %>
+% my ( $s, $l, $q ) = @_;
+http://www.google.fi/search?&client=<%= enurl $s %>&rls=<%= enurl $l %>&q=<%= enurl $q %>
+<% end %>
 <!doctype html><html>
 <head><title><%= $t->{SITE} %> checker</title></head>
-<hr>
 <body><h1><%= $t->{SITE} %> checker</h1>
+<style type="text/css">
+body {
+ font-family: verdana;
+}
+table {
+	border-width: 1px;
+	border-spacing: 10px;
+	border-style: solid;
+	border-color: gray;
+	border-collapse: collapse;
+}
+table td {
+	border-width: 1px;
+	padding: 10px;
+	border-style: solid;
+	border-color: gray;
+}
+</style>
 <div>
-started <%= $s->{started_en} %><br>
-finished <%= $s->{ended_en} %><br>
-<%= $s->{took}->[0] %> <%= $t->{DAYS} %>
+<table><tr>
+<td>started <%= $s->{started_en} %></td>
+<td>finished <%= $s->{ended_en} %></td>
+<td>took <%= $s->{took}->[0] %> <%= $t->{DAYS} %>
 <%= $s->{took}->[1] %> <%= $t->{HOURS} %>
 <%= $s->{took}->[2] %> <%= $t->{MINUTES} %>
-<%= $s->{took}->[3] %> <%= $t->{SECONDS} %><br>
-total <%= scalar @{ $s->{bers} } %> breeders
-</div>
+<%= $s->{took}->[3] %> <%= $t->{SECONDS} %></td></tr>
+<tr><td colspan="3">total <%= scalar @{ $s->{bers} } %> breeder(s)</td></tr>
+</table>
 % foreach my $st ( @{ $s->{status} } ) {
-<hr width="100%">
-<h2><%= $s->{strings}->{$st} %></h2>
+<h2><%= $s->{strings}->{$st} %>
+% if ( $st eq 'FRESH' ) {
+(<%= $s->{fresh} %> <%= $t->{DAYS} %>) 
+% }
+</h2>
 <table>
+% my $i = 0;
 %  foreach my $b ( @{ $s->{bers} } ) {
 %   if ( $s->{breeders}->{$b}->{status} eq $st ) {
+%    $i++;
 <tr><td align="right"><%= $b %></td> 
 %    if ( $s->{breeders}->{$b}->{url} ) {
 <td align="left"><a target="_blank" href="<%= $s->{breeders}->{$b}->{url} %>">
 <%= $s->{breeders}->{$b}->{url} %></a></td>
 %    } else {
-<td>&nbsp;</td>
+<td>-</td>
 %    }
+<td>
+<a target="_blank" href="<%= $google->($t->{SITE},'fi',"$b kissala") %>">Google kissala</a>
+<a target="_blank" href="<%= $google->($t->{SITE},'en',"$b cattery") %>">Google cattery</a>
+</td>
 <tr>
 %   }
 %  }
+% if ( $i == 0 ) {
+<tr><td>-</td></tr>
+% } else {
+<tr><td colspan="3">total <%= $i %> breeder(s)</td></tr>
+% }
 </table>
 % } 
-<hr width="100%">
 </body>
 </html>

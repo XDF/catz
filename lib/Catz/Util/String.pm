@@ -29,8 +29,8 @@ use 5.10.0; use strict; use warnings;
 use base 'Exporter';
 
 our @EXPORT_OK = qw ( 
- clean decode deurl dna encode enurl lcc limit label
- nobreak noxss trim ucc ucclcc urirest
+ clean decode deurl dna encode enurl lcc limit 
+ label nobreak noxss trim ucc ucclcc urirest
 ); 
 
 use Digest::MD5 qw ( md5_base64 );
