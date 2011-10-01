@@ -34,7 +34,8 @@ use Mojo::UserAgent;
 use Catz::Core::Conf;
 use Catz::Core::Text;
 
-use Catz::Util::File qw ( findlatest );
+use Catz::Util::File qw ( fileread );
+use Catz::Load::Data qw ( tolines topiles );
 use Catz::Util::Log qw ( logadd logclose logopen logit logdone );
 use Catz::Util::Time qw ( dt dtlang );
 
@@ -42,7 +43,9 @@ $| = 1; # unbuffered printing
 
 logopen ( "../log/bcheck.log" );
 
-logit "----- catza.net bcheck verifier started at " . dtlang ( 'en' );
+my $start = dt;
+
+logit '----- catza.net bcheck verifier started at '.dtlang ( 'en' );
 
 my $net = Mojo::UserAgent->new;
 
@@ -53,19 +56,24 @@ $net->max_connections( 1 );
 $net->max_redirects( 5 );
 $net->ioloop->connect_timeout ( 5 );
 
-my $dbfile = findlatest ( '../db', 'db' );
-
-my $dbc = DBI->connect( 
- 'dbi:SQLite:dbname=' . $dbfile , undef, undef, 
- { AutoCommit => 0, RaiseError => 1, PrintError => 1 } 
-)  or die "unable to connect to database $dbfile: $DBI::errstr";
-
-my $s = $dbc->selectall_hashref ( 'select breeder as breeder,url as url from mbreeder order by breeder desc limit 15 offset 30', 'breeder' );
-
-$dbc->disconnect;
-
 open REPORT, '>../log/urlcheck_'.dt.'.html' or die $!;
 
+my $s = {};
+
+foreach my $pile ( topiles ( readfile '../data/mbreeder.txt' ) ) {
+
+ my @lines = tolines ( $pile );
+ 
+ scalar @lines == 3 or 
+  die "failed to read data for $lines[0]: invalid number of records";
+
+ $lines[1] =~ /^(.+)\s+(\d{6})\s*$/ and $lines[1] = $1;
+
+    $lines[2] =~ /^(.+)\s+(\d{6})\s*$/ and $lines[2] = $2;
+     
+
+}
+ 
 logit 'total ' . (  scalar keys %{ $s } ) . ' breeders';
 
 logit 'initializing';
@@ -185,42 +193,59 @@ foreach my $r ( 1 .. 3 ) {
  }  
 }
 
+my $end = dt;
+
 logit 'generating report'; 
  
 my $mt = Mojo::Template->new;
 
-my $rep = $mt->render(<<'THEEND',$s);
+my $rep = $mt->render(<<'THEEND',$s,$start,$end);
 <!doctype html><html>
-% use Catz::Util::Time qw ( dtlang );
-% my $s = shift;
-% my $titl = "catza.net verifier ".dtlang ( 'en' );
+% use Catz::Core::Text;
+% my $t = text('en');
+% use Catz::Util::Time qw ( dtexpand dt2epoch s2dhms );
+% my ( $s, $start, $end ) = @_;
 % my $exp = { 
-%  NOURL => 'URL not set in file',
-%  BADSYNTAX => 'URL syntax error in file',
+%  NOURL => 'URL not defined',
+%  BADSYNTAX => 'URL syntax error',
 %  NOTFOUND => 'page not found',
 %  TOOSMALL => 'content too small',
 %  TOOLARGE => 'content too large',
 %  CONTENT => 'content indicates an error',
 %  OK => 'OK',
-%  ODDCODE => 'strange response code',
-%  NOCONN => 'unable to connect'
+%  ODDCODE => 'unexpected response code (3 attempts)',
+%  NOCONN => 'unable to connect (3 attempts)'
 % };
-<head><title><%= $titl %></title></head>
-<body><h1><%= $titl %></h1></body>
-<div><%= scalar keys %{ $s } %> breeders</div>
+<head><title><%= $t->{SITE} %> verifier</title></head>
+<hr>
+<body><h1><%= $t->{SITE} %> verifier</h1>
+<div>
+started <%= dtexpand $start, 'en' %><br>
+finished <%= dtexpand $end, 'en' %><br>
+% my @arr = s2dhms ( $end - $start );
+<%= "$arr[0] days $arr[1] hours $arr[2] minutes $arr[3] seconds" %><br>
+total <%= scalar keys %{ $s } %> breeders
+</div>
 % foreach my $status ( qw ( 
 % BADSYNTAX NOTFOUND NOCONN TOOSMALL TOOLARGE CONTENT ODDCODE OK NOURL ) ) {
+<hr width="100%">
 <h2><%= $exp->{$status} %></h2>
+<table>
 %  foreach my $breeder ( sort keys %{ $s } ) {
 %   if ( $s->{$breeder}->{status} eq $status ) {
-<div><%= $breeder %> 
+<tr><td align="right"><%= $breeder %></td> 
 %    if ( $s->{$breeder}->{url} ) {
-<a target="_blank" href="<%= $s->{$breeder}->{url} %>"><%= $s->{$breeder}->{url} %></a>
-%    }
-</div>
+<td align="left"><a target="_blank" href="<%= $s->{$breeder}->{url} %>"><%= $s->{$breeder}->{url} %></a></td>
+%    } else {
+<td>&nbsp;</tD<
+% }
+<tr>
 %   }
 %  }
+</table>
 % }
+<hr>
+</body>
 </html>
 THEEND
 
