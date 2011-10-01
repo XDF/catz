@@ -26,6 +26,11 @@ package Catz::Model::Locate;
 
 use 5.10.0; use strict; use warnings;
 
+#
+# Notice: this module includes heavy code copy-pasting and 
+# this should be considered a bad example of Perl programming!
+#
+
 use parent 'Catz::Model::Common';
 
 use List::MoreUtils qw ( any );

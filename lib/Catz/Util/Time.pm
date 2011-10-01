@@ -36,8 +36,9 @@ use Time::localtime;
 use parent 'Exporter';
 
 our @EXPORT_OK = qw(
- dtdate dttime dtexpand dt dtlang dtsplit 
- thisyear dt2epoch epoch2rfc822 epoch2http http2epoch 
+ dtdate dttime dtexpand dt dt2epoch dtlang 
+ epoch2rfc822 epoch2http http2epoch
+ s2dhms thisyear 
 );
 
 #
@@ -47,7 +48,6 @@ our @EXPORT_OK = qw(
 # in: timestamp, language
 # out: timestamp converted to a human-readable form
 #
-
 sub dtexpand {
  
  # expands YYYYMMDD YYYYMMDDHHMMSS HHMMSS
@@ -156,6 +156,16 @@ sub epoch2rfc822 { email_gmdate ( $_[0] ) }
 
 sub epoch2http { time2str $_[0] }
 
-sub http2epoch { str2time $_[0] }  
+sub http2epoch { str2time $_[0] }
+
+# seconds to days hours minutes seconds
+
+sub s2dhms {
+
+ my @parts = gmtime shift;
+ 
+ @parts [ 7, 2, 1, 0 ];
+
+}  
  
 1;

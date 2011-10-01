@@ -26,72 +26,31 @@ use 5.10.0; use strict; use warnings;
 
 use lib '../lib'; use lib '../libi';
 
-use DBI;
 use List::Util qw ( shuffle );
-use Mojo::Template;
-use Mojo::UserAgent;
 
 use Catz::Core::Conf;
-use Catz::Core::Text;
+use Catz::Load::Check;
 
-use Catz::Util::File qw ( fileread );
-use Catz::Load::Data qw ( tolines topiles );
 use Catz::Util::Log qw ( logadd logclose logopen logit logdone );
-use Catz::Util::Time qw ( dt dtlang );
+use Catz::Util::Time qw ( dt dtexpand s2dhms );
 
-$| = 1; # unbuffered printing
+sub ok {
 
-logopen ( "../log/bcheck.log" );
+ my ( $s, $breeder, $status ) = @_;
 
-my $start = dt;
-
-logit '----- catza.net bcheck verifier started at '.dtlang ( 'en' );
-
-my $net = Mojo::UserAgent->new;
-
-#$net->log ( undef );
-$net->name( text('en')->{AGENT_NAME} );
-$net->keep_alive_timeout( 0 );
-$net->max_connections( 1 );
-$net->max_redirects( 5 );
-$net->ioloop->connect_timeout ( 5 );
-
-open REPORT, '>../log/urlcheck_'.dt.'.html' or die $!;
-
-my $s = {};
-
-foreach my $pile ( topiles ( readfile '../data/mbreeder.txt' ) ) {
-
- my @lines = tolines ( $pile );
+ $s->{breeders}->{$breeder}->{status} = $status;
  
- scalar @lines == 3 or 
-  die "failed to read data for $lines[0]: invalid number of records";
-
- $lines[1] =~ /^(.+)\s+(\d{6})\s*$/ and $lines[1] = $1;
-
-    $lines[2] =~ /^(.+)\s+(\d{6})\s*$/ and $lines[2] = $2;
-     
-
-}
+ logit "$breeder $status";
  
-logit 'total ' . (  scalar keys %{ $s } ) . ' breeders';
-
-logit 'initializing';
-
-foreach my $b ( keys %{ $s } ) {
-
- # initializing records
- 
- $s->{$b}->{done} = 0;
- $s->{$b}->{status} = 'UNVERIFIED';
-   
+ $s->{breeders}->{$breeder}->{done} = 1;
+  
 }
 
 sub fail {
 
- my ( $breeder, $status ) = @_;
+ my ( $s, $breeder, $status ) = @_;
 
- $s->{$breeder}->{status} = $status;
+ $s->{breeders}->{$breeder}->{status} = $status;
  
  logit "$breeder $status";
   
@@ -99,13 +58,77 @@ sub fail {
 
 sub failf {
 
- my ( $breeder, $status ) = @_;
+ my ( $s, $breeder, $status ) = @_;
   
- fail ( $breeder, $status );
+ fail ( $s, $breeder, $status );
  
- $s->{$breeder}->{done} = 1;
+ $s->{breeders}->{$breeder}->{done} = 1;
 
 } 
+
+$| = 1; # unbuffered printing
+
+logopen ( "../log/bcheck.log" );
+
+# we use a MVC-like stash to hold data
+my $s = {};
+
+$s->{started} = dt;
+$s->{started_en} = dtexpand $s->{started}, 'en';
+
+logit "----- catza.net bcheck started at $s->{started_en}"; 
+
+# open report file at early stage so if it 
+# doesn't open then the check is aborted
+open REPORT, '>../log/bheck.html' or die $!;
+
+logit 'initializing';
+
+check_init ( $s );
+
+logit 'total ' . (  scalar keys %{ $s->{breeders} } ) . ' breeders';
+
+my $rounds = 3;
+
+foreach my $r ( 1 .. $rounds ) {
+
+ logit "check round $r/$rounds";
+
+ foreach my $b ( shuffle @{ $s->{bers} } ) {
+    
+  if ( $s->{breeders}->{$b}->{done} == 0 ) {
+  
+   logit "$b ...";
+   
+   my $status = check_url $s->{breeders}->{$b}->{url};
+   
+   if ( $status eq 'OK' ) { ok ( $s, $b, $status ) } 
+    elsif ( $r == $rounds ) { failf ( $s, $b, $status ) }
+    else { fail ( $s, $b, $status ) }
+    
+  }
+   
+ }
+ 
+}
+
+$s->{ended} = dt;
+$s->{ended_en} = dtexpand $s->{ended}, 'en';
+
+$s->{took} = [ s2dhms ( $s->{ended} - $s->{started} ) ];
+
+print REPORT check_report $s;
+
+close REPORT;
+
+logit "----- catza.net bcheck finished at $s->{ended_en}";
+
+__END__
+
+
+
+
+
 
 foreach my $r ( 1 .. 3 ) {
 
@@ -117,78 +140,7 @@ foreach my $r ( 1 .. 3 ) {
   
    logit "$b ...";
  
-   if ( not defined $s->{$b}->{url} ) {
-   
-    failf ( $b, 'NOURL' );
-    
-   } elsif ( substr ( $s->{$b}->{url}, 0, 7 ) ne 'http://' ) {
-      
-    failf ( $b, 'BADSYNTAX' );    
-   
-   } else {
-   
-    my $get = $net->get($s->{$b}->{url})->res;
 
-    my $body = $get->body // undef;
-    my $code = $get->code // undef ;
-    
-    if ( $code ) {
-    
-     if ( $code eq 404 or $code eq 410 ) { # not found -> try once
-    
-      failf ( $b, 'NOTFOUND' ); 
-    
-     } elsif ( $code eq 200 ) {
-     
-      if ( length $body < 50 ) {
-
-       failf ( $b, 'TOOSMALL' );
-        
-      } elsif ( length $body > 500000 ) { 
-           
-       failf ( $b, 'TOOLARGE' );  
-      
-      } else {
-      
-       if ( $body =~ m|not found|i ) {
-       
-        failf ( $b, 'CONTENT' );
-                     
-       } else {
-      
-        failf ( $b, 'OK' );
-         
-       }
-      
-      }
-    
-     } else {
-
-      if ( $r < 3 ) { # odd codes -> try twice
-      
-       fail ( $b, 'T_ODDCODE' );
-     
-      } else {
-
-       failf ( $b, 'ODDCODE' );
-      
-      }
-     
-     }
-    
-    } else {
-    
-     if ( $r < 3 ) { # odd codes -> try twice
-      
-      fail ( $b, 'T_NOCONN' );
-     
-     } else {
-
-      failf ( $b, 'NOCONN' );
-      
-     }
-    }
-   }
   }
  }  
 }

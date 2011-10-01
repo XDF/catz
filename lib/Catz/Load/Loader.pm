@@ -464,9 +464,45 @@ sub load_simple {
   $r++;
   
   # immediately convert ? to null 
-  my @lines = map { $_ eq '?' ? undef : $_ } tolines ( $pile );
+  my @lines = tolines ( $pile );
   
   given ( $table  ) {
+  
+   when ( 'mbreeder' ) {
+   
+    # scan for timestamps at the end of the data
+        
+    if ( $lines[1] =~ /^(.+)\s+(\d{4,10})$/ ) {
+    
+     $lines[1] = $1; $lines[3] = $2;
+     
+     length $2 == 8 or die "invalid verified date $2";
+     
+    } else {
+    
+     $lines[3] = undef;
+    
+    }
+
+    if ( $lines[2] =~ /^(.+)\s+(\d{4,10})$/ ) {
+        
+     $lines[2] = $1; $lines[4] = $2;
+     
+     length $2 == 8 or die "invalid verified date $2"; 
+    
+    } else {
+    
+     $lines[4] = undef;
+    
+    }
+    
+    # convert ? to null
+    
+    $lines[1] eq '?' and $lines[1] = undef;
+    
+    $lines[2] eq '?' and $lines[2] = undef;
+       
+   }
      
    when ( 'mnat' ) {
    
