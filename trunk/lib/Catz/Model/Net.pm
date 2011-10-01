@@ -28,7 +28,7 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Catz::Core::Model';
 
-use Mojo::UserAgent;
+use LWP::UserAgent;
 
 use Catz::Core::Conf;
 use Catz::Core::Text;
@@ -42,11 +42,23 @@ my $key_date = conf ( 'result_param_date' );
 my $key_loc = conf ( 'result_param_loc' );
 my $key_name = conf ( 'result_param_name' );
 
-my $net = Mojo::UserAgent->new;
+my $ua =  LWP::UserAgent->new (
+ agent => text('en')->{SITE} . ' ' . __PACKAGE__ . ' LWP::UserAgent Perl5',
+ timeout => 10,
+ max_redirect => 5
+);
 
-$net->name( text('en')->{AGENT_NAME} );
+sub body {
+
+ my $url = shift;
  
-$net->keep_alive_timeout(10); # use 10 s 
+ my $res =  $ua->get( $url );
+ 
+ $res->is_success and return $res->content;
+ 
+ return undef;
+
+}
 
 sub urlc {
 
@@ -74,7 +86,7 @@ sub _data {
  
  my $url = urld ( $url_data, $date, $loc, $name );
 
- my $res = $net->get($url)->res->body;
+ my $res = body ( $url );
 
  $res and ( length ( $res ) > 3 ) and
   return ( result_process ( $res ) );
@@ -89,7 +101,7 @@ sub _count {
 
  my $url = urlc ( $url_count, $date, $loc );
 
- my $res = $net->get($url)->res->body;
+ my $res = body ( $url );
 
  $res and length ( $res ) > 0 and return int ( $res );
 
