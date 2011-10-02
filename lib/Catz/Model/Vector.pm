@@ -79,7 +79,10 @@ sub _base {
  
    # get all photos that have a subject of subject class $sec defined
     
-  $res = $self->dbcol("select x from sec natural join _sid_x where pid=(select pid from pri where pri=?)", $sec);
+  $res = $self->dbcol ( qq { 
+   select x from sec natural join _sid_x 
+   where pid=(select pid from pri where pri=?) 
+  }, $sec );
             
  } else {
  
@@ -89,11 +92,19 @@ sub _base {
  
   if ( $pri eq 'any' ) {
            
-   $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec where (sec_en like ? or sec_fi like ?))", $sec, $sec);
+   $res = $self->dbcol ( qq {
+    select x from _sid_x where sid in (
+     select sid from sec where (sec_en like ? or sec_fi like ?)
+    ) }, $sec, $sec );
    
   } else {
    
-   $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec where pid=(select pid from pri where pri=?) and (sec_en like ? or sec_fi like ?))", $pri, $sec,$sec);
+   $res = $self->dbcol ( qq { 
+    select x from _sid_x where sid in ( 
+     select sid from sec where 
+      pid=(select pid from pri where pri=?) and 
+      (sec_en like ? or sec_fi like ?)
+    ) }, $pri, $sec, $sec );
    
   }
     
@@ -182,7 +193,10 @@ sub _pager { # create a vector and process it to usable for browsing
  # xs on this page         
  my $xs = [ map { $svec->[$_] } ( $xfrom .. $xto ) ];
    
- [ ( $total, $page, $pages, $from, $to , $pins, $xs, $svec->[0], $svec->[$#{$svec}] ) ];
+ [ ( 
+  $total, $page, $pages, $from, $to , 
+  $pins, $xs, $svec->[0], $svec->[$#{$svec}] 
+ ) ];
       
 }
 

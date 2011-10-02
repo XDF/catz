@@ -41,7 +41,12 @@ sub _bits {
 
  my ( $self, $pri, $sec ) = @_; my $lang = $self->{lang};
  
- my $res = $self->dbcol("select x from _sid_x where sid in (select sid from sec_$lang where pid=(select pid from pri where pri=?) and sec=?)", $pri, $sec);
+ my $res = $self->dbcol ( qq {
+  select x from _sid_x where sid in ( 
+   select sid from sec_$lang where pid = ( 
+    select pid from pri where pri=?
+   ) and sec=? ) 
+ }, $pri, $sec );
 
  # creating an empty bit vector one larger than there are photos
  # since 0 index in not used      
@@ -63,7 +68,7 @@ sub verify {
  
  ( $pri eq 'album' or $pri eq 'text' ) and return 0;
  
- $self->dbone('select 1 from pri where pri=?',$pri) ? 1 : 0;
+ $self->dbone ( 'select 1 from pri where pri=?', $pri ) ? 1 : 0;
 
 }
 

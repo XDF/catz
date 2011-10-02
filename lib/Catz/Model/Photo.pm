@@ -41,7 +41,11 @@ sub _thumb {
  my $min = 99999999;
  my $max = 00000000; 
  
- my $thumbs = $self->dball( qq{select x,s,n,folder,file||'$LR',lwidth,lheight from photo natural join album where x in (} . ( join ',', @xs ) .  ') order by x' );
+ my $thumbs = $self->dball ( qq {
+  select x,s,n,folder,file||'$LR',lwidth,lheight 
+  from photo natural join album 
+  where x in ( } . ( join ',', @xs ) .  ') order by x' 
+ );
 
  foreach my $row ( @$thumbs ) { 
   # extract date from the folder name (first eight characters) 
@@ -59,14 +63,25 @@ sub _detail {
 
  my ( $self, $x ) = @_; my $lang = $self->{lang};
 
- return $self->dball( 
-  qq{select pri,sec from (
-   select pri,disp,sec,sort from pri natural join sec_$lang natural join inalbum natural join photo where pri<>'album' and x=? union all
-   select pri,disp,sec,sort from pri natural join sec_$lang natural join inexiff natural join photo where x=? union all
-   select pri,disp,sec,sort from pri natural join sec_$lang natural join inpos natural join photo where pri<>'text' and x=? union all
-   select 'time','99',moment,moment from photo where x=? and moment is not null
-  ) group by pri,sec order by disp,sort}, $x, $x, $x, $x 
- );
+ return $self->dball ( qq {
+  select pri,sec from (
+    select pri,disp,sec,sort 
+    from pri natural join sec_$lang natural join inalbum natural join photo 
+    where pri<>'album' and x=? 
+   union all
+    select pri,disp,sec,sort 
+    from pri natural join sec_$lang natural join inexiff natural join photo 
+    where x=? 
+   union all
+    select pri,disp,sec,sort 
+    from pri natural join sec_$lang natural join inpos natural join photo
+    where pri<>'text' and x=? 
+   union all
+    select 'time','99',moment,moment 
+    from photo 
+    where x=? and moment is not null
+  ) group by pri,sec order by disp,sort
+ }, $x, $x, $x, $x  );
 
 }
 
@@ -74,20 +89,34 @@ sub _resultkey {
 
  my ( $self, $x ) = @_; my $lang = $self->{lang};
 
- my $loc = $self->dbone ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='loc'", $x ); # 0 ms / 2011-05-29
+ my $loc = $self->dbone ( qq { 
+  select sec 
+  from pri natural join sec_$lang natural join inalbum natural join photo 
+  where x=? and pri='loc'
+ }, $x ); # 0 ms / 2011-05-29
  
- my $date = $self->dbone ( "select sec from pri natural join sec_$lang natural join inalbum natural join photo where x=? and pri='date'", $x ); # 0 ms / 2011-05-29
+ my $date = $self->dbone ( qq { 
+  select sec 
+  from pri natural join sec_$lang natural join inalbum natural join photo 
+  where x=? and pri='date'
+ }, $x ); # 0 ms / 2011-05-29
 
  my @cats = ();
 
  # this returns undef if the photo doesn't have comment
- my $top = $self->dbone ( 'select max(p) from photo natural join inpos where x=?', $x ); # 0 ms / 2011-05-29
+ my $top = $self->dbone ( qq { 
+  select max(p) from photo natural join inpos where x=?
+ }, $x ); # 0 ms / 2011-05-29
 
  $top and do { 
  
   do {
 
-   push @cats, $self->dbone ( "select sec from pri natural join sec_$lang natural join inpos natural join photo where x=? and p=? and pri='cat'", $x, $_ ); # 0 ms / 2011-05-29
+   push @cats, $self->dbone ( qq {
+    select sec 
+    from pri natural join sec_$lang natural join inpos natural join photo
+    where x=? and p=? and pri='cat'
+   }, $x, $_ ); # 0 ms / 2011-05-29
 
   } foreach ( 1 .. $top );
   
@@ -101,9 +130,11 @@ sub _text {
 
  my ( $self, $x ) = @_; my $lang = $self->{lang};
 
- return $self->dbcol( 
-  qq{select sec from pri natural join sec_$lang natural join inpos natural join photo where pri='text' and x=? order by p}, $x 
- );
+ return $self->dbcol ( qq { 
+  select sec from 
+  pri natural join sec_$lang natural join inpos natural join photo 
+  where pri='text' and x=? order by p
+ }, $x );
 
 }
 
@@ -111,8 +142,10 @@ sub _texts {
 
  my ( $self, @xs ) = @_; my $lang = $self->{lang};
 
- my $res = $self->dball( 
-  qq{select x,sec from photo natural join pri natural join sec_$lang natural join inpos where pri='text' and x in (} . ( join ',', @xs ) .  ') order by x,p'    
+ my $res = $self->dball ( qq { 
+  select x,sec 
+  from photo natural join pri natural join sec_$lang natural join inpos 
+  where pri='text' and x in (} . ( join ',', @xs ) .  ') order by x,p'    
  );
  
  my $texts = {};
@@ -139,7 +172,10 @@ sub _image {
 
  my ( $self, $x ) = @_;
  
- $self->dbrow(qq{select s,n,folder,file||'$HR',hwidth,hheight,file||'$LR' from album natural join photo where x=?},$x);
+ $self->dbrow ( qq { 
+  select s,n,folder,file||'$HR',hwidth,hheight,file||'$LR' 
+  from album natural join photo where x=?
+ } ,$x );
 
 }
 

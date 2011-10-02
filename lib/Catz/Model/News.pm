@@ -34,7 +34,7 @@ sub _titles {
 
  my $self = shift; my $lang = $self->{lang};
       
- return $self->dball( 
+ return $self->dball (  
   "select dt,title_$lang from mnews order by dt desc" 
  );
   
@@ -44,13 +44,13 @@ sub _one {
 
  my ( $self, $article ) = @_; my $lang = $self->{lang};
       
- my $res = $self->dbrow( 
-  "select dt,title_$lang,text_$lang,url_$lang from mnews where dt=?",$article 
+ my $res = $self->dbrow ( 
+  "select dt,title_$lang,text_$lang,url_$lang from mnews where dt=?", $article 
  );
  
- my $prev = $self->dbone('select max(dt) from mnews where dt<?',$article);
+ my $prev = $self->dbone ( 'select max(dt) from mnews where dt<?', $article );
  
- my $next = $self->dbone('select min(dt) from mnews where dt>?',$article);
+ my $next = $self->dbone ( 'select min(dt) from mnews where dt>?', $article );
  
  return [ $res, $prev, $next ];
   

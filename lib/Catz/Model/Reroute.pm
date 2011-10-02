@@ -32,7 +32,10 @@ sub _isbreeder {
 
  my ( $self, $breeder ) = @_;
  
- $self->dbone( "select count(*) from sec where sec_en=? and pid=(select pid from pri where pri='breeder')", $breeder );
+ $self->dbone ( qq { 
+  select count(*) from sec where sec_en=? and pid=
+   (select pid from pri where pri='breeder')
+ }, $breeder );
   
 }
 
@@ -40,7 +43,10 @@ sub _isbreed {
 
  my ( $self, $breed ) = @_;
  
- $self->dbone( "select count(*) from sec where sec_en=? and pid=(select pid from pri where pri='breed')", $breed );
+ $self->dbone ( qq { 
+  select count(*) from sec where sec_en=? and 
+   pid=(select pid from pri where pri='breed')
+ }, $breed );
   
 }
 
@@ -48,7 +54,7 @@ sub _folder2s {
 
  my ( $self, $folder ) = @_;
  
- $self->dbone( 'select s from album where folder=?', $folder );
+ $self->dbone ( 'select s from album where folder=?', $folder );
   
 }
 
