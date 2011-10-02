@@ -40,7 +40,7 @@ sub _id2x {
  
  my ( $s, $n ) = minnum33 ( $id );
  
- $self->dbone( 
+ $self->dbone ( 
   'select x from album natural join photo where s=? and n=?', $s, $n 
  );
  
@@ -50,7 +50,7 @@ sub _x2id {
 
  my ( $self, $x ) = @_;
  
- my $res = $self->dbrow(
+ my $res = $self->dbrow (
   'select s,n from album natural join photo where x=?', $x
  );
  
@@ -67,9 +67,10 @@ sub _xs2ids {
 
  [ 
   map { fullnum33 ( $_->[0], $_->[1] ) }  
-  @{ $self->dball(
-   'select s,n from album natural join photo where x in (' . ( join ',', @xs ) . ') order by x' 
-   )} 
+  @{ $self->dball (
+   'select s,n from album natural join photo where x in (' . 
+    ( join ',', @xs ) . ') order by x' 
+   ) } 
  ];
 
 }

@@ -41,7 +41,10 @@ sub _all2date {
  
  # we fetch all dates from db (utilizing db caching more)
  
- my $res = $self->dball('select min(s),min(n),substr(folder,1,8) from album natural join photo group by substr(folder,1,8) order by substr(folder,1,8) desc');
+ my $res = $self->dball ( qq {
+  select min(s),min(n),substr(folder,1,8) from album natural join photo 
+  group by substr(folder,1,8) order by substr(folder,1,8) desc
+ } );
 
  # filter out the not needed
 
@@ -63,7 +66,16 @@ sub _pair2date {
  
  # we fetch all dates from db (utilizing db caching more)
 
- my $res = $self->dball("select min(s),min(n),substr(folder,1,8) from album natural join photo natural join _sid_x where sid=(select sid from sec_$lang where pid=(select pid from pri where pri=?) and sec=?) group by substr(folder,1,8) order by substr(folder,1,8) desc",$pri,$sec);
+ my $res = $self->dball ( qq { 
+  select min(s),min(n),substr(folder,1,8) 
+  from album natural join photo natural join _sid_x 
+  where sid=(
+   select sid from sec_$lang 
+   where pid=(select pid from pri where pri=?) and sec=?
+  ) 
+  group by substr(folder,1,8) 
+  order by substr(folder,1,8) desc
+ }, $pri, $sec );
 
  # filter out the not needed
 
@@ -83,7 +95,13 @@ sub _coverage { # how many photos have the given pri defined
 
  my ( $self, $pri, $sec, $target ) = @_;  my $lang = $self->{lang};
  
- $self->dbone(qq{select count(distinct x) from _sid_x natural join sec_$lang where pid=(select pid from pri where pri=?) and x in (select x from _sid_x natural join sec_$lang where pid=(select pid from pri where pri=?) and sec=?)},$target,$pri,$sec); # 2011-06-03 15 ms  
+ $self->dbone ( qq { 
+  select count(distinct x) from _sid_x natural join sec_$lang 
+  where pid=(select pid from pri where pri=?) and x in (
+   select x from _sid_x natural join sec_$lang 
+    where pid=(select pid from pri where pri=?) and sec=?
+  )
+ }, $target, $pri, $sec ); # 2011-06-03 15 ms  
 
 }
 
@@ -94,11 +112,23 @@ sub _refine {
  # maximum number of items in a set, use 15 if not specific
  my $n = $matrix->{$pri}->{limit}->{$target} // 15;
  
- my $me = $self->dbone ("select sid from sec_$lang where pid=(select pid from pri where pri=?) and sec=?",$pri,$sec);
+ my $me = $self->dbone ( qq {
+  select sid from sec_$lang 
+  where pid=(select pid from pri where pri=?) and sec=?
+ }, $pri, $sec );
  
- my $tg = $self->dbone ("select pid from pri where pri=?",$target);
+ my $tg = $self->dbone ( "select pid from pri where pri=?", $target );
  
- my $sql = qq{select sec from (select sec,sort from sec_$lang natural join _secm where sid in (select target from _relate inner join sec on (target=sid) natural join pri where source=? and pid=?) order by cntphoto desc limit 15) order by sort};
+ my $sql = qq { 
+  select sec from ( 
+   select sec,sort from sec_$lang natural join _secm 
+   where sid in (
+    select target
+    from _relate inner join sec on (target=sid) natural join pri 
+    where source=? and pid=?
+   ) order by cntphoto desc limit 15
+  ) order by sort
+ };
  
  return $self->dbcol( $sql, $me, $tg );
 
@@ -126,7 +156,9 @@ sub _date {
 
  my ( $self, $x ) = @_; 
  
- $self->dbone('select substr(folder,1,8) from album natural join photo where x=?',$x);   
+ $self->dbone ( 
+  'select substr(folder,1,8) from album natural join photo where x=?' , $x 
+ );   
  
 }
 
@@ -134,7 +166,7 @@ sub _breedermeta {
 
  my ( $self, $breeder ) = @_;
  
- $self->dbrow('select nat,url from mbreeder where breeder=?', $breeder );
+ $self->dbrow ( 'select nat,url from mbreeder where breeder=?', $breeder );
  
 }
 
@@ -142,7 +174,7 @@ sub _seccnt {
 
  my ( $self, $pri ) = @_;
  
- $self->dbone('select count(*) from sec natural join pri where pri=?', $pri );
+ $self->dbone ( 'select count(*) from sec natural join pri where pri=?', $pri );
 
 }
 
@@ -150,7 +182,11 @@ sub _maxcntphoto {
 
  my ( $self, $pri ) = @_;
 
- my $max = $self->dbone ('select max(cntphoto) from _secm natural join sec natural join pri where pri=?',$pri);
+ my $max = $self->dbone ( qq { 
+  select max(cntphoto) 
+  from _secm natural join sec natural join pri 
+  where pri=?
+ }, $pri );
  
  $max < 2 ? 2 : $max;
 
@@ -160,7 +196,11 @@ sub _maxcntdate {
 
  my ( $self, $pri ) = @_;
 
- my $max = $self->dbone ('select max(cntdate) from _secm natural join sec natural join pri where pri=?',$pri);
+ my $max = $self->dbone ( qq { 
+  select max(cntdate) 
+  from _secm natural join sec natural join pri 
+  where pri=?
+ }, $pri );
  
  $max < 2 ? 2 : $max;
  
@@ -171,7 +211,11 @@ sub _rank {
  my ( $self, $pri, $sec ) = @_;  my $lang = $self->{lang};
  
  my ( $cntp, $cntd ) = 
-  @{ $self->dbrow ("select cntphoto,cntdate from _secm natural join sec_$lang where pid=(select pid from pri where pri=?) and sec=?",$pri,$sec) };
+  @{ $self->dbrow ( qq { 
+   select cntphoto,cntdate 
+   from _secm natural join sec_$lang 
+   where pid=(select pid from pri where pri=?) and sec=?
+  }, $pri, $sec ) };
   
  $cntp < 1 and $cntp = 1;
  $cntd < 1 and $cntd = 1; 
@@ -190,7 +234,12 @@ sub _ranks {
  my $maxp = $self->maxcntphoto ( $pri );
  my $maxd = $self->maxcntdate ( $pri );
  
- my $arr = $self->dball("select cntphoto,cntdate from (select cntphoto,cntdate from sec natural join _secm natural join pri where pri=? order by random() limit 200) group by cntphoto,cntdate",$pri);
+ my $arr = $self->dball( qq { 
+  select cntphoto,cntdate from (
+   select cntphoto,cntdate from sec natural join _secm natural join pri 
+   where pri=? order by random() limit 200
+  ) group by cntphoto,cntdate 
+ }, $pri );
  
  my $i = -1;
  
@@ -201,7 +250,8 @@ sub _ranks {
    
   $arr->[$i]->[0] > $maxp and $arr->[$i]->[0] = $maxp; 
    
-  $arr->[$i]->[0] = round ( ( log ( $arr->[$i]->[0] ) / log ( $maxp ) ) * 100 );
+  $arr->[$i]->[0] = 
+   round ( ( log ( $arr->[$i]->[0] ) / log ( $maxp ) ) * 100 );
   
   $arr->[$i]->[0] < 1 and $arr->[$i]->[0] = 1;
   
@@ -210,7 +260,8 @@ sub _ranks {
   
   $arr->[$i]->[1] > $maxd and $arr->[$i]->[1] = $maxd; 
    
-  $arr->[$i]->[1] = round ( ( log ( $arr->[$i]->[1] ) / log ( $maxd ) ) * 100 );
+  $arr->[$i]->[1] = 
+   round ( ( log ( $arr->[$i]->[1] ) / log ( $maxd ) ) * 100 );
   
   $arr->[$i]->[1] < 1 and $arr->[$i]->[1] = 1;
 
@@ -224,7 +275,10 @@ sub _nats {
 
  my $self = shift; # not using lang, assuming nats to be language independent
  
- $self->dbcol("select sec_en from sec where pid=(select pid from pri where pri='nat')"); 
+ $self->dbcol( qq { 
+  select sec_en from sec 
+  where pid=(select pid from pri where pri='nat') 
+ } ); 
  
 }
 

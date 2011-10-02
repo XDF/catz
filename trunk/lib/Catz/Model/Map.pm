@@ -41,14 +41,12 @@ sub _link {
 
  my $self = shift; my $lang = $self->{lang};
  
- my $sql = "select 'album',sec,'folder',folder from album natural join inalbum natural join sec_$lang natural join pri where pri='album'";
- 
- #foreach my $tag ( @duals ) {
- 
-  #$sql .= " union all select '$tag',".$tag."_$lang,'".$tag."',".$tag." from m$tag"; 
- 
- #}
- 
+ my $sql = qq {
+  select 'album',sec,'folder',folder 
+  from album natural join inalbum natural join sec_$lang natural join pri
+   where pri='album'
+ };
+  
  my $base = $self->dball ( $sql );
   
  my %res = ();
@@ -71,7 +69,11 @@ sub _view {
 
  my $self = shift; my $lang = $self->{lang};
  
- my $base = $self->dball ( qq{select 'folder',folder,'album',sec from album natural join inalbum natural join sec_$lang natural join pri where pri='album'});
+ my $base = $self->dball ( qq { 
+  select 'folder',folder,'album',sec 
+  from album natural join inalbum natural join sec_$lang natural join pri 
+  where pri='album'
+ } );
  
  my %res = ();
  
@@ -127,9 +129,14 @@ sub _trans {
  
  my $gnal = $lang eq 'fi' ? 'en' : 'fi';
  
- my $sid = $self->dbone("select sid from sec_$lang natural join pri where pri=? and sec=?",$spri,$ssec);
+ my $sid = $self->dbone ( 
+  "select sid from sec_$lang natural join pri where pri=? and sec=?",
+   $spri, $ssec 
+ );
 
- return $self->dbone("select sec from sec_$gnal natural join pri where sid=?",$sid); 
+ return $self->dbone ( 
+  "select sec from sec_$gnal natural join pri where sid=?", $sid
+ ); 
  
 }
 

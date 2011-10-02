@@ -39,7 +39,7 @@ use Catz::Util::File qw ( findlatest );
 
 our $status = [ qw (
  BADSYNTAX NOTFOUND FORBIDDEN NOCONN TOOSMALL 
- TOOLARGE CONTENT ODDCODE NOURL FRESH OK
+ TOOLARGE CONTENT ODDCODE NOURL NEWCOMER FRESH OK
 ) ];
 
 our $strings = { 
@@ -53,7 +53,8 @@ our $strings = {
  OK => 'OK',
  ODDCODE => 'unexpected response code',
  NOCONN => 'unable to connect',
- FRESH => 'marked and fresh'
+ FRESH => 'marked and fresh',
+ NEWCOMER => 'is in data but not in meta'
 };
 
 do {
@@ -84,22 +85,38 @@ sub check_init {
   { AutoCommit => 0, RaiseError => 1, PrintError => 1 } 
  )  or die "unable to connect to database $dbfile: $DBI::errstr";
 
- # load breeders to stash
+ # load breeders meta to stash
  $s->{breeders} = 
   $dbc->selectall_hashref ( qq {
    select breeder as breeder,url as url,nat as nat,url_ok as url_ok,
    nat_ok as nat_ok,0 as done, 'UNVERIFIED' as status,0 as failcount  
    from mbreeder order by breeder
-  }, 'breeder' );
-  
- # we also store an array of breeder names
- $s->{bers} = [ sort keys %{ $s->{breeders} } ];
- 
+ }, 'breeder' );
+   
  # load nations to stash
  $s->{nats} = 
   $dbc->selectall_hashref ( 'select nat as nat from mnat', 'nat' );
   
+ # load breeders from data that are not defined in meta
+ $s->{newcomers} = $dbc->selectcol_arrayref ( qq {
+  select sec from sec_en where pid in 
+   ( select pid from pri where pri='breeder' )
+  order by sort
+ } );
+   
  $dbc->disconnect;
+ 
+ # we also store an array of breeder names
+ $s->{bers} = [ sort keys %{ $s->{breeders} } ]; 
+
+ foreach my $b ( @{ $s->{newcomers} } ) {
+
+  # add record for each newcomer breeder 
+
+  defined $s->{breeders}->{$b} or
+   $s->{breeders}->{$b} = { status => 'NEWCOMER', done => 1 };
+ 
+ }
  
  # quick check nations - errors are fatal
  foreach my $b ( @{ $s->{bers} } ) {
@@ -166,11 +183,13 @@ __DATA__
 http://www.google.fi/search?&client=<%= enurl $s %>&rls=<%= enurl $l %>&q=<%= enurl $q %>
 <% end %>
 <!doctype html><html>
-<head><title><%= $t->{SITE} %> checker</title></head>
-<body><h1><%= $t->{SITE} %> checker</h1>
+% my $slogan =  'breeder URL check';
+<head><title><%= $t->{SITE} %> <%= $slogan %></title></head>
+<body><h1><%= $t->{SITE} %> <%= $slogan %></h1>
 <style type="text/css">
 body {
  font-family: verdana;
+ font-size: 88%;
 }
 table {
 	border-width: 1px;
@@ -194,7 +213,7 @@ table td {
 <%= $s->{took}->[1] %> <%= $t->{HOURS} %>
 <%= $s->{took}->[2] %> <%= $t->{MINUTES} %>
 <%= $s->{took}->[3] %> <%= $t->{SECONDS} %></td></tr>
-<tr><td colspan="3">total <%= scalar @{ $s->{bers} } %> breeder(s)</td></tr>
+<tr><td colspan="3">total <%= scalar keys %{ $s->{breeders} } %> breeder(s)</td></tr>
 </table>
 % foreach my $st ( @{ $s->{status} } ) {
 <h2><%= $s->{strings}->{$st} %>
@@ -204,7 +223,7 @@ table td {
 </h2>
 <table>
 % my $i = 0;
-%  foreach my $b ( @{ $s->{bers} } ) {
+%  foreach my $b ( sort keys %{ $s->{breeders} } ) {
 %   if ( $s->{breeders}->{$b}->{status} eq $st ) {
 %    $i++;
 <tr><td align="right"><%= $b %></td> 
@@ -226,7 +245,16 @@ table td {
 % } else {
 <tr><td colspan="3">total <%= $i %> breeder(s)</td></tr>
 % }
+% $s->{counters}->{$st} = $i;
 </table>
-% } 
+% }
+<h2><%= $t->{SUMMARY} %></h2>
+<table>
+% foreach my $st ( @{ $s->{status} } ) {
+<tr><td><%= $s->{strings}->{$st} %></td>
+<td><%= $s->{counters}->{$st} %></td></tr>
+% }
+<tr><td><b>total<b></td><td><b><%= scalar keys %{ $s->{breeders} } %></b></td></tr> 
+</table>
 </body>
 </html>

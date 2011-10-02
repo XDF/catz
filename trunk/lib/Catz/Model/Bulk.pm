@@ -34,7 +34,14 @@ sub _latest {
  
  # find latest album having at least 10 photos with cat names
  
- return $self->dbone("select aid from album where s=(select max(s) from album where aid in (select aid from inpos natural join sec natural join pri where pri='cat' group by aid having count(distinct n)>9))");
+ return $self->dbone ( qq { 
+  select aid from album where s=(
+   select max(s) from album where aid in (
+    select aid from inpos natural join sec natural join pri
+    where pri='cat' group by aid having count(distinct n)>9
+   )
+  )
+ } );
  
 }
 
@@ -45,12 +52,13 @@ sub _folder {
  # find aid
  
  my $aid = 
-  $self->dbone('select aid from album where folder=?',$folder) // 0;
+  $self->dbone( 'select aid from album where folder=?', $folder ) // 0;
  
  return $aid if $aid > 0;
  
  # second attempt with album number
- return $self->dbone('select aid from album where folder=?',$folder.'1');
+ return 
+  $self->dbone( 'select aid from album where folder=?', $folder . '1' );
  
 }
 
@@ -60,7 +68,14 @@ sub _photolist {
  
  # get the photos by aid
  
- $self->dball("select s,photo.n,folder,file,sec_en from photo natural join album natural join inpos natural join sec natural join pri where p=1 and pri='cat' and album.aid=? order by photo.n asc",$aid); 
+ $self->dball( qq { 
+  select s,photo.n,folder,file,sec_en 
+  from 
+   photo natural join album natural join inpos
+   natural join sec natural join pri 
+  where p=1 and pri='cat' and album.aid=? 
+  order by photo.n asc
+ }, $aid ); 
   
 }
 
