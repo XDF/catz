@@ -61,7 +61,7 @@ sub detect { # the language detection based on the request headers
 sub front {
 
  my $self = shift; my $s = $self->{stash};
- 
+  
  $s->{urlother} = '/' . $s->{langaother} . '/';
  
  $s->{mapview} = $self->fetch ( 'map#view' );

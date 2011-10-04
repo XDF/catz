@@ -158,7 +158,7 @@ sub urirest {
 
  # remove the beginning of uri (the language/config part)
  
- $_[0] =~ /^\/(?:..(?:[1-9]{6})?)(.*)/;
+ $_[0] =~ /^\/(?:..(?:[1-9]{6})?)(.*)$/;
  
  $1 ? $1 : undef;
    

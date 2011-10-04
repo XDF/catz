@@ -47,7 +47,13 @@ foreach my $lang ( qw ( en fi en394211 fi211111 ) ) {
  
  foreach my $mode ( qw ( browseall viewall ) ) {
  
-  $t->get_ok("/$lang/$mode")->status_is(301); $c += 2;
+  $t->get_ok("/$lang/$mode")
+    ->status_is(200)
+    ->content_type_like(qr/text\/html/)
+    ->content_like(qr/ alt=\"\[/)
+    ->content_like(qr/\.JPG/);
+    
+  $c += 5;
     
   $t->get_ok("/$lang/$mode/")
     ->status_is(200)
@@ -59,7 +65,13 @@ foreach my $lang ( qw ( en fi en394211 fi211111 ) ) {
   
   foreach my $id ( @ok ) {
 
-   $t->get_ok("/$lang/$mode/$id")->status_is(301); $c += 2;
+   $t->get_ok("/$lang/$mode/$id")
+     ->status_is(200)
+     ->content_type_like(qr/text\/html/)
+     ->content_like(qr/ alt=\"\[/)
+     ->content_like(qr/\.JPG/);     
+    
+   $c += 5;
   
    $t->get_ok("/$lang/$mode/$id/")
      ->status_is(200)

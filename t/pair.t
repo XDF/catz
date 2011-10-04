@@ -120,7 +120,7 @@ foreach my $lang ( qw ( en fi en264312 fi384322 ) ) {
    
    $t->get_ok("/$lang/$mode/$elem[1]/")->status_is(404); $c += 2;
    
-   $t->get_ok("/$lang/$mode/$elem[0]/$elem[1]")->status_is(301); $c += 2;
+   $t->get_ok("/$lang/$mode/$elem[0]/$elem[1]")->status_is(200); $c += 2;
      
    $t->get_ok("/$lang/$mode/$elem[0]/$elem[1]/")
      ->status_is(200)

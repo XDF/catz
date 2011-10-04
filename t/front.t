@@ -61,12 +61,18 @@ foreach my $lang ( qw ( en fi en211211 fi171212 ) ) {
    
  $c += 9;  
  
- # without slash should do perm redirect
- 
+ # without slash should be also ok
  $t->get_ok("/$lang")
-   ->status_is(301);
+   ->status_is(200)
+   ->content_type_like(qr/text\/html/)
+   ->element_exists('html body h1')
+   ->content_like(qr/$txt->{NOSCRIPT}/)
+   ->content_like(qr/$txt->{VIZ_GLOBE_NAME}/)
+   ->content_like(qr/href=\"\/$lang\/list\/breeder\/a2z\/\"/)
+   ->content_like(qr/alt="\[(kuva|photo) \d{6}\]"/)
+   ->content_like(qr/\.JPG/);
    
- $c += 2;
+ $c += 9;  
  
 } 
 

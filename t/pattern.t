@@ -225,7 +225,7 @@ foreach my $lang ( qw ( en fi en en264311 fi365312 ) ) {
  
  # no slash
  
- $t->get_ok("/$lang/search")->status_is(301); $c += 2;
+ $t->get_ok("/$lang/search")->status_is(200); $c += 2;
 
  # alien param
  

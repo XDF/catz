@@ -66,12 +66,16 @@ foreach my $palette ( qw ( dark neutral bright ) ) {
    
  $c += 6;
  
- # without slash should do permanent redirect
+ # without slash should be ok
  
  $t->get_ok("/style/$palette")
-   ->status_is(301);
+   ->status_is(200)
+   ->content_type_like(qr/text\/css/)
+   ->content_like(qr/\.xtra/)
+   ->content_like(qr/$pattern1/)
+   ->content_like(qr/$pattern2/);
    
- $c += 2;
+ $c += 6;
  
 }
 
