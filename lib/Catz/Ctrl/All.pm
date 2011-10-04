@@ -58,27 +58,33 @@ sub all {
 }
 
 
-sub browseall { 
+sub browseall {
 
- $_[0]->all or ( $_[0]->not_found and return );
+ my $self = shift; 
+
+ $self->all or return $self->not_found;
   
- $_[0]->multi or ( $_[0]->not_found and return );
+ $self->multi or return $self->not_found;
  
 }
 
-sub textall { 
+sub textall {
 
- $_[0]->all or ( $_[0]->not_found and return );
+ my $self = shift;  
+
+ $self->all or return $self->not_found;
    
- $_[0]->text or ( $_[0]->not_found and return );  
+ $self->text or return $self->not_found;  
 
 }
 
-sub viewall { 
+sub viewall {
 
- $_[0]->all or ( $_[0]->not_found and return );
+ my $self = shift;
+
+ $self->all or return $self->not_found;
    
- $_[0]->single or ( $_[0]->not_found and return );  
+ $self->single or return $self->not_found;  
 
 }
 

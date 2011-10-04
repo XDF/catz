@@ -129,24 +129,32 @@ foreach my $i ( 1 .. 100 ) {
  
 }
 
-foreach my $lang ( qw ( en fi en264312 fi264322 en897123 fi189492 fi2643a2 en12 ) ) {
-  
-  # added 2011-09-22 to make sure that the static/dynamic 
-  # dispatch detection never again fails
-   
+foreach my $lang ( qw ( en fi en264312 fi264322 ) ) {
+     
+  $t->get_ok("/$lang/viewall.txt")->status_is(200); $c += 2;
+  $t->get_ok("/$lang/browseall.iltavilli")->status_is(200); $c += 2;
+  $t->get_ok("/$lang/search.xs?q=mimosan")->status_is(200); $c += 2;
+  $t->get_ok("/$lang/search.js?q=mimo.san")->status_is(200); $c += 2;
+  $t->get_ok("/$lang/search.java?q=mimo.san")->status_is(200); $c += 2;
+     
+}
+
+foreach my $lang ( qw ( x fi189492 fi2643a2 en12 ) ) {
+     
   $t->get_ok("/$lang/viewall.txt")->status_is(404); $c += 2;
-  $t->get_ok("/$lang/browseall.txt")->status_is(404); $c += 2;
+  $t->get_ok("/$lang/browseall.iltavilli")->status_is(404); $c += 2;
   $t->get_ok("/$lang/search.xs?q=mimosan")->status_is(404); $c += 2;
   $t->get_ok("/$lang/search.js?q=mimo.san")->status_is(404); $c += 2;
-   
+  $t->get_ok("/$lang/search.java?q=mimo.san")->status_is(404); $c += 2;
+     
 }
 
-# 2011-09-22 testing that static resources get dispatched properly
 
-foreach my $path ( keys %{ conf ( 'static' ) } ) {
+# 2011-10-04 testing that some static resources dispatch properly
 
- $t->get_ok($path)->status_is(200); $c += 2;
-
-}
+$t->get_ok('/robots.txt')->status_is(200); $c += 2;
+$t->get_ok('/favicon.ico')->status_is(200); $c += 2;
+$t->get_ok('/js_lib/jquery.js')->status_is(200); $c += 2;
+$t->get_ok('/js_site/find.js')->status_is(200); $c += 2;
 
 done_testing( $c );

@@ -59,7 +59,7 @@ sub find {
 
  }
 
- $self->render( template => 'block/find' );
+ $self->render( template => 'block/find', format => 'html' );
 
 }
 
@@ -92,7 +92,7 @@ sub list {
  $s->{mapview} = $self->fetch ( 'map#view' );
  $s->{mapdual} = $self->fetch ( 'map#dual' );
       
- $self->render(template => 'page/list1');
+ $self->render(template => 'page/list1', format => 'html' );
  
 }
 
@@ -107,7 +107,7 @@ sub lists {
    
  $s->{prims} = $self->fetch( 'locate#prims' );
         
- $self->render(template => 'page/lists');
+ $self->render( template => 'page/lists', format => 'html' );
  
 }
 

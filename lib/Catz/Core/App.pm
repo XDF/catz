@@ -30,6 +30,7 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Mojolicious';
 
+use Mojo::Util qw ( html_escape );
 use Time::HiRes qw ( time );
 
 use Catz::Core::Cache;
@@ -48,7 +49,8 @@ use Catz::Util::String qw (
  clean enurl decode encode limit trim urirest 
 );
 
-my $time_page = 0;  # turns on timing on all HTTP requests
+# controls emitting timing information as warnings
+my $time_page = 0;
 
 sub startup {
 
@@ -59,7 +61,7 @@ sub startup {
  
  # initialize the key for cookie signing
  # we use no cookies so this is just to prevent warnings  
- $self->secret( conf ( 'cookie_key' ) );
+ $self->secret ( conf ( 'cookie_key' ) );
 
  # map utility subs from different modules to Mojolicious helpers
  # we use dynamically generated subs as bridges
@@ -68,14 +70,11 @@ sub startup {
   trim fullnum33 thisyear encode decode round urirest ) 
  ) {
 
-  $self->helper ( $sub => eval qq{ sub {
-    
-   # we do shift to ditch self that comes in first in helper calls 
-   shift;
-
-   return $sub \@\_; # the actual pass-thru call with rest of the arguments
-
-  } } );
+  # we do shift to ditch self that comes in first in helper calls
+  # the actual pass-thru call with rest of the arguments
+  $self->helper ( 
+   $sub => eval qq{ sub { shift; $sub \@\_; } } 
+  );
 
  }
         
@@ -239,19 +238,22 @@ sub startup {
  # the info base data provided AJAX interface
  $l->route( '/info/:cont', cont => qr/std/ )->to ( 'main#info' );
       
- # add hooks to methods that are to be executed before and after the dispatch
+ # add Mojolicious hooks
  $self->hook ( before_dispatch => \&before );  
  $self->hook ( after_dispatch => \&after );
- 
+
 }
 
 sub before {
 
  my $self = shift; my $s = $self->{stash};
+
+ $s->{env} = conf ( 'env' ); # copy production enviroment id to stash
          
- $time_page and $s->{time_start} = time();
+ $s->{time_start} = time();
 
  $s->{url} = $self->req->url;  # let the url be in the stash also
+ $s->{path} = $self->req->url->path;  # and also the path part
  
  # 
  # fetch the latest version key file
@@ -324,11 +326,8 @@ sub before {
 
  }
   
- $s->{pkey} = conf ( 'pkey' ); # copy production enviroment key to stash
-
  # Some cache control logic
  
-
  $s->{lang} = 'en'; # default to English
  $s->{langa} = 'en';
 
@@ -449,7 +448,7 @@ sub after {
    'Last-Modified' => epoch2http ( dt2epoch ( $s->{version} ) )  
   );
    
-  my $age = 60 * 60; # 1 hour default lifetime for all content
+  my $age = 60*60; # 1 hour default lifetime for all content
  
   $self->res->headers->header(
    'Cache-Control' => 'max-age=' .  $age . ', public' 
@@ -459,38 +458,41 @@ sub after {
    'Expires' => epoch2http ( ( dt2epoch dt ) + $age ) 
   );
  
- } else { # unhealthy response, 60 seconds grace time
-
+ } elsif ( $code > 399 ) { 
+ 
+  # unhealthy response but not for redirect or "not modified"
+  # expire immediately 
+ 
   $self->res->headers->header( 
-   'Cache-Control' => 'max-age=60, must-revalidate' 
+   'Cache-Control' => 'max-age=0, must-revalidate' 
   );
         
   $self->res->headers->header(
-   'Expires' => epoch2http ( ( dt2epoch dt ) + 60 ) 
+   'Expires' => epoch2http ( ( dt2epoch dt ) ) 
   );
-   
+ 
  }
-
- if ( defined $s->{cache_obj} ) {
-
-  $self->res->headers->header( 'X-Cache' => 'HIT' );
+ 
+ # custom app headers
+ 
+ $self->res->headers->header( 'X-Catz-Ver' => $s->{version} );
   
- } else {
+ $self->res->headers->header( 'X-Catz-Env' => "catz$s->{env}" );
  
-  $self->res->headers->header( 'X-Cache' => 'MISS' ); 
- 
- } 
+ # timing hreaders
 
+ $s->{time_end} = time();
+ 
+ my $timing = round ( 
+ ( ( $s->{time_end} - $s->{time_start}  ) * 1000 ), 0 
+ ) . ' ms';
+  
+ if ( defined $s->{cache_obj} ) { $timing = "$timing (cache)" } 
+  else { $timing = "$timing (backend)" } 
 
- $time_page and do { 
- 
-  $s->{time_end} = time();
- 
-  warn "PAGE $s->{url} -> " .
-  round ( ( ( $s->{time_end} - $s->{time_start}  ) * 1000 ), 0 ) . 
-  ' ms' ;
- 
- };
+ $self->res->headers->header( 'X-Catz-Took' => $timing );
+
+ $time_page and warn "PAGE $s->{url} -> $timing";
    
 }
 
