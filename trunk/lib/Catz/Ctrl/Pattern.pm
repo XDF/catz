@@ -160,7 +160,7 @@ sub guide {
  # if giving guide but search was made then it's not found -> not for robots 
  $s->{what} and do {  $s->{meta_index} = 0; $s->{meta_follow} = 0 };
  
- $self->render( template => 'page/search' );
+ $self->render( template => 'page/search', format => 'html' );
 
  return 1;
 

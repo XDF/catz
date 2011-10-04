@@ -91,7 +91,7 @@ sub front {
  # load style for globe img tag height and width 
  $s->{style} = style_get ( $s->{palette} );
      
- $self->render( template => 'page/front' );
+ $self->render( template => 'page/front', format => 'html' );
  
 }
 
@@ -145,7 +145,7 @@ sub result {
   $s->{result} = $res->[0];
   $s->{attrib} = $res->[1];
  
-  $self->render( template => 'elem/result' ) and return;
+  $self->render( template => 'elem/result', , format => 'html' ) and return;
  
  };
  

@@ -44,7 +44,7 @@ sub index { # the list of all news articles
 
  $s->{news} = $self->fetch ( 'news#titles' );
  
- $self->render( template => 'page/news' );
+ $self->render( template => 'page/news', format => 'html' );
 
 }
 
@@ -59,7 +59,7 @@ sub one { # one news article
  
  defined $s->{new1} or ( $self->not_found and return );
  
- $self->render( template => 'page/new1' );
+ $self->render( template => 'page/new1', format => 'html' );
 
 }
 

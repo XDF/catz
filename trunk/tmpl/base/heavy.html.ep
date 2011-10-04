@@ -56,9 +56,7 @@
 <meta name="generator" content="<%= $t->{GENERATOR} %>">
 <meta name="loaded" content="<%= dtexpand ( $version, $lang ) %>">
 <meta name="rendered" content="<%= $now %>">
-% if ( length ( $pkey ) > 0 ) {
-<meta name="environment" content="catz<%= $pkey %>"> 
-% } 
+<meta name="environment" content="catz<%= $env %>">
 <meta name="credits" content="<%= $t->{CREDITS} %>">
 </head>
 %#

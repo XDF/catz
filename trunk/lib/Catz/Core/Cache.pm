@@ -41,7 +41,11 @@ use Catz::Util::String qw ( enurl );
 # set to NOP setting this to false
 my $cacheon = 1;
 
+# set on/off cache tracing as warnings
+my $cache_trace = 0;
+
 # we create a static cache object at compile time and this works just fine
+# also the hard-coded values are practically fine for all the environments
 my $cache = new Cache::Memcached::Fast { 
  servers => [ '127.0.0.1:11211' ], 
  connect_timeout => 0.1, 
@@ -62,6 +66,21 @@ my $sep = '~';
 # so the final key is 218 + 32 = 250 characters
 sub shrink { substr ( $_[0], 0 , 218 ) . md5_hex ( substr ( $_[0], 218 ) ) }
 
+# preparing of the cache key by joining the parts
+sub keyer {
+
+ my @args = @_;
+
+ # we map undefined key parts to string 'undef' to be safe
+ my $key = enurl join $sep,
+   map { $_ = $_ // 'undef'; $_ =~ tr/ /_/; $_  } @args;
+   
+ length $key > 250 and return shrink $key;
+ 
+ return $key;
+      
+}
+
 sub cache_set {
 
  $cacheon or return; # immediate NOP if not caching
@@ -70,17 +89,11 @@ sub cache_set {
 
  # we expect val to be the last param 
  my $val = pop @args;
+ 
+ my $key = keyer ( @args );
+ 
+ $cache_trace and warn "CACHE SET $key";
   
- # we build the cache key by joining the encoded key parts
- # we map undefined key parts to string 'undef' to be safe
- my $key = 
-  enurl join $sep, 
-   ( 'catz', map { $_ = $_ // 'undef'; $_ =~ tr/ /_/; $_  } @args );
-  # MUST BE THE SAME CODE AS IN GET
-   
- # shrink too long keys
- length $key > 250 and $key = shrink $key;
-   
  {
  
   # the value to be cached may well be undef since it might
@@ -90,7 +103,16 @@ sub cache_set {
    
   no warnings qw( uninitialized );
  
-  $cache->set( $key, $val ); # we use no expirity -> infinite
+  #
+  # we use no expirity -> infinite caching
+  #
+  # Memcached automatically discards LRU items
+  # and when app or data changes, version id 
+  # changes and so all keys change rendering
+  # old cache entries unused and to LRU
+
+  $cache->set( keyer ( @args ), $val ); 
+  
   
  }
  
@@ -102,17 +124,18 @@ sub cache_get {
  
  my @args = @_;
  
- # we build the cache key by joining the encoded key parts
- # we map undefined key parts to string 'undef' to be safe 
- my $key = 
-  enurl join $sep, 
-   ( 'catz', map { $_ = $_ // 'undef'; $_ =~ tr/ /_/; $_  } @args );
-  # MUST BE THE SAME CODE AS IN SET 
+ my $key = keyer @args;
   
- # shrink too long keys
- length $key > 250 and $key = shrink $key;
+ my $ret = $cache->get( keyer @args );
  
- return $cache->get( $key );
+ $cache_trace and do {
+ 
+ if ( defined $ret ) { warn "CACHE HIT $key" }
+  else { warn "CACHE MISS $key" }
+ 
+ };
+ 
+ return $ret; 
 
 }
 

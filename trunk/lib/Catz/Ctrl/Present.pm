@@ -128,8 +128,8 @@ sub single {
  result_prepare ( $self, $keys );
  
  # finally render the photo viewer page
-        
- $self->render( template => 'page/view' );
+          
+ $self->render( template => 'page/view', format => 'html' );
  
  return 1;
 
@@ -258,8 +258,8 @@ sub multi {
  $s->{style} = style_get ( $s->{palette} );
   
  # finally render the browsing page
-  
- $self->render( template => 'page/browse' );
+   
+ $self->render( template => 'page/browse', format => 'html' );
  
  return 1;
 
