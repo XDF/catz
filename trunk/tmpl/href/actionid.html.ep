@@ -15,7 +15,7 @@
 location.href='/<%== $langh %>/<%== $toaction %>/<%== $pri %>/<%== encode ( $langa eq $langh ? $sec : $trans ) %>/'+this.options[this.selectedIndex].value+'/'
 %   } 
 %   when ( 'search' ) {
-location.href='/<%== $langh %>/<%== $toaction %>/'+this.options[this.selectedIndex].value+'/?q=<%== enurl($what) %>'
+location.href='/<%== $langh %>/<%== $toaction %>/'+this.options[this.selectedIndex].value+'?q=<%== enurl($what) %>'
 %   } 
 %   default  { 
 location.href='/<%== $langh %>/<%== $toaction %>/'+this.options[this.selectedIndex].value+'/'

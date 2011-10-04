@@ -1,0 +1,30 @@
+% if ( $lang eq 'fi' ) {
+<h2>yksityisyyden suoja</h2>
+Emme seuraa käyntiäsi palvelussa. Emme kerää lokeja palvelun käytöstä emmekä tallenna IP-osoitteita. Palvelussa ei ole evästeitä, istuntoja emmekä tee liikenteen analysointia. Palvelun tarkistaa joka päivä <a target="_blank" href="<%== $t->{URL_SCANNER} %>"><%= $t->{SCANNER} %></a>, joka varmistaa että palvelussa ei ole haittaohjelmia. Jos lähetät meille sähköpostia, voimme vastata sinulle. Sähköpostiosoitteesi säilytetään vain niin kauan kuin asia on käsitelty. Osoitettasi ja henkilöllisyyttäsi ei julkaista eikä jaeta muille. Emme lähetä sinulle roskapostia. Palvelua ylläpidetään Suomessa ja kuvien julkaisu on Suomen lain mukaista. Palvelu sijaitsee Saksassa. Nimipalvelua ja sähköpostipalvelua hoitavat amerikkalaiset yritykset.
+% } else {
+<h2>privacy</h2>
+We don't track your visit. We don't collect access logs. We don't store your IP address. There is no cookies, no sessions and no traffic analysis. The service gets scanned daily by <a target="_blank" href="<%== $t->{URL_SCANNER} %>"><%= $t->{SCANNER} %></a> to guarantee it doesn't contain malware. If you send us email we may reply. We store your email address only as long as we have processed your inquiry. Your address and your identity will not be published or shared with other parties. We won't send you spam. We operate the service in Finland and the publishing of photos is based on Finnish law. The service is located in Germany. We use US-based name service and email service. 
+% }
+%#
+%# Catz - the world's most advanced cat show photo engine
+%# Copyright (c) 2010-2011 Heikki Siltala
+%# Licensed under The MIT License
+%# 
+%# Permission is hereby granted, free of charge, to any person obtaining a copy
+%# of this software and associated documentation files (the "Software"), to deal
+%# in the Software without restriction, including without limitation the rights
+%# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+%# copies of the Software, and to permit persons to whom the Software is
+%# furnished to do so, subject to the following conditions:
+%# 
+%# The above copyright notice and this permission notice shall be included in
+%# all copies or substantial portions of the Software.
+%# 
+%# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+%# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+%# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+%# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+%# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+%# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+%# THE SOFTWARE.
+%#  

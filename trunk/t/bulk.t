@@ -69,7 +69,12 @@ $t->get_ok( "/fi365312/bulk/photolist/" )->status_is(404); $c += 2;
 
 foreach my $lang ( qw ( en fi ) ) {
  
- $t->get_ok( "/$lang/bulk/photolist" )->status_is(301);  $c += 2;
+ $t->get_ok( "/$lang/bulk/photolist" )
+  ->status_is(200)
+  ->content_type_like(qr/text\/plain/)
+  ->content_like(qr/\.JPG/);
+ 
+ $c += 4; 
 
  $t->get_ok( "/$lang/bulk/photolist/" )
   ->status_is(200)

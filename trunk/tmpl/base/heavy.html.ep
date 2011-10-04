@@ -112,7 +112,6 @@
 %# --------------------
 %#
 </div>
-%== include 'elem/analytics';
 </body></html>
 %#
 %# Catz - the world's most advanced cat show photo engine

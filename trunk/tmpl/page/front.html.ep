@@ -59,12 +59,7 @@
 %#
 %# --------------------
 %#
-<table class="viz center">
-<tr><td class="center"><a href="/<%== $langa %>/list/nat/a2z/"><img alt="<%= $t->{VIZ_GLOBE_NAME} %>" title="<%= $t->{VIZ_GLOBE_NAME} %>" width="<%== $style->{viz}->{globe}->{width} %>" height="<%== $style->{viz}->{globe}->{height} %>" src="/<%== $langa %>/viz/globe/<%== $version %>/"></a></td></tr>
-% $lang eq 'en' and do {
-<tr><td class="center"><%== include 'elem/seal' %></td></tr>
-% };
-</table>
+<div class="viz center"><a href="/<%== $langa %>/list/nat/a2z/"><img alt="<%= $t->{VIZ_GLOBE_NAME} %>" title="<%= $t->{VIZ_GLOBE_NAME} %>" width="<%== $style->{viz}->{globe}->{width} %>" height="<%== $style->{viz}->{globe}->{height} %>" src="/<%== $langa %>/viz/globe/<%== $version %>/"></a></div>
 %#
 %# --------------------
 %#
@@ -118,11 +113,14 @@
 %#
 %# --------------------
 %#
-<div class="bar"><%== include 'content/intro' %></div>
+<div class="bar"><h2><%= $t->{POLICY} %></h2> <%== include 'content/policy' %></div>
+% 
+<div class="bar"><%== include 'content/privacy' %></div>
+<div class="bar"><%== include 'content/credits' %></div>
 %#
 %# --------------------
 %#
-<div class="bar"><h2><%= $t->{POLICY} %></h2> <%== include 'content/policy' %></div>
+
 %#
 %# --------------------
 %#      

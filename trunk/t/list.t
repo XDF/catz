@@ -49,7 +49,12 @@ foreach my $lang ( qw ( en fi en234212 ) ) {
 
  my $txt = text ( $lang );
 
- $t->get_ok("/$lang/lists")->status_is(301); $c += 2;
+ $t->get_ok("/$lang/lists")
+   ->status_is(200)
+   ->content_type_like(qr/text\/html/)
+   ->content_like(qr/$txt->{LISTINGS}/);
+
+ $c += 4;
 
  $t->get_ok("/$lang/lists/")
    ->status_is(200)
@@ -84,7 +89,7 @@ foreach my $lang ( qw ( en fi en234212 ) ) {
 
    # no slash should give perm redirect
    
-   $t->get_ok("/$lang/list/$list/$mode")->status_is(301); $c += 2;
+   $t->get_ok("/$lang/list/$list/$mode")->status_is(200); $c += 2;
 
    $t->get_ok("/$lang/list/$list/$mode/")
      ->status_is(200)

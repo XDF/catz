@@ -56,8 +56,12 @@ foreach my $lang ( qw ( en fi en234311 fi334212 ) ) {
  
  foreach my $key ( @valid ) {
  
-  $t->get_ok("/$lang/news/$key")->status_is(301); $c += 2;
+  $t->get_ok("/$lang/news/$key")
+    ->status_is(200)
+    ->content_type_like(qr/text\/html/)
+    ->content_like(qr/$txt->{NEWS}/);
  
+  $c += 4; 
   $t->get_ok("/$lang/news/")
     ->status_is(200)
     ->content_type_like(qr/text\/html/)

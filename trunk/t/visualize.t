@@ -30,7 +30,7 @@ use Test::Mojo;
 
 my $t = Test::Mojo->new( 'Catz::Core::App' );
 
-$t->max_redirects( 2 );
+$t->max_redirects( 3 );
 
 my $c = 0;
 
