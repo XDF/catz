@@ -28,10 +28,10 @@ ps -ef | grep catz
   * browse a few pages to make sure the production works properly
   * run incremental backup or a full backup (full should be run when a gallery is completed)
 {{{
-backup_incr.sh
+nohup backup_incr.sh &
 }}}       
 {{{
-backup_full.sh
+nohup backup_full.sh &
 }}}
 
 = Revert the deployment of the data = 
@@ -40,7 +40,7 @@ backup_full.sh
   * delete any newer key files (and the production switches immediately)
   * run incremental backup
 {{{
-backup_incr.sh
+nohup backup_incr.sh &
 }}}       
 
 = Deploy a new static content with a new version of the data =
@@ -101,7 +101,7 @@ pico /etc/rc.local
 }}}
   * run the incremental backup
 {{{
-backup_incr.sh
+nohup backup_incr.sh &
 }}}       
   * shutdown the non-production
 {{{
@@ -125,7 +125,7 @@ kill -USR2 <pid>
   * check that the service appears to work
   * run the incremental backup
 {{{
-backup_incr.sh
+nohup backup_incr.sh &
 }}}       
 
 = Update Perl =
@@ -152,5 +152,5 @@ kill -USR2 <pid>
 }}}
   * run the incremental backup
 {{{
-backup_incr.sh
+nohup backup_incr.sh &
 }}}             
