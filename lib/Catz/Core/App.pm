@@ -295,8 +295,14 @@ sub before {
     
    return $self->rendered;
    
- } 
+ }
  
+ #
+ # getting proxyed protocol from header, defaulting to http
+ # 
+ 
+ $s->{protocol} =  $self->req->headers->header('X-Protocol') // 'http';
+  
  #
  # we use If-Modified-Since if present in request
  # 
@@ -443,10 +449,13 @@ sub after {
   # this means that deployments of the app must always also
   # deploy an new data version, otherwise caching logic gets broken
   #
+  # we don't send it on cat show results
+  #
 
-  $self->res->headers->header(
-   'Last-Modified' => epoch2http ( dt2epoch ( $s->{version} ) )  
-  );
+  $s->{path} =~ m|^/../result| or
+   $self->res->headers->header(
+    'Last-Modified' => epoch2http ( dt2epoch ( $s->{version} ) )  
+   );
    
   my $age = 60*60; # 1 hour default lifetime for all content
  
@@ -500,7 +509,9 @@ sub after {
 # namespace 'page' and the url
 
 sub cachekey { (
- $_[0]->{stash}->{version}, 'page', $_[0]->{stash}->{url}, 
+ $_[0]->{stash}->{version}, 
+ $_[0]->{stash}->{protocol}, 
+ $_[0]->{stash}->{url}, 
  ) 
 }
 

@@ -35,7 +35,7 @@ conf ( 'lin' ) and do {
 
  $ENV{MOJO_MODE} = 'production';
 
- $ENV{MOJO_HOME} = conf ( 'rootd' ) . '/catz' . conf ( 'pkey' );
+ $ENV{MOJO_HOME} = conf ( 'rootd' ) . '/catz' . conf ( 'env' );
 
 };
  
