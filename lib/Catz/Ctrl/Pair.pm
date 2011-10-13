@@ -78,8 +78,9 @@ sub pair {
   
   defined $xm and do {
   
-   $s->{breedernat} = $xm->[0]; 
-   $s->{breederurl} = $xm->[1];
+   $s->{breedernat} = $xm->[0];
+   # 2011-10-07 
+   # $s->{breederurl} = $xm->[1];
    
   }; 
  
