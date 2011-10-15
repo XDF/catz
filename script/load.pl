@@ -112,7 +112,8 @@ SKIP_FOLDER:
 $guide{'meta'} or goto SKIP_META;
 
 my @metafiles =  qw ( 
- metaexif metanews metanat metabreed metabreeder metafeat metatitle metacore
+ metaexif metanews metanat metacate metabreed 
+ metabreeder metafeat metatitle metacore
 );
 
 logit ( 'verifying ' . scalar @metafiles  . ' files' );

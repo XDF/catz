@@ -240,15 +240,8 @@ sub multi {
   
   } else {
 
-   if ( $self->fetch ( 'related#seccnt', $s->{pri} ) > 9 ) {
-  
+   ( $self->fetch ( 'related#seccnt', $s->{pri} ) > 9 ) and
     $s->{vizmode} = 'rank';
-   
-   } else {
-  
-    $s->{vizmode} = 'cover';
-   
-   }
    
   }
 

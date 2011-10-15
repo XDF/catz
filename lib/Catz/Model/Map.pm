@@ -30,14 +30,16 @@ use parent 'Catz::Core::Model';
 
 my $ROOT = 'ROOT';
 
-my @duals = qw ( breed feat title nat );
+my @duals = qw ( breed cate feat title nat );
 
 sub _link { 
- 
+
+ #
  # mappings for links as hashref
  #
  # if the hashref contains a mapping then all links should 
  # use the pri,sec -pair (arrayref) found in the hashref
+ #
 
  my $self = shift; my $lang = $self->{lang};
  
@@ -62,10 +64,12 @@ sub _link {
 
 sub _view { 
 
+ #
  # mappings for presentations
  #
  # if the hashref contains a mapping then all values should be presented 
  # using the pri,sec -pair (arrayref) found in the hashref
+ #
 
  my $self = shift; my $lang = $self->{lang};
  
@@ -88,10 +92,12 @@ sub _view {
 
 sub _dual {  
 
+ #
  # mappings for pair coupling
  # if the hashref contains a mapping then
  # value can presented with the pri,sec -pair (arrayref)
  # found in the hashref
+ #
  
  my $self = shift; my $lang = $self->{lang};
  

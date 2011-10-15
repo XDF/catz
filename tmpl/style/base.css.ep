@@ -39,8 +39,6 @@ body {
  height: 100%;
 }
 
-#page { min-width: 600px; }
-
 .full { width: 100%; }
 
 ul {
@@ -215,4 +213,10 @@ a:hover {
 .viz {
  float: right;
  margin: 7px;
+}
+
+.box {
+ border-style: solid;
+ border-width: 1px;
+ border-color: <%== $st->{color}->{$palette}->{xtra} %>;  
 }

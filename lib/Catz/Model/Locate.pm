@@ -229,7 +229,17 @@ sub _find {
  
  $pattern = '%' . $pattern . '%';
    
- $self->dball(qq{select pri,sec,cntphoto,sid from (select p.pri,s.sec,m.cntphoto,f.sid,s.sort from pri p,sec_fi s,_secm m,_find_$lang f where p.pid=s.pid and s.sid=m.sid and s.sid=abs(f.sid) and f.sec like ? escape '\\' order by f.rowid limit $limit) order by lower(sort),cntphoto},$pattern);
+ $self->dball( qq { 
+  select pri,sec,cntphoto,sid from (
+   select p.pri,p.disp,s.sec,f.sid,s.sort,m.cntphoto 
+   from pri p,sec_$lang s,_secm m,_find_$lang f 
+   where 
+    p.pid=s.pid and s.sid=m.sid and 
+    s.sid=abs(f.sid) and f.sec like ? escape '\\' 
+   order by 
+    f.rowid limit $limit
+  ) order by disp,lower(sort),cntphoto
+ },$pattern);
 
 }
 

@@ -38,7 +38,7 @@ $style->{font} = 'Verdana, Arial, sans-serif';
 
 $style->{roundness} = '8px';
 
-$style->{size}->{normal} = 92;
+$style->{size}->{normal} = 91;
 
 $style->{size}->{tiny} = round ( $style->{size}->{normal} * 0.70 );
 $style->{size}->{small} = round ( $style->{size}->{normal} * 0.86 );

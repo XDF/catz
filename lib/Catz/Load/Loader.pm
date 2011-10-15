@@ -122,16 +122,24 @@ my $secsql = [
  qq{insert into _secm select sec.sid,count(distinct substr(folder,1,8)),count(distinct x),replace(min(substr(folder,1,8)||ifnull(moment,'999999')),'999999',''),replace(max(substr(folder,1,8)||ifnull(moment,'000000')),'000000','') from inpos natural join photo natural join sec natural join pri natural join album where origin='pos' group by sec.sid},
 
  # instant find requires queries to respond as quick as possible
- # therefore we need these special tables - speed tests were done 2011-05-30 
+ # therefore we need these special tables
+ # speed tests were done 2011-05-30 
  # and these tables are really needed
+ 
  qq{drop table if exists _find_en},
  qq{drop table if exists _find_fi},
+ 
  qq{create table _find_en (sid integer not null, sec text not null)},
  qq{create table _find_fi (sid integer not null, sec text not null)},
- # we use the special ability of SQLite so that we insert rows in certain order
- # and when we use order by rowid on query the order by doesn't cost anything
- # we set synonym secs as -sid = make sid negative
- qq{insert into _find_en select sid,sec from ( select sid,sec,cntphoto,sort from pri natural join _secm natural join sec_en where cntphoto is not null and cntphoto>0 and pri not in ( 'album','folder','text','date' ) union all select sid,dtexpand(sec,'en') as sec,cntphoto,sort from pri natural join _secm natural join sec_en where cntphoto is not null and cntphoto>0 and pri='date' union all select -sid,nat_en,cntphoto,nat_en from pri natural join _secm natural join sec_en,mnat where nat=sec and pri='nat' and cntphoto is not null and cntphoto>0 union all select -sid,breed_en,cntphoto,breed_en from pri natural join _secm natural join sec_en,mbreed where breed=sec and pri='breed' and cntphoto is not null and cntphoto>0 union all select -sid,title_en,cntphoto,title_en from pri natural join _secm natural join sec_en,mtitle where title=sec and pri='title' and cntphoto is not null and cntphoto>0 union all select -sid,feat_en,cntphoto,feat_en from pri natural join _secm natural join sec_en,mfeat where feat=sec and pri='feat' and cntphoto is not null and cntphoto>0 ) order by cntphoto desc, sort asc},
+ 
+ #
+ # we use the special ability of SQLite so that when we insert rows in 
+ # certain order and when we use order by rowid on query the order by 
+ # doesn't cost anything
+ #
+ # we set synonym secs as -sid = make sid negative, abs used on fetch
+ #
+ qq{ insert into _find_en select sid,sec from ( select sid,sec,cntphoto,sort from pri natural join _secm natural join sec_en where cntphoto is not null and cntphoto>0 and pri not in ( 'album','folder','text','date' ) union all select sid,dtexpand(sec,'en') as sec,cntphoto,sort from pri natural join _secm natural join sec_en where cntphoto is not null and cntphoto>0 and pri='date' union all select -sid,nat_en,cntphoto,nat_en from pri natural join _secm natural join sec_en,mnat where nat=sec and pri='nat' and cntphoto is not null and cntphoto>0 union all select -sid,breed_en,cntphoto,breed_en from pri natural join _secm natural join sec_en,mbreed where breed=sec and pri='breed' and cntphoto is not null and cntphoto>0 union all select -sid,title_en,cntphoto,title_en from pri natural join _secm natural join sec_en,mtitle where title=sec and pri='title' and cntphoto is not null and cntphoto>0 union all select -sid,feat_en,cntphoto,feat_en from pri natural join _secm natural join sec_en,mfeat where feat=sec and pri='feat' and cntphoto is not null and cntphoto>0 ) order by cntphoto desc, sort asc},
  qq{insert into _find_fi select sid,sec from ( select sid,sec,cntphoto,sort from pri natural join _secm natural join sec_fi where cntphoto is not null and cntphoto>0 and pri not in ( 'album','folder','text','date' ) union all select sid,dtexpand(sec,'fi') as sec,cntphoto,sort from pri natural join _secm natural join sec_fi where cntphoto is not null and cntphoto>0 and pri='date' union all select -sid,nat_fi,cntphoto,nat_fi from pri natural join _secm natural join sec_fi,mnat where nat=sec and pri='nat' and cntphoto is not null and cntphoto>0 union all select -sid,breed_fi,cntphoto,breed_fi from pri natural join _secm natural join sec_fi,mbreed where breed=sec and pri='breed' and cntphoto is not null and cntphoto>0 union all select -sid,title_fi,cntphoto,title_fi from pri natural join _secm natural join sec_fi,mtitle where title=sec and pri='title' and cntphoto is not null and cntphoto>0 union all select -sid,feat_fi,cntphoto,feat_fi from pri natural join _secm natural join sec_fi,mfeat where feat=sec and pri='feat' and cntphoto is not null and cntphoto>0 ) order by cntphoto desc, sort asc},
 
  # we use sid -> x mapping to execute both pri-sec pair fetches and advanced searches
@@ -778,14 +786,49 @@ sub load_post {
  do { load_exec ( 'photo_upd', $_ ) } foreach load_exec ( 'photo_col' );
 
  $i++; logadd ( '.' );
-  
- load_do('delete from album where aid not in ( select aid from inalbum union select aid from inexif union select aid from inpos union select aid from photo )');
+ 
+ #
+ # delete orphan albums
+ # 
+ 
+ load_do( qq { 
+  delete from album where aid not in ( 
+   select aid from inalbum union 
+   select aid from inexif union 
+   select aid from inpos union 
+   select aid from photo )
+   
+ });
+ 
  $i++; logadd ( '.' );
  
- load_do('delete from inexif where sid_meta is null and sid_data is null and sid_file is null');
+ #
+ # delete orphan exif rows
+ #
+ 
+ load_do( qq { 
+  delete from inexif where  
+   sid_meta is null and 
+   sid_data is null and 
+   sid_file is null
+  });
+  
  $i++; logadd ( '.' );
+ 
+ #
+ # delete oprhan secondaries
+ #
 
- load_do('delete from sec where sid not in ( select sid from inalbum union select sid_meta from inexif union select sid_data from inexif union select sid_file from inexif union select sid from inpos)');
+ load_do( qq { 
+  delete from sec where sid not in ( 
+   select sid from inalbum union 
+   select sid_meta from inexif union 
+   select sid_data from inexif union 
+   select sid_file from inexif union 
+   select sid from inpos
+  )
+ });
+ 
  $i++; logadd ( '.' );
  
  # delete & insert nat
@@ -798,9 +841,52 @@ sub load_post {
   
  load_do("insert into inpos select aid,n,p,s2.sid from inpos i,sec s1,mbreeder m,sec s2 where i.sid=s1.sid and s1.sec_en=m.breeder and m.nat=s2.sec_en and s1.pid=(select pid from pri where pri='breeder') and s2.pid=(select pid from pri where pri='nat')"); 
 
- $i++; logadd ( '.' ); 
+ $i++; logadd ( '.' );
+
+ #
+ # delete & insert category / 2011-10-15
+ #
  
- # adding relations
+ # delete all previously generated category data, phase 1/2
+ load_do( qq { 
+  delete from inpos where rowid in (
+   select inpos.rowid from inpos natural join sec 
+   where pid=(select pid from pri where pri='cate')
+  )
+ });
+ 
+ # delete all previously generated category data, phase 2/2 
+ load_do( qq { 
+  delete from sec where pid=(select pid from pri where pri='cate')
+ });
+ 
+ # insert to secondaries 
+ load_do( qq { 
+  insert into sec (pid,sec_en,sec_fi,sort_en,sort_fi) 
+   select (select pid from pri where pri='cate'),cate_en,cate_fi,cate,cate 
+   from sec inner join mbreed on (sec_en=breed) natural join mcate 
+   where pid=(select pid from pri where pri='breed') group by cate 
+ });
+ 
+ # insert to positions 
+ load_do( qq { 
+  insert into inpos 
+   select i.aid,i.n,i.p,s2.sid 
+   from inpos i,sec s1,mbreed mb,sec s2,mcate mc  
+   where 
+    i.sid=s1.sid and 
+    s1.sec_en=mb.breed and 
+    mb.cate=mc.cate and
+    mc.cate_en=s2.sec_en and 
+    s1.pid=(select pid from pri where pri='breed') and 
+    s2.pid=(select pid from pri where pri='cate')
+ }); 
+
+ $i++; logadd ( '.' );
+ 
+ #
+ #  adding relations
+ #
  
  my $matrix = list_matrix;
  

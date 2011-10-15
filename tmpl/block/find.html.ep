@@ -1,7 +1,18 @@
 % my $i = 1;
 % if ( scalar @{ $find } > 0 ) {
-<div class="roomy bar shade rounded">
+% my $modifier = '';
+%  scalar @{ $find } > 25 and $modifier = ' shrink';
+<div class="roomy box bar rounded<%= $modifier %>"><div>
+% my $prev = 'THIS_IS_THE_INITIAL';
 %  foreach my $sugg ( @{ $find } ) {
+% if ( $sugg->[0] ne $prev ) {
+%  if ( $prev ne 'THIS_IS_THE_INITIAL' ) {
+</div>
+% }
+<div class="bar"><h2><%= $t->{uc($sugg->[0]).'X'} %></h2>
+% $i = 1;
+%  $prev = $sugg->[0];
+% }
 %  $i++ == 1 or do {
 <%== $sep %>
 %  };
@@ -15,7 +26,7 @@
 % $vistxt =~ s|($mtext)|<span class="match">$1</span>|ig;   
 <a title="<%= $pritxt %> <%= $sep %> <%= $sugg->[1] %> <%= $sep %> <%= $sugg->[2] %> <%= $txt %>" href="/<%== $langa %>/browse/<%== $sugg->[0] %>/<%== encode $sugg->[1] %>/"><%== $vistxt %></a>
 %  }
-</div>
+</div></div>
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine
