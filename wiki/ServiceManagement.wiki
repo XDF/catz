@@ -85,7 +85,7 @@ rm -fR *
 hypnotoad run.pl
 }}} 
   * test the service via ssh tunneled port that it appears to work as expected
-  * edit nginx config to so that the proxying points to the deployed service
+  * edit nginx config (two places) to so that the proxying points to the deployed service
   * test nginx config 
 {{{
 nginx -t
