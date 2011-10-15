@@ -58,7 +58,7 @@ sub find {
   $s->{find} = $self->fetch ( 'locate#find', $s->{what}, 50 );
 
  }
-
+ 
  $self->render( template => 'block/find', format => 'html' );
 
 }

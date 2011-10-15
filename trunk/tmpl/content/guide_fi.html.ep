@@ -255,6 +255,14 @@ Superhaku hakee lähtökohtaisesti täsmällistä osumaa. Käyttämällä hakute
 %# --------------------
 %#
 <li>
+% $exa = 'cate';
+% $exb = 'kategoria 1';
+<span class="lean"><%== $exa %></span> on kuvassa olevan kissan rodun <%= $t->{uc($exa)} %> FIFen mukaisesti, esim. <a href="/<%== $langa %>/search?q=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+</li>
+%#
+%# --------------------
+%#
+<li>
 % $exa = 'code';
 % $exb = 'BEN n 24 33';
 <span class="lean"><%== $exa %></span> on kuvassa olevan kissan EMS-koodi kokonaisuudessaan, esim. <a href="/<%== $langa %>/search?q=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>

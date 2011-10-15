@@ -95,7 +95,7 @@ my $matrix = {
  },
  
  breed => {
-  modes => [ qw ( a2z top first ) ],
+  modes => [ qw ( a2z cate top first ) ],
   dividers => 0,
   refines => [ qw ( code breeder nat loc ) ],
   jump => { code => 1 },  
@@ -134,6 +134,13 @@ my $matrix = {
   dividers => 0,
   refines => [ qw ( code feat breeder cat ) ],
   jump => { code => 1, cat => 1 },
+ },
+
+ cate => {
+  modes => [ qw ( a2z top ) ],
+  dividers => 0,
+  refines => [ qw ( breed breeder ) ],
+  jump => { breed => 1 },
  },
   
  feat => {

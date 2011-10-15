@@ -49,18 +49,6 @@ sub do {
  
 }
 
-sub cover {
-
- my $self = shift; my $s = $self->{stash};
- 
- $s->{maxx} = $self->fetch ( 'all#maxx' );
-
- $s->{total} > $s->{maxx} and return $self->not_found;
- 
- return $self->do;
- 
-}
-
 sub dist {
 
  my $self = shift; my $s = $self->{stash};

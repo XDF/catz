@@ -256,6 +256,14 @@ By default the advanced search looks for an exact match. To relax this rule use 
 %# --------------------
 %#
 <li>
+% $exa = 'cate';
+% $exb = 'category 1';
+<span class="lean"><%== $exa %></span> is the <%= $t->{uc($exa)} %> of the breed of the cat in the photo according to FIFe like <a href="/<%== $langa %>/search?q=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+</li>
+%#
+%# --------------------
+%#
+<li>
 % $exa = 'code';
 % $exb = 'BEN n 24 33';
 <span class="lean"><%== $exa %></span> is the full EMS code of the cat in the photo like <a href="/<%== $langa %>/search?q=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>

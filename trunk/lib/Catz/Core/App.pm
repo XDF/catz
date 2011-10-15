@@ -208,7 +208,6 @@ sub startup {
   
  $l->route( 
   '/viz/dist/:full:/:breed/:none/:vkey',
-
   full => qr/\d{1,5}/, breed => qr/\d{1,5}/, none => qr/\d{1,5}/, 
   vkey => qr/\d{14}/
  )->to( 'visualize#dist' );
@@ -217,10 +216,6 @@ sub startup {
   '/viz/rank/:pri/:sec/:vkey',
   pri => qr/[a-z]{1,25}/, sec => qr/[A-ZA-z0-9_-]{1,500}/, vkey => qr/\d{14}/
  )->to( 'visualize#rank' );
-
- $l->route( 
-  '/viz/cover/:total/:vkey', total => qr/\d{1,5}/, vkey => qr/\d{14}/  
- )->to( 'visualize#cover' );
 
  $l->route( '/viz/globe/:vkey', vkey => qr/\d{14}/ )
   ->to( 'visualize#globe' );
@@ -263,7 +258,7 @@ sub before {
  # 
  # runs on every request and takes time
  # 
- # on slow windows workstation + USB hard drive
+ # on an old windows workstation + USB hard disk rive
  # spent 15.6ms making 11 calls to 
  # Catz::Util::File::findlatest, avg 1.42ms/call
  #
