@@ -28,8 +28,11 @@
 % foreach my $row ( @$prims ) {
 <div class="bar outer"> 
 <h2><%= fmt ( $row->[1], $lang ) %> <%= $t->{uc($row->[0]).'A'} %></h2>
+% my $i = 1;
 % foreach my $mode ( @{ $matrix->{$row->[0]}->{modes} } ) {
+% $i++ > 1 and do {
 <%= $sep %>
+% };
 <a href="/<%== $langa %>/list/<%== $row->[0] %>/<%== $mode %>/"><%= $t->{'MODE_'.uc($mode)} %></a>
 % }
 </div>

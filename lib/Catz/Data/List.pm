@@ -130,8 +130,8 @@ my $matrix = {
  },
  
  breed => {
-  modes => [ qw ( a2z top first ) ],
-  dividers => 0,
+  modes => [ qw ( a2z cate top first ) ],
+  dividers => 1,
   refines => [ qw ( code feat breeder cat ) ],
   jump => { code => 1, cat => 1 },
  },

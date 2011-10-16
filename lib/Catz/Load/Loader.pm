@@ -139,8 +139,8 @@ my $secsql = [
  #
  # we set synonym secs as -sid = make sid negative, abs used on fetch
  #
- qq{ insert into _find_en select sid,sec from ( select sid,sec,cntphoto,sort from pri natural join _secm natural join sec_en where cntphoto is not null and cntphoto>0 and pri not in ( 'album','folder','text','date' ) union all select sid,dtexpand(sec,'en') as sec,cntphoto,sort from pri natural join _secm natural join sec_en where cntphoto is not null and cntphoto>0 and pri='date' union all select -sid,nat_en,cntphoto,nat_en from pri natural join _secm natural join sec_en,mnat where nat=sec and pri='nat' and cntphoto is not null and cntphoto>0 union all select -sid,breed_en,cntphoto,breed_en from pri natural join _secm natural join sec_en,mbreed where breed=sec and pri='breed' and cntphoto is not null and cntphoto>0 union all select -sid,title_en,cntphoto,title_en from pri natural join _secm natural join sec_en,mtitle where title=sec and pri='title' and cntphoto is not null and cntphoto>0 union all select -sid,feat_en,cntphoto,feat_en from pri natural join _secm natural join sec_en,mfeat where feat=sec and pri='feat' and cntphoto is not null and cntphoto>0 ) order by cntphoto desc, sort asc},
- qq{insert into _find_fi select sid,sec from ( select sid,sec,cntphoto,sort from pri natural join _secm natural join sec_fi where cntphoto is not null and cntphoto>0 and pri not in ( 'album','folder','text','date' ) union all select sid,dtexpand(sec,'fi') as sec,cntphoto,sort from pri natural join _secm natural join sec_fi where cntphoto is not null and cntphoto>0 and pri='date' union all select -sid,nat_fi,cntphoto,nat_fi from pri natural join _secm natural join sec_fi,mnat where nat=sec and pri='nat' and cntphoto is not null and cntphoto>0 union all select -sid,breed_fi,cntphoto,breed_fi from pri natural join _secm natural join sec_fi,mbreed where breed=sec and pri='breed' and cntphoto is not null and cntphoto>0 union all select -sid,title_fi,cntphoto,title_fi from pri natural join _secm natural join sec_fi,mtitle where title=sec and pri='title' and cntphoto is not null and cntphoto>0 union all select -sid,feat_fi,cntphoto,feat_fi from pri natural join _secm natural join sec_fi,mfeat where feat=sec and pri='feat' and cntphoto is not null and cntphoto>0 ) order by cntphoto desc, sort asc},
+ qq{ insert into _find_en select sid,sec from ( select sid,sec,cntphoto,sort from pri natural join _secm natural join sec_en where cntphoto is not null and cntphoto>0 and pri not in ( 'album','folder','text','date' ) union all select sid,dtexpand(sec,'en') as sec,cntphoto,sort from pri natural join _secm natural join sec_en where cntphoto is not null and cntphoto>0 and pri='date' union all select -sid,nat_en,cntphoto,nat_en from pri natural join _secm natural join sec_en,mnat where nat=sec and pri='nat' and cntphoto is not null and cntphoto>0 union all select -sid,breed_en,cntphoto,breed_en from pri natural join _secm natural join sec_en,mbreed where breed=sec and pri='breed' and cntphoto is not null and cntphoto>0 union all select -sid,title_en,cntphoto,title_en from pri natural join _secm natural join sec_en,mtitle where title=sec and pri='title' and cntphoto is not null and cntphoto>0 union all select -sid,feat_en,cntphoto,feat_en from pri natural join _secm natural join sec_en,mfeat where feat=sec and pri='feat' and cntphoto is not null and cntphoto>0  union all select -sid,cate_en,cntphoto,cate_en from pri natural join _secm natural join sec_en,mcate where cate=sec and pri='cate' and cntphoto is not null and cntphoto>0 ) order by cntphoto desc, sort asc},
+ qq{ insert into _find_fi select sid,sec from ( select sid,sec,cntphoto,sort from pri natural join _secm natural join sec_fi where cntphoto is not null and cntphoto>0 and pri not in ( 'album','folder','text','date' ) union all select sid,dtexpand(sec,'fi') as sec,cntphoto,sort from pri natural join _secm natural join sec_fi where cntphoto is not null and cntphoto>0 and pri='date' union all select -sid,nat_fi,cntphoto,nat_fi from pri natural join _secm natural join sec_fi,mnat where nat=sec and pri='nat' and cntphoto is not null and cntphoto>0 union all select -sid,breed_fi,cntphoto,breed_fi from pri natural join _secm natural join sec_fi,mbreed where breed=sec and pri='breed' and cntphoto is not null and cntphoto>0 union all select -sid,title_fi,cntphoto,title_fi from pri natural join _secm natural join sec_fi,mtitle where title=sec and pri='title' and cntphoto is not null and cntphoto>0 union all select -sid,feat_fi,cntphoto,feat_fi from pri natural join _secm natural join sec_fi,mfeat where feat=sec and pri='feat' and cntphoto is not null and cntphoto>0 union all select -sid,cate_fi,cntphoto,cate_fi from pri natural join _secm natural join sec_fi,mcate where cate=sec and pri='cate' and cntphoto is not null and cntphoto>0 ) order by cntphoto desc, sort asc},
 
  # we use sid -> x mapping to execute both pri-sec pair fetches and advanced searches
  # we first look for sids by the pair or search and then map sids to xs with this table
@@ -777,7 +777,7 @@ sub load_post {
 
  logit ( 'processing secondaries' );
 
- my $i = 0;
+ my $i = 0; # the post procssing counter
  
  load_exec ( 'photo_null_upd' ); # clear old s
  
@@ -862,8 +862,8 @@ sub load_post {
  
  # insert to secondaries 
  load_do( qq { 
-  insert into sec (pid,sec_en,sec_fi,sort_en,sort_fi) 
-   select (select pid from pri where pri='cate'),cate_en,cate_fi,cate,cate 
+  insert into sec (pid,sec_en) 
+   select (select pid from pri where pri='cate'),cate 
    from sec inner join mbreed on (sec_en=breed) natural join mcate 
    where pid=(select pid from pri where pri='breed') group by cate 
  });
@@ -877,7 +877,7 @@ sub load_post {
     i.sid=s1.sid and 
     s1.sec_en=mb.breed and 
     mb.cate=mc.cate and
-    mc.cate_en=s2.sec_en and 
+    mc.cate=s2.sec_en and 
     s1.pid=(select pid from pri where pri='breed') and 
     s2.pid=(select pid from pri where pri='cate')
  }); 

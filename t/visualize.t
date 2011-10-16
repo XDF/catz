@@ -60,12 +60,6 @@ foreach my $lang ( qw ( en fi en264312 fi384322 ) ) {
   
  $c += 3;
 
- $t->get_ok("/$lang/viz/cover/2240/20011012123456/")
-  ->status_is(200)
-  ->content_type_like(qr/image\/png/);
-  
- $c += 3;
-
  $t->get_ok("/$lang/viz/globe/20011012123456/")
   ->status_is(200)
   ->content_type_like(qr/image\/png/);

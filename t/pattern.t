@@ -46,16 +46,19 @@ my @ok = (
  'Ipekkedinin',
  '"Ipekkedinin Birinci Bebek"',
  '"Ipe*edin* B?r?nc? *bek"',
- '+MCO d e f -22 -2',
+ '+MCO d e f -22 -23',
  '-22 aby rag ben +n',
  '+text="* panel*"',
  '+*a??a* +A?? -AB?',
  '+breeder=Mi* date=2010* date=2009* date=2008*',
  'album="Kiss?liiton Vuoden kissa*"',
- '+nick=RäpsY',
- '-nick=RäpsY',
+ '         +nick=RäpsY',
+ '-nick=RäpsY             ',
  '+nick=ÖRPPI',
- '*""Toykiller""*'
+ '*""Toykiller""*',
+ 'cate=2',
+ 'cate=1 cate=3',
+ 'cate=4      -cate=1 -cate=2      +cate=3'
 );
 
 # searches that return no photos
@@ -70,7 +73,9 @@ my @non = (
  'album="Kisaliton Vuoden kisa*"',
  '+roska=CRX',
  'album="Tätä näyttelyä ei koskaan ollut*"',
- 'kjasd (/#(/)#/)(#) +!"#¤%¤%& -ÅÄÖ+++---ÅÄÖÅÄÖåäöö +?????"'
+ 'kjasd (/#(/)#/)(#) +!"#¤%¤%& -ÅÄÖ+++---ÅÄÖÅÄÖåäöö +?????"',
+ 'cate=100',
+ 'cate=B'
 );
 
 # known good combinations
@@ -132,7 +137,7 @@ foreach my $lang ( qw ( en fi en en264311 fi365312 ) ) {
  }
 
  foreach my $what ( @ok ) {
-    
+     
   $t->get_ok("/$lang/search?q=".enurl($what))
     ->status_is(200)
     ->content_type_like(qr/text\/html/)
@@ -141,7 +146,7 @@ foreach my $lang ( qw ( en fi en en264311 fi365312 ) ) {
     ->content_like(qr/\.JPG/);
 
   $c += 6;
-  
+    
   $t->get_ok("/$lang/display?q=".enurl($what))
     ->status_is(200)
     ->content_type_like(qr/text\/html/)

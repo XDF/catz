@@ -53,6 +53,8 @@ my @ok = qw (
  cat/Baila-045Bailan_Rikasr-228m-228el-228m-228/111228
  nat/FR/150036
  breeder/Cat-039s-045JM/123100
+ cate/1/179012
+ cate/4/009030
 );
 
 my @bad = qw (
@@ -60,6 +62,7 @@ my @bad = qw (
  org/SUROK/013987
  title/EC/147008
  date/20100404/111008
+ cate/x/009030
  folder/20110514tampere/081014
  lens/Canon_EF_85mm_f-0471-0468_USM_-038_Tamron_2X_MC7_C-045AF1_BBAR/146161
  cat/Piupaws_-034Toykiller-034/111182
@@ -138,7 +141,9 @@ foreach my $lang ( qw ( en fi en264312 fi384322 ) ) {
 
    $c += 5;
    
-   $mode eq 'browse' and do { # check that visualization exists
+   $mode eq 'browse' and $elem[0] eq 'cat' and do { 
+   
+    # check that visualization exists
    
     $t->get_ok("/$lang/$mode/$elem[0]/$elem[1]/$elem[2]/")
      ->content_like(qr/ class=\"viz/);
