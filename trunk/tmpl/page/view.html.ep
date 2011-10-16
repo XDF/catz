@@ -9,6 +9,8 @@
 %  if ( $pri eq 'loc' ) {
 <meta name="og:locality" content="<%= $sec %>">
 <meta name="og:country-name" content="<%= $t->{COUNTRY} %>">
+%  } elsif ( $pri eq 'nat' ) {
+<meta name="og:country-name" content="<%= $nats->{$sec}->{natl} %>">
 %  } 
 % } 
 <link rel="start" href="<%== include 'href/id', langh => $langa, toid => $pin->[0] =%>">

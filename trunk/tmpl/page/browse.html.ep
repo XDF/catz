@@ -19,7 +19,9 @@ if ( $runmode eq 'pair' ) {
 %  if ( $pri eq 'loc' ) {
 <meta name="og:locality" content="<%= $sec %>">
 <meta name="og:country-name" content="<%= $t->{COUNTRY} %>">
-%  } 
+%  } elsif ( $pri eq 'nat' ) {
+<meta name="og:country-name" content="<%= $nats->{$sec}->{natl} %>">
+%  }
 % }
 <%
 my $ogtitle = fmt($maxx,$lang).' '.$t->{PHOTOA_CATSHOW}; # default
