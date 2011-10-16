@@ -1,7 +1,7 @@
 % my $i = 1;
 % if ( scalar @{ $find } > 0 ) {
 % my $modifier = '';
-%  scalar @{ $find } > 25 and $modifier = ' shrink';
+%  scalar @{ $find } > 19 and $modifier = ' shrinkless';
 <div class="roomy box bar rounded<%= $modifier %>"><div>
 % my $prev = 'THIS_IS_THE_INITIAL';
 %  foreach my $sugg ( @{ $find } ) {

@@ -62,6 +62,7 @@ pre { display: inline; }
 /* text sizes */
 .shrink { font-size: 88%; }
 .shrinkmore { font-size: 68%; }
+.shrinkless { font-size: 93%; }
 .enlarge { font-size: 118%; }
 .enlargemore { font-size: 133%; }
 
@@ -217,6 +218,6 @@ a:hover {
 
 .box {
  border-style: solid;
- border-width: 1px;
- border-color: <%== $st->{color}->{$palette}->{xtra} %>;  
+ border-width: 2px;
+ border-color: <%== $st->{color}->{$palette}->{dim} %>;  
 }

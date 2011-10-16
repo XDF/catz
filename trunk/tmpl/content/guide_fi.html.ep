@@ -256,8 +256,8 @@ Superhaku hakee lähtökohtaisesti täsmällistä osumaa. Käyttämällä hakute
 %#
 <li>
 % $exa = 'cate';
-% $exb = 'kategoria 1';
-<span class="lean"><%== $exa %></span> on kuvassa olevan kissan rodun <%= $t->{uc($exa)} %> FIFen mukaisesti, esim. <a href="/<%== $langa %>/search?q=<%== enurl qq{$exa="$exb"} %>"><%= $exb %></a>
+% $exb = '1';
+<span class="lean"><%== $exa %></span> on kuvassa olevan kissan rodun <%= $t->{uc($exa)} %> FIFen mukaan, esim. <a href="/<%== $langa %>/search?q=<%== enurl qq{$exa=$exb} %>"><%= $exb %></a>
 </li>
 %#
 %# --------------------

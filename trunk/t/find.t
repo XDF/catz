@@ -130,6 +130,12 @@ $t->get_ok("/en/find?s=".enurl('yhdistys'))
 
 $c += 4;
 
+$t->get_ok("/en/find?s=".enurl('catego'))
+  ->status_is(200)
+  ->content_type_like(qr/text\/html/)
+  ->element_exists('div[class~="rounded"] a');
+   
+$c += 4;
 
 # finnish specific
 
@@ -174,5 +180,13 @@ $t->get_ok("/fi/find?s=".enurl('yhdistys'))
   ->element_exists('div[class~="rounded"] a');
 
 $c += 4;
+
+$t->get_ok("/fi/find?s=".enurl('tegoria'))
+  ->status_is(200)
+  ->content_type_like(qr/text\/html/)
+  ->element_exists('div[class~="rounded"] a');
+   
+$c += 4;
+
 
 done_testing($c);

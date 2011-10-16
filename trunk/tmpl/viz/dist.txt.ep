@@ -3,7 +3,7 @@
 % my $dnone = round ( ( ( $none / $total ) * 100 ), 1 );
 % my $tfull = $t->{VIZ_DIST_FULL}.' '.fmt($dfull,$lang).' %';
 % utf8::encode ( $tfull );
-% my $tbreed = $t->{VIZ_DIST_BREED}.' '.fmt($dbreed,$lang).' %';
+% my $tbreed = $t->{VIZ_DIST_BRCA}.' '.fmt($dbreed,$lang).' %';
 % utf8::encode ( $tbreed );
 % my $tnone = $t->{VIZ_DIST_NONE}.' '.fmt($dnone,$lang).' %';
 % utf8::encode ( $tnone );

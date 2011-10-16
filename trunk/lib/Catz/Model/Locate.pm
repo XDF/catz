@@ -87,6 +87,45 @@ sub _full {
         
   }
   
+  when ( 'cate' ) {
+  
+   # special ordering for breeds, added 2011-10-15
+   
+   $pri eq 'breed' or die "internal error: unable to list '$pri' by category";
+   
+   my $sum = 0; my @idx = (); my @sets = ();
+    
+   my $cates = $self->dball("select cate,cate_$lang from mcate order by cate");
+   
+   foreach my $cate ( @$cates ) {
+    
+    my $sub = $self->dball ( qq { 
+     select $cols from sec_$lang natural join _secm 
+     natural join pri where pri='breed' and sec in (
+      select breed from mbreed where cate=$cate->[0]
+     ) order by sort asc 
+    });
+   
+    my $n = scalar @$sub;
+    
+    if ( $n > 0 ) {
+    
+     $sum += $n;
+    
+     push @idx, $cate->[1];
+    
+     push @sets, [ $cate->[1], $sub ];
+     
+     
+     
+    }
+  
+   }
+  
+   return [ $sum, \@idx, \@sets ];
+    
+  }
+  
   when ( 'cron' ) {
   
    # special ordering where missing HHMMSS is assumed to be 000000 so is the first photo on that date  

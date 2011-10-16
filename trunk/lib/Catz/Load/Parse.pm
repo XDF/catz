@@ -53,7 +53,7 @@ sub cat {
   
   my $code = $2;
   
-  $code =~ /^([A-Z]{3,3})(\s+)?(.+)?$/ or die "malformed code (1) '$code'";
+  $code =~ /^([A-Z]{2}[A-Z1-9])(\s+)?(.+)?$/ or die "malformed code (1) '$code'";
   
   $d->{breed} = $1;
   
@@ -218,6 +218,9 @@ sub set {
  my $datas = [];
  my $exifs = [];
  
+ my %seen_l = ();
+ my %seen_p = ();
+ 
  foreach my $line ( @{ $_[0] } ) {
  
   $line =~ /^(\w)([\d-]+):\s+(.+)$/ or die "malformed line: '$line'";
@@ -236,7 +239,11 @@ sub set {
    
     foreach my $i ( $from .. $to ) {
     
+     exists $seen_p{$i} and die "P index $i already seen within an album";
+    
      $datas->[ $i ] = line ( $data );
+     
+     $seen_p{$i} = 1;
     
     }
    
@@ -246,7 +253,11 @@ sub set {
 
     foreach my $i ( $from .. $to ) {
     
+     exists $seen_l{$i} and die "P index $i already seen within an album";
+    
      $exifs->[ $i ]  = exid ( $data );
+     
+     $seen_l{$i} = 1;
     
     }
       
@@ -274,27 +285,46 @@ sub parse_pile {
   
  $album =~ /^(20\d{6})([a-z]+)(\d{0,1})$/ or
   die "invalid album name '$album'";
-  
+   
  $d->{folder_en} = $album;
  $d->{folder_fi} = $album;
-      
- $d->{origined} = $1; # albumn name starts with YYYYDDMM
- ( $d->{loc_en}, $d->{loc_fi} ) = loc ( $2 ); # location part follows
- # $3 might be 1,2,3 ... to specify multiple albums but is not stored 
  
+ $d->{origined} = $1; # albumn name starts with YYYYDDMM
+ 
+ ( $d->{loc_en}, $d->{loc_fi} ) = loc ( $2 );
+ 
+ defined $d->{loc_en} and defined $d->{loc_fi} or die
+  "unable to resolve location for album '$album'";
+ 
+ # $3 might be 1,2,3 ... to specify multiple albums but is not stored
+
  $d->{s} = substr ( shift @lines, 4 ); # the sorter
+ 
+ ( $d->{s} =~ m|^\d{1,3}$| ) or  
+  die "unable to find sorter for album '$album'";
  
  $d->{album_en} = substr ( shift @lines, 4 );
  
+ length ( $d->{album_en} ) > 9 or 
+  die "album name (en) too short for album '$album'";
+ 
  $d->{album_fi} = substr ( shift @lines, 4 );
+
+ length ( $d->{album_en} ) > 9 or 
+  die "album name (fi) too short for album '$album'";
  
  # currently the model and the scripts support only one organization per album
  # the database is build proactively so that it could store multiples
  ( $d->{org_en}, $d->{org_fi} ) = org ( $d->{album_en} );
- 
- defined $d->{org_en} and 
-  ( $d->{umb_en}, $d->{umb_fi} ) = umb ( $d->{org_en}, $album );
-    
+
+ defined $d->{org_en} and defined $d->{org_fi} or die
+  "unable to resolve organizer for album '$album'";
+
+ ( $d->{umb_en}, $d->{umb_fi} ) = umb ( $d->{org_en}, $album );
+  
+ defined $d->{umb_en} and defined $d->{umb_fi} or die
+  "unable to resolve umbrella for album '$album'";
+      
  # @lines should now containg only data P and exif L lines
  # if there are no data yet for a new album there are no lines left
  
@@ -305,5 +335,3 @@ sub parse_pile {
  return $d;
  
 }
-
-

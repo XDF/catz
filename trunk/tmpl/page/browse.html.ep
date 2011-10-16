@@ -161,9 +161,6 @@ if ( $runmode eq 'pair' ) {
 %  when ( 'rank' ) {
 <img alt="<%= $t->{VIZ_RANK_NAME} %>" title="<%= $t->{VIZ_RANK_NAME} %> <%= $sep %> <%= $t->{VIZ_RANK_DESC} %>" class="viz" width="<%== $style->{viz}->{$vizmode}->{width} %>" height="<%== $style->{viz}->{$vizmode}->{height} %>" src="/<%== $langa %>/viz/rank/<%== $pri %>/<%== encode $sec %>/<%== $version %>/">
 %  }
-%  when ( 'cover' ) {
-<img alt="<%= $t->{VIZ_COVER_NAME} %>" title="<%= $t->{VIZ_COVER_NAME} %>" class="viz" width="<%== $style->{viz}->{$vizmode}->{width} %>" height="<%== $style->{viz}->{$vizmode}->{height} %>" src="/<%== $langa %>/viz/cover/<%== $total %>/<%== $version %>/">
-%  }
 % }
 %#
 %# --------------------
