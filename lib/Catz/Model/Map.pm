@@ -146,4 +146,14 @@ sub _trans {
  
 }
 
+sub _nats {
+
+ my $self = shift;  my $lang = $self->{lang};
+ 
+ $self->dbhash ( 
+  "select nat as nat, nat_$lang as natl from mnat", 'nat' 
+ );
+  
+}
+
 1;

@@ -358,7 +358,8 @@ sub before {
  if ( $s->{url} =~ /^\/((en|fi)([1-9]{6})?)/ ) {
   
   $s->{langa} = $1; $s->{lang} = $2;
-    
+  
+  # prevent indexing of pages with non-default setup  
   $3 and $s->{meta_index} = 0;
   
   $s->{langother} = $s->{lang} eq 'fi' ? 'en' : 'fi';

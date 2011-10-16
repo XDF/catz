@@ -56,7 +56,18 @@ sub pair {
  $self->pre or return 0;
  
  # get the translation for this pri-sec -pair
- $s->{trans} = $self->fetch ( 'map#trans', $s->{pri}, $s->{sec} );  
+ $s->{trans} = $self->fetch ( 'map#trans', $s->{pri}, $s->{sec} );
+
+ $s->{nats} = undef;
+  
+ ( $s->{pri} eq 'nat' ) and do {
+ 
+  # fetch country names based on codes to be used in meta tags
+  # added 2011-10-16
+  
+  $s->{nats} = $self->fetch ( 'map#nats' );
+ 
+ };    
 
  $s->{urlother} =  
   '/' . ( join '/', $s->{langaother} , $s->{action}, $s->{pri}, 
