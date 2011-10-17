@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 %#
 %# --------------------
-%# An abstract template for all pages excluding the error & exception pages
+%# An abstract template for all widgets
 %# --------------------
 %#
 <html lang="<%== $lang %>"><head>
@@ -10,49 +10,22 @@
 %# --------------------
 %#
 <link rel="stylesheet" type="text/css" href="/style/reset/">
-<link rel="stylesheet" type="text/css" href="/style/<%== $palette %>/">
-%#
-%# --------------------
-%#
-%== include 'elem/js', jstype => 'lib', jsfile => 'jquery';
-%== include 'elem/js', jstype => 'site', jsfile => 'info'; 
-<%= content 'jsadd' %>
+<link rel="stylesheet" type="text/css" href="/style/widget/<%== $color %>/">
 %#
 %# --------------------
 %#
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta http-equiv="content-language" content="<%== $lang %>">
 <link rel="shortcut icon" href="/favicon.ico">
-<%= content 'image' => begin %>
-<link rel="image_src" href="/img/catz.png">
-<meta name="og:image" content="<%== $t->{URL_CATZA} %>img/catz.png">
-<% end %>
 <meta name="author" content="<%== $t->{AUTHOR} %>">
 <meta name="copyright" content="<%= $t->{COPYRIGHT} %> <%= $t->{AUTHOR} %> <%= $t->{FIRSTYEAR} %>-<%= thisyear %>. <%= $t->{LICENCE} %>.">
 <link rel="copyright" href="<%== $t->{URL_LICENCE} %>"> 
 <meta name="og:site_name" content="<%= $t->{SITE} %>">
-% if ( $meta_index ) {
-%  if ( $meta_follow ) {
-<meta name="robots" content="all">
-%  } else {
-<meta name="robots" content="index,nofollow">
-%  }
-% } else {
-%  if ( $meta_follow ) {
-<meta name="robots" content="noindex,follow">
-%  } else {
 <meta name="robots" content="none">
-%  }
-% }
-<%= content 'canon' => begin %>
-% my $cn = "/$lang".urirest ( $url );
 <link rel="canonical" href="<%== $cn %>">
-<meta name="og:url" content="<%== $cn %>">
-<% end %> 
-<link rel="alternate" title="<%= $t->{TRANSLATE} %>" lang="<%== $langother %>" hreflang="<%== $langother %>" href="<%== $urlother %>">
+<meta name="og:url" content="<%== $cn %>"> 
 <meta name="fb:admins" content="<%== $facebookkey %>">
 <link rel="me" href="<%== $t->{URL_FACEBOOK} %>"> 
-<%= content 'metaadd' %>
 <meta name="generator" content="<%= $t->{GENERATOR} %>">
 <meta name="loaded" content="<%= dtexpand ( $version, $lang ) %>">
 <meta name="rendered" content="<%= $now %>">
@@ -62,50 +35,12 @@
 %#
 %# --------------------
 %#
-<body lang="<%== $lang %>"><div id="page">
+<body lang="<%== $lang %>"><div id="widget">
 %#
 %# --------------------
 %#
-<div id="<%= content 'topid' => begin %>top<% end %>"><div class="<%= content 'topclass' => begin%>bar<% end %>"><table class="full">
-%#
-%# --------------------
-%#
-<tr><td class="left"><%= content 'path' => begin %>
-<a href="/<%== $langa %>/"><%= $t->{SITE} %></a> <%= $pathsep %>
-<%= content 'pathadd' %>
-<% end %></td>
-%#
-%# --------------------
-%#
-<td class="right"><noscript><pre><%= $t->{NOSCRIPT} %></pre></noscript>
-<%= content 'setup' => begin %><%= content 'setupadd' %>
-<%== include 'elem/setup', setupkey => 'palette' %><% end %>
-<a title="<%= $t->{LANGOTHER} %>" href="<%== $urlother %>" hreflang="<%== $langother %>" lang="<%== $langother %>"><%= $t->{LANGOTHER} %></a>
-</td></tr></table><table class="full"><tr>
-%#
-%# --------------------
-%#
-<td class="left middle"><%= content 'btitle' %></td><td class="right middle"><%= content 'bextra' %></td></tr></table></div>
-% defined $self->{stash}->{'mojo.content'}->{up} and do {
-<div class="stripetop"><%= content 'up' %></div>
-% };
-</div>
-%#
-%# --------------------
-%#
-<%= content 'main' %>
-%#
-%# --------------------
-%#
-<div id="bottom" class="section shade clearbefore">
-% defined $self->{stash}->{'mojo.content'}->{down} and do {
-<div class="stripebottom"><%= content 'down' %></div>
-% };
-<div class="shrink center">
-<a class="info" href=""></a> <%= $sep %> <%= $t->{COPYRIGHT} %>
-<a href="<%== $t->{URL_AUTHOR} %>"><%= $t->{AUTHOR} %></a> <%= $t->{FIRSTYEAR} %>-<%= thisyear %> <%= $sep %>
-<a href="<%== $t->{URL_LICENCE} %>"><%= $t->{LICENCE} %></a>
-</div></div>
+
+
 %#
 %# --------------------
 %#

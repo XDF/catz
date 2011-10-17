@@ -101,4 +101,24 @@ $t->get_ok('/style/'.enurl('?#_;KIJ833i:*').'/')
   
 $c += 2;
 
+# widget style tests added 2011-10-17
+
+foreach my $color ( qw ( 000000 363636 aabbcc ffffff ) ) {
+
+ $t->get_ok("/style/widget/$color/")
+   ->status_is(200)
+   ->content_type_like(qr/text\/css/);
+
+ $c += 3;
+ 
+}
+
+foreach my $color ( qw ( 00000 36X636 AABBFF jaklsjdflkj3lk3YYY ) ) {
+
+ $t->get_ok("/style/widget/$color/")->status_is(404);
+
+ $c += 2;
+ 
+}
+
 done_testing( $c );

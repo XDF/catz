@@ -1,0 +1,8 @@
+<select id="<%== $id %>">
+% foreach my $val ( @{ $values } ) {
+% my $selected = ' ';
+% $val eq $current and $selected = ' selected ';
+% my $show = defined $texts ? $t->{uc($texts).'_'.uc($val)} : $val; 
+<option<%= $selected %>value="<%= $val %>"><%= $show %></option>
+% }
+</select>

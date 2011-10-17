@@ -64,6 +64,8 @@ sub front {
   
  $s->{urlother} = '/' . $s->{langaother} . '/';
  
+ $s->{seal} = conf ( 'key_seal' );
+ 
  $s->{mapview} = $self->fetch ( 'map#view' );
  $s->{mapdual} = $self->fetch ( 'map#dual' );
  

@@ -1,0 +1,14 @@
+<script type="text/javascript">
+ var sealServer = document.location.protocol+"//seals.websiteprotection.com/sealws/<%== $seal %>.gif";
+ var certServer = document.location.protocol+"//certs.websiteprotection.com/sealws/?sealId=<%== $seal %>";
+ var hostName = "<%== $t->{SITE} %>";
+ var sealOwner = "<%== $t->{SEAL_OWNER} %> "; 
+ var sealCopy = ". <%== $t->{SEAL_COPYRIGHT} %>";
+ document.write( unescape (  
+  '%3Ca target="_blank" href="' + certServer + '&pop=true" class="inline"%3E' +
+  '%3Cimg src="' + sealServer + '" alt="<%= $t->{SEAL_INFO} %>" '+
+  'title="' + sealOwner + hostName + sealCopy + 
+  '" oncontextmenu="alert(\'<%== $t->{SEAL_COPYRIGHT} %>\'); return false;" ' + 
+  'class="thumb"%3E%3C/a%3E'
+ ) );
+</script>
