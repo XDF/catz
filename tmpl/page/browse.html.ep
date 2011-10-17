@@ -76,6 +76,12 @@ if ( $runmode eq 'pair' ) {
 %#
 %# --------------------
 %#
+<% content 'jsadd' => begin %>
+<%== include 'elem/js', jstype => 'site', jsfile => 'make' =%>
+<% end %>
+%#
+%# --------------------
+%#
 <% content 'ptitleadd' => begin %>
 %== include 'elem/titlea';
 (<%= $t->{PAGE} %> <%= $page %>/<%= $pages %>)
@@ -186,8 +192,14 @@ if ( $runmode eq 'pair' ) {
 % if ( $runmode eq 'search' ) {
 <%= $sep %> <%== include 'block/explain' %>
 % }
+% if ( 1 == 0 ) { # disabled 2011-10-18
+<%= $sep %> <%== include 'elem/widgets' %>
+% }
 <%== include 'block/refines' %>
 </div>
+% if ( 1 == 0 ) { # disabled 2011-10-18
+<div id="widget"></div>
+% }
 %#
 %# --------------------
 %#

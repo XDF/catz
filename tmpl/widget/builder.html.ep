@@ -1,0 +1,14 @@
+<h2><%= $t->{WID_CONF_STRIP} %></h2>
+<form id="builder">
+<input type="hidden" id="wp" name="wp" value="23">
+<input type="hidden" id="ws" name="ws" value="24">
+<input type="hidden" id="ws" name="wq" value="25">
+<input type="hidden" id="wl" name="wl" value="en">
+<%= $t->{WID_HEIGHT} %>
+%== include 'widget/select', id => 'wh', values => $widget->{heights}, current => $widget->{height_default}, texts => undef;
+<%= $t->{WID_WIDTH} %>
+%== include 'widget/select', id => 'ww', values => $widget->{widths}, current => $widget->{width_default}, texts => undef;
+<%= $t->{WID_STRIP_MODE} %> 
+%== include 'widget/select', id => 'wm', values => $widget->{strip}->{modes}, current => $widget->{strip}->{mode_default}, texts => 'WID_STRIP_MODE';
+<button type="button" onClick="alert('skojare');"><%= $t->{WID_UPDATE} %></button>
+</form>

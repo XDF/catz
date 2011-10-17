@@ -28,6 +28,7 @@ use 5.10.0; use strict; use warnings;
 use Test::More;
 use Test::Mojo;
 
+use Catz::Core::Conf;
 use Catz::Core::Text;
 
 use Catz::Util::String qw ( encode enurl );
@@ -74,6 +75,30 @@ foreach my $lang ( qw ( en fi en211211 fi171212 ) ) {
    
  $c += 9;  
  
-} 
+}
+
+# site seal test added 2011-10-18
+# site seal must appear in english front page
+
+my $seal = conf ( 'key_seal' );
+
+$t->get_ok("/en/")->content_like(qr/$seal/); $c += 2;
+
+# analytics tests added 2011-10-18
+# analytics must appear on linux
+
+conf ( 'lin' )  and do {
+
+ my $ana_godaddy = conf ( 'key_ana_godaddy' );
+ my $ana_google = conf ( 'key_ana_google' );
+
+ foreach my $lang ( qw ( en fi en211211 fi171212 ) ) {
+ 
+  $t->get_ok("/$lang/")->content_like(qr/$ana_godaddy/); $c += 2;
+  $t->get_ok("/$lang/")->content_like(qr/$ana_google/); $c += 2;
+  
+ }
+
+}; 
 
 done_testing( $c );

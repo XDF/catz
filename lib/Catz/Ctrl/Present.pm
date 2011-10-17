@@ -36,6 +36,7 @@ use parent 'Catz::Core::Ctrl';
 use Catz::Data::Result;
 use Catz::Data::Search;
 use Catz::Data::Style;
+use Catz::Data::Widget;
 
 sub pre {
 
@@ -142,6 +143,8 @@ sub multi {
  # returns 0 on reject
   
  my $self = shift; my $s = $self->{stash};
+ 
+ $s->{widget} = widget_get;
   
  ( 
   $s->{total}, $s->{page}, $s->{pages}, $s->{from}, 

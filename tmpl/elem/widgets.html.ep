@@ -1,0 +1,17 @@
+% my $urt = undef;
+% my $head = qq{/$lang/builder?wt=strip};
+% my $tail = qq{&ww=$widget->{width}&wh=$widget->{height}&wm=$widget->{strip}->{mode}&wb=$widget->{background}}; 
+% given ( $runmode ) {
+%  when ( 'all' ) {
+%   $urt = $head . $tail;
+%  } 
+%  when ( 'pair' ) {
+%   $urt = $head . "&wp=$pri&ws=" . ( encode $sec ) . $tail;
+%  } 
+%  when ( 'search' ) {
+%   $urt = $head . "&wq=" . ( enurl $what ) . $tail;
+%  } 
+% }   
+% defined $urt and do {
+<a href="javascript:catzWidgetMake('<%== enurl $urt %>');" title="<%= $t->{WID_MAKE_STRIP} %>"><%= $t->{WID_MAKE_STRIP} %></a>
+% };

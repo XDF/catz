@@ -100,6 +100,10 @@ sub startup {
  
  # reset
  $r->route( '/style/reset' )->to( 'main#reset' );
+
+ # widgets
+ $r->route( '/style/widget/:color', color => qr/[0-9a-f]{6}/ )
+  ->to( 'widget#style' );
  
  # the single stylesheet contains all style definitions
  # it's color settings are dependent on the palette 
@@ -219,7 +223,13 @@ sub startup {
 
  $l->route( '/viz/globe/:vkey', vkey => qr/\d{14}/ )
   ->to( 'visualize#globe' );
- 
+  
+ ###
+ ### Widget(s)
+ ###
+
+ $l->route( '/widget' )->to ( 'widget#widget' );
+  
  ###
  ### AJAX interface(s)
  ###
@@ -230,9 +240,18 @@ sub startup {
  # the show result AJAX interface
  $l->route( '/result' )->to ( 'main#result' );
  
- # the info base data provided AJAX interface
+ # the info base data provider AJAX interface
  $l->route( '/info/:cont', cont => qr/std/ )->to ( 'main#info' );
-      
+
+ # the widget builder 
+
+ $l->route( '/builder' )->to ( 'widget#builder' );
+ 
+ #  pair mode
+ $l->route( '/builder/strip/:pri/:sec', 
+  pri => qr/[a-z]{1,25}/, sec => qr/[A-ZA-z0-9_-]{1,500}/
+ )->to ( 'widget#builder', runmode => 'pair' );
+  
  # add Mojolicious hooks
  $self->hook ( before_dispatch => \&before );  
  $self->hook ( after_dispatch => \&after );
@@ -249,6 +268,18 @@ sub before {
 
  $s->{url} = $self->req->url;  # let the url be in the stash also
  $s->{path} = $self->req->url->path;  # and also the path part
+ 
+ # preset analytics keys
+ 
+ $s->{ana_google} = undef; $s->{ana_godaddy} = undef;
+ 
+ conf ( 'lin' ) and do {
+
+  # set keys only on Linux, prevent Windows dev statistics collection 
+  $s->{ana_google} = conf ( 'key_ana_google' );
+  $s->{ana_godaddy} = conf ( 'key_ana_godaddy' );
+  
+ };
  
  # 
  # fetch the latest version key file
