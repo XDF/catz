@@ -1,3 +1,0 @@
-%== include 'widget/builder';
-%== include 'widget/code';
-%== include 'widget/view';

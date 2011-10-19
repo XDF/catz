@@ -192,14 +192,8 @@ if ( $runmode eq 'pair' ) {
 % if ( $runmode eq 'search' ) {
 <%= $sep %> <%== include 'block/explain' %>
 % }
-% if ( 1 == 0 ) { # disabled 2011-10-18
-<%= $sep %> <%== include 'elem/widgets' %>
-% }
 <%== include 'block/refines' %>
 </div>
-% if ( 1 == 0 ) { # disabled 2011-10-18
-<div id="widget"></div>
-% }
 %#
 %# --------------------
 %#
@@ -210,6 +204,14 @@ if ( $runmode eq 'pair' ) {
 <div class="bar">
 %== include 'content/policy';
 </div>
+%#
+%# --------------------
+%#
+% if ( $total > 9 ) {
+<div class="bar">
+%== include 'elem/widgets';
+</div>
+% }
 %#
 %# --------------------
 %#

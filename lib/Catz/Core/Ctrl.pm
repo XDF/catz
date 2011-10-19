@@ -37,6 +37,7 @@ use List::MoreUtils qw ( none );
 use Catz::Core::Conf;
 
 use Catz::Util::File qw ( findfiles );
+use Catz::Util::String qw ( clean noxss trim );
 
 # this is how we load and access models: when this module gets compiled
 # all models get loaded, instantiated and store to a static hashref  
@@ -135,6 +136,53 @@ sub fetch {
   
  $models->{$model}->fetch( $s->{version}, $s->{lang}, $sub, @args );
    
+}
+
+sub safeq {
+
+ # process and sanitize search patterns
+ 
+ my ( $self, $source, $target ) = @_;  my $s = $self->{stash};
+ 
+ $s->{$target} = $self->param($source) // undef;
+ 
+ $s->{$target} and do {
+ 
+  # sanity check
+  ( length $s->{$target} > 1234 ) and return 0;
+
+  # it appears that browsers typcially send UTF-8 encoded 
+  # data when the origin page is UTF-8 -> we decode the data now   
+  utf8::decode ( $s->{what} );
+
+  # remove all unnecessary whitespaces     
+  $s->{what} = noxss clean trim $s->{what};
+    
+  # we don't allow '', we set it to undef
+  $s->{what} eq '' and $s->{what} = undef;
+ 
+ };
+ 
+ $s->{init} and do {
+ 
+  # sanity check
+  ( length $s->{init} > 1234 ) and return 0;
+
+  # it appears that browsers typcially send UTF-8 encoded 
+  # data when the origin page is UTF-8 -> we decode the data now   
+  utf8::decode ( $s->{init} );
+
+  # remove all unnecessary whitespaces and prevent XSS   
+  $s->{init} = noxss clean trim $s->{init};
+    
+  # not for robots when with init parameter
+  $s->{init} and do {  $s->{meta_index} = 0; $s->{meta_follow} = 0 };
+
+  # we don't allow '', we set it to undef
+  $s->{init} eq '' and $s->{init} = undef;
+ 
+ }; 
+
 }
 
 1;
