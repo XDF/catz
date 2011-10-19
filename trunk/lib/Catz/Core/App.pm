@@ -228,8 +228,8 @@ sub startup {
  ### Widget(s)
  ###
 
- $l->route( '/widget' )->to ( 'widget#widget' );
-  
+ $l->route ( '/widget/strip' )->to ( 'widget#strip' );
+ 
  ###
  ### AJAX interface(s)
  ###
@@ -242,16 +242,7 @@ sub startup {
  
  # the info base data provider AJAX interface
  $l->route( '/info/:cont', cont => qr/std/ )->to ( 'main#info' );
-
- # the widget builder 
-
- $l->route( '/builder' )->to ( 'widget#builder' );
  
- #  pair mode
- $l->route( '/builder/strip/:pri/:sec', 
-  pri => qr/[a-z]{1,25}/, sec => qr/[A-ZA-z0-9_-]{1,500}/
- )->to ( 'widget#builder', runmode => 'pair' );
-  
  # add Mojolicious hooks
  $self->hook ( before_dispatch => \&before );  
  $self->hook ( after_dispatch => \&after );

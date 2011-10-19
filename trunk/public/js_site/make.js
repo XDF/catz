@@ -22,18 +22,20 @@
 // THE SOFTWARE.
 //
 
-// launches widget builder inside a page
+function catzMakeWidget() {
 
-function catzWidgetMake ( url ) {
-
- // verify that the url is a sane local one
+ // get language from url 
+ var parts = $(location).attr('pathname').toString().match('^(/..)');
  
- if ( ( url.substr(0,3) == '/en' ) || ( url.substr(0,3) == '/fi' ) ) {
-  
-  // load widget builder stuff
-  
-  $('#widget').load( url ); 
+ // then some more 
+ var url = parts[0] + '/widget/strip?';
  
- }
-
+ // add form parameters
+ url = url + $('#widgets').serialize();
+ 
+ // load url
+ $('#widget_url').html( '<a href="' + url + '">' + url + '</a>' );
+ 
+ $('#widget_show').html( '<img src="' + url + '">' );
+ 
 }

@@ -144,7 +144,7 @@ sub multi {
   
  my $self = shift; my $s = $self->{stash};
  
- $s->{widget} = widget_get;
+ $s->{widget} = widget_conf;
   
  ( 
   $s->{total}, $s->{page}, $s->{pages}, $s->{from}, 

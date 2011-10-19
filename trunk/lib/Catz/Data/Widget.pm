@@ -28,25 +28,117 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( widget_get );
+our @EXPORT = qw ( widget_conf widget_strip widget_tn_est );
+
+use GD; # all image processing is based on GD library
+use List::MoreUtils qw ( any );
+
+use Catz::Util::Number qw ( round );
 
 my $widget = {}; # widget config
 
-$widget->{width_min} = 100;
-$widget->{width_default} = 468;
-$widget->{width_max} = 2000;
-$widget->{widths} = [ qw ( 125 234 240 250 300 336 468 720 728 800 1000 1024 ) ];
+# defines what widgets are available
+$widget->{widgets} = [ qw ( strip ) ];
 
-$widget->{height_min} = 50;
-$widget->{height_default} = 60;
-$widget->{height_max} = 200;
-$widget->{heights} = [ qw ( 50 60 90 100 125 150 200 ) ];
+$widget->{strip}->{limit_min} = 200;
+$widget->{strip}->{limit_default} = 800;
+$widget->{strip}->{limit_max} = 1500;
 
-$widget->{background} = '000000';
+$widget->{strip}->{size_min} = 50;
+$widget->{strip}->{size_default} = 100;
+$widget->{strip}->{size_max} = 200;
 
-$widget->{strip}->{mode_default} = 'rand';
-$widget->{strip}->{modes} = [ qw ( rand cron ) ];
+$widget->{strip}->{types} = [ qw ( leftright topdown ) ];
+$widget->{strip}->{type_default} = 'leftright';
 
-sub widget_get { $widget }
+sub widget_conf { $widget }
+
+sub widget_tn_est {
+
+ my ( $size, $limit ) = @_;
+ 
+ # the safe (= far too large) estimate of the needed thumbnails
+
+ round ( $size / ( $limit / 4 ) );
+
+}
+
+sub widget_strip {
+
+ my ( $thumbs, $type, $size, $limit ) = @_;
+  
+ any { $_ eq $type } @{ $widget->{strip}->{types} } or
+  die "internal error: unknown type '$type' in strip generation";
+ 
+ my $use = -1; my $curr = 0; my @widths = (); my @heights = ();
+ 
+ foreach my $th ( @{ $thumbs } ) {
+ 
+  my ( $width, $height );
+  
+  if ( $type eq 'topdown' ) {
+ 
+   $width = $size;
+   $height = round ( $th->[6] * ( $size / $th->[5] ) );
+      
+   } else {
+  
+   $width = round ( ( $size / $th->[6] ) * $th->[5] );
+   $height = $size;
+   
+  } 
+  
+  if ( 
+   ( $type eq 'topdown' and ( $curr + $height < $limit ) )
+    or ( $type ne 'topdown' and  ( $curr + $width < $limit ) ) 
+  ) { 
+ 
+   push @widths, $width;  
+   push @heights, $height;
+   
+   if ( $type eq 'topdown' ) { $curr += $height } else { $curr += $width } 
+   
+   $use++;
+   
+   
+  }
+ 
+ }
+  
+ my $gd;
+   
+ if ( $type eq 'topdown' ) {
+ 
+  $gd = new GD::Image( $size, $curr, 1 ); # 1 = TrueColor 
+ 
+ } else {
+  
+  $gd = new GD::Image( $curr, $size, 1 ); # 1 = TrueColor
+  
+ } 
+ 
+ 
+ my $currx = 0; my $curry = 0;
+  
+ foreach my $i ( 0 .. $use ) {
+ 
+  my $nd = newFromJpeg GD::Image( 
+   "/catz/static/photo/$thumbs->[$i]->[3]/$thumbs->[$i]->[4]", 1 
+  );
+  
+  $gd->copyResampled ( 
+   $nd, $currx, $curry, 0, 0, $widths[$i], $heights[$i],
+   $thumbs->[$i]->[5], $thumbs->[$i]->[6]
+  );
+
+  if ( $type eq 'topdown' ) { $curry +=  $heights[$i] } 
+   else { $currx +=  $widths[$i] } 
+
+ }
+       
+ return $gd->jpeg(95);
+
+}
+
 
 1;
