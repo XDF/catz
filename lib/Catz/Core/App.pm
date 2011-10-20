@@ -101,9 +101,9 @@ sub startup {
  # reset
  $r->route( '/style/reset' )->to( 'main#reset' );
 
- # widgets
- $r->route( '/style/widget/:color', color => qr/[0-9a-f]{6}/ )
-  ->to( 'widget#style' );
+ # widget
+ $r->route( '/style/widget/' ) ->to( 'widget#style' );
+ 
  
  # the single stylesheet contains all style definitions
  # it's color settings are dependent on the palette 
@@ -199,10 +199,10 @@ sub startup {
  my $s = $l->route( '/:action', action => qr/search|display/ );
 
  # with photo id
- $s->route( '/:id', id => qr/\d{6}/ )->to( controller => 'pattern' ); 
+ $s->route( '/:id', id => qr/\d{6}/ )->to( controller => 'search' ); 
 
  # without photo id
- $s->route( '/' )->to( controller => 'pattern', id => undef );
+ $s->route( '/' )->to( controller => 'search', id => undef );
  
  ###
  ### Visualizations
@@ -225,10 +225,11 @@ sub startup {
   ->to( 'visualize#globe' );
   
  ###
- ### Widget(s)
+ ### Widget features
  ###
 
- $l->route ( '/widget/strip' )->to ( 'widget#strip' );
+ $l->route ( '/build' )->to ( 'widget#build' );
+ $l->route ( '/embed' )->to ( 'widget#embed' );
  
  ###
  ### AJAX interface(s)
@@ -259,6 +260,7 @@ sub before {
 
  $s->{url} = $self->req->url;  # let the url be in the stash also
  $s->{path} = $self->req->url->path;  # and also the path part
+ $s->{query} = $self->req->query_params->to_string; # and also the query params
  
  # preset analytics keys
  

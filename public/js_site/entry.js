@@ -22,4 +22,11 @@
 // THE SOFTWARE.
 //
 
-// not yet implemented
+$(document).ready(function() { 
+
+ // this just makes entry to build visible
+ // on JavaScript capable systems
+
+ $('#entry').show();
+   
+});

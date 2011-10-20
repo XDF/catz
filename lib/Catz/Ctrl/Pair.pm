@@ -30,35 +30,74 @@ use parent 'Catz::Ctrl::Present';
 
 use Catz::Util::Number qw ( round );
 
-sub pair {
+sub pair_ok {
 
  my $self = shift; my $s = $self->{stash};
 
- $s->{runmode} = 'pair'; # set the runmode to pri-sec pair 
+ # routing already does basic length and character class checking
+
+ # check that pri and sec are provided 
+ # directly by the routing 
+ ( $s->{pri} and $s->{sec} ) or return 0;
+   
+ # check that pri is acceptable
+ $self->fetch( 'pair#verify', $s->{pri} ) or return 0;
  
- # check that pri and sec are provided by the request  
- $s->{pri} and $s->{sec} or return 0;
+ return 1;
  
- $self->fetch('pair#verify',$s->{pri}) or return 0;
+}
+
+sub pair_pre {
+
+ my $self = shift; my $s = $self->{stash};
  
  $s->{sec} = $self->decode ( $s->{sec} ); # using decode helper
  
  $s->{args_array} = [ $s->{pri}, $s->{sec} ];
  $s->{args_count} = 2;
  
- $s->{what} = undef;
- $s->{refines} = undef;
- $s->{breedernat} = undef;
- $s->{breederurl} = undef;
- $s->{viz_rank} = undef;
- $s->{origin} = 'none'; # to indiate that origin was not processed
+ return 1;
  
- $self->pre or return 0;
+}
+
+sub pair_urlother {
  
- # get the translation for this pri-sec -pair
+ my $self = shift; my $s = $self->{stash};
+ 
+ # get the translation for this pri-sec -pair 
  $s->{trans} = $self->fetch ( 'map#trans', $s->{pri}, $s->{sec} );
 
- $s->{nats} = undef;
+ $s->{urlother} =  
+  '/' . ( join '/', $s->{langaother} , $s->{action}, $s->{pri}, 
+  $self->encode( $s->{trans} ) ). '/' .
+  ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
+  
+ return 1;
+
+}
+
+
+sub pair {
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ $self->init or return 0;
+
+ $s->{runmode} = 'pair';
+  
+ $self->pair_ok or return 0;
+  
+ # using decode helper
+ $s->{sec} = $self->decode ( $s->{sec} ); 
+ 
+ $self->load or return 0;
+
+ $self->pair_pre or return 0;
+   
+ $self->origin or return 0;
+ 
+ # get the translation for this pri-sec -pair 
+ $s->{trans} = $self->fetch ( 'map#trans', $s->{pri}, $s->{sec} );
   
  ( $s->{pri} eq 'nat' ) and do {
  
@@ -67,61 +106,42 @@ sub pair {
   
   $s->{nats} = $self->fetch ( 'map#nats' );
  
- };    
-
- $s->{urlother} =  
-  '/' . ( join '/', $s->{langaother} , $s->{action}, $s->{pri}, 
-  $self->encode( $s->{trans} ) ). '/' .
-  ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
+ };
+ 
+ $self->pair_urlother or return 0;    
 
  # if refines are defined for this pri then fetch them 
- defined $s->{matrix}->{$s->{pri}}->{refines} and 
+ defined $s->{matrix}->{ $s->{pri} }->{refines} and 
   $s->{refines} = $self->fetch (
    'related#refines', 
    $s->{pri}, $s->{sec}, 
-   @{ $s->{matrix}->{$s->{pri}}->{refines} } 
+   @{ $s->{matrix}->{ $s->{pri}} ->{refines} } 
   ); 
 
- if ( $s->{pri} eq 'breeder' ) {
- 
-  # special services for breeders
-  my $xm = $self->fetch ( "related#breedermeta", $s->{sec} );
-  
-  defined $xm and do {
-  
-   $s->{breedernat} = $xm->[0];
-   # 2011-10-07 
-   # $s->{breederurl} = $xm->[1];
-   
-  }; 
- 
- }
+ ( $s->{pri} eq 'breeder' ) and
+  $s->{breedernat} = $self->fetch ( "related#breedermeta", $s->{sec} );
 
  return 1;
 
 }
 
 sub browse {
- 
- $_[0]->pair or ( $_[0]->not_found and return );  
 
- $_[0]->multi or ( $_[0]->not_found and return );  
+ my $self = shift; 
 
-}
-
-sub text { 
-
- $_[0]->pair or ( $_[0]->not_found and return );
-   
- $_[0]->text or ( $_[0]->not_found and return );  
+ $self->pair or return $self->render_not_found;
+  
+ $self->multi or return $self->render_not_found;
 
 }
 
 sub view { 
 
- $_[0]->pair or ( $_[0]->not_found and return );
-   
- $_[0]->single or ( $_[0]->not_found and return );  
+ my $self = shift; 
+
+ $self->pair or return $self->render_not_found;
+  
+ $self->single or return $self->render_not_found;
  
 }
 

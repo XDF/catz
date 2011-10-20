@@ -10,7 +10,7 @@
 %# --------------------
 %#
 <link rel="stylesheet" type="text/css" href="/style/reset/">
-<link rel="stylesheet" type="text/css" href="/style/widget/<%== $color %>/">
+<link rel="stylesheet" type="text/css" href="/style/widget/">
 %#
 %# --------------------
 %#
@@ -21,11 +21,7 @@
 <meta name="copyright" content="<%= $t->{COPYRIGHT} %> <%= $t->{AUTHOR} %> <%= $t->{FIRSTYEAR} %>-<%= thisyear %>. <%= $t->{LICENCE} %>.">
 <link rel="copyright" href="<%== $t->{URL_LICENCE} %>"> 
 <meta name="og:site_name" content="<%= $t->{SITE} %>">
-<meta name="robots" content="none">
-<link rel="canonical" href="<%== $cn %>">
-<meta name="og:url" content="<%== $cn %>"> 
-<meta name="fb:admins" content="<%== $facebookkey %>">
-<link rel="me" href="<%== $t->{URL_FACEBOOK} %>"> 
+<meta name="robots" content="none">  
 <meta name="generator" content="<%= $t->{GENERATOR} %>">
 <meta name="loaded" content="<%= dtexpand ( $version, $lang ) %>">
 <meta name="rendered" content="<%= $now %>">
@@ -39,8 +35,7 @@
 %#
 %# --------------------
 %#
-
-
+<%= content 'main' %>
 %#
 %# --------------------
 %#

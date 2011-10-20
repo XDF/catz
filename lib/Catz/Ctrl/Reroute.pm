@@ -143,7 +143,7 @@ sub reroute { # does the job
    
    } else {
    
-    return $self->not_found;
+    return $self->render_not_found;
    
    }
    
@@ -171,7 +171,7 @@ sub reroute { # does the job
    
    } else {
    
-    return $self->not_found;
+    return $self->render_not_found;
    
    }  
  
@@ -193,7 +193,8 @@ sub reroute { # does the job
   
    my $tgt = xdf2search ( $1 );
   
-   $tgt or return $self->not_found; # not found if conversion failed 
+   # not found if conversion failed
+   $tgt or return $self->render_not_found;  
   
    $tgt = enurl $tgt;
      
@@ -263,11 +264,11 @@ sub reroute { # does the job
    
      return $self->redirect_perm ( "$t->{URL_CATZA}static/photo/$folder/$tgt" );
    
-    } else { return $self->not_found }
+    } else { return $self->render_not_found }
     
    }  
   
-   return $self->not_found; 
+   return $self->render_not_found; 
   
   }
  

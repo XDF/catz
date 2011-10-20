@@ -26,18 +26,162 @@ package Catz::Ctrl::Widget;
 
 use 5.10.0; use strict; use warnings;
 
-use parent 'Catz::Core::Ctrl';
+# we inherit from all controller types to be 
+# able to use all three runmode's methods
+
+use parent qw ( Catz::Ctrl::All Catz::Ctrl::Pair Catz::Ctrl::Search );
 
 use List::MoreUtils qw ( any );
 use List::Util qw ( shuffle );
 
-use Catz::Data::Search;
 use Catz::Data::Widget;
 
-use Catz::Util::Number qw ( round );
-use Catz::Util::String qw ( clean noxss trim );
+my @params = qw ( width height );
 
-sub strip {
+use Catz::Util::Number qw ( round );
+
+sub serialize {
+
+ my $self = shift;
+
+ # serialize query parameter
+ 
+ my @pairs = ();
+ 
+ foreach my $par ( @params ) {
+ 
+  my $val = $self->param ( $par ) // undef;
+  
+  defined $val and
+   push @pairs, "$par=" . $self->enurl ( $val );
+    
+ }
+ 
+ scalar @pairs == 0 and return ''; 
+ 
+ return join '&', @pairs; 
+ 
+}
+
+sub params {
+
+ # verify / process widget parameters
+ 
+ my $self = shift; my $s = $self->{stash};
+ 
+ $s->{widget} = widget_conf;
+ 
+ foreach my $pa ( @params ) {
+ 
+  #$s->{$pa} = 
+  #int ( $self->param( $pa ) // $s->{widget}->{strip}->{$pa.'_default'} );
+
+  #$s->{$pa} < $s->{widget}->{strip}->{{$pa.'_default'} and
+  #$s->{width} = $s->{widget}->{strip}->{width_default};
+ 
+ }
+ 
+  
+ $s->{width} < $s->{widget}->{strip}->{width_min} and
+  $s->{width} = $s->{widget}->{strip}->{width_default};
+
+ $s->{width} > $s->{widget}->{strip}->{width_max} and
+  $s->{width} = $s->{widget}->{strip}->{width_default};
+ 
+ # target
+ 
+ $s->{height} = 
+  int ( $self->param( 'height' ) // $s->{widget}->{strip}->{height_default} );
+  
+ #$s->{height} < $w->{strip}->{height_min} and return $self->render_not_found;
+ #$s->{height} > $w->{strip}->{heigth_max} and return $self->render_not_found; 
+
+}
+
+sub build_urlother {
+
+ my $self = shift; my $s = $self->{stash};
+
+ my $head = qq{/$s->{langaother}/$s->{action}};
+ 
+ my $tail = $self->serialize;
+ 
+ given ( $s->{runmode} ) {
+ 
+  when ( 'pair' )  {
+  
+   $s->{trans} = $self->fetch ( 'map#trans', $s->{pri}, $s->{sec} );
+      
+   $s->{urlother} =
+    $head . '?' . 'p=' . $s->{pri} . '&s=' . 
+    $self->enurl ( $s->{trans} ) . "&$tail";
+  
+  }
+  
+  when ( 'search' ) {
+
+   $s->{urlother} =
+    $head . '?' . 'q=' . $self->enurl ( $s->{what} ) . "&$tail";
+  
+  }
+  
+  default { # default to all
+
+   $s->{urlother} =
+    length ( $tail ) > 0 ?
+      $head . '?' . $tail :
+      $head . '/';
+   
+  }
+  
+ }
+ 
+ return 1;
+
+}
+
+sub build { # the widget builder
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ $self->init or return $self->return_not_found;
+  
+ $s->{pri} = $self->param('p') // undef;
+ $s->{sec} = $self->param('s') // undef;
+ 
+ if ( $self->pair_ok ) {
+ 
+  $s->{runmode} = 'pair';
+  
+  $self->pair_pre;
+          
+ } elsif ( $self->search_ok ( 'q', 'what' ) ) {
+ 
+  $s->{runmode} = 'search';
+    
+ } else {
+ 
+  $s->{runmode} = 'all'; # default to all
+  
+ }
+
+ 
+ $self->build_urlother or return $self->render_not_found;
+
+ $s->{width} = 500;
+ $s->{height} = 500;
+ 
+ my $target = $s->{url};
+ 
+ $target =~ s|/build|/embed|;
+ 
+ $s->{target} = $target;
+ 
+ $self->render( template => 'page/build', format => 'html' );
+ 
+}
+
+sub embed { # the widget renderer
 
  my $self = shift; my $s = $self->{stash};
  
@@ -45,31 +189,22 @@ sub strip {
  
  # size
  
- $s->{size} = 
-  int ( $self->param( 'size' ) // $w->{strip}->{size_default} );
+ $s->{width} = 
+  int ( $self->param( 'width' ) // $w->{strip}->{width_default} );
   
- $s->{size} < $w->{strip}->{size_min} and return $self->render_not_found;
- $s->{size} > $w->{strip}->{size_max} and return $self->render_not_found;
+# $s->{width} < $w->{strip}->{width_min} and return $self->render_not_found;
+# $s->{width} > $w->{strip}->{width_max} and return $self->render_not_found;
  
  # target
  
- $s->{limit} = 
-  int ( $self->param( 'limit' ) // $w->{strip}->{limit_default} );
+ $s->{height} = 
+  int ( $self->param( 'height' ) // $w->{strip}->{height_default} );
   
- $s->{limit} < $w->{strip}->{limit_min} and return $self->render_not_found;
- $s->{limit} > $w->{strip}->{limit_max} and return $self->render_not_found;
+ #$s->{height} < $w->{strip}->{height_min} and return $self->render_not_found;
+ #$s->{height} > $w->{strip}->{heigth_max} and return $self->render_not_found;
  
- # estimate required thumbnail count
+ my $n = 100;
  
- my $n = widget_tn_est ( $s->{limit}, $s->{size} );   
-
- # type
-
- $s->{type} = $self->param( 'type' ) // $w->{strip}->{type_default};
- 
- any { $_ eq $s->{type} } @{ $w->{strip}->{types} }
-  or return $self->render_not_found;
-
  # data modes: all, pair or pattern
  
  $s->{runmode} = 'all'; # default
@@ -135,16 +270,13 @@ sub strip {
  ( $s->{thumbs}, undef, undef ) = 
   @{ $self->fetch( 'photo#thumb', @{ $s->{xs} } ) };
  
- # thumbs come back in x order, must reshuffle to get 
- # truly random photo order
+ # fetch photo texts  
+ $s->{texts} = $self->fetch ( 'photo#texts', @{ $s->{xs} } );
    
- $self->render_data ( 
-  widget_strip ( 
-   [ shuffle @{ $s->{thumbs} } ], 
-   $s->{type}, $s->{size}, $s->{limit} 
-  ), format => 'jpg' 
- );
+  $self->render( template => 'page/strip', format => 'html' );
   
 }
+
+sub style { $_[0]->render ( template => 'style/widget', format => 'css' ) }
 
 1;

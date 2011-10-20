@@ -166,7 +166,7 @@ sub _breedermeta {
 
  my ( $self, $breeder ) = @_;
  
- $self->dbrow ( 'select nat,url from mbreeder where breeder=?', $breeder );
+ $self->dbone ( 'select nat from mbreeder where breeder=?', $breeder );
  
 }
 
