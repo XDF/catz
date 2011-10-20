@@ -28,28 +28,10 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Catz::Ctrl::Present';
 
-sub all {
+sub all_urlother {
 
  my $self = shift; my $s = $self->{stash};
 
- $s->{runmode} = 'all';
-
- # browsing all photos so the args and their count are set to nil
- $s->{args_array} = []; 
- $s->{args_count} = 0; 
- 
- # setting to undef a lot of other params
-   
- $s->{pri} = undef; $s->{sec} = undef; 
- $s->{what} = undef;
- $s->{refines} = undef; 
- $s->{breedernat} = undef; $s->{breederurl} = undef;
- $s->{origin} = 'none'; # to indiate that origin was not processed
- $s->{trans} = undef;
- $s->{nats} = undef;
-             
- $self->pre or return 0;
- 
  $s->{urlother} =  
   '/' . $s->{langaother} . '/' . $s->{action} . '/' .
   ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
@@ -58,38 +40,42 @@ sub all {
  
 }
 
+sub all {
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ $self->init or return 0;
+
+ $s->{runmode} = 'all';
+ 
+ $self->load or return 0;
+ 
+ $self->origin or return 0;
+ 
+ $self->all_urlother or return 0;
+    
+ return 1;
+    
+}
 
 sub browseall {
 
  my $self = shift; 
 
- $self->all or return $self->not_found;
+ $self->all or return $self->render_not_found;
   
- $self->multi or return $self->not_found;
+ $self->multi or return $self->render_not_found;
  
-}
-
-sub textall {
-
- my $self = shift;  
-
- $self->all or return $self->not_found;
-   
- $self->text or return $self->not_found;  
-
 }
 
 sub viewall {
 
  my $self = shift;
 
- $self->all or return $self->not_found;
+ $self->all or return $self->render_not_found;
    
- $self->single or return $self->not_found;  
+ $self->single or return $self->render_not_found;  
 
 }
 
 1;
-
-
-

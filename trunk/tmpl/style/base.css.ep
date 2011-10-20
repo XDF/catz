@@ -221,3 +221,9 @@ a:hover {
  border-width: 2px;
  border-color: <%== $st->{color}->{$palette}->{dim} %>;  
 }
+
+/* by default hide entry to builder */
+/* it is made visible by JavaScript */
+#entry {
+ display: inline;
+}

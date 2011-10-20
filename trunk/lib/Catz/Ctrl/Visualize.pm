@@ -58,7 +58,7 @@ sub dist {
  $s->{maxx} = $self->fetch ( 'all#maxx' );
  
  # the total number of photos must be less or equal to all photos
- $s->{total} <= $s->{maxx} or return $self->not_found;
+ $s->{total} <= $s->{maxx} or return $self->render_not_found;
  
  return $self->do;
  
@@ -78,13 +78,13 @@ sub rank {
 
  my $self = shift; my $s = $self->{stash};
 
- $self->fetch( 'pair#verify',$s->{pri} ) or return $self->not_found;
+ $self->fetch( 'pair#verify',$s->{pri} ) or return $self->render_not_found;
  
  $s->{sec} = $self->decode ( $s->{sec} ); # using decode helper
  
  $s->{total} = $self->fetch ( 'pair#count', $s->{pri}, $s->{sec} );
 
- $s->{total} > 0 or return $self->not_found;
+ $s->{total} > 0 or return $self->render_not_found;
  
  $s->{rank} = $self->fetch ( 'related#rank', $s->{pri}, $s->{sec} );
  

@@ -37,7 +37,7 @@ sub photolist {
  my $self = shift; my $s = $self->{stash};
   
  ( $s->{langa} eq 'en' or $s->{langa} eq 'fi' )
-  or return $self->not_found;
+  or return $self->render_not_found;
   
  $s->{forcefi} and $s->{lang} = 'fi';
      
@@ -50,20 +50,20 @@ sub photolist {
   utf8::decode ( $s->{loc} );
  
   ( ( length $s->{date} == 8 ) or ( length $s->{date} ) == 10 )
-   or return $self->not_found; 
+   or return $self->render_not_found; 
    
   if ( length $s->{date} == 10 ) {
   
    $s->{date} =~ m|(\d{4})\-(\d{2})\-(\d{2})|;
     
-   ( $1 and $2 and $3 ) or return $self->not_found;
+   ( $1 and $2 and $3 ) or return $self->render_not_found;
   
    $s->{date} = "$1$2$3";
   
   }
 
   ( ( length $s->{loc} > 100 ) or ( length $s->{loc} < 1 ) )
-   and return $self->not_found;
+   and return $self->render_not_found;
   
   $s->{loc} = lcc $s->{loc};
  
@@ -73,12 +73,12 @@ sub photolist {
   
   $s->{aid} = $self->fetch ( 'bulk#folder', $s->{folder} ) // undef;
   
-  $s->{aid} or return $self->not_found;
+  $s->{aid} or return $self->render_not_found;
  
  } else { # use latest
  
-  $s->{date} and return $self->not_found;
-  $s->{loc} and return $self->not_found;
+  $s->{date} and return $self->render_not_found;
+  $s->{loc} and return $self->render_not_found;
  
   $s->{aid} = $self->fetch ( 'bulk#latest' ) // undef;
  

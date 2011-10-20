@@ -108,19 +108,6 @@ sub redirect_temp { # temporary redirect 302
  
 }
 
-sub not_found {
-
- my $self = shift;
-
- # using the Mojolicious built-in feature
- $self->render_not_found;
- 
- # we return true to make "$self->not_found and return;"
- # to work at controller
- 1; 
- 
-}
-
 sub fetch {
 
  # fetch data from any Model to any Controller 
@@ -138,51 +125,5 @@ sub fetch {
    
 }
 
-sub safeq {
-
- # process and sanitize search patterns
- 
- my ( $self, $source, $target ) = @_;  my $s = $self->{stash};
- 
- $s->{$target} = $self->param($source) // undef;
- 
- $s->{$target} and do {
- 
-  # sanity check
-  ( length $s->{$target} > 1234 ) and return 0;
-
-  # it appears that browsers typcially send UTF-8 encoded 
-  # data when the origin page is UTF-8 -> we decode the data now   
-  utf8::decode ( $s->{what} );
-
-  # remove all unnecessary whitespaces     
-  $s->{what} = noxss clean trim $s->{what};
-    
-  # we don't allow '', we set it to undef
-  $s->{what} eq '' and $s->{what} = undef;
- 
- };
- 
- $s->{init} and do {
- 
-  # sanity check
-  ( length $s->{init} > 1234 ) and return 0;
-
-  # it appears that browsers typcially send UTF-8 encoded 
-  # data when the origin page is UTF-8 -> we decode the data now   
-  utf8::decode ( $s->{init} );
-
-  # remove all unnecessary whitespaces and prevent XSS   
-  $s->{init} = noxss clean trim $s->{init};
-    
-  # not for robots when with init parameter
-  $s->{init} and do {  $s->{meta_index} = 0; $s->{meta_follow} = 0 };
-
-  # we don't allow '', we set it to undef
-  $s->{init} eq '' and $s->{init} = undef;
- 
- }; 
-
-}
 
 1;

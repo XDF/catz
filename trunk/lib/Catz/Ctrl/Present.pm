@@ -38,9 +38,79 @@ use Catz::Data::Search;
 use Catz::Data::Style;
 use Catz::Data::Widget;
 
-sub pre {
+sub init {
 
- # for general preparations
+ # general initalization for controller actions
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ foreach my $var ( qw ( 
+  runmode origin what refines breedernat viz_rank trans nats
+  cover_notext cover_nocat url_notext url_nocat maxx total
+ ) ) { $s->{$var} = undef }
+ 
+ defined $s->{pri} or $s->{pri} = undef;
+ defined $s->{sec} or $s->{sec} = undef;
+   
+ $s->{args_array} = []; 
+ $s->{args_count} = 0;
+
+ return 1;
+            
+}
+
+sub origin {
+
+ # processes incoming photo id or resolves it from data, returns
+ #  1 in success 
+ #  0 on error
+ 
+ my $self = shift; my $s = $self->{stash};
+ 
+ if ( $s->{id} ) { 
+
+  # mark that this request had an id
+  $s->{origin} = 'id';
+  
+  # fetch the corresponding x 
+  $s->{x} = $self->fetch( $s->{runmode} . '#id2x', $s->{id} );
+    
+  $s->{x} or return 0; # should be found
+          
+ } else { 
+ 
+  # no id was given in the request
+  # must find the id of the first photo in the set
+ 
+  # mark that the id was resolved
+  $s->{origin} = 'x'; 
+ 
+  # fetch the first x of the photo set
+  $s->{x} = $self->fetch ( $s->{runmode} . '#first', @{ $s->{args_array} } );
+  
+  # if no first x then it is an error as default
+  # allow the system to continue if a search returns no hits
+  $s->{runmode} ne 'search' and ( $s->{x} or return 0 );            
+ 
+  # fetch the id corresponding the x 
+  $s->{x} and do { 
+   $s->{id} = $self->fetch ( $s->{runmode} . '#x2id', $s->{x} ) 
+  };
+  
+  # if no id was found then it is an error but
+  # allow the system to continue if a search returns no hit
+  $s->{runmode} ne 'search' and ( $s->{id} or return 0 ); 
+   
+ }
+ 
+ return 1; # ok
+
+}
+
+
+sub load {
+
+ # load general stuff to stash
 
  my $self = shift; my $s = $self->{stash};
  
@@ -52,64 +122,23 @@ sub pre {
  $s->{mapview} = $self->fetch ( 'map#view' );
  $s->{mapdual} = $self->fetch ( 'map#dual' );
  
- # processes incoming photo id parameter or resolves it from data
- # returns 1 in success 
- # returns 0 on reject
- 
- if ( $s->{id} ) { 
-
-  # mark that this request had an id
-  $s->{origin} = 'id';
-  
-  # fetch the x corresponding the id 
-  $s->{x} = $self->fetch( $s->{runmode} . '#id2x', $s->{id} );
-  
-  # should be found or if not it is an error  
-  $s->{x} or return 0;
-          
- } else { 
- 
-  # no id was given in the request
-  # must find the id of the first photo in the set
- 
-  # mark that the id was resolved by software
-  $s->{origin} = 'x'; 
- 
-  # fetch the first x of the photo set
-  $s->{x} = $self->fetch ( $s->{runmode} . '#first', @{ $s->{args_array} } );
-  
-  # if no first x then it is an error but
-  # allow the system to continue if a search returns no hit
-  $s->{runmode} ne 'search' and ( $s->{x} or return 0 );            
- 
-  # fetch the id corresponding the x 
-  $s->{x} and do { 
-   $s->{id} = $self->fetch ( $s->{runmode} . '#x2id', $s->{x} ) 
-  };
-  
-  # if no id was found then it is an error but
-  # allow the system to continue if a search returns no hit
-  $s->{runmode} ne 'search' and (  $s->{id} or return 0 ); 
-   
- }
- 
- return 1; # ok
- 
 }
 
 sub single {
 
- # presenet a large photo, returns
- # returns 1 in success 
- # returns 0 on reject
+ # prepare a single large photo for viewing, returns
+ #  1 in success 
+ #  0 on success
  
  my $self = shift; my $s = $self->{stash};
  
  ( $s->{total}, $s->{pos}, $s->{pin} ) = 
   @{ 
-   $self->fetch( $s->{runmode} . '#pointer', 
-   $s->{x}, 
-   @{ $s->{args_array} })
+   $self->fetch( 
+    $s->{runmode} . '#pointer', 
+    $s->{x}, 
+    @{ $s->{args_array} } 
+   )
   };
      
  $s->{total} == 0 and return 0; # no photo found 
@@ -117,7 +146,7 @@ sub single {
  # fetch the photo metadata
 
  $s->{comment} =  $self->fetch( 'photo#text', $s->{x} ); # comment(s)
-   
+ 
  $s->{detail} = $self->fetch( 'photo#detail', $s->{x}); # details
  
  $s->{image} =  $self->fetch( 'photo#image', $s->{x} ); # the image itself
@@ -127,8 +156,6 @@ sub single {
  my $keys = $self->fetch ( 'photo#resultkey', $s->{x} );
  
  result_prepare ( $self, $keys );
- 
- # finally render the photo viewer page
           
  $self->render( template => 'page/view', format => 'html' );
  
@@ -138,14 +165,12 @@ sub single {
  
 sub multi {
 
- # provide photo browsing as thumbnails
- # returns 1 in success 
- # returns 0 on reject
-  
- my $self = shift; my $s = $self->{stash};
+ # prepare a set of thumbnails for browsing, returns
+ #  1 in success 
+ #  0 on error
  
- $s->{widget} = widget_conf;
-  
+ my $self = shift; my $s = $self->{stash};
+   
  ( 
   $s->{total}, $s->{page}, $s->{pages}, $s->{from}, 
   $s->{to}, $s->{pin}, $s->{xs}, $s->{xfirst}, $s->{xlast} 
@@ -158,17 +183,14 @@ sub multi {
                                      
  $s->{total} == 0 and return 0; ; # no photos found 
 
- scalar @{ $s->{xs} } == 0 and return 0; # no photos on this page 
+ scalar @{ $s->{xs} } == 0 and return 0; # no photos for this page 
  
  # fetch the thumbs and their included earliest - latest metadata
  ( $s->{thumbs}, $s->{earliest}, $s->{latest} ) = 
   @{ $self->fetch( 'photo#thumb', @{ $s->{xs} } ) };
 
  # generate converage counts and urls for coverage information displays
-  
- $s->{cover_notext} = undef; $s->{url_notext} = undef;
- $s->{cover_nocat} = undef; $s->{url_nocat} = undef;
- 
+   
  if ( 
   $s->{runmode} eq 'all' or ( $s->{runmode} eq 'pair' and 
    ( $s->{pri} eq 'folder' or $s->{pri} eq 'date' ) )
@@ -252,9 +274,7 @@ sub multi {
  
  # load style (for viz img tags)
  $s->{style} = style_get ( $s->{palette} );
-  
- # finally render the browsing page
-   
+    
  $self->render( template => 'page/browse', format => 'html' );
  
  return 1;

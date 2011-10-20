@@ -76,12 +76,6 @@ if ( $runmode eq 'pair' ) {
 %#
 %# --------------------
 %#
-<% content 'jsadd' => begin %>
-<%== include 'elem/js', jstype => 'site', jsfile => 'make' =%>
-<% end %>
-%#
-%# --------------------
-%#
 <% content 'ptitleadd' => begin %>
 %== include 'elem/titlea';
 (<%= $t->{PAGE} %> <%= $page %>/<%= $pages %>)
@@ -133,6 +127,12 @@ if ( $runmode eq 'pair' ) {
 %#
 %# --------------------
 %#
+<% content 'jsadd' => begin %>
+%== include 'elem/js', jstype => 'site', jsfile => 'make';
+<% end %>
+%#
+%# --------------------
+%#
 <% content 'up' => begin %>
 % if ( $runmode eq 'search' and $total == 0 ) {
 <div class="center bar">
@@ -174,11 +174,19 @@ if ( $runmode eq 'pair' ) {
 %# --------------------
 %#
 <div class="bar">
-<%== include 'elem/titlea' %> <%= $sep %>
-% if ( defined $breederurl ) {
-<a href="<%== $breederurl %>"><%= $breederurl %></a> <%= $sep %>
-% } 
+<%== include 'elem/titlea' %> <%= $sep %> 
 <%= $total %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> <%= $sep %>
+% if ( $total > 9 ) {
+<span id="entry">
+% my $eurl = "/$langa/build";
+% given ( $runmode ) {
+%  when ( 'pair' ) { $eurl .= '?p=' . ( enurl $pri ) . '&s=' . ( enurl $sec ) }
+%  when ( 'search' ) { $eurl .= '?q=' . ( enurl $what ) }
+%  default { $eurl .= '/' }
+% }  
+<a href="<%== $eurl %>"><%= $t->{WID_ENTRY} %></a> <%= $sep %>
+</span>
+% }
 <%= dtexpand ( $ancient, $lang ) %>
 % if ( $fresh ne $ancient ) {
 - <%= dtexpand ( $fresh, $lang ) %>
@@ -204,14 +212,6 @@ if ( $runmode eq 'pair' ) {
 <div class="bar">
 %== include 'content/policy';
 </div>
-%#
-%# --------------------
-%#
-% if ( $total > 9 ) {
-<div class="bar">
-%== include 'elem/widgets';
-</div>
-% }
 %#
 %# --------------------
 %#

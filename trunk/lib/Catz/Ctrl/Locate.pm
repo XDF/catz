@@ -70,11 +70,11 @@ sub list {
  $s->{matrix} = list_matrix;
   
  # verify that the subject is known
- $s->{matrix}->{$s->{subject}} or ( $self->not_found and return );
+ $s->{matrix}->{$s->{subject}} or return $self->render_not_found;
  
  # verify that the mode is known for this subject
  ( any { $s->{mode} eq $_ } @{ $s->{matrix}->{$s->{subject}}->{modes} } )
-  or ( $self->not_found and return );
+  or return $self->render_not_found;
   
  $s->{urlother} =  
   '/' . $s->{langaother} . '/' . $s->{action} . '/' . 
@@ -86,7 +86,7 @@ sub list {
  $s->{idx} = $res->[1];
  $s->{sets} = $res->[2];
 
- $s->{total} > 0 or ( $self->not_found and return );
+ $s->{total} > 0 or return $self->render_not_found;
  
  $s->{maplink} = $self->fetch ( 'map#link' );
  $s->{mapview} = $self->fetch ( 'map#view' );

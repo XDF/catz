@@ -30,7 +30,6 @@ use parent 'Exporter';
 
 our @EXPORT = qw ( widget_conf widget_strip widget_tn_est );
 
-use GD; # all image processing is based on GD library
 use List::MoreUtils qw ( any );
 
 use Catz::Util::Number qw ( round );
@@ -40,36 +39,30 @@ my $widget = {}; # widget config
 # defines what widgets are available
 $widget->{widgets} = [ qw ( strip ) ];
 
-$widget->{strip}->{limit_min} = 200;
-$widget->{strip}->{limit_default} = 800;
-$widget->{strip}->{limit_max} = 1500;
+$widget->{strip}->{width_min} = 50;
+$widget->{strip}->{width_default} = 800;
+$widget->{strip}->{width_max} = 2000;
 
-$widget->{strip}->{size_min} = 50;
-$widget->{strip}->{size_default} = 100;
-$widget->{strip}->{size_max} = 200;
-
-$widget->{strip}->{types} = [ qw ( leftright topdown ) ];
-$widget->{strip}->{type_default} = 'leftright';
+$widget->{strip}->{height_min} = 50;
+$widget->{strip}->{height_default} = 200;
+$widget->{strip}->{height_max} = 200;
 
 sub widget_conf { $widget }
 
 sub widget_tn_est {
 
- my ( $size, $limit ) = @_;
+ my ( $widht, $height ) = @_;
  
  # the safe (= far too large) estimate of the needed thumbnails
 
- round ( $size / ( $limit / 4 ) );
+ return 100;
 
 }
 
 sub widget_strip {
 
- my ( $thumbs, $type, $size, $limit ) = @_;
-  
- any { $_ eq $type } @{ $widget->{strip}->{types} } or
-  die "internal error: unknown type '$type' in strip generation";
- 
+ my ( $thumbs, $type, $size, $limit, $width, $height ) = @_;
+   
  my $use = -1; my $curr = 0; my @widths = (); my @heights = ();
  
  foreach my $th ( @{ $thumbs } ) {

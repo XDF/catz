@@ -116,7 +116,7 @@ sub result {
  my $self = shift; my $s = $self->{stash};
  
  # result available only without setup
- $s->{langa} ne $s->{lang} and ( $self->not_found and return );
+ $s->{langa} ne $s->{lang} and return $self->render_not_found;
 
  my $key = $self->param( 'x' ) // undef;
 
@@ -168,11 +168,11 @@ sub info {
  my $self = shift; my $s = $self->{stash}; my $base = undef;
  
  # info available only without setup
- $s->{langa} ne $s->{lang} and ( $self->not_found and return );
+ $s->{langa} ne $s->{lang} and $self->render_not_found;
 
  if ( $s->{cont} eq 'std' ) { $base = $s->{t}->{MAILTO_TEXT} }
    
-  else { $self->not_found and return }
+  else { return $self->render_not_found }
   
   # the 0th element
   my $out = $cset->[ rand @{ $cset } ];
