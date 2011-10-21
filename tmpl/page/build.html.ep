@@ -3,16 +3,15 @@
 %# --------------------
 %# The template for the widget builder
 %# --------------------
-%#
-% my $titl =  $t->{WID_STRIP_BUILDER} . ' ' . $t->{'WID_STRIP_'.uc($runmode)};
+%# 
 <% content 'ptitleadd' => begin %>
-<%= $titl %> 
+ <%== $t->{WID_BUILDER_TITLE} %> 
 <% end %>
 %#
 %# --------------------
 %#
 <% content 'btitle' => begin %>
-<h1><%= $titl %></h1>
+<h1><%= $t->{WID_HEAD} . ' ' . $t->{'WID_TAIL_'.uc($runmode)} %></h1>
 <% end %>
 %#
 %# --------------------
@@ -38,17 +37,6 @@
 %#
 <% content 'main' => begin %>
 <div class="bar">
-% given ( $runmode ) {
-%  when ( 'pair' ) {
-<%= $t->{uc($pri)} %>: <%= $sec %>
-%  } 
-%  when ( 'search' ) {
-<%= $what %>
-%  } 
-% }
-TOTAL: <%= $total %>
-</div>
-<div class="bar">
 <form id="widgets" action="/<%= $langa %>/build" method="get">
 % given ( $runmode ) {
 %  when ( 'pair' ) { 
@@ -59,21 +47,31 @@ TOTAL: <%= $total %>
 <input type="hidden" name="q" value="<%== $what %>">
 %  }
 % }
-<%= $sep %> <%= $t->{WID_STRIP_WIDTH} %>
-<input type="field" name="width" value="<%= $width %>" size="4">  
-<%= $sep %> <%= $t->{WID_STRIP_HEIGHT} %>
-<input type="field" name="height" value="<%= $height %>" size="4"> 
+<%= $sep %> <%= $t->{WID_SIZE} %>
+<input type="field" name="size" value="<%= $size %>" size="4">
+<%= $sep %> <%= $t->{WID_HEIGHT} %>
+<input type="field" name="limit" value="<%= $limit %>" size="4">
+<%= $sep %> <%= $t->{WID_STRIPES} %>
+<select name="stripes">
+% foreach my $i ( $widget->{limits}->{stripes}->{min} .. $widget->{limits}->{stripes}->{max} ) {
+<option value="<%== $i %>"><%== $i %></option>
+% }
+</select>   
+ 
 <input type="submit" value="<%= $t->{WID_SUBMIT} %>">
 <input type="reset" value="<%= $t->{WID_RESET} %>">
 </form></div>
 <div class="bar">
-<h2>lisää tämä koodi sivullesi</h2>
-<div class="bar lean">
+<h2><%= $t->{WID_CODE} %></h2>
+<div class="bar lean enlarge">
 %= $self->render( 'elem/iframe', intent => 'code', partial => 1 );
 </div>
 </div>
 <div class="bar">
-<h2>tulos näyttää tältä</h2> esitettynä varjostetulla pohjalla, sivuillasi kuvakenttä on läpinäkyvä ja taustana näkyy sivusi tausta<br>
+<h2><%= $t->{WID_VIEW} %></h2>
 %== include 'elem/iframe', intent => 'preview';
+</div>
+<div class="bar">
+%== include 'content/build';
 </div>
 <% end %>

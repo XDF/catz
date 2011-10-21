@@ -36,7 +36,7 @@ use List::Util qw ( shuffle );
 
 use Catz::Data::Widget;
 
-my @params = qw ( width height );
+my @params = qw ( run height limit stripes align );
 
 use Catz::Util::Number qw ( round );
 
@@ -66,35 +66,13 @@ sub serialize {
 sub params {
 
  # verify / process widget parameters
+ # pass to widget module for the work
  
  my $self = shift; my $s = $self->{stash};
- 
- $s->{widget} = widget_conf;
- 
- foreach my $pa ( @params ) {
- 
-  #$s->{$pa} = 
-  #int ( $self->param( $pa ) // $s->{widget}->{strip}->{$pa.'_default'} );
 
-  #$s->{$pa} < $s->{widget}->{strip}->{{$pa.'_default'} and
-  #$s->{width} = $s->{widget}->{strip}->{width_default};
+ widget_init ( $self ); 
  
- }
- 
-  
- $s->{width} < $s->{widget}->{strip}->{width_min} and
-  $s->{width} = $s->{widget}->{strip}->{width_default};
-
- $s->{width} > $s->{widget}->{strip}->{width_max} and
-  $s->{width} = $s->{widget}->{strip}->{width_default};
- 
- # target
- 
- $s->{height} = 
-  int ( $self->param( 'height' ) // $s->{widget}->{strip}->{height_default} );
-  
- #$s->{height} < $w->{strip}->{height_min} and return $self->render_not_found;
- #$s->{height} > $w->{strip}->{heigth_max} and return $self->render_not_found; 
+ return 1;
 
 }
 
@@ -140,11 +118,13 @@ sub build_urlother {
 
 }
 
-sub build { # the widget builder
+sub start  {
 
  my $self = shift; my $s = $self->{stash};
  
- $self->init or return $self->return_not_found;
+ $self->init or return 0;
+ 
+ $s->{n_estim} = 10;
   
  $s->{pri} = $self->param('p') // undef;
  $s->{sec} = $self->param('s') // undef;
@@ -154,26 +134,39 @@ sub build { # the widget builder
   $s->{runmode} = 'pair';
   
   $self->pair_pre;
+  
+  $s->{total} = $self->fetch ( 'pair#count', @{ $s->{args_array} ); 
           
  } elsif ( $self->search_ok ( 'q', 'what' ) ) {
  
   $s->{runmode} = 'search';
+  
+  $s->{total} = $self->fetch ( 'search#count', @{ $s->{args_array} ); 
     
  } else {
  
   $s->{runmode} = 'all'; # default to all
   
+  $s->{total} = $self->fetch ( 'all#count' );
+  
  }
 
- 
- $self->build_urlother or return $self->render_not_found;
+ $s->{total} == 0 and return 0;
 
- $s->{width} = 500;
- $s->{height} = 500;
+ $self->params or return 0;
  
- my $target = $s->{url};
+}
+
+sub build { # the widget builder
+
+ my $self = shift; my $s = $self->{stash};
+
+ $self->start or $self->return_not_found;
+
+ $self->build_urlother or return $self->render_not_found;
  
- $target =~ s|/build|/embed|;
+ # we omit the first slash, it will be added in template
+ my $target = $s->{lang} . '/embed?' . widget_ser ( $s );
  
  $s->{target} = $target;
  
@@ -181,99 +174,56 @@ sub build { # the widget builder
  
 }
 
-sub embed { # the widget renderer
+sub solver {
 
  my $self = shift; my $s = $self->{stash};
  
- my $w = widget_conf;
  
- # size
+
+
+}
+
+sub embed { # the widget renderer
+
  
- $s->{width} = 
-  int ( $self->param( 'width' ) // $w->{strip}->{width_default} );
-  
-# $s->{width} < $w->{strip}->{width_min} and return $self->render_not_found;
-# $s->{width} > $w->{strip}->{width_max} and return $self->render_not_found;
+ $self->start or return $self->return_not_found;
  
- # target
- 
- $s->{height} = 
-  int ( $self->param( 'height' ) // $w->{strip}->{height_default} );
-  
- #$s->{height} < $w->{strip}->{height_min} and return $self->render_not_found;
- #$s->{height} > $w->{strip}->{heigth_max} and return $self->render_not_found;
- 
- my $n = 100;
- 
- # data modes: all, pair or pattern
- 
- $s->{runmode} = 'all'; # default
- 
- $s->{what} = $self->param('q') // undef;
- $s->{pri} = $self->param('p') // undef;
- $s->{sec} = $self->param('s') // undef;
- 
- if ( $s->{pri} or $s->{sec} ) {
+ given ( $s->{runmode} )
+
+ if ( $self->pair_ok ) {
  
   $s->{runmode} = 'pair';
-
-  $self->fetch ( 'pair#verify', $s->{pri} ) or
-   return $self->render_not_found;
-   
-   $s->{sec} = $self->decode ( $s->{sec} ); # using decode helper
-   
-   $s->{xs} = $self->fetch ( 'pair#array_rand_n', $s->{pri}, $s->{sec}, $n );
   
- } elsif ( $s->{what} ) {
+  $self->pair_pre;
+  
+   $s->{xs} = $self->fetch ( 'pair#array_rand_n', @{ $s->{args_array} }, $s->{n_estim} ); 
+          
+ } elsif ( $self->search_ok ( 'q', 'what' ) ) {
  
-  $s->{runmode} = 'pattern';
+  $s->{runmode} = 'search';
   
-  # sanity check
-  ( length $s->{what} > 1234 ) and return $self->render_not_found;
-
-   # it appears that browsers typcially send UTF-8 encoded 
-   # data when the origin page is UTF-8 -> we decode the data now   
-   utf8::decode ( $s->{what} );
-
-   # remove all unnecessary whitespaces     
-   $s->{what} = noxss clean trim $s->{what};
+  $s->{xs} = $self->fetch ( 'search#array_rand_n', @{ $s->{args_array} }, $s->{n_estim} ); 
     
-   # we don't allow '', we set it to undef
-   $s->{what} eq '' and return $self->render_not_found;
-   
-   # convert search to argument array 
-   $s->{args_array} = search2args ( $s->{what} );
-  
-   $s->{args_count} = scalar @{ $s->{args_array} };
-  
-   (
-    $s->{args_count} > 0 and # there are args
-    $s->{args_count} <= 50 and # max 25 pairs accepted   
-    $s->{args_count} % 2 == 0 and # args come in as pairs 
-    $self->fetch('search#verify_args',@{$s->{args_array}}) # all pris are ok 
-   ) or return $self->render_not_found;
-   
-   $s->{xs} = $self->fetch ( 'search#array_rand_n', @{ $s->{args_array} }, $n ); 
-
  } else {
  
-  $s->{runmode} = 'all';
+  $s->{runmode} = 'all'; # default to all
   
-  $s->{xs} = $self->fetch ( 'all#array_rand_n', $n );
- 
- } 
+  $s->{xs} = $self->fetch ( 'all#array_rand_n', $s->{n_estim} );
   
- scalar @{ $s->{xs} } == 0 and return $self->render_not_found;
- 
- # fetch corresponding thumbnails
- 
+ }
+
+ scalar @{ $s->{xs} } == 0 and return 0; 
+ # resuffle data 
+ $s->{xs} = [ shuffle @{ $s->{xs} } ];
+  
+ # fetch corresponding thumbnails 
  ( $s->{thumbs}, undef, undef ) = 
   @{ $self->fetch( 'photo#thumb', @{ $s->{xs} } ) };
  
  # fetch photo texts  
  $s->{texts} = $self->fetch ( 'photo#texts', @{ $s->{xs} } );
    
-  $self->render( template => 'page/strip', format => 'html' );
+ $self->render( template => 'page/strip', format => 'html' );
   
 }
 

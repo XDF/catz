@@ -1,0 +1,10 @@
+% foreach my $th ( @{ $thumbs } ) {
+% my $toid = fullnum33 ( $th->[1], $th->[2] );
+% my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
+% my $titl = dtexpand ( dtdate ( $th->[3] ), $lang ); # get date from folder name
+% defined $texts->{$th->[0]} and $titl = "$titl $sep " . $texts->{$th->[0]};
+% my $add = '';
+% $intent eq 'embed' and $add = ' class="floater" target="_blank"';  
+<a<%== $add %> title="<%= $titl %> <%= $sep %> <%= $t->{SITE} %>" href=""><img alt="[<%= $t->{SITE} %> <%= $t->{PHOTO} %> <%== $toid %>]" src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
+% }
+%== include 'content/widget';
