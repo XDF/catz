@@ -274,6 +274,9 @@ sub multi {
  
  # load style (for viz img tags)
  $s->{style} = style_get ( $s->{palette} );
+ 
+ # prepare url for builder access
+ $s->{urlbuild} = '/' . $s->{langaother} . '/build?' . widget_ser ( $s ); 
     
  $self->render( template => 'page/browse', format => 'html' );
  

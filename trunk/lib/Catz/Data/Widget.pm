@@ -28,26 +28,103 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( widget_conf widget_strip widget_tn_est );
+our @EXPORT = qw ( widget_conf widget_init widget_ser );
 
 use List::MoreUtils qw ( any );
 
 use Catz::Util::Number qw ( round );
+use Catz::Util::String qw ( enurl );
 
 my $widget = {}; # widget config
 
-# defines what widgets are available
-$widget->{widgets} = [ qw ( strip ) ];
+$widget->{params} = [ qw ( run stripes size limit align ) ];
 
-$widget->{strip}->{width_min} = 50;
-$widget->{strip}->{width_default} = 800;
-$widget->{strip}->{width_max} = 2000;
+$widget->{defaults} = {
+ size => 100,
+ run => 'leftright',
+ limit => 600,
+ stripes => 1,
+ align => 'middle',
+};
 
-$widget->{strip}->{height_min} = 50;
-$widget->{strip}->{height_default} = 200;
-$widget->{strip}->{height_max} = 200;
+$widget->{limits} = {
+ size => { min => 50, max => 200 },
+ limit => { min => 200, max => 2000 },
+ stripes => { min => 1, max => 5 },
+};
+
+$widget->{allowed} = {
+ run => [ qw ( leftright topdown ) ],
+ align => [ qw ( begin middle end ) ],
+};
 
 sub widget_conf { $widget }
+
+sub widget_init {
+
+ my $app = shift; my $s = $app->{stash};
+ 
+ $s->{widget} = $widget;
+ 
+ foreach my $par ( @{ $widget->{params} } ) {
+ 
+  $s->{ $par } = $app->param ( $par ) // undef;
+ 
+  defined $s->{ $par } or
+    $s->{ $par } = $widget->{defaults}->{ $par };
+
+  if ( exists $widget->{limits}->{ $par } ) {
+    
+   ( 
+    $s->{ $par } =~ m|^\d{1,4}$| and
+    $s->{ $par } >= $widget->{limits}->{ $par }->{min} and
+    $s->{ $par } <= $widget->{limits}->{ $par }->{max} 
+   ) or $s->{$par} = $widget->{defaults}->{ $par };
+   
+  
+  } elsif ( exists $widget->{allowed}->{ $par } ) {
+  
+   any { $s->{$par} eq $_ } @{  $widget->{allowed}->{ $par } }
+    or $s->{$par} = $widget->{defaults}->{ $par };
+  
+  } else { die "interal error: not enough information for parameter '$par'" }
+  
+ }
+
+}
+
+sub widget_ser {
+
+ my $s = shift; # Mojolicious stash
+ 
+ my $out;
+ 
+ my @coll = ();
+ 
+ if ( $s->{runmode} eq 'pair' ) {
+ 
+  push @coll, 'p=' . $s->{pri};  
+  push @coll, 's=' . enurl $s->{sec}; 
+ 
+ } elsif ( $s->{runmode} eq 'search' ) {
+ 
+  push @coll, 'q=' . enurl $s->{what};
+  
+ }
+
+ foreach my $par ( @{ $widget->{params} } ) {
+ 
+  my $val = $widget->{defaults}->{ $par };
+
+  defined $s->{ $par } and $val = $s->{ $par };
+
+  push @coll, "$par=" . enurl $val; 
+ 
+ }
+
+ return join '&', @coll;
+
+}
 
 sub widget_tn_est {
 

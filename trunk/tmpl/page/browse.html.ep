@@ -176,20 +176,14 @@ if ( $runmode eq 'pair' ) {
 <div class="bar">
 <%== include 'elem/titlea' %> <%= $sep %> 
 <%= $total %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> <%= $sep %>
-% if ( $total > 9 ) {
-<span id="entry">
-% my $eurl = "/$langa/build";
-% given ( $runmode ) {
-%  when ( 'pair' ) { $eurl .= '?p=' . ( enurl $pri ) . '&s=' . ( enurl $sec ) }
-%  when ( 'search' ) { $eurl .= '?q=' . ( enurl $what ) }
-%  default { $eurl .= '/' }
-% }  
-<a href="<%== $eurl %>"><%= $t->{WID_ENTRY} %></a> <%= $sep %>
-</span>
-% }
 <%= dtexpand ( $ancient, $lang ) %>
 % if ( $fresh ne $ancient ) {
 - <%= dtexpand ( $fresh, $lang ) %>
+% }
+ <%= $sep %>
+% if ( $total > 9 ) {
+<span id="entry"><a href="<%== $urlbuild %>"><%= $t->{WID_HEAD} %></a>
+</span>
 % }
 % if ( $cover_notext ) {
 <%= $sep %> <a href="/<%== $langa %>/search?q=<%== enurl ( $url_notext ) %>"><%== fmt ( $cover_notext, $lang ) %> <%= $cover_notext == 1 ? $t->{NOTEXT} :  $t->{NOTEXTA} %></a>
