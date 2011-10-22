@@ -49,9 +49,12 @@ sub pair_ok {
 
 sub pair_pre {
 
- my $self = shift; my $s = $self->{stash};
+ my ( $self, $intent ) = @_; my $s = $self->{stash};
  
- $s->{sec} = $self->decode ( $s->{sec} ); # using decode helper
+ utf8::decode ( $s->{sec} );
+ 
+ $intent ne 'widget' and 
+  $s->{sec} = $self->decode ( $s->{sec} ); # using decode helper 
  
  $s->{args_array} = [ $s->{pri}, $s->{sec} ];
  $s->{args_count} = 2;
@@ -92,7 +95,7 @@ sub pair {
  
  $self->load or return 0;
 
- $self->pair_pre or return 0;
+ $self->pair_pre ( 'core' ) or return 0;
    
  $self->origin or return 0;
  

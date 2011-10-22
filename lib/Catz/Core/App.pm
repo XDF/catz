@@ -100,10 +100,6 @@ sub startup {
  
  # reset
  $r->route( '/style/reset' )->to( 'main#reset' );
-
- # widget
- $r->route( '/style/widget/' ) ->to( 'widget#style' );
- 
  
  # the single stylesheet contains all style definitions
  # it's color settings are dependent on the palette 
@@ -228,8 +224,8 @@ sub startup {
  ### Widget features
  ###
 
- $l->route ( '/build' )->to ( 'widget#build' );
- $l->route ( '/embed' )->to ( 'widget#embed' );
+ $l->route ( '/build' )->to ( 'widget#build' ); # the widget builder
+ $l->route ( '/embed' )->to ( 'widget#embed' ); # the widget viewer
  
  ###
  ### AJAX interface(s)
@@ -447,7 +443,7 @@ sub after {
   { use bytes; $self->res->headers->content_length( length $str ) }
   
  };
- 
+  
  #
  # write to cache if not from cache and healthy status
  #

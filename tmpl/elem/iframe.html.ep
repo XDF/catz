@@ -1,1 +1,0 @@
-<iframe<%== $intent eq 'preview' ? ' class="bar block"' : '' %> src="<%== $intent eq 'code' ? $t->{URL_CATZA} : '/' %><%== $target %>" allowtransparency="true" frameborder="0" scrolling="no" style="border: none; overflow: hidden; width: <%= $limit %>px; height: <%= $stripes*$size %>px;"></iframe>

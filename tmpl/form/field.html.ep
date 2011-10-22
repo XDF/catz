@@ -1,0 +1,1 @@
+<input class="aero" type="field" name="<%== $name %>" value="<%== $value %>" size="<%== $size %>">

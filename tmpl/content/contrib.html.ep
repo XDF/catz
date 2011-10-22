@@ -1,10 +1,10 @@
 %# PROTOTYPE
 %# PROTOTYPE
-%# PROTOTYPE
+%# PROTOTYPE 
 % if ( $lang eq 'fi' ) {
-käyttäohjeita ajsdlkf jalksd jfölaksdjf lökasdj flökasjd flköas
+suomenkielisiÃ¤ ohjeita tietojen lÃ¤hettÃ¤misestÃ¤ ajsdlkf jalksd jfÃ¶laksdjf lÃ¶kasdj flÃ¶kasjd flkÃ¶as
 % } else {
-english instructions asdfasd fadf jkalkdfj alskjdf öaksdjfö asdkjfasd
+englihs contrib content asdfasd fadf jkalkdfj alskjdf Ã¶aksdjfÃ¶ asdkjfasd
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine
@@ -28,4 +28,4 @@ english instructions asdfasd fadf jkalkdfj alskjdf öaksdjfö asdkjfasd
 %# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 %# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 %# THE SOFTWARE.
-%#  
+%# 

@@ -91,7 +91,7 @@ Jos annat useita hakutermejä, haetaan kaikki ne kuvat, jotka osuvat vähintää
 %#
 <li>
 % $term = '-chamberlain +MCO';
-<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> hakee kaikki muut coonikuvat paitsi ne, joissa on Chamberlain-kasvattajan cooni
+<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> hakee kaikki muut coonikuvat paitsi ne, joissa on Chamberlain-kasvattajan kissa
 </li>
 %#
 %# --------------------
