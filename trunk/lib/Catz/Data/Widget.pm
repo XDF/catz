@@ -28,41 +28,51 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( widget_conf widget_init widget_ser );
+our @EXPORT = qw ( widget_conf widget_init widget_ser widget_params widget_stripe );
 
+use GD;
 use List::MoreUtils qw ( any );
+
+use Catz::Core::Text;
 
 use Catz::Util::Number qw ( round );
 use Catz::Util::String qw ( enurl );
+use Catz::Util::Time qw ( dtlang );
 
 my $widget = {}; # widget config
 
-$widget->{params} = [ qw ( run stripes size limit align ) ];
+my $t = text ( 'en' );
+
+$widget->{params} = [ qw ( type run size limit mark back ) ];
 
 $widget->{defaults} = {
- size => 100,
+ type => 'stripe',
  run => 'leftright',
+ size => 100,
  limit => 600,
- stripes => 1,
- align => 'middle',
+ mark => 'yes',
+ back => 'yes',
 };
 
 $widget->{limits} = {
  size => { min => 50, max => 200 },
  limit => { min => 200, max => 2000 },
- stripes => { min => 1, max => 5 },
 };
 
 $widget->{allowed} = {
+ type => [ qw ( strip ) ],
  run => [ qw ( leftright topdown ) ],
- align => [ qw ( begin middle end ) ],
+ mark => [ qw ( yes no ) ],
+ back => [ qw ( yes no ) ], 
 };
 
 sub widget_conf { $widget }
 
+sub widget_params { @{ $widget->{params} } }
+
 sub widget_init {
 
- my $app = shift; my $s = $app->{stash};
+ my ( $app, $hard ) = @_; my $s = $app->{stash};
  
  $s->{widget} = $widget;
  
@@ -70,8 +80,10 @@ sub widget_init {
  
   $s->{ $par } = $app->param ( $par ) // undef;
  
-  defined $s->{ $par } or
-    $s->{ $par } = $widget->{defaults}->{ $par };
+  defined $s->{ $par } or do {
+   $hard and return 0; 
+   $s->{$par} = $widget->{defaults}->{ $par };
+  };
 
   if ( exists $widget->{limits}->{ $par } ) {
     
@@ -79,17 +91,23 @@ sub widget_init {
     $s->{ $par } =~ m|^\d{1,4}$| and
     $s->{ $par } >= $widget->{limits}->{ $par }->{min} and
     $s->{ $par } <= $widget->{limits}->{ $par }->{max} 
-   ) or $s->{$par} = $widget->{defaults}->{ $par };
-   
+   ) or do { 
+    $hard and return 0; $s->{$par} = $widget->{defaults}->{ $par } 
+   }; 
   
   } elsif ( exists $widget->{allowed}->{ $par } ) {
   
-   any { $s->{$par} eq $_ } @{  $widget->{allowed}->{ $par } }
-    or $s->{$par} = $widget->{defaults}->{ $par };
+   ( any { $s->{$par} eq $_ } @{  $widget->{allowed}->{ $par } } )
+    or do {
+     $hard and return 0; 
+     $s->{$par} = $widget->{defaults}->{ $par };
+    };
   
   } else { die "interal error: not enough information for parameter '$par'" }
   
  }
+ 
+ return 1;
 
 }
 
@@ -136,9 +154,13 @@ sub widget_tn_est {
 
 }
 
-sub widget_strip {
+sub widget_stripe {
 
- my ( $thumbs, $type, $size, $limit, $width, $height ) = @_;
+ use Time::HiRes qw ( time );
+ 
+ my $time_start = time();
+
+ my ( $thumbs, $run, $size, $limit, $mark ) = @_;
    
  my $use = -1; my $curr = 0; my @widths = (); my @heights = ();
  
@@ -146,7 +168,7 @@ sub widget_strip {
  
   my ( $width, $height );
   
-  if ( $type eq 'topdown' ) {
+  if ( $run eq 'topdown' ) {
  
    $width = $size;
    $height = round ( $th->[6] * ( $size / $th->[5] ) );
@@ -159,14 +181,14 @@ sub widget_strip {
   } 
   
   if ( 
-   ( $type eq 'topdown' and ( $curr + $height < $limit ) )
-    or ( $type ne 'topdown' and  ( $curr + $width < $limit ) ) 
+   ( $run eq 'topdown' and ( $curr + $height < $limit ) )
+    or ( $run ne 'topdown' and  ( $curr + $width < $limit ) ) 
   ) { 
  
    push @widths, $width;  
    push @heights, $height;
    
-   if ( $type eq 'topdown' ) { $curr += $height } else { $curr += $width } 
+   if ( $run eq 'topdown' ) { $curr += $height } else { $curr += $width } 
    
    $use++;
    
@@ -175,25 +197,25 @@ sub widget_strip {
  
  }
   
- my $gd;
+ my $gd =
+  $run eq 'topdown' ?
+  new GD::Image( $size, $curr, 1 ) : 
+  new GD::Image( $curr, $size, 1 ); 
+  # 1 = TrueColor
    
- if ( $type eq 'topdown' ) {
- 
-  $gd = new GD::Image( $size, $curr, 1 ); # 1 = TrueColor 
- 
- } else {
-  
-  $gd = new GD::Image( $curr, $size, 1 ); # 1 = TrueColor
-  
- } 
- 
- 
  my $currx = 0; my $curry = 0;
   
  foreach my $i ( 0 .. $use ) {
  
-  my $nd = newFromJpeg GD::Image( 
-   "/catz/static/photo/$thumbs->[$i]->[3]/$thumbs->[$i]->[4]", 1 
+ #
+ # we use a relative path here
+ #
+ # due to the fact that the directory structure is fixed
+ # in all environments this appers to work without hassle
+ #
+ 
+  my $nd = newFromJpeg GD::Image ( 
+   "../../static/photo/$thumbs->[$i]->[3]/$thumbs->[$i]->[4]", 1 
   );
   
   $gd->copyResampled ( 
@@ -201,12 +223,22 @@ sub widget_strip {
    $thumbs->[$i]->[5], $thumbs->[$i]->[6]
   );
 
-  if ( $type eq 'topdown' ) { $curry +=  $heights[$i] } 
+  if ( $run eq 'topdown' ) { $curry +=  $heights[$i] } 
    else { $currx +=  $widths[$i] } 
 
  }
-       
- return $gd->jpeg(95);
+         
+ my $gdd = $gd->jpeg(95);
+   
+ my $time_end = time();
+ 
+ my $timing = round ( 
+ ( ( $time_end - $time_start  ) * 1000 ), 0 
+ ) . ' ms';
+ 
+ warn $timing;
+  
+ return $gdd;
 
 }
 

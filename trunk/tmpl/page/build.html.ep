@@ -36,8 +36,8 @@
 %# --------------------
 %#
 <% content 'main' => begin %>
-<div class="bar">
-<form id="widgets" action="/<%= $langa %>/build" method="get">
+<div><h2><%= $t->{WID_SETUP} %></h2>
+<form id="widgets" class="block bar" action="/<%= $langa %>/build" method="get">
 % given ( $runmode ) {
 %  when ( 'pair' ) { 
 <input type="hidden" name="p" value="<%== $pri %>">
@@ -47,29 +47,44 @@
 <input type="hidden" name="q" value="<%== $what %>">
 %  }
 % }
-<%= $sep %> <%= $t->{WID_SIZE} %>
-<input type="field" name="size" value="<%= $size %>" size="4">
-<%= $sep %> <%= $t->{WID_HEIGHT} %>
-<input type="field" name="limit" value="<%= $limit %>" size="4">
-<%= $sep %> <%= $t->{WID_STRIPES} %>
-<select name="stripes">
-% foreach my $i ( $widget->{limits}->{stripes}->{min} .. $widget->{limits}->{stripes}->{max} ) {
-<option value="<%== $i %>"><%== $i %></option>
+<input type="hidden" name="type" value="stripe">
+<ul>
+<li><span class="heavy sparse"><%= $t->{'WID_RUN'} %></span><span class="aero">
+% foreach my $val ( @{ $widget->{allowed}->{run} } ) { 
+<%== include 'form/radio', name => 'run', value => $val, checked => $val eq $run ? 1 : 0 %>
+<%= $t->{'WID_RUN_'.uc($val)} %>
 % }
-</select>   
- 
+</span><li><span class="heavy"><%= $t->{'WID_SIZE'} %></span>
+<span class="aero">
+%== include 'form/field', name => 'size', value => $size, size => 4;
+<%= $t->{'WID_PIXELS'} %> 
+(<%= $widget->{limits}->{size}->{min} %>-<%= $widget->{limits}->{size}->{max} %>)
+</span><li><span class="heavy"><%= $t->{'WID_LIMIT'} %></span>
+%== include 'form/field', name => 'limit', value => $limit, size => 4;
+</div><div class="bar">
+<li><%= $t->{'WID_MARK'} %>
+% foreach my $val ( @{ $widget->{allowed}->{mark} } ) {
+<%== include 'form/radio', name => 'mark', value => $val, checked => $val eq $mark ? 1 : 0 %>
+<%= $t->{'WID_MARK_'.uc($val)} %>
+% }
+<li><%= $t->{'WID_BACK'} %>
+% foreach my $val ( @{ $widget->{allowed}->{back} } ) {
+<%== include 'form/radio', name => 'back', value => $val, checked => $val eq $back ? 1 : 0 %>
+<%= $t->{'WID_BACK_'.uc($val)} %>
+% } 
+</div><div class="bar">
+<%= $sep %>
 <input type="submit" value="<%= $t->{WID_SUBMIT} %>">
 <input type="reset" value="<%= $t->{WID_RESET} %>">
-</form></div>
+</div></ul></form></div>
 <div class="bar">
-<h2><%= $t->{WID_CODE} %></h2>
-<div class="bar lean enlarge">
-%= $self->render( 'elem/iframe', intent => 'code', partial => 1 );
-</div>
-</div>
+<h2><%= $t->{WID_CODE} %></h2><div class="bar lean enlarge">
+%= $self->render ( 'elem/stripe', partial => 1, intent => 'code' );
+</div></div>
 <div class="bar">
 <h2><%= $t->{WID_VIEW} %></h2>
-%== include 'elem/iframe', intent => 'preview';
+<div class="bar">
+%== $self->render ( 'elem/stripe', partial => 1, intent => 'preview' );
 </div>
 <div class="bar">
 %== include 'content/build';

@@ -84,14 +84,14 @@ If multiple search terms are given the default behavior is to return photos that
 %#
 <li>
 % $term = '+chamberlain +MCO';
-<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> returns Chamberlain breeder's Maine Coon photos
+<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> returns Chamberlain's Maine Coon photos
 </li>
 %#
 %# --------------------
 %#
 <li>
 % $term = '-chamberlain +MCO';
-<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> returns other Maine Coon photos than Chamberlain breeder's
+<a href="/<%== $langa %>/search?q=<%== enurl($term) %>"><%= $term %></a> returns other Maine Coon photos than Chamberlain's
 </li>
 %#
 %# --------------------

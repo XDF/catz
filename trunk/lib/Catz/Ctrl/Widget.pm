@@ -36,41 +36,19 @@ use List::Util qw ( shuffle );
 
 use Catz::Data::Widget;
 
-my @params = qw ( run height limit stripes align );
-
 use Catz::Util::Number qw ( round );
 
-sub serialize {
-
- my $self = shift;
-
- # serialize query parameter
- 
- my @pairs = ();
- 
- foreach my $par ( @params ) {
- 
-  my $val = $self->param ( $par ) // undef;
-  
-  defined $val and
-   push @pairs, "$par=" . $self->enurl ( $val );
-    
- }
- 
- scalar @pairs == 0 and return ''; 
- 
- return join '&', @pairs; 
- 
-}
+use constant SOFT => 0; # replace illegal parameter values with default value
+use constant HARD => 1; # raise an error on illegal parameter value
 
 sub params {
 
  # verify / process widget parameters
- # pass to widget module for the work
  
- my $self = shift; my $s = $self->{stash};
+ my ( $self, $hard ) = @_; my $s = $self->{stash};
 
- widget_init ( $self ); 
+ # pass to widget module for the work
+ widget_init ( $self, $hard ) or return 0;
  
  return 1;
 
@@ -82,7 +60,7 @@ sub build_urlother {
 
  my $head = qq{/$s->{langaother}/$s->{action}};
  
- my $tail = $self->serialize;
+ my $tail = widget_ser ( $self );
  
  given ( $s->{runmode} ) {
  
@@ -120,11 +98,11 @@ sub build_urlother {
 
 sub start  {
 
- my $self = shift; my $s = $self->{stash};
+ my ( $self, $hard ) = @_; my $s = $self->{stash};
  
  $self->init or return 0;
  
- $s->{n_estim} = 10;
+ $s->{n_estim} = 30;
   
  $s->{pri} = $self->param('p') // undef;
  $s->{sec} = $self->param('s') // undef;
@@ -133,15 +111,15 @@ sub start  {
  
   $s->{runmode} = 'pair';
   
-  $self->pair_pre;
+  $self->pair_pre ( 'widget' ) or return 0;
   
-  $s->{total} = $self->fetch ( 'pair#count', @{ $s->{args_array} ); 
+  $s->{total} = $self->fetch ( 'pair#count', @{ $s->{args_array} } ); 
           
  } elsif ( $self->search_ok ( 'q', 'what' ) ) {
  
   $s->{runmode} = 'search';
   
-  $s->{total} = $self->fetch ( 'search#count', @{ $s->{args_array} ); 
+  $s->{total} = $self->fetch ( 'search#count', @{ $s->{args_array} } ); 
     
  } else {
  
@@ -161,72 +139,56 @@ sub build { # the widget builder
 
  my $self = shift; my $s = $self->{stash};
 
- $self->start or $self->return_not_found;
+ $self->start ( SOFT ) or return $self->render_not_found;
 
  $self->build_urlother or return $self->render_not_found;
  
  # we omit the first slash, it will be added in template
- my $target = $s->{lang} . '/embed?' . widget_ser ( $s );
- 
- $s->{target} = $target;
- 
+ $s->{urltarget} = $s->{lang} . '/embed?' . widget_ser ( $s );
+  
  $self->render( template => 'page/build', format => 'html' );
  
 }
 
-sub solver {
-
- my $self = shift; my $s = $self->{stash};
- 
- 
-
-
-}
-
 sub embed { # the widget renderer
 
- 
- $self->start or return $self->return_not_found;
- 
- given ( $s->{runmode} )
-
- if ( $self->pair_ok ) {
- 
-  $s->{runmode} = 'pair';
+ my $self = shift; my $s = $self->{stash};
   
+ $self->start ( HARD ) or return $self->render_not_found;
+ 
+ if ( $s->{runmode} eq 'pair' ) {
+
   $self->pair_pre;
   
    $s->{xs} = $self->fetch ( 'pair#array_rand_n', @{ $s->{args_array} }, $s->{n_estim} ); 
           
- } elsif ( $self->search_ok ( 'q', 'what' ) ) {
- 
-  $s->{runmode} = 'search';
+ } elsif ( $s->{runmode} eq 'search' ) {
   
   $s->{xs} = $self->fetch ( 'search#array_rand_n', @{ $s->{args_array} }, $s->{n_estim} ); 
     
  } else {
- 
-  $s->{runmode} = 'all'; # default to all
   
   $s->{xs} = $self->fetch ( 'all#array_rand_n', $s->{n_estim} );
   
  }
 
  scalar @{ $s->{xs} } == 0 and return 0; 
- # resuffle data 
- $s->{xs} = [ shuffle @{ $s->{xs} } ];
   
  # fetch corresponding thumbnails 
  ( $s->{thumbs}, undef, undef ) = 
   @{ $self->fetch( 'photo#thumb', @{ $s->{xs} } ) };
- 
- # fetch photo texts  
- $s->{texts} = $self->fetch ( 'photo#texts', @{ $s->{xs} } );
+
+ # reshuffle
+ $s->{thumbs} = [ shuffle @{  $s->{thumbs} } ];
+  
+ my $im = 
+  widget_stripe ( 
+   map { $s->{ $_ } } qw ( thumbs run size limit mark ) 
+  );  
    
- $self->render( template => 'page/strip', format => 'html' );
+ $self->render_data ( $im , format => 'jpeg' );
   
 }
 
-sub style { $_[0]->render ( template => 'style/widget', format => 'css' ) }
 
 1;

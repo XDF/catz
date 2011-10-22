@@ -24,6 +24,15 @@
 
 package Catz::Core::Cache;
 
+#
+# The systemwide cache module for all caching purposes
+#
+# This is used to cache at least
+# * rendered pages and images
+# * Model responses
+# * database result sets
+#
+
 use 5.10.0; use strict; use warnings;
 
 use parent 'Exporter';
@@ -51,7 +60,7 @@ my $cache = new Cache::Memcached::Fast {
  connect_timeout => 0.1, 
  max_failures => 2, # let connect fail 2 times ...
  failure_timeout => 15, # ... and then rest for 15 seconds
- compress_threshold => 15_000,
+ compress_threshold => 30_000,
  nowait => 1 # should speed up set by not waiting for confirmation for success
 };
 
