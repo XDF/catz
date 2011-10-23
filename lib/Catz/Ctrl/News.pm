@@ -57,7 +57,7 @@ sub one { # one news article
  ( $s->{new1}, $s->{prev}, $s->{next} ) = 
    @{ $self->fetch ( 'news#one', $s->{article} ) }; 
  
- defined $s->{new1} or return self->render_not_found;
+ defined $s->{new1} or return $self->render_not_found;
  
  $self->render( template => 'page/new1', format => 'html' );
 

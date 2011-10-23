@@ -122,6 +122,12 @@ sub startup {
  
  # the front page is at the root under the language
  $l->route( '/' )->to( 'main#front' );
+
+ ###
+ ### contribution content page - rule added 2011-10-22
+ ###
+ 
+ $l->route( '/contrib' )->to( 'main#contrib' );
  
  ###
  ### the news service
@@ -246,6 +252,28 @@ sub startup {
 
 }
 
+sub bounce {
+
+ my ( $ctrl, $to ) = @_;
+ 
+ #
+ # the internals of Mojolicious was studied for this code
+ # and the mechanism for redirect was copied from there
+ 
+ $ctrl->res->code(301); # a permanent redirect
+ 
+ $ctrl->res->headers->location ( $to );
+ 
+ $ctrl->res->headers->content_type('text/html');
+ 
+ $ctrl->res->headers->content_length(0);
+ 
+ $ctrl->rendered;
+
+}
+
+my $static = conf ( 'static' );
+
 sub before {
 
  my $self = shift; my $s = $self->{stash};
@@ -258,6 +286,15 @@ sub before {
  $s->{path} = $self->req->url->path;  # and also the path part
  $s->{query} = $self->req->query_params->to_string; # and also the query params
  
+ # all static resources served must be pre-defined
+ $static->{ $s->{path} } and $s->{isstatic} = 1;
+  
+ # mark reroutings to stash -> easy to use later 
+ $s->{isrerouted} = ( $s->{path} =~ m|^/reroute| ? 1 : 0 );
+  
+ # mark queries to stash -> easy t o use later
+ $s->{isquery} = length ( $s->{query} ) > 0 ? 1 : 0; 
+ 
  # preset analytics keys
  
  $s->{ana_google} = undef; $s->{ana_godaddy} = undef;
@@ -269,7 +306,7 @@ sub before {
   $s->{ana_godaddy} = conf ( 'key_ana_godaddy' );
   
  };
- 
+   
  # 
  # fetch the latest version key file
  #
@@ -317,6 +354,39 @@ sub before {
  # 
  
  $s->{protocol} =  $self->req->headers->header('X-Protocol') // 'http';
+ 
+ # checking path validity: we accept dots in path only for rerouting
+ # paths and static paths
+ 
+ index ( $s->{path}, '.' ) > -1 and ( not $s->{isrerouted} )  and do {
+  
+  $s->{isstatic} or return $self->render_not_found;
+   
+ };
+ 
+ #
+ # we require paths to end with slash if there are no query params
+ #
+ # you may ask why but I think this is cool
+ #
+
+ ( not $s->{isstatic} ) and
+ ( not $s->{isquery} ) and 
+ ( not $s->{isrerouted} ) and
+ ( substr ( $s->{path}, -1, 1 ) ne '/' ) and
+ return bounce ( $self, $s->{path} . '/' );
+   
+ #
+ #  we also require paths with query parameters not to end with slash  
+ #
+ #  again, you may ask why but I think this is cool
+ #
+ 
+ ( not $s->{isstatic} ) and
+ ( $s->{isquery} ) and 
+ ( not $s->{isrerouted} ) and
+ ( substr ( $s->{path}, -1, 1 ) eq '/' ) and
+ return bounce ( $self, ( substr ( $s->{path}, 0, -1 ) . '?' . $s->{query} ) ); 
   
  #
  # we use If-Modified-Since if present in request
@@ -356,24 +426,6 @@ sub before {
  # controllers may modify these as needed
  # by setting to false sets noindex,nofollow respectively 
  $s->{meta_index} = 1; $s->{meta_follow} = 1;
-
- if ( scalar @{ $self->req->query_params->params } == 0 ) {
- 
-  # prevent indexing of pages that have no query parameters
-  # and have no traling slash
-  
-   not ( $self->req->url->path->trailing_slash )
-    and $s->{meta_index} = 0;
- 
- } else {
-
-  # prevent indexing of pages that have query parameters
-  # and have traling slash
-
-   $self->req->url->path->trailing_slash
-    and $s->{meta_index} = 0;
- 
- } 
    
  if ( $s->{url} =~ /^\/((en|fi)([1-9]{6})?)/ ) {
   
@@ -423,7 +475,7 @@ sub before {
 sub after {
 
  my $self = shift; my $s = $self->{stash};
-
+ 
  # 
  # purify html output
  #
@@ -444,12 +496,12 @@ sub after {
   
  };
   
+ my $code = $self->res->code // 0;
+  
  #
  # write to cache if not from cache and healthy status
  #
- 
- my $code = $self->res->code;
-
+  
  ( $code == 200 ) and ( not defined $s->{cache_obj} ) and
   cache_set ( cachekey ( $self ), $self->tx->res );
  
@@ -499,12 +551,12 @@ sub after {
  }
  
  # custom app headers
- 
+  
  $self->res->headers->header( 'X-Catz-Ver' => $s->{version} );
   
  $self->res->headers->header( 'X-Catz-Env' => "catz$s->{env}" );
  
- # timing hreaders
+ # timing
 
  $s->{time_end} = time();
  

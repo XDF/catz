@@ -226,7 +226,7 @@ sub reroute { # does the job
    
    if ( $classic{$folder} ) { # this is an classic folder still in .com
   
-    return $self->redirect_perm ( "$t->{URL_AUTHOR}photos/$folder/$tail" );
+    return $self->redirect_perm ( "$t->{URL_AUTHOR}photos/$folder/$tail/" );
     
    } elsif ( my $s = $self->fetch("reroute#folder2s",$folder) ) { # current folder
    

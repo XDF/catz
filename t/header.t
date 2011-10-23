@@ -28,65 +28,51 @@ use 5.10.0; use strict; use warnings;
 use Test::More;
 use Test::Mojo;
 
-use Catz::Core::Text;
+use Catz::Core::Cache;
 
 my $t = Test::Mojo->new( 'Catz::Core::App' );
 
-my @oknews = qw ( 20110512234151 20110512234151 20110627222128 );
+my $isup = cache_isup;
 
-my @badnews = qw ( 20110415123456 19001010123433 xadsad @$&*aB );
+# testing headers
 
-my @oksetups = qw ( en fi en211211 fi171212 en394211 fi211111 );
+# page caching is tested so that first the resources are just requested
+# then they are re-requested and expected to come from page cache
 
-foreach my $setup ( @oksetups ) {
+my @okpaths = qw (
+ /favicon.ico /img/catz.png /js_lib/jquery.js /js_site/find.js
+ /en/ /fi/ /en/list/lens/top/ /en/browse/folder/20110918orimattila/
+ /en172211/browse/title/EP/ /fi223211/viewall/122126/ /en/feed/ 
+ /fi123211/news/20111002212228/ /en/find?s=im /fi/find?s=ou 
+);
 
- my $txt = text ( substr ( $setup, 0, 2 ) );
- 
- # news index page
- $t->get_ok("/$setup/news/")
+foreach my $path ( @okpaths ) {
+
+ $t->get_ok( $path )
    ->status_is(200)
-   ->content_type_like(qr/text\/html/)
-   ->text_is('html body h1'=>$txt->{NEWS_ALL});
+   ->header_like('Cache-Control' => qr/max-age/ )
+   ->header_like('Last-Modified' => qr/GMT/ )
+   ->header_like('Expires' => qr/GMT/ )
+   ->header_like('Date' => qr/GMT/ )
+   ->header_like('X-Catz-Env' => qr/catz\d/ )
+   ->header_like('X-Catz-Ver' => qr/\d{14}/ )
+   ->header_like('X-Catz-Took' => qr/ms/ ); # general test
 
- # no ending slash -> 301
- $t->get_ok("/$setup/news")->status_is(301);
+
+ if ( $isup ) {
+ 
+  $t->get_ok( $path )
+    ->status_is(200)
+    ->header_like('Cache-Control' => qr/max-age/ )
+    ->header_like('Last-Modified' => qr/GMT/ )
+    ->header_like('Expires' => qr/GMT/ )
+    ->header_like('Date' => qr/GMT/ )
+    ->header_like('X-Catz-Env' => qr/catz\d/ )
+    ->header_like('X-Catz-Ver' => qr/\d{14}/ )
+    ->header_like('X-Catz-Took' => qr/cache/ ); # from cache test
+ 
+ }
    
- # articles
- foreach my $key ( @oknews ) {
-  
-  $t->get_ok("/$setup/news/$key/")
-    ->status_is(200)
-    ->content_type_like(qr/text\/html/)
-    ->content_like(qr/$txt->{NEWS}/);
- 
-  $t->get_ok("/$setup/news/$key")->status_is(301);
-  
- }
-
- # invalid articles
- foreach my $key ( @badnews ) { 
- 
-  $t->get_ok("/$setup/news/$key/")->status_is(404);
- 
- }
- 
- # the RSS feed
- if ( length ( $setup ) == 2 ) {
- 
-  $t->get_ok("/$setup/feed/")
-    ->status_is(200)
-    ->content_type_like(qr/xml/)
-    ->element_exists('rss[version=2.0]')
-    ->text_is('title'=>$txt->{SITE})
-    ->element_exists('pubDate');
- 
- } else {
-  
-  # attempt to get feed with setup should fail  
-  $t->get_ok("/$setup/feed/")->status_is(404);
-  
- }
- 
 }
 
 done_testing;

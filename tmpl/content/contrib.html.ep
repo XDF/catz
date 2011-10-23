@@ -1,11 +1,35 @@
+% extends 'base/heavy';
 %# PROTOTYPE
 %# PROTOTYPE
 %# PROTOTYPE 
-% if ( $lang eq 'fi' ) {
-suomenkielisiä ohjeita tietojen lähettämisestä ajsdlkf jalksd jfölaksdjf lökasdj flökasjd flköas
-% } else {
-englihs contrib content asdfasd fadf jkalkdfj alskjdf öaksdjfö asdkjfasd
-% }
+Send new cat data, data corrections and all inquiries to 
+<img src="imagehere">
+
+<div class="bar"><h2>Photos with complete information</h2><div class="bar">
+Currently <%= 'EVERYTHING' %> ( % ) of photos have everything: they have both
+breed and cat identified. We thank you for providing the data! Of course
+because humans process the information it is possible that sometimes an
+incorrect information is found on photo. If you face this issue, please don't
+hesitate to send us corrections. You might also like to add nick names etc.
+</div></div>
+
+<div class="bar"><h2>Photos with breed only</h2><div class="bar">
+
+Currently <%= 'EVERYTHING' %> ( % ) of photos have only the breed identified. These photos
+</div></div>
+
+<a href="adfj">Search for photos that have breed only within a breed</a>
+
+<a href="asdf">Search for photos that have breed only</a>
+
+<h2>Photos with category only</h2>
+
+Starting from November 2011 we have started to use generic breed
+codes based on FIFe categories. 
+
+<h2>Photos with nothing</h2>
+<h2>
+
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

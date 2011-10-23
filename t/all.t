@@ -30,79 +30,54 @@ use Test::Mojo;
 
 my $t = Test::Mojo->new( 'Catz::Core::App' );
 
-my $c = 0;
+$t->max_redirects( 0 );
 
-my @ok = qw (
- 001001 123095 062047 170077 061254 025072 137077 042279 099167 120046
- 080121 028049 157077 153128 143160 097022 041235 144058 092351 065137
+use Catz::Util::String qw ( enurl );
+
+my @okids = qw ( 001001 123095 061254 );
+
+my @badids = qw ( 
+ 002600 888888 1 12 98793  -123123 ===!!! $~ *he??o* +++^$@ text=*pa*
 );
 
-my @bad = qw (
- 001600 002600 003600 888888 888000 000000 000001 001000 999000 000999 1 12 
- 13 567 98798 12345 abcde a -123123 ===!!! $$~~ CRX TUV lens=Sigma* *he??o*
- 1233.3 uiLEADRSJJSKLJLKJi3 + ++ +++ - -- --- -12345 hello=world text=*pa*
-); 
+my @oksetups = qw ( en fi en394211 fi211111 );
 
-foreach my $lang ( qw ( en fi en394211 fi211111 ) ) {
+my @okmodes = qw ( browseall viewall );
+
+foreach my $setup ( @oksetups ) {
  
- foreach my $mode ( qw ( browseall viewall ) ) {
- 
-  $t->get_ok("/$lang/$mode")
+ foreach my $mode ( @okmodes ) {
+
+  $t->get_ok("/$setup/$mode/")
     ->status_is(200)
     ->content_type_like(qr/text\/html/)
     ->content_like(qr/ alt=\"\[/)
     ->content_like(qr/\.JPG/);
-    
-  $c += 5;
-    
-  $t->get_ok("/$lang/$mode/")
-    ->status_is(200)
-    ->content_type_like(qr/text\/html/)
-    ->content_like(qr/ alt=\"\[/)
-    ->content_like(qr/\.JPG/);
-    
-  $c += 5;
+ 
+  $t->get_ok("/$setup/$mode")->status_is(301);
   
-  foreach my $id ( @ok ) {
+  foreach my $id ( @okids ) {
 
-   $t->get_ok("/$lang/$mode/$id")
+   $t->get_ok("/$setup/$mode/$id/")
      ->status_is(200)
      ->content_type_like(qr/text\/html/)
      ->content_like(qr/ alt=\"\[/)
      ->content_like(qr/\.JPG/);     
-    
-   $c += 5;
-  
-   $t->get_ok("/$lang/$mode/$id/")
-     ->status_is(200)
-     ->content_type_like(qr/text\/html/)
-     ->content_like(qr/ alt=\"\[/)
-     ->content_like(qr/\.JPG/);     
-    
-   $c += 5;
-  
-  }
-
-  foreach my $id ( @bad ) {
-  
-   $t->get_ok("/$lang/$mode/$id/")->status_is(404);
+     
+   $t->get_ok("/$setup/$mode/$id")->status_is(301);
    
-   $c += 2;
+  }
+
+  foreach my $id ( @badids ) {
+  
+   $t->get_ok("/$setup/$mode/$id/")->status_is(404);
+   
+   $t->get_ok("/$setup/$mode/". ( enurl $id ) . '/')->status_is(404);   
   
   }
  
  }
- 
- my $mode = 'void';
-  
- foreach my $id ( @ok ) {
- 
-  $t->get_ok("/$lang/$mode/$id/")->status_is(404);
-  
-  $c += 2;
-  
- }
-  
+   
 }
 
-done_testing($c);
+done_testing;

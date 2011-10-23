@@ -35,9 +35,8 @@ my $t = Test::Mojo->new( 'Catz::Core::App' );
 $t->max_redirects( 2 );
 
 my $txt = text ( 'en' );
- 
-my $c = 0;
 
+# paths that should lead to front page 
 foreach my $path ( qw ( 
  / /index.htm /index.html /stat /stat/ /stat/index.htm /stat/index.html
  /bestofbest /bestofbest/ /bestofbest/index.htm /bestofbest/index.html
@@ -49,11 +48,10 @@ foreach my $path ( qw (
    ->content_type_like(qr/text\/html/)
    ->content_like(qr/$txt->{NOSCRIPT}/)
    ->content_like(qr/$txt->{SLOGAN}/);
-   
- $c += 5;
 
 }
 
+# paths that should lead to lists
 foreach my $path ( qw ( 
  /dates.htm /dates.html /locations.htm /locations.html /breeders /breeders/ 
  /breeders/index.htm /breeders/index.html /ems/breeders.htm /ems/breeders.html
@@ -65,11 +63,10 @@ foreach my $path ( qw (
    ->content_type_like(qr/text\/html/)
    ->content_like(qr/$txt->{NOSCRIPT}/)
    ->content_like(qr/$txt->{LISTING}/);
-   
- $c += 5;
 
 }
 
+# path that should work and lead to photo browsing
 foreach my $path ( qw ( 
  /breeders/Bodhidharma-039s.html /breeders/MegaMiaow-039s.html
  /breeders/Sic-039an.html /breeders/Is-228-045Brownin.html
@@ -99,10 +96,9 @@ foreach my $path ( qw (
    ->content_like(qr/$txt->{PAGE_FIRST}/)
    ->content_like(qr/$txt->{PAGE_NEXT}/);
    
- $c += 6;
-   
 }
 
+# old search page should lead to new search page
 foreach my $path ( qw ( 
  /xdf /xdf/
 ) ) {
@@ -112,16 +108,17 @@ foreach my $path ( qw (
    ->content_type_like(qr/text\/html/)
    ->content_like(qr/$txt->{NOSCRIPT}/)
    ->content_like(qr/$txt->{SEARCH}/);
-   
- $c += 5;
 
 }
 
+# classic non-rerouted paths should work too
 foreach my $folder ( qw ( 
- round_finland cesmes_b cesmes_c culture_trip_lake_tuusula hel_sto_hel 
+ around_finland cesmes_b cesmes_c culture_trip_lake_tuusula hel_sto_hel 
 ) ) {
-
-
+ 
+ $t->get_ok("/reroute/$folder")
+   ->status_is(200)
+   ->content_type_like(qr/text\/html/);
 }
 
 foreach my $folder ( qw ( 
@@ -134,17 +131,17 @@ foreach my $folder ( qw (
   /0001-0012.html /0001-0012.htm /0013-0024.html
  ) ) {
 
+  # paths that should lead to photo browsing
   $t->get_ok("/reroute/$folder$file")
    ->status_is(200)
    ->content_type_like(qr/text\/html/)
    ->content_like(qr/$txt->{NOSCRIPT}/)
    ->content_like(qr/$txt->{PAGE_FIRST}/)
    ->content_like(qr/$txt->{PAGE_NEXT}/);
-   
-  $c += 6;
 
  }
 
+ # paths that should lead to photo viewing
  foreach my $file ( qw ( 
   /0001.html /0002.html /0004.html /0008.html /0009.htm  
  ) ) {
@@ -155,13 +152,12 @@ foreach my $folder ( qw (
    ->content_like(qr/$txt->{NOSCRIPT}/)
    ->content_like(qr/$txt->{PHOTO_NEXT}/)
    ->content_like(qr/$txt->{PHOTO_LAST}/);
-   
-  $c += 6;
 
  }
   
 }
 
+# static resources
 foreach my $static ( qw ( 
  /20040821vantaa/IMAG1009.JPG
  /20050730helsinki1/IMG_4047.JPG
@@ -176,13 +172,13 @@ foreach my $static ( qw (
    ->status_is(200)
    ->content_type_like(qr/image\/jpeg/);
 
- $c += 3;
- 
 }
 
-$t->get_ok("/reroute/wont/match/anything.html")->status_is(404); $c += 2;
-$t->get_ok("/reroute/jakldsjflkasdf/93939.JPG")->status_is(404); $c += 2;
-$t->get_ok("/reroute/jjk3jjj3j")->status_is(404); $c += 2;
+# a few illegal paths
 
-done_testing( $c );
+$t->get_ok("/reroute/wont/match/anything.html")->status_is(404);
+$t->get_ok("/reroute/jakldsjflkasdf/93939.JPG")->status_is(404);
+$t->get_ok("/reroute/jjk3jjj3j")->status_is(404);
+
+done_testing;
 

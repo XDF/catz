@@ -28,65 +28,28 @@ use 5.10.0; use strict; use warnings;
 use Test::More;
 use Test::Mojo;
 
-use Catz::Core::Text;
+use Catz::Core::Conf;
 
 my $t = Test::Mojo->new( 'Catz::Core::App' );
 
-my @oknews = qw ( 20110512234151 20110512234151 20110627222128 );
+my $static = conf ( 'static' );
 
-my @badnews = qw ( 20110415123456 19001010123433 xadsad @$&*aB );
+foreach my $path ( keys %{ $static } ) {
 
-my @oksetups = qw ( en fi en211211 fi171212 en394211 fi211111 );
-
-foreach my $setup ( @oksetups ) {
-
- my $txt = text ( substr ( $setup, 0, 2 ) );
+ if ( $path =~ m|\.txt| ) {
  
- # news index page
- $t->get_ok("/$setup/news/")
-   ->status_is(200)
-   ->content_type_like(qr/text\/html/)
-   ->text_is('html body h1'=>$txt->{NEWS_ALL});
-
- # no ending slash -> 301
- $t->get_ok("/$setup/news")->status_is(301);
-   
- # articles
- foreach my $key ( @oknews ) {
-  
-  $t->get_ok("/$setup/news/$key/")
-    ->status_is(200)
-    ->content_type_like(qr/text\/html/)
-    ->content_like(qr/$txt->{NEWS}/);
+  $t->get_ok( $path )->status_is(200)->content_type_like(qr/text\/plain/);
  
-  $t->get_ok("/$setup/news/$key")->status_is(301);
-  
- }
-
- # invalid articles
- foreach my $key ( @badnews ) { 
+ } elsif ( $path =~ m|\.png| ) {
  
-  $t->get_ok("/$setup/news/$key/")->status_is(404);
- 
- }
- 
- # the RSS feed
- if ( length ( $setup ) == 2 ) {
- 
-  $t->get_ok("/$setup/feed/")
-    ->status_is(200)
-    ->content_type_like(qr/xml/)
-    ->element_exists('rss[version=2.0]')
-    ->text_is('title'=>$txt->{SITE})
-    ->element_exists('pubDate');
+ $t->get_ok( $path )->status_is(200)->content_type_like(qr/image\/png/);
  
  } else {
-  
-  # attempt to get feed with setup should fail  
-  $t->get_ok("/$setup/feed/")->status_is(404);
-  
- }
  
+ $t->get_ok( $path )->status_is(200);
+ 
+ }
+  
 }
 
 done_testing;
