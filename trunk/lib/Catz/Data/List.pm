@@ -93,14 +93,7 @@ my $matrix = {
    nick => 1, code => 1, breed => 1, app => 1, breeder => 1, nat => 1 
   },
  },
- 
- breed => {
-  modes => [ qw ( a2z cate top first ) ],
-  dividers => 0,
-  refines => [ qw ( code breeder nat loc ) ],
-  jump => { code => 1 },  
- },
- 
+  
  breeder => {
   modes => [ qw ( a2z top first ) ],
   dividers => 1,

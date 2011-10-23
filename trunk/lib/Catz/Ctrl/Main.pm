@@ -147,7 +147,7 @@ sub result {
   $s->{result} = $res->[0];
   $s->{attrib} = $res->[1];
  
-  $self->render( template => 'elem/result', , format => 'html' ) and return;
+  $self->render( template => 'elem/result', format => 'html' ) and return;
  
  };
  
@@ -187,6 +187,14 @@ sub info {
  
  $self->render_text ( text => $out, format => 'txt' ); 
  
+}
+
+sub contrib {
+
+ my $self = shift; my $s = $self->{stash}; 
+
+ $self->render( template => 'content/contrib', format => 'html' );
+
 }
 
 1;

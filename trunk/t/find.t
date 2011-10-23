@@ -31,162 +31,100 @@ use Test::Mojo;
 use Catz::Util::String qw ( enurl );
 
 my $t = Test::Mojo->new( 'Catz::Core::App' );
-                  
-my $c = 0;
 
-foreach my $lang ( qw ( en fi ) ) {
+my @oklangs = qw ( en fi );
 
- # should return results in both languages
+# these should return results in both languages
+my @oktexts = qw ( 
+ i ilt ilta 2 5 201 2011 T TÄHTI Tähti 50mm tassu CRX fish FISH öRppI öRP    
+ kää HYVINkää jÄMSä åker surok FIFE FifE tica SIGM mimo imosa f/2 ISO
+);
 
- foreach my $find ( map { enurl $_ } qw (
-  i il ilt ilta 2 20 201 2011 T TÄHTI Tähti 50mm tassu CRX fish FISH ÖRppI öRP    
-  30 5 kää HYVINkää HyVINkÄÄ jÄMSä åker SUROK surok pirok FIFE FifE TIcA TicA
-  SIG SIGM SIGMA mim mimo mimos imo imos imosa caNO aNo 10mm 200mm f/2 ISO
- ) ) {
+# should return empty result but should still return ok 
+my @badtexts = qw ( %$@43IKKKJ MIImUUXxde p;/%lkö-jd ???__Xå++_ );
+
+# english only, finnish bad
+my @mixa = qw ( 2010- 2005-07- associati category shorthair );
+
+# finnish only, english bad
+my @mixb = qw ( 10.10. 7.2005 yhdistys kategoria lyhytkarva );
+
+foreach my $lang ( @oklangs ) {
+
+ foreach my $find ( map { enurl $_ } @oktexts ) {
   
  $t->get_ok("/$lang/find?s=$find")
    ->status_is(200)
    ->content_type_like(qr/text\/html/)
    ->element_exists('div[class~="rounded"] a');
-   
- $c += 4;
   
  }
   
- # should return no results but should still give 200 
 
- foreach my $find ( map { enurl $_ } qw (
-  %$@OIIKKKJ MIIMUUXxde poi%lk%%jd 798_3h_3hj //;;;: -öÅÄÖåäö// ?=?=?=??=
- ) ) {
+ foreach my $find ( map { enurl $_ } @badtexts ) {
   
   $t->get_ok("/$lang/find?s=$find")
    ->status_is(200)
    ->content_type_like(qr/text\/html/)
    ->content_is('');
-   
-  $c += 4;
   
  }
  
- # up to a gigantic length, all values are too long
+ foreach my $mix ( @mixa ) {
+
+  if ( $lang eq 'en' ) {
  
- foreach my $i ( 1 .. 19 ) {
- 
-  $i *= 100;
- 
-  my $url = join '', map { 'x' } ( 1 .. $i );
-  
-  $t->get_ok("/$lang/find?s=$url")
-   ->status_is(200)
-   ->content_is('');
+   $t->get_ok("/$lang/find?s=$mix")
+    ->status_is(200)
+    ->content_type_like(qr/text\/html/)
+    ->element_exists('div[class~="rounded"] a');
    
-  $c += 3;
-    
+  } else {
+ 
+   $t->get_ok("/$lang/find?s=$mix")
+    ->status_is(200)
+    ->content_type_like(qr/text\/html/)
+    ->content_is(''); 
+  }
+ 
+ }
+ 
+ foreach my $mix ( @mixb ) {
+ 
+  if ( $lang eq 'fi' ) {
+ 
+   $t->get_ok("/$lang/find?s=$mix")
+    ->status_is(200)
+    ->content_type_like(qr/text\/html/)
+    ->element_exists('div[class~="rounded"] a');
+   
+  } else {
+ 
+   $t->get_ok("/$lang/find?s=$mix")
+    ->status_is(200)
+    ->content_type_like(qr/text\/html/)
+    ->content_is(''); 
+  } 
+ 
  }
 
 }
 
-# english specific
+# stress test
 
-$t->get_ok("/en/find?s=".enurl('2010-'))
-  ->status_is(200)
-  ->content_type_like(qr/text\/html/)
-  ->element_exists('div[class~="rounded"] a');
+foreach my $lang ( @oklangs ) {
+
+ foreach my $i ( 1 .. 50 ) {
+
+  my $c = 20 + int(rand(20));
    
-$c += 4;
+  $t->get_ok("/$lang/find?s=".enurl
+   ( join '', map { chr $_ } map { 33 + int(rand(95)) } ( 1 .. $c ) )
+   )->content_type_like(qr/text\/html/)
+    ->content_is(''); 
+  
+ }
+ 
+}
 
-$t->get_ok("/en/find?s=".enurl('2005-07-'))
-  ->status_is(200)
-  ->content_type_like(qr/text\/html/)
-  ->element_exists('div[class~="rounded"] a');
-   
-$c += 4;
-
-$t->get_ok("/en/find?s=".enurl('association'))
-  ->status_is(200)
-  ->content_type_like(qr/text\/html/)
-  ->element_exists('div[class~="rounded"] a');
-   
-$c += 4;
-
-$t->get_ok("/en/find?s=".enurl('10.10.'))
-  ->status_is(200)
-  ->content_type_like(qr/text\/html/)
-  ->content_is('');
-
-$c += 4;
-   
-$t->get_ok("/en/find?s=".enurl('7.2005'))
-  ->status_is(200)
-  ->content_type_like(qr/text\/html/)
-  ->content_is('');
-
-$c += 4;
-
-$t->get_ok("/en/find?s=".enurl('yhdistys'))
-  ->status_is(200)
-  ->content_type_like(qr/text\/html/)
-  ->content_is('');
-
-$c += 4;
-
-$t->get_ok("/en/find?s=".enurl('catego'))
-  ->status_is(200)
-  ->content_type_like(qr/text\/html/)
-  ->element_exists('div[class~="rounded"] a');
-   
-$c += 4;
-
-# finnish specific
-
-$t->get_ok("/fi/find?s=".enurl('2010-'))
-  ->status_is(200)
-  ->content_type_like(qr/text\/html/)
-  ->content_is('');
-   
-$c += 4;
-
-$t->get_ok("/fi/find?s=".enurl('2005-07-'))
-  ->status_is(200)
-  ->content_type_like(qr/text\/html/)
-  ->content_is('');
-   
-$c += 4;
-
-$t->get_ok("/fi/find?s=".enurl('association'))
-  ->status_is(200)
-  ->content_type_like(qr/text\/html/)
-  ->content_is('');
-   
-$c += 4;
-
-$t->get_ok("/fi/find?s=".enurl('10.10.'))
-  ->status_is(200)
-  ->content_type_like(qr/text\/html/)
-  ->element_exists('div[class~="rounded"] a');
-
-$c += 4;
-   
-$t->get_ok("/fi/find?s=".enurl('7.2005'))
-  ->status_is(200)
-  ->content_type_like(qr/text\/html/)
-  ->element_exists('div[class~="rounded"] a');
-
-$c += 4;
-
-$t->get_ok("/fi/find?s=".enurl('yhdistys'))
-  ->status_is(200)
-  ->content_type_like(qr/text\/html/)
-  ->element_exists('div[class~="rounded"] a');
-
-$c += 4;
-
-$t->get_ok("/fi/find?s=".enurl('tegoria'))
-  ->status_is(200)
-  ->content_type_like(qr/text\/html/)
-  ->element_exists('div[class~="rounded"] a');
-   
-$c += 4;
-
-
-done_testing($c);
+done_testing;

@@ -34,108 +34,90 @@ use Catz::Data::List;
 
 my $t = Test::Mojo->new( 'Catz::Core::App' );
 
-# to prevent timeouts and so false test failures 
-#if ( conf ( 'win' ) ) {
-# $t->ua->ioloop->timeout(15);
-#} else {
-# $t->ua->ioloop->timeout(5);
-#}
-
 my $matrix = list_matrix;
 
-my $c = 0;
+my @oksetups = qw ( en fi en211211 fi171212 en394211 fi211111 );
 
-foreach my $lang ( qw ( en fi en234212 ) ) {
+# a few list/mode combinations
+my @oklists = qw (
+ album/cron date/cron loc/first org/top umb/a2z cat/first breeder/top
+ nat/first code/a2z app/top breed/cate cate/a2z feat/first nick/top
+ title/first lens/a2z body/top fnum/first etime/a2z iso/top flen/a2z
+);
 
- my $txt = text ( $lang );
+# non-working combinations
+my @badlists = qw ( 
+ date/first umb/cron etime/cate folder/first unexistent/a2z  
+);
 
- $t->get_ok("/$lang/lists")
+# non-working paths
+my @badpaths = qw ( /list/ /list/a2z/ /list/cat/ /list/cat/a2z/ );
+
+# test list index
+
+foreach my $setup ( @oksetups ) {
+
+ my $txt = text ( substr ( $setup, 0, 2 ) );
+ 
+ $t->get_ok("/$setup/lists/")
    ->status_is(200)
    ->content_type_like(qr/text\/html/)
    ->content_like(qr/$txt->{LISTINGS}/);
 
- $c += 4;
-
- $t->get_ok("/$lang/lists/")
-   ->status_is(200)
-   ->content_type_like(qr/text\/html/)
-   ->content_like(qr/$txt->{LISTINGS}/);
-
- $c += 4;
+ $t->get_ok("/$setup/lists")->status_is(301);
  
- foreach my $mode ( @{ $matrix->{album}->{modes} } ) {
+}
  
-  # illegal list should be 404
-  
-  $t->get_ok("/$lang/list/stupid/$mode/")->status_is(404); $c += 2;
-  
- }
+my $i = 0; # ok setup pointer
  
- foreach my $list ( sort keys %{ $matrix } ) {
- 
-  # no mode should give 404
-  
-  $t->get_ok("/$lang/list/$list/")->status_is(404); $c += 2;
-  
-  # illegal mode should give 404
-  
-  $t->get_ok("/$lang/list/$list/oiklg/")->status_is(404); $c += 2;
-  
-  my $had_first = 0;
-  
-  foreach my $mode ( @{ $matrix->{$list}->{modes} } ) {
-  
-   $mode eq 'first' and $had_first = 1;
+foreach my $listi ( @oklists ) {
 
-   # no slash should give perm redirect
-   
-   $t->get_ok("/$lang/list/$list/$mode")->status_is(200); $c += 2;
+ my $setup = $oksetups[$i++]; # we loop the setups list
 
-   $t->get_ok("/$lang/list/$list/$mode/")
-     ->status_is(200)
-     ->content_type_like(qr/text\/html/)
-     ->element_exists('html body div[class="inner"]')
-     ->text_like('html body h1'=>qr/$txt->{'MODE_'.uc($mode)}/);
-     
-   $c += 5;
+ $i > $#oksetups and $i = 0;
+ 
+ my $txt = text ( substr ( $setup, 0, 2 ) ); 
+ 
+ $listi =~ m|^(.+)\/(.+)$|;
+ 
+ my $list = $1; my $mode = $2;
+ 
+ if ( $matrix->{$list}->{dividers} ) {
   
-   if ( $matrix->{$list}->{dividers} ) {
-   
-    $t->get_ok("/$lang/list/$list/$mode/")
-      ->element_exists('html body div div div[class~="outer"]');
+  $t->get_ok("/$setup/list/$list/$mode/")
+    ->status_is(200)
+    ->content_type_like(qr/text\/html/)
+    ->content_like(qr/$txt->{'MODE_'.uc($mode)}/)
+    ->content_like(qr/\".{0,15}outer.{0,15}\"/);    
     
-     $c += 2;
-   
-   }
-  
-  }
-  
-  if ( not $had_first ) {
-  
-   # illegal mode 'first' should give 404
-  
-   $t->get_ok("/$lang/list/$list/first/")->status_is(404); $c += 2;
-   
-  }
+ } else {
  
+  $t->get_ok("/$setup/list/$list/$mode/")
+    ->status_is(200)
+    ->content_type_like(qr/text\/html/)
+    ->content_like(qr/$txt->{'MODE_'.uc($mode)}/)
+     ->content_like(qr/\".{0,15}inner.{0,15}\"/);      
+  
  }
+ 
+ # no ending slash -> 301
+ $t->get_ok("/$setup/list/$list/$mode")->status_is(301);
+
+ # no mode -> 404  
+ $t->get_ok("/$setup/list/$list/")->status_is(404);
+
+} 
+ 
+foreach my $listi ( @badlists ) {
+
+ my $setup = $oksetups[$i++]; # we loop the setups list
+
+ $i > $#oksetups and $i = 0;
+ 
+  $t->get_ok("/$setup/list/$listi/")->status_is(404); 
  
 }
 
-# without language
+foreach my $path ( @badpaths ) { $t->get_ok($path)->status_is(404) } 
 
-$t->get_ok("/list/")->status_is(404); $c += 2;
-
-foreach my $list ( sort keys %{ $matrix } ) {
-
- $t->get_ok("/list/$list/")->status_is(404); $c += 2;
-
- foreach my $mode ( @{ $matrix->{$list}->{modes} } ) {
-  
-  $t->get_ok("/list/$list/$mode/")->status_is(404); $c += 2;
-  
- }
-
-}
-
-done_testing($c);
+done_testing;

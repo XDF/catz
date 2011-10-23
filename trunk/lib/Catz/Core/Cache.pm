@@ -38,7 +38,7 @@ use 5.10.0; use strict; use warnings;
 use parent 'Exporter';
 
 # the interface is simple, just set and get
-our @EXPORT = qw ( cache_set cache_get );
+our @EXPORT = qw ( cache_set cache_get cache_isup );
 
 use Cache::Memcached::Fast;
 use Digest::MD5 qw( md5_hex );
@@ -145,6 +145,35 @@ sub cache_get {
  };
  
  return $ret; 
+
+}
+
+my @chars = ('a'..'z','A'..'Z','0'..'9' );
+
+sub cache_isup {
+
+ # test if memcached server is up and working
+
+ # generate a random string and value, the idea is from
+ # http://th.atguy.com/mycode/generate_random_string/
+
+
+ my $ckey; my $ival;
+
+ foreach (  1 .. 200 ) { 
+
+  $ckey .= $chars [ rand @chars ];
+  $ival .= $chars [ rand @chars ];
+
+ }
+ 
+ $ckey .= 'Catz::Core::Cache::cache_isup::';
+
+ cache_set ( $ckey, $ival );
+
+ my $oval = cache_get ( $ckey ) // '0';
+
+ return $ival eq $oval ? 1 : 0; 
 
 }
 

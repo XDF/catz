@@ -33,6 +33,20 @@ use Catz::Load::Data qw ( loc );
 use Catz::Util::String qw ( enurl ucc );
 use Catz::Util::Time qw ( dtexpand );
 
+my $t = Test::Mojo->new( 'Catz::Core::App' );
+
+$t->max_redirects( 0 );
+
+my @oklangs = qw ( en fi );
+
+my @oksetups = qw ( en394211 fi211111 );
+
+my @okfolders = qw ( 
+ 20040801helsinki 20070708kempele 20070708KEMPELE 20110910kemio 20110910kemiö 
+);
+
+my @badfolders = qw ( 20040805utsjoki 2007070!kem%%le /20070808@AKKE''.mpele );
+
 sub splitf {
 
  $_[0] =~ m|^(.{8})(.+)$|;
@@ -41,109 +55,65 @@ sub splitf {
  
  my $datel = dtexpand ( $date, 'en' );
   
- return ( $date, $datel, $loc );  
+ return ( ( enurl $date ), ( enurl $datel ), ( enurl $loc ) );  
 
 }
 
-my $t = Test::Mojo->new( 'Catz::Core::App' );
+# with no language
+$t->get_ok( "/bulk/photolist/" )->status_is(404);
 
-my $c = 0;
+# with setup and that is not allowed
+foreach my $setup ( @oksetups ) {
 
-my @ok = qw ( 20040801helsinki 20050220jyvaskyla 20050925orimattila 
-20101002porvoo 20060910orimattila 20070707kempele 20070708kempele
-20110910kemio 20100307seinajoki 20100327turku );
+ $t->get_ok( "/$setup/bulk/photolist/" )->status_is(404); 
 
-my @bad = qw (
- 20040805helsinki 20030101tampere 99998877roska
- 20110504kiiminki 20110919orimattila 20120101stockholm
- jasldkfjalkdjfla 832832833883385555 //%%23_-%X....**
- //%?+23_-%X.&&@@^ /3/%?+523_-a%Xdddu3uJJJJJejjj.&&@@^
-);
+}
 
-# no language
-$t->get_ok( "/bulk/photolist/" )->status_is(404); $c += 2;
+foreach my $setup ( @oklangs ) {
 
-# with setup
-$t->get_ok( "/en264311/bulk/photolist/" )->status_is(404); $c += 2;
-$t->get_ok( "/fi365312/bulk/photolist/" )->status_is(404); $c += 2;
-
-foreach my $lang ( qw ( en fi ) ) {
- 
- $t->get_ok( "/$lang/bulk/photolist" )
+ $t->get_ok( "/$setup/bulk/photolist/" )
   ->status_is(200)
   ->content_type_like(qr/text\/plain/)
   ->content_like(qr/\.JPG/);
  
- $c += 4; 
-
- $t->get_ok( "/$lang/bulk/photolist/" )
-  ->status_is(200)
-  ->content_type_like(qr/text\/plain/)
-  ->content_like(qr/\.JPG/);
+ # no ending slash -> redirect
+ $t->get_ok( "/setup/bulk/photolist" )->status_is(301);
  
- $c += 4; 
-  
- foreach my $data ( @ok ) {
+ # then with folder definitions   
+ foreach my $data ( @okfolders ) {
 
   my ( $date, $datel, $loc ) = splitf $data;
  
-  $date = enurl ( $date );
-  $datel = enurl ( $datel );
-  my $loc2 = loc $loc;
-  my $loc3 = ucc ( $loc ); 
-  $loc = enurl ( $loc );
- 
-  foreach my $dat ( ( $date, $datel ) ) {
+  foreach my $d ( ( $date, $datel ) ) {
 
-   $t->get_ok( "/$lang/bulk/photolist?d=$dat&l=$loc" )
+   $t->get_ok( "/$setup/bulk/photolist?d=$d&l=$loc" )
     ->status_is(200)
     ->content_type_like(qr/text\/plain/)
     ->content_like(qr/\.JPG/); 
-  
-   $c += 4;
-   
-   $t->get_ok( "/$lang/bulk/photolist?d=$dat&l=$loc2" )
-    ->status_is(200)
-    ->content_type_like(qr/text\/plain/)
-    ->content_like(qr/\.JPG/); 
-  
-   $c += 4;
 
-   $t->get_ok( "/$lang/bulk/photolist?d=$dat&l=$loc3" )
-    ->status_is(200)
-    ->content_type_like(qr/text\/plain/)
-    ->content_like(qr/\.JPG/); 
-  
-   $c += 4;
-              
-   $t->get_ok( "/$lang/bulk/photolist?d=$dat" )->status_is(404); $c += 2;
-  
-   $t->get_ok( "/$lang/bulk/photolist?l=$loc" )->status_is(404); $c += 2;
+   # just date parameter                
+   $t->get_ok( "/$setup/bulk/photolist?d=$d" )->status_is(404);
    
   }
-   
- }
+  
+  # just location parameter
+  $t->get_ok( "/$setup/bulk/photolist?l=$loc" )->status_is(404);
 
- foreach my $data ( @bad ) {
+ }
+ 
+ # a few bad folders -> 404 expected
+ foreach my $data ( @badfolders ) {
 
   my ( $date, $datel, $loc ) = splitf $data;
  
-  $date = enurl ( $date );
-  $datel = enurl ( $datel );
-  $loc = enurl ( $loc );
+  foreach my $d ( ( $date, $datel ) ) { 
  
-  foreach my $dat ( ( $date, $datel ) ) { 
- 
-   $t->get_ok( "/$lang/bulk/photolist?d=$dat&l=$loc" )->status_is(404); $c += 2;
-  
-   $t->get_ok( "/$lang/bulk/photolist?d=$dat" )->status_is(404); $c += 2;
-  
-   $t->get_ok( "/$lang/bulk/photolist?l=$loc" )->status_is(404); $c += 2;
-   
+   $t->get_ok( "/$setup/bulk/photolist?d=$d&l=$loc" )->status_is(404);
+       
   }
 
  }
 
 }    
  
-done_testing($c);
+done_testing;
