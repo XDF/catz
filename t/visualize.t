@@ -25,14 +25,17 @@
 
 use 5.10.0; use strict; use warnings;
 
+# unbuffered outputs
+# from http://perldoc.perl.org/functions/open.html
+select STDERR; $| = 1; 
+select STDOUT; $| = 1; 
+
 use Test::More;
 use Test::Mojo;
 
 my $t = Test::Mojo->new( 'Catz::Core::App' );
 
 $t->max_redirects( 3 );
-
-my $c = 0;
 
 foreach my $lang ( qw ( en fi en264312 fi384322 ) ) {
 

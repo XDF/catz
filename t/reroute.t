@@ -25,6 +25,11 @@
 
 use 5.10.0; use strict; use warnings;
 
+# unbuffered outputs
+# from http://perldoc.perl.org/functions/open.html
+select STDERR; $| = 1; 
+select STDOUT; $| = 1; 
+
 use Test::More;
 use Test::Mojo;
 
@@ -48,7 +53,7 @@ foreach my $path ( qw (
    ->content_type_like(qr/text\/html/)
    ->content_like(qr/$txt->{NOSCRIPT}/)
    ->content_like(qr/$txt->{SLOGAN}/);
-
+   
 }
 
 # paths that should lead to lists
