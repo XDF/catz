@@ -25,14 +25,17 @@
 
 use 5.10.0; use strict; use warnings;
 
+# unbuffered outputs
+# from http://perldoc.perl.org/functions/open.html
+select STDERR; $| = 1; 
+select STDOUT; $| = 1; 
+
 use Test::More;
 use Test::Mojo;
 
 use Catz::Core::Text;
 
 my $t = Test::Mojo->new( 'Catz::Core::App' );
-                  
-my $c = 0;
 
 use constant RESULT_NA => '<!-- N/A -->';
 
@@ -56,7 +59,7 @@ my @no = qw (
  CATZ-KNQWY5DFMRPV7BD6LU2DQXUANFJ4OAQW5PNSZYV22PGJFKW73OR4GDUF5AVGAJOBPLRS4VXG46JZRNMXJEYVPK4YNU-D92EAFA672BF1AC91D885A1386BF764C
 );
 
-# some keys that look fine but have data-digest mismatch
+# some keys that look fine but have a checksum mismatch
 
 my @bad = qw (
  CATZ-KNQWY5DFMRPV7S7QNQUA5DLQLHEJGLY7UM3KIQ42FRKRA5YTRCAQIRB7T4MPXFNUJRZ3ZE7F32TNK652WOAO7USQ74-433AE89FE61846F29F6BB6E7211E114C
@@ -77,31 +80,34 @@ my @mal = qw (
  m3kj3k3jlk3jlk3KJLKWJALKJAWKKLJWLW
 );
 
-# the huge key
+my @chars = ( 'a'..'z','A'..'Z','0'..'9',qw (å ä ö Å Ä Ö ? - * @ !));
 
-my $huge = join '', map { 'x' } ( 1 .. 1900 ); 
+my @huges = ();
 
+foreach ( 1 .. 20 ) {
+
+ my $key = join '', 
+  map { $chars[ rand @chars ] } ( 1 .. ( 50 + int ( rand ( 950 ) ) ) );
+
+ push @huges, $key;
+ 
+} 
+ 
 foreach my $lang ( qw ( en fi ) ) {
 
  my $txt = text ( $lang );
 
  # no key / 1
-
  $t->get_ok("/$lang/result/")
   ->status_is(200)
   ->content_type_like(qr/text\/html/)
   ->content_is(RESULT_NA);
-  
- $c += 4;
 
- # no key / 2
-
+ # empty key
  $t->get_ok("/$lang/result?x=")
   ->status_is(200)
   ->content_type_like(qr/text\/html/)
   ->content_is(RESULT_NA);
-  
- $c += 4;
  
  foreach my $key ( @ok ) {
  
@@ -109,22 +115,18 @@ foreach my $lang ( qw ( en fi ) ) {
     ->status_is(200)
     ->content_type_like(qr/text\/html/)
     ->content_like(qr/$txt->{RESULT_CREDIT_URL}/);
-   
-  $c += 4;
 
  }
  
- foreach my $key ( @bad, @mal, $huge ) {
+ foreach my $key ( @bad, @mal, @huges ) {
  
   $t->get_ok("/$lang/result?x=$key")
     ->status_is(200)
     ->content_type_like(qr/text\/html/)
     ->content_is(RESULT_NA);
-   
-  $c += 4;
  
  }
 
 }
 
-done_testing( $c );
+done_testing;

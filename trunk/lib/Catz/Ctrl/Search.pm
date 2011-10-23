@@ -67,7 +67,7 @@ sub search_pre {
  #  0 on error
  
  my $self = shift; my $s = $self->{stash};
-
+ 
  # convert search to argument array 
  $s->{args_array} = search2args ( $s->{what} );
   
@@ -77,13 +77,14 @@ sub search_pre {
  if ( 
   $s->{args_count} > 0 and # there are arguments
   $s->{args_count} <= 50 and # not more than 25 pairs   
-  $s->{args_count} % 2 == 0 and # args appear in pairs 
-  $self->fetch ( 'search#verify_args' , @{ $s->{args_array} } ) # check pris 
+  $s->{args_count} % 2 == 0 #args appear in pairs  
   ) {
   
    return 1; # ok
   
  }
+ 
+ 
  
  # clear the errorneous search to 
  # prevent troubles later
@@ -145,7 +146,7 @@ sub pattern {
  $s->{what} and do {
  
   $self->search_pre or return 0;
- 
+   
   $self->load or return 0;
  
   $self->origin or return 0;

@@ -25,6 +25,11 @@
 
 use 5.10.0; use strict; use warnings;
 
+# unbuffered outputs
+# from http://perldoc.perl.org/functions/open.html
+select STDERR; $| = 1; 
+select STDOUT; $| = 1; 
+
 use Test::More;
 use Test::Mojo;
 
@@ -34,7 +39,8 @@ use Catz::Util::String qw ( encode );
 
 my $t = Test::Mojo->new( 'Catz::Core::App' );
 
-my @oksetups = qw ( en fi en264312 fi384322 en394211 fi171212 );
+# all ok setups must show all photo details
+my @oksetups = qw ( en fi en264312 fi384322 );
 
 my @okcombs = qw (
  org/TUROK/146161
@@ -58,7 +64,7 @@ my @badids = qw (
  org/SUROK/018090
  title/EC/003122
  date/20100404/150008
- app/a/173004
+ app/a/173008
  breeder/Cat-039s-045JM/143100
  cate/4/011032
 );
@@ -122,8 +128,8 @@ foreach my $mode ( qw ( browse view ) ) {
    $t->get_ok("/$setup/$mode/$elem[0]/$elem[1]/")
      ->status_is(200)
      ->content_type_like(qr/text\/html/)
+     ->content_like(qr/$txt->{LOC}/)
      ->content_like(qr/$txt->{ALBUM}/)
-     ->content_like(qr/$txt->{ORG}/)
      ->content_like(qr/$txt->{PHOTO_ID}/)
      ->content_like(qr/\/.{8}\.JPG/);
   
@@ -132,7 +138,7 @@ foreach my $mode ( qw ( browse view ) ) {
       ->status_is(200)
       ->content_type_like(qr/text\/html/)
       ->content_like(qr/$txt->{LOC}/)
-      ->content_like(qr/$txt->{UMB}/)
+      ->content_like(qr/$txt->{DATE}/)
       ->content_like(qr/$txt->{PHOTO_ID}/)
       ->content_like(qr/\/.{8}\.JPG/);
   
@@ -149,17 +155,17 @@ foreach my $mode ( qw ( browse view ) ) {
    # 
 
  }
- 
+     
  foreach my $comp ( @badids ) {
  
   my $setup = $oksetups[$i++]; # we loop the setups list
 
   $i > $#oksetups and $i = 0;
   
+      
   my @elem = split m|/|, $comp;
-
+  
   $t->get_ok("/$setup/$mode/$elem[0]/$elem[1]/$elem[2]/")->status_is(404);
-
 
  }
        
@@ -171,7 +177,7 @@ foreach my $mode ( qw ( browse view ) ) {
   
   my @elem = split m|/|, $comp;
   
-  $t->get_ok("/$setup/$mode/$elem[0]/$elem[1]")->status_is(404);
+  $t->get_ok("/$setup/$mode/$elem[0]/$elem[1]/")->status_is(404);
   
   $t->get_ok("/$setup/$mode/$elem[0]/$elem[1]/$elem[2]/")->status_is(404);
  
@@ -200,16 +206,28 @@ foreach my $mode ( qw ( browse view ) ) {
    my $id = 
     join '', map { chr $_ } map { 48 + int(rand(10)) } ( 1 .. 6 );
       
-   $t->get_ok("/$setup/$mode/$pri/$sec/")->status_is(404);
+   $t->get_ok("/$setup/$mode/$pri/$sec/")
+     ->status_isnt(200)->status_isnt(500);
   
-   $t->get_ok("/$setup/$mode/$pri/$sec/$id/")->status_is(404);
+   $t->get_ok("/$setup/$mode/$pri/$sec/$id/")
+     ->status_isnt(200)->status_isnt(500);
   
    $t->get_ok("/$setup/$mode/$prie/$sece/")->status_is(404);  
 
    $t->get_ok("/$setup/$mode/$prie/$sece/$id/")->status_is(404);
              
   }
+  
+ # english speciality
+ 
+ $t->get_ok("/en/$mode/umb/other/")->status_is(200);  
+ $t->get_ok("/en/$mode/umb/muu/")->status_is(404);
+
+ # finnish speciality
+
+ $t->get_ok("/fi/$mode/umb/other/")->status_is(404);  
+ $t->get_ok("/fi/$mode/umb/muu/")->status_is(200);
 
 }
 
-done_testing(;
+done_testing;

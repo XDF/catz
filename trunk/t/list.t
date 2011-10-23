@@ -25,6 +25,11 @@
 
 use 5.10.0; use strict; use warnings;
 
+# unbuffered outputs
+# from http://perldoc.perl.org/functions/open.html
+select STDERR; $| = 1; 
+select STDOUT; $| = 1; 
+
 use Test::More;
 use Test::Mojo;
 
