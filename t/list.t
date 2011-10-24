@@ -45,9 +45,10 @@ my @oksetups = qw ( en fi en211211 fi171212 en394211 fi211111 );
 
 # a few list/mode combinations
 my @oklists = qw (
- album/cron date/cron loc/first org/top umb/a2z cat/first breeder/top
- nat/first code/a2z app/top breed/cate cate/a2z feat/first nick/top
- title/first lens/a2z body/top fnum/first etime/a2z iso/top flen/a2z
+ album/cron date/cron loc/first org/top umb/a2z cat/a2z cat/top
+ cat/first breeder/top nat/first code/a2z app/top breed/cate cate/a2z 
+ feat/first nick/top title/first lens/a2z body/top fnum/first 
+ etime/a2z iso/top flen/a2z
 );
 
 # non-working combinations

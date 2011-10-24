@@ -20,6 +20,10 @@ EOF
 
 $ENV{MOJO_APP} ||= 'Catz::Core::App';
 
+# added 2011-10-15 to prevent responses to go 
+# to file # and issues with page caching  
+$ENV{MOJO_MAX_MEMORY_SIZE} = conf ( 'msgmemlimit' );
+
 conf ( 'win' ) and do {
 
  $ENV{MOJO_HOME} = conf ( 'rootd' );
