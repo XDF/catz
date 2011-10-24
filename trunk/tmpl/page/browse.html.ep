@@ -181,7 +181,7 @@ if ( $runmode eq 'pair' ) {
 - <%= dtexpand ( $fresh, $lang ) %>
 % }
  <%= $sep %>
-% if ( $total > 9 ) {
+% if ( $total > 9 and 1 == 0 ) { # disabled 2011-10-25
 <span id="entry"><a href="<%== $urlbuild %>"><%= $t->{WID_HEAD} %></a>
 </span>
 % }

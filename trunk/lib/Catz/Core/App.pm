@@ -124,10 +124,12 @@ sub startup {
  $l->route( '/' )->to( 'main#front' );
 
  ###
- ### contribution content page - rule added 2011-10-22
+ ### content pages
  ###
  
- $l->route( '/contrib' )->to( 'main#contrib' );
+ # disabled 2011-10-25
+ # $l->route( '/about/contrib' )->to( 'main#contrib' );
+ # $l->route( '/about/privacy' )->to( 'main#privacy' );
  
  ###
  ### the news service
@@ -230,8 +232,9 @@ sub startup {
  ### Widget features
  ###
 
- $l->route ( '/build' )->to ( 'widget#build' ); # the widget builder
- $l->route ( '/embed' )->to ( 'widget#embed' ); # the widget viewer
+ # disabled 2011-10-25
+ # $l->route ( '/build' )->to ( 'widget#build' ); # the widget builder
+ # $l->route ( '/embed' )->to ( 'widget#embed' ); # the widget viewer
  
  ###
  ### AJAX interface(s)
