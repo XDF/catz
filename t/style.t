@@ -39,28 +39,28 @@ use Catz::Util::String qw ( enurl );
     
 my $t = Test::Mojo->new( 'Catz::Core::App' );
 
-my $c = 0;
-
 my $style = style_get;
 
 # reset
-
 $t->get_ok('/style/reset/')
   ->status_is(200)
   ->content_type_like(qr/text\/css/)
   ->content_like(qr/Yahoo/)
   ->content_like(qr/border-collapse/);
+
+# no ending slash -> redirect  
+$t->get_ok("/style/reset")->status_is(301);
+
+# base stylesheet with all avaiable palettes
+foreach my $palette ( sort keys %{ $style->{color} } ) {
+
+ # prepare palette-specific strings to check for
+
+ my $pattern1 = 
+  'color: ' . $style->{color}->{$palette}->{text} . ';';
   
-$c += 5;
-
-# palettes
-
-foreach my $palette ( qw ( dark neutral bright ) ) {
-
- # prepare 2 palette-specific string to check for
-
- my $pattern1 = 'color: ' . $style->{color}->{$palette}->{text} . ';';
- my $pattern2 = 'background-color: ' . $style->{color}->{$palette}->{shade} . ';';
+ my $pattern2 = 
+  'background-color: ' . $style->{color}->{$palette}->{shade} . ';';
    
  $t->get_ok("/style/$palette/")
    ->status_is(200)
@@ -68,42 +68,18 @@ foreach my $palette ( qw ( dark neutral bright ) ) {
    ->content_like(qr/\.xtra/)
    ->content_like(qr/$pattern1/)
    ->content_like(qr/$pattern2/);
-   
- $c += 6;
  
- # without slash should be ok
- 
- $t->get_ok("/style/$palette")
-   ->status_is(200)
-   ->content_type_like(qr/text\/css/)
-   ->content_like(qr/\.xtra/)
-   ->content_like(qr/$pattern1/)
-   ->content_like(qr/$pattern2/);
-   
- $c += 6;
+ # no ending slash -> redirect
+ $t->get_ok("/style/$palette")->status_is(301);
  
 }
 
-# illegal urls
+foreach my $path  ( qw ( 
+ /style/ /style/randomtexthere/ /style/more/random/texts/ /style/+++~~~/
+) ) {
 
-$t->get_ok('/style/')
-  ->status_is(404);
-  
-$c += 2;
+ $t->get_ok( $path )->status_is(404);
+ 
+}
 
-$t->get_ok('/style/stupidvalue/')
-  ->status_is(404);
-  
-$c += 2;
-
-$t->get_ok('/style/stupid/values/in/chain/')
-  ->status_is(404);
-  
-$c += 2;
-
-$t->get_ok('/style/'.enurl('?#_;KIJ833i:*').'/')
-  ->status_is(404);
-  
-$c += 2;
-
-done_testing( $c );
+done_testing;

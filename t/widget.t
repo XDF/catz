@@ -3,7 +3,6 @@
 # Copyright (c) 2010-2011 Heikki Siltala
 # Licensed under The MIT License
 # 
-# 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -33,66 +32,22 @@ select STDOUT; $| = 1;
 use Test::More;
 use Test::Mojo;
 
+use Catz::Core::Conf;
+use Catz::Core::Text;
+
 my $t = Test::Mojo->new( 'Catz::Core::App' );
 
-$t->max_redirects( 5 );
+my @oksetups = qw ( en fi en211211 fi171212 en394211 fi211111 );
 
-# these include all three palettes
-my @oksetups = qw ( en fi en214221 fi372222 );
-
-my @okversions = qw ( 20101012123456 20111019164540 );
-
-my @badversions = qw ( 2010101212345 201110191645403 JJJEJ838j3jkl3jsdsdaf );
-
-my @okcombs = qw (
- dist/10001/10002/10003 dist/14/78/214 dist/11/90/1225  
- rank/iso/ISO_1600 rank/loc/Espoo rank/cat/Ipekkedinin_Birinci_Bebek 
- globe
-);
-
-my @badcombs = qw (
- dist/33420/99130/71240 dist/15/10 dist/8 mist/20/30/40 
- rank/iso/ISO_40 rank/loc/Tynnyri hank/cat/FireWire_Solo_MAudio_Generic
- blobe ? x 8
-);
-
-my $i = 0; # ok setup pointer  
-
-foreach my $comb ( @okcombs ) {
-
- my $setup = $oksetups[$i++]; # we loop the setups list
-
- $i > $#oksetups and $i = 0;
+foreach my $setup ( @oksetups ) {
  
- $t->get_ok("/$setup/viz/$comb/$okversions[0]/")
-   ->status_is(200)
-   ->content_type_like(qr/image\/png/);
-}
-
-foreach my $comb ( @badcombs ) {
-
- my $setup = $oksetups[$i++]; # we loop the setups list
-
- $i > $#oksetups and $i = 0;
+ # not yet implemented
  
- $t->get_ok("/$setup/viz/$comb/$okversions[1]/")
-  ->status_is(404);
-
-}
+ # dummy test 2011-10-25
  
-foreach my $version ( @badversions ) {
- 
- my $setup = $oksetups[$i++]; # we loop the setups list
+ $t->get_ok("/");
 
- $i > $#oksetups and $i = 0;
   
- foreach my $comb ( @okcombs ) {
- 
-   $t->get_ok("/$setup/viz/$comb/$version/")
-    ->status_is(404);
-    
-  }
- 
 }
- 
+
 done_testing;
