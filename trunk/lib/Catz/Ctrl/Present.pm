@@ -36,7 +36,9 @@ use parent 'Catz::Core::Ctrl';
 use Catz::Data::Result;
 use Catz::Data::Search;
 use Catz::Data::Style;
-use Catz::Data::Widget;
+
+# disbled 2011-10-25
+# use Catz::Data::Widget;
 
 sub init {
 
@@ -275,8 +277,12 @@ sub multi {
  # load style (for viz img tags)
  $s->{style} = style_get ( $s->{palette} );
  
+ # disabled 2011-10-15
  # prepare url for builder access
- $s->{urlbuild} = '/' . $s->{langaother} . '/build?' . widget_ser ( $s ); 
+ # $s->{urlbuild} = '/' . $s->{langaother} . '/build?' . widget_ser ( $s );
+ 
+ # 2011-10-15
+ $s->{urlbuild} = undef; 
     
  $self->render( template => 'page/browse', format => 'html' );
  

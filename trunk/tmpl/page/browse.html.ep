@@ -180,8 +180,8 @@ if ( $runmode eq 'pair' ) {
 % if ( $fresh ne $ancient ) {
 - <%= dtexpand ( $fresh, $lang ) %>
 % }
- <%= $sep %>
 % if ( $total > 9 and 1 == 0 ) { # disabled 2011-10-25
+ <%= $sep %>
 <span id="entry"><a href="<%== $urlbuild %>"><%= $t->{WID_HEAD} %></a>
 </span>
 % }
