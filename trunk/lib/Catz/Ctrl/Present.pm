@@ -86,7 +86,7 @@ sub origin {
  
   # mark that the id was resolved
   $s->{origin} = 'x'; 
- 
+  
   # fetch the first x of the photo set
   $s->{x} = $self->fetch ( $s->{runmode} . '#first', @{ $s->{args_array} } );
   
@@ -182,7 +182,7 @@ sub multi {
    $s->{perpage}, 
    @{ $s->{args_array} } 
   ) };
-                                     
+
  $s->{total} == 0 and return 0; ; # no photos found 
 
  scalar @{ $s->{xs} } == 0 and return 0; # no photos for this page 

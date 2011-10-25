@@ -50,7 +50,7 @@ sub pair_ok {
 sub pair_pre {
 
  my ( $self, $intent ) = @_; my $s = $self->{stash};
- 
+
  utf8::decode ( $s->{sec} );
  
  $intent ne 'widget' and 
@@ -87,12 +87,9 @@ sub pair {
  $self->init or return 0;
 
  $s->{runmode} = 'pair';
-  
+
  $self->pair_ok or return 0;
-  
- # using decode helper
- $s->{sec} = $self->decode ( $s->{sec} ); 
- 
+
  $self->load or return 0;
 
  $self->pair_pre ( 'core' ) or return 0;

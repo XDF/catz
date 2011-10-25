@@ -51,6 +51,7 @@ my @okcombs = qw (
  folder/20110514tampere/173014
  lens/Canon_EF_85mm_f-0471-0468_USM_-038_Tamron_2X_MC7_C-045AF1_BBAR/061332
  lens/MC_Jupiter-0459_85mm_f-0472-0460/066299
+ body/ND-0454020_Digital_Camera/002026
  cat/Piupaws_-034Toykiller-034/081241
  cat/Baila-045Bailan_Rikasr-228m-228el-228m-228/111228
  nat/FR/150036
@@ -66,6 +67,7 @@ my @badids = qw (
  date/20100404/150008
  app/a/173008
  breeder/Cat-039s-045JM/143100
+ body/ND-0454020_Digital_Camera/102028
  cate/4/011032
 );
 
@@ -77,6 +79,7 @@ my @badcombs = qw (
  apa/a/173004
  folder/20110514PAmpere/173014
  cat/Piu?aws_-034Toykiller-034/081241
+ body/ND-0444020_Digital_Camera/002026
  283904/9812304/23409234
  +="d"/!!$@!!/~~***
 );

@@ -39,7 +39,7 @@ $t->max_redirects( 0 );
 
 use Catz::Util::String qw ( enurl );
 
-my @okids = qw ( 001001 123095 061254 );
+my @okids = qw ( 001001 123095 061254 182107 057179 );
 
 my @badids = qw ( 
  002600 888888 1 12 98793  -123123 ===!!! $~ *he??o* +++^$@ text=*pa*

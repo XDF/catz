@@ -18,7 +18,7 @@ It looks like you don't have the Mojolicious Framework installed.
 Please visit http://mojolicio.us for detailed installation instructions.
 EOF
 
-$ENV{MOJO_APP} ||= 'Catz::Core::App';
+$ENV{MOJO_APP} = conf ( 'app' );
 
 # added 2011-10-15 to prevent responses to go 
 # to file # and issues with page caching  
