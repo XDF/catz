@@ -26,22 +26,12 @@ use strict; use warnings; use 5.10.0;
 
 use parent 'Exporter';
 
-use Bit::Vector;
-
-use POSIX qw ( ceil );
-
 # The external interface is prodecural method calls
-
 our @EXPORT = qw ( setup_init setup_keys setup_values );
 
 #
-# the system configuration array that should be 
+# the base system setup array that should be 
 # edited only very seldom and with a MAXIMUM care
-#
-
-#
-# each set consists of 
-#  configuration key, possible values and the default value's position
 #
 
 my $conf = [
@@ -53,14 +43,20 @@ my $conf = [
  { name => 'peek', values => [ qw ( off on ) ] }
 ];
 
+# use Devel::Size qw ( total_size); say total_size $conf;
+# 2010-10-25: 2302 bytes
+
+# the default setup
+
 my $default = '123321';
+
+# the names of the setup keys in correct order
  
 my $setkeys = [ map { $_->{name} } @$conf ];
 
-# generate all configurations beforehand at compile time
-
-# for initialization: config -> values
-# size (Devel::Size) 550 kB 2011-07-02 
+# generate all setups beforehand at compile time
+# easy to test setups and to process them to stash
+ 
 my $init = {};
 
 foreach my $a ( 0 .. $#{ $conf->[0]->{values} } ) {
@@ -83,10 +79,14 @@ foreach my $a ( 0 .. $#{ $conf->[0]->{values} } ) {
    }
   }
  }
-} 
+}
 
-# for changes: key -> new value -> old config -> new config
-# size (Devel::Size) 2,1 MB 2011-07-02 
+# use Devel::Size qw ( total_size); say total_size $init;
+# 2010-10-25: 552553 bytes 
+
+# generate mappings: old setup -> key -> [ new value, new setup ] ...
+# at compilation time, easy to provide change structure to controller
+ 
 my $list = {};
 
 foreach my $i ( 0 .. $#{ $conf } ) {
@@ -99,106 +99,45 @@ foreach my $i ( 0 .. $#{ $conf } ) {
  
    foreach my $x ( 0 .. $#{ $conf } ) {
    
-    if ( $i == $x ) { # change
-  
-      $new .= ( $j + 1 );
-    
-    } else { # plain copy
-    
-      $new .= substr ( $old, $x, 1 );
-    }
+    if ( $i == $x ) { $new .= ( $j + 1 ) } # change
+     else { $new .= substr ( $old, $x, 1 ) }
     
    }
-      
-   $list
-    ->{ $conf->[ $i ]->{name} }
-    ->{ $conf->[ $i ]->{values}->[ $j ] }
-    ->{ $old }
-    = $new ne $default ? $new : '';
    
+   $list->{ $old }->{ $conf->[ $i ]->{name} } =
+    $list->{ $old }->{ $conf->[ $i ]->{name} } // []; # initialize
+          
+   push @{ $list
+    ->{ $old }
+    ->{ $conf->[ $i ]->{name} } 
+   }, [ $conf->[ $i ]->{values}->[ $j ], $new ne $default ? $new : '' ];    
+       
   } 
  
  }
  
 }
 
+# use Devel::Size qw ( total_size); say total_size $list;
+# 2010-10-25 6423607 bytes 
+
+
 sub setup_init { # initialize the setup to application stash
 
- my $app = shift; # Mojolicious application
+ my $app = shift; my $config = shift // $default;
  
- my $langa = shift; # the full lang & config string
-  
- my $config = $default;
- 
- if ( length $langa == ( 2 + scalar @{ $conf } ) ) {
- 
-  # langa has lang + configuration 
- 
-   $config = substr ( $langa, 2 );
-   
- }
-  
- if ( $init->{$config} ) { # config key is ok
-  
-  foreach my $i ( 0 .. $#{ $conf } ) {
- 
-   $app->{stash}->{ $conf->[ $i ]->{name} } = $init->{$config}->[ $i ];
-   
-  }
-  
-  return 1; # success
-
- } else { return 0 } # init failed
-  
-}
-
-
-# get arrayref of all setup keys
-sub setup_keys { [ map { $_->{name} } @$conf ] }
-
-sub setup_values { 
-
- # generates lists of setup values and change targets
- # uses directly application stash variable $langa
- 
- my $langa = shift; # the full lang & config string
- 
- my $config = $default;
- 
- my $lang = $langa;
- 
- if ( length $langa == ( 2 + scalar @{ $conf } ) ) {
- 
-  # langa has lang + configuration 
- 
-   $config = substr ( $langa, 2 );
-   
-   $lang = substr ( $langa, 0, 2 );
-   
- }
-   
- my $out = {};
+ $init->{ $config } or return 0;
   
  foreach my $i ( 0 .. $#{ $conf } ) {
  
-  my @one = ();
-  
-  foreach my $j ( 0 .. $#{ $conf->[ $i ]->{values} } ) {
-     
-   push @one, [ 
-    $conf->[ $i ]->{values}->[ $j ], 
-    $lang .
-    $list->{$conf->[$i]->{name}}->{$conf->[$i]->{values}->[$j]}->{$config}
-   ]; 
+  $app->{stash}->{ $conf->[ $i ]->{name} } = $init->{$config}->[ $i ];
    
-  }
-   
-  $out->{$conf->[$i]->{name}} = \@one;
-
- }
+ } 1;
   
- return $out;
-
 }
+
+sub setup_keys { $setkeys } # get arrayref of all setup keys
+
+sub setup_values { $list->{ $_[0] // $default } } # get change struct
 
 1; 

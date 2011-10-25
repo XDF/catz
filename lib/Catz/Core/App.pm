@@ -432,7 +432,7 @@ sub before {
    
  if ( $s->{url} =~ /^\/((en|fi)([1-9]{6})?)/ ) {
   
-  $s->{langa} = $1; $s->{lang} = $2;
+  $s->{langa} = $1; $s->{lang} = $2; $s->{setup} = $3 // undef;
   
   # prevent indexing of pages with non-default setup  
   $3 and $s->{meta_index} = 0;
@@ -443,7 +443,7 @@ sub before {
    
   # process and populate stash with setup data
   # returns true if success                                                                                  
-  setup_init ( $self, $s->{langa} ) or   
+  setup_init ( $self, $s->{setup} ) or   
    return $self->render_not_found; 
     
  }
@@ -453,8 +453,8 @@ sub before {
  $s->{matrix} = list_matrix;
  
  $s->{setup_keys} = setup_keys;
- 
- $s->{setup_values} = setup_values ( $s->{langa} );
+  
+ $s->{setup_values} = setup_values ( $s->{setup} );
  
  $s->{facebookkey} = conf ( 'key_facebook' ); 
  $s->{twitterkey} = conf ( 'key_twitter' );

@@ -3,7 +3,7 @@
 % foreach my $row ( @{ $setup_values->{$setupkey} } ) {
 % my $selected = ' ';
 % $row->[0] eq stash ( $setupkey ) and $selected = ' selected ';
-% my $out = $row->[1] . urirest ( $url );
+% my $out = $lang . $row->[1] . urirest ( $url );
 <option<%= $selected %>value="/<%== $out %>"><%= $t->{'SETUP_'.$setupkey.'_'.$row->[0]} %></option>
 % }
 </select> 
