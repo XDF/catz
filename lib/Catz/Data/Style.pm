@@ -30,7 +30,7 @@ use parent 'Exporter';
 
 use Catz::Util::Number qw ( round );
 
-our @EXPORT = qw ( style_get );
+our @EXPORT = qw ( style_get style_html2dec );
 
 my $style = {}; # style config
 
@@ -123,5 +123,17 @@ $style->{viz}->{rank}->{width} = 200 ;
 $style->{viz}->{rank}->{height} = 200 ;
 
 sub style_get { $style }
+
+sub style_html2dec {
+
+ # convert html color to decimals
+ 
+ my $html = shift;
+ 
+ $html =~ m|^.(..)(..)(..)|;
+ 
+ hex($1), hex($2), hex($3); 
+
+}
 
 1;

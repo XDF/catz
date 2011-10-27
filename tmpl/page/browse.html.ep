@@ -152,11 +152,13 @@ if ( $runmode eq 'pair' ) {
 %#
 <div class="bar">
 % foreach my $th ( @{ $thumbs } ) {
-% my $toid = fullnum33 ( $th->[1], $th->[2] );
-% my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
-% my $titl = dtexpand ( dtdate ( $th->[3] ), $lang ); # get date from folder name
-% defined $texts->{$th->[0]} and $titl = "$titl $sep " . $texts->{$th->[0]};  
-<a title="<%= $titl %>" href="<%== include 'href/actionid', toaction => 'auto', langh => $langa, toid => $toid %>"><img alt="[<%= $t->{PHOTO} %> <%== $toid %>]" src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
+%  my $toid = fullnum33 ( $th->[1], $th->[2] );
+%  my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
+%  my $date = dtexpand ( dtdate ( $th->[3] ), $lang ); # get date from folder name
+%  my $titl = $t->{PHOTO} . ' ' . $toid;
+%  defined $texts->{ $th->[0] } and $titl .= " $sep " . $texts->{ $th->[0] };
+%  $titl .= " $sep $date";
+<a title="<%= $titl %>" href="<%== include 'href/actionid', toaction => 'auto', langh => $langa, toid => $toid %>"><img alt="<%= $titl %>" src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
 % }
 </div>
 %#

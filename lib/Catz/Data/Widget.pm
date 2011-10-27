@@ -28,9 +28,12 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( widget_conf widget_init widget_ser widget_params widget_stripe );
+our @EXPORT = qw (
+ widget_conf widget_init widget_ser widget_params widget_stripe widget_plate
+);
 
 use GD;
+use GD::Text;
 use List::MoreUtils qw ( any );
 
 use Catz::Core::Text;
@@ -240,6 +243,33 @@ sub widget_stripe {
   
  return $gdd;
 
+}
+
+my $plate_width = 129;
+
+my $plate_height = 22;
+
+sub widget_plate {
+
+ my ( $text, $front, $back ) = @_;
+  
+ my $im = new GD::Image ( $plate_width , $plate_height );
+  
+ my $c_front = $im->colorAllocate ( 
+  $front->[0], $front->[1], $front->[2]
+ );
+
+ my $c_back = $im->colorAllocate ( 
+  $back->[0], $back->[1], $back->[2]
+ );
+
+ $im->filledRectangle( 0, 0, $plate_width, $plate_height, $c_back );
+ 
+ $im->string( gdGiantFont, 2, 2, $text, $c_front );
+ 
+
+ $im->png;
+ 
 }
 
 

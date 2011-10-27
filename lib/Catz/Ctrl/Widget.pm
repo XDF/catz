@@ -34,6 +34,7 @@ use parent qw ( Catz::Ctrl::All Catz::Ctrl::Pair Catz::Ctrl::Search );
 use List::MoreUtils qw ( any );
 use List::Util qw ( shuffle );
 
+use Catz::Data::Style;
 use Catz::Data::Widget;
 
 use Catz::Util::Number qw ( round );
@@ -188,6 +189,24 @@ sub embed { # the widget renderer
    
  $self->render_data ( $im , format => 'jpeg' );
   
+}
+
+sub contrib {
+
+ my $self = shift; my $s = $self->{stash};
+  
+ my $style = style_get;
+   
+ my @front = style_html2dec $style->{color}->{$s->{palette}}->{xtra};
+  
+ my @back = style_html2dec $style->{color}->{$s->{palette}}->{back};
+  
+  my $im = widget_plate (
+   $s->{t}->{MAILTO_TEXT}, \@front, \@back
+  );
+
+  $self->render_data ( $im , format => 'png' );
+
 }
 
 

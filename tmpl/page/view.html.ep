@@ -1,6 +1,8 @@
 % use 5.10.0;
 % extends 'base/heavy';
-% my $ttl = scalar @$comment > 0 ? join " $sep ", @$comment : '';
+% my $ttl = $t->{PHOTO} . " $id"; 
+% $ttl .= @$comment > 0 ? join " $sep ",  ( '', @$comment ) : '';
+% $ttl .= " $sep " . dtexpand ( dtdate ( $image->[2] ), $lang );
 %#
 %# --------------------
 %#
@@ -21,11 +23,9 @@
 % if ( $pos < $total ) {
 <link rel="next" href="<%== include 'href/id', langh => $langa, toid => $pin->[2] =%>">
 % }
-% my $desc = $t->{PHOTO}." $id";
-% length ( $ttl ) > 0 and $desc = "$desc: $ttl";
-<meta name="og:title" content="<%= $desc %>">
+<meta name="og:title" content="<%= $ttl %>">
 <meta name="og:type" content="catz:photo">
-% stash ( 'desc', $desc );   
+% stash ( 'desc', $ttl );   
 <% end %>
 %#
 %# --------------------
@@ -174,7 +174,7 @@
 %#
 <div class="center" id="fitparent">
 <a href="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>">
-<img id="fittarget" title="<%= $ttl %>" alt="[<%= $t->{PHOTO} %> <%= $id %>]" src="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>"<%== $photosize ne 'fit'? ' width="'.$image->[4].'" height="'.$image->[5].'"' : '' %>></a>
+<img id="fittarget" title="<%= $ttl %>" alt="<%= $ttl %>" src="<%== $photobase %>/<%== $image->[2] %>/<%== $image->[3] %>"<%== $photosize ne 'fit'? ' width="'.$image->[4].'" height="'.$image->[5].'"' : '' %>></a>
 </div>
 %#
 %# --------------------

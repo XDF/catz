@@ -208,7 +208,7 @@ sub _maxcntdate {
 
 sub _rank {
 
- my ( $self, $pri, $sec ) = @_;  my $lang = $self->{lang};
+ my ( $self, $pri, $sec ) = @_; my $lang = $self->{lang};
  
  my ( $cntp, $cntd ) = 
   @{ $self->dbrow ( qq { 
@@ -278,6 +278,30 @@ sub _nats {
  $self->dbcol( qq { 
   select sec_en from sec 
   where pid=(select pid from pri where pri='nat') 
+ } ); 
+ 
+}
+
+sub _breeds {
+
+ my $self = shift; # not using lang, assuming ems3 level breeds to be l. i.
+ 
+ $self->dbcol( qq { 
+  select sec_en from sec where sec_en not like 'X%' and 
+  pid=(select pid from pri where pri='breed')
+  order by sort_en;
+  ) 
+ } ); 
+ 
+}
+
+
+sub _cates {
+
+ my $self = shift; my $lang = $self->{lang}; 
+ 
+ $self->dball( qq { 
+  select cate,cate_$lang from mcate where cate < 5 or cate = 7
  } ); 
  
 }

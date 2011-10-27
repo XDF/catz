@@ -33,6 +33,7 @@ use I18N::AcceptLanguage;
 use Catz::Core::Conf;
 
 use Catz::Data::Result;
+use Catz::Data::Search;
 use Catz::Data::Setup;
 use Catz::Data::Style;
 
@@ -62,7 +63,7 @@ sub front {
 
  my $self = shift; my $s = $self->{stash};
   
- $s->{urlother} = '/' . $s->{langaother} . '/';
+ $s->{urlother} = "/$s->{langaother}/";
  
  $s->{seal} = conf ( 'key_seal' );
  
@@ -189,11 +190,58 @@ sub info {
  
 }
 
-sub contrib {
+sub about { 
 
- my $self = shift; my $s = $self->{stash}; 
+ my $self = shift; my $s = $self->{stash};
+  
+ $s->{urlother} = 
+  join '/', ( '', $s->{langaother}, 'about', $s->{topic}, '' );
+ 
+ if ( $s->{topic} eq 'contrib' ) {
+ 
+  $s->{breeds} = $self->fetch ( 'related#breeds' );
+  
+  foreach my $breed ( @{ $s->{breeds} } ) {
+  
+   $s->{'url_breed_'.$breed} = join '/', 
+    ( '', $s->{langa}, 'search?q='. $self->enurl ( 
+     "+breed=$breed -has=cat" 
+    ) );
+    
+  }
 
- $self->render( template => 'content/contrib', format => 'html' );
+  $s->{cates} = $self->fetch ( 'related#cates' );
+  
+  foreach my $cate( @{ $s->{cates} } ) {
+  
+   $s->{'url_cate_'.$cate->[0]} = join '/', 
+    ( '', $s->{langa}, 'search?q='. $self->enurl ( 
+     "+cate=$cate->[0] -has=cat" 
+    ) );
+    
+  }
+   
+  $s->{count_total} = $self->fetch ( 'all#maxx' );
+  
+  $s->{search_none} = '-has=text';  
+  $s->{search_breed} = '+has=breed -has=cat';
+  
+  foreach my $key ( qw ( none breed ) ) {
+  
+   $s->{'url_'.$key} = join '/', 
+    ( '', $s->{langa}, 'search?q='. $self->enurl ( $s->{'search_'.$key} ) );
+  
+   $s->{'count_'.$key} = 
+    $self->fetch ( "search#count", @{ search2args $s->{'search_'.$key} } );
+   
+   $s->{'perc_'.$key} = 
+    ( ( $s->{'count_'.$key} / $s->{count_total} ) * 100 );
+  
+  }  
+  
+ }
+   
+ $self->render( template => 'page/about', format => 'html' );
 
 }
 
