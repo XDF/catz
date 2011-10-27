@@ -1,11 +1,3 @@
-% extends 'base/heavy';
-<% content 'main' => begin %>
-% if ( $lang eq 'fi' ) {
-<%== include 'content/contrib_fi' %>
-% } else {
-<%== include 'content/contrib_en' %>
-% }
-<% end %>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
@@ -28,4 +20,4 @@
 %# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 %# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 %# THE SOFTWARE.
-%# 
+%#  

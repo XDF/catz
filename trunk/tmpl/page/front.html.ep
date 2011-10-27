@@ -106,12 +106,14 @@
 %#
 <div class="bar">
 % foreach my $th ( @{ $thumbs } ) {
-% my $id = fullnum33 ( $th->[1], $th->[2] );
-% my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
-% my $titl = dtexpand ( dtdate ( $th->[3] ), $lang );
-% defined $texts->{$th->[0]} and $titl = "$titl $sep " . $texts->{$th->[0]}; 
-<a title="<%= $titl %>" href="/<%== $langa %>/viewall/<%== $id %>/">
-<img src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" alt="[<%= $t->{PHOTO} %> <%= $id %>]" width="<%== $width %>" height="<%== $thumbsize %>">
+%  my $toid = fullnum33 ( $th->[1], $th->[2] );
+%  my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
+%  my $date = dtexpand ( dtdate ( $th->[3] ), $lang ); # get date from folder name
+%  my $titl = $t->{PHOTO} . ' ' . $toid;
+%  defined $texts->{ $th->[0] } and $titl .= " $sep " . $texts->{ $th->[0] };
+%  $titl .= " $sep $date"; 
+<a title="<%= $titl %>" href="/<%== $langa %>/viewall/<%== $toid %>/">
+<img src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" alt="<%= $titl %>" width="<%== $width %>" height="<%== $thumbsize %>">
 </a>
 % }
 </div>

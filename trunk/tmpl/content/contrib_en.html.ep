@@ -1,0 +1,110 @@
+%#
+%# --------------------
+%#
+<div class="bar">
+The cat data seen with the photos is provided by the community. 
+This service dependes on your contribution! Send new cat data and 
+data corrections to 
+<img class="middle" src="/<%= $langa %>/widget/contrib/<%== $palette %>/">.  
+You don't have to be the cat's owner or the breeder
+of the cat to provide us cat's data. 
+</div>
+%#
+%# --------------------
+%#
+<div class="bar"><h2>what to send</h2>
+When you note that you recognize a cat in a photo and the cat has not yet been
+identified then send us a free form email with the following information:
+<ul>
+<li>The photo id to identify the photo in question. 
+Photo id is always six numbers like <span class="lean">046115</span>. It is 
+seen for example when viewing the high resolution photo with the default
+<span class="lean">full data</span> mode or when pointing the mouse over 
+the photo.  It is also found in page's 
+address in the high resolution viewing so you can simply send us the link 
+to the page.</li>  
+<li>The complete official registered name of the cat in the photo 
+including the breeder name. If you are unsure if the name is complete or 
+official please send it to us anyway.</li>
+<li>The cat breed, color and pattern. For these we prefer 
+<a href="<%== $t->{URL_EMS} %>">the Easy Mind System</a> 
+but accept also other forms and free text.</li></ul>
+<li>If you know them, you can include the nicknames of the cat and 
+the show titles the cat had at the time when the photo was taken.</li>
+</ul>
+We don't collect or store show results. Show results are fetched 
+automatically from 
+<a href="<%== $t->{RESULT_CREDIT_URL} %>"><%= $t->{RESULT_CREDIT_SITE} %></a> 
+for all FIFe shows held in Finland based on cat name,
+show date and show location. The fetching requires that cat name must be
+identical in both systems. We also don't collect or store person 
+names (cat owner, cat breeder, who is in the photo etc).
+</div>
+%#
+%# --------------------
+%#
+<div class="bar"><h2>photos with no data</h2>
+The service has <a href="<%== $url_none %>"><%= fmt ( $count_none, $lang ) %>
+photos (<%= fmt ( round ( $perc_none, 1 ), $lang ) %> %)</a> that appear to 
+have no information. For these photos we hope to get both cat, breed color
+and pattern identified. 
+<a href="<%== $url_none %>"><%= $t->{CONTRIB_TO_NONE} %></a></a>.
+</div>
+%#
+%# --------------------
+%#
+<div class="bar"><h2>photos with partial data</h2>
+We currently have <a href="<%== $url_breed %>"><%= fmt ( $count_breed, $lang ) %> 
+photos (<%= fmt ( round ( $perc_breed, 1 ), $lang ) %> %)</a> that appear to 
+have breed or category identified but the cat remains unidentified. We hope
+to receive more complete data for these photos. 
+<a href="<%== $url_breed %>"><%= $t->{CONTRIB_TO_BREED} %></a>, or
+or try to search for them <ul>
+<li>by category:
+% my $i = 0;
+% foreach my $ct ( @$cates ) {
+<a href="<%== stash ( 'url_cate_' . $ct->[0] ) %>"><%= $ct->[1] %></a><%= ++$i < scalar @$cates ? ',' : '' %> 
+% }
+</li>
+<li>by breed: <span class="shrink">
+% $i = 0;
+% foreach my $br ( @$breeds ) {
+<a href="<%== stash ( 'url_breed_' . $br ) %>"><%= $br %></a><%= ++$i < scalar @$breeds ? ',' : '' %> 
+% }
+</span></li></ul></div>
+%#
+%# --------------------
+%#
+<div class="bar"><h2>What happens to your data</h2>
+ New data and data corrections sent to us are typically processed within a week. 
+If you notice that your data hasn't yet been added to album and two weeks 
+has passed, please contact as again. 
+
+If we have questions about the data you sent we may reply and 
+ask clarifications. ?confimation when added?
+
+In addition to new data provided, we are very happy to receive additions
+and corrections the already presented data!
+</div>
+%# Catz - the world's most advanced cat show photo engine
+%# Copyright (c) 2010-2011 Heikki Siltala
+%# Licensed under The MIT License
+%# 
+%# Permission is hereby granted, free of charge, to any person obtaining a copy
+%# of this software and associated documentation files (the "Software"), to deal
+%# in the Software without restriction, including without limitation the rights
+%# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+%# copies of the Software, and to permit persons to whom the Software is
+%# furnished to do so, subject to the following conditions:
+%# 
+%# The above copyright notice and this permission notice shall be included in
+%# all copies or substantial portions of the Software.
+%# 
+%# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+%# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+%# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+%# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+%# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+%# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+%# THE SOFTWARE.
+%#  

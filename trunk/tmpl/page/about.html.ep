@@ -1,11 +1,49 @@
 % extends 'base/heavy';
-<% content 'main' => begin %>
-% if ( $lang eq 'fi' ) {
-<%== include 'content/contrib_fi' %>
-% } else {
-<%== include 'content/contrib_en' %>
+%#
+%# --------------------
+%#
+<% content 'ptitleadd' => begin %>
+<%= $t->{ ( uc $topic ) . '_TITLE' } %>
+<% end %>
+%#
+%# --------------------
+%#
+<% content 'btitle' => begin %>
+<h1><%= $t->{ ( uc $topic ) . '_TITLE' } %></h1>
+<% end %>
+%#
+%# --------------------
+%#
+<% content 'metaadd' => begin %>
+<meta name="og:title" content="<%= $t->{ ( uc $topic ) . '_TITLE' } %>"> 
+<meta name="og:type" content="article">
+%#
+%# --------------------
+%#
+<% content 'bextra' => begin %>
+% given ( $topic ) {
+%  when ( 'contrib' ) {
+<a href="/<%= $langa %>/about/privacy/"><%= $t->{TO_PRIVACY} %></a>
+%  }
+%  when ( 'privacy' ) {
+<a href="/<%= $langa %>/about/contrib/"><%= $t->{TO_CONTRIB} %></a>
+%  }
 % }
 <% end %>
+%#
+%# --------------------
+%# 
+<% end %>
+<% content 'main' => begin %>
+% if ( $lang eq 'fi' ) {
+<%== include "content/$topic" . '_' . $lang %>
+% } else {
+<%== include "content/$topic" . '_' . $lang %>
+% }
+<% end %>
+%#
+%# --------------------
+%#
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

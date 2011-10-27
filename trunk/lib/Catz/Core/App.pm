@@ -126,10 +126,9 @@ sub startup {
  ###
  ### content pages
  ###
- 
- # disabled 2011-10-25
- # $l->route( '/about/contrib' )->to( 'main#contrib' );
- # $l->route( '/about/privacy' )->to( 'main#privacy' );
+  
+ $l->route( '/about/:topic', topic => qr/contrib|privacy/ )
+  ->to( 'main#about' );
  
  ###
  ### the news service
@@ -231,6 +230,9 @@ sub startup {
  ###
  ### Widget features
  ###
+
+ $l->route( '/widget/contrib/:palette', palette => qr/dark|neutral|bright/ )
+  ->to( 'widget#contrib' );
 
  # disabled 2011-10-25
  # $l->route ( '/build' )->to ( 'widget#build' ); # the widget builder
