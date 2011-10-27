@@ -45,7 +45,7 @@ my @okversions = qw ( 20101012123456 20111019164540 );
 my @badversions = qw ( 2010101212345 201110191645403 JJJEJ838j3jkl3jsdsdaf );
 
 my @okcombs = qw (
- dist/10001/10002/10003 dist/14/78/214 dist/11/90/1225  
+ dist/10001/10002/10003/10004 dist/14/78/68/2141 dist/11/90/1225/2  
  rank/iso/ISO_1600 rank/loc/Espoo rank/cat/Ipekkedinin_Birinci_Bebek 
  globe
 );
@@ -67,6 +67,16 @@ foreach my $comb ( @okcombs ) {
  $t->get_ok("/$setup/viz/$comb/$okversions[0]/")
    ->status_is(200)
    ->content_type_like(qr/image\/png/);
+   
+ # json mode test for distribution visualizations
+ $comb =~ m|^dist| and do {
+
+ $t->get_ok("/$setup/viz/$comb/$okversions[0]?json=1")
+   ->status_is(200)
+   ->content_type_like(qr/application\/json/);
+ 
+ };
+   
 }
 
 foreach my $comb ( @badcombs ) {

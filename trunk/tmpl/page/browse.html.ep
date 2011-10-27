@@ -129,6 +129,9 @@ if ( $runmode eq 'pair' ) {
 %#
 <% content 'jsadd' => begin %>
 %== include 'elem/js', jstype => 'site', jsfile => 'make';
+% ( $vizmode eq 'dist' ) and do {
+%== include 'elem/js', jstype => 'site', jsfile => 'dist';
+% };
 <% end %>
 %#
 %# --------------------
@@ -166,10 +169,26 @@ if ( $runmode eq 'pair' ) {
 %#
 % given ( $vizmode ) {
 %  when ( 'dist' ) {
-<img alt="<%= $t->{VIZ_DIST_NAME} %>" title="<%= $t->{VIZ_DIST_NAME} %>" class="viz" width="<%== $style->{viz}->{$vizmode}->{width} %>" height="<%== $style->{viz}->{$vizmode}->{height} %>" src="/<%== $langa %>/viz/dist/<%== $total - $cover_nocat - $cover_notext %>/<%== $cover_nocat %>/<%== $cover_notext %>/<%== $version %>/">
+% my $wmax = $style->{viz}->{$vizmode}->{width};
+% my $hmax = $style->{viz}->{$vizmode}->{height};
+<img id="viz_dist" usemap="#map_dist" alt="<%= $t->{VIZ_DIST_NAME} %>" title="<%= $t->{VIZ_DIST_NAME} %>" class="viz" width="<%== $style->{viz}->{$vizmode}->{width} %>" height="<%== $style->{viz}->{$vizmode}->{height} %>" src="/<%== $langa %>/viz/dist/<%== $total - $cover_partial %>/<%== $cover_breed %>/<%== $cover_cate %>/<%== $cover_none %>/<%== $version %>/">
+<map name="map_dist">
+<area id="map_dist_default" name="default" shape="rect" coords="0,0,<%== $wmax %>,<%== $hmax %>" href="" title="">
+% my $mp = 0;
+% foreach my $ky ( @$keys_extra ) {
+%  if ( $ky ne 'partial') {
+%   my $vl = stash ( 'cover_' . $ky ) // undef;
+%   my $ul = stash ( 'url_' . $ky ) // undef;
+%   my $tk = 'HAS' . ( uc $ky ) . ( $vl == 1 ? '' : 'A' );
+<area id="map_dist_legend<%= $mp %>" shape="rect" coords="<%== $wmax %>,<%== $hmax %>,<%== $wmax %>,<%== $hmax %>" href="/<%== $langa %>/search?q=<%== enurl $ul %>" title="<%== fmt ( $vl, $lang ) %> <%= $t->{$tk} %>">
+<area id="map_dist_data0_<%= $mp %>" shape="poly" coords="<%== $wmax %>,<%== $hmax %>,<%== $wmax %>,<%== $hmax %>" href="/<%== $langa %>/search?q=<%== enurl $ul %>" title="<%== fmt ( $vl, $lang ) %> <%= $t->{$tk} %>">
+%  $mp++;
+%  }
+% }
+</map>
 %  }
 %  when ( 'rank' ) {
-<img alt="<%= $t->{VIZ_RANK_NAME} %>" title="<%= $t->{VIZ_RANK_NAME} %> <%= $sep %> <%= $t->{VIZ_RANK_DESC} %>" class="viz" width="<%== $style->{viz}->{$vizmode}->{width} %>" height="<%== $style->{viz}->{$vizmode}->{height} %>" src="/<%== $langa %>/viz/rank/<%== $pri %>/<%== encode $sec %>/<%== $version %>/">
+<img id="viz_rank" alt="<%= $t->{VIZ_RANK_NAME} %>" title="<%= $t->{VIZ_RANK_NAME} %> <%= $sep %> <%= $t->{VIZ_RANK_DESC} %>" class="viz" width="<%== $style->{viz}->{$vizmode}->{width} %>" height="<%== $style->{viz}->{$vizmode}->{height} %>" src="/<%== $langa %>/viz/rank/<%== $pri %>/<%== encode $sec %>/<%== $version %>/">
 %  }
 % }
 %#
@@ -186,12 +205,9 @@ if ( $runmode eq 'pair' ) {
  <%= $sep %>
 <span id="entry"><a href="<%== $urlbuild %>"><%= $t->{WID_HEAD} %></a>
 </span>
-% }
-% if ( $cover_notext ) {
-<%= $sep %> <a href="/<%== $langa %>/search?q=<%== enurl ( $url_notext ) %>"><%== fmt ( $cover_notext, $lang ) %> <%= $cover_notext == 1 ? $t->{NOTEXT} :  $t->{NOTEXTA} %></a>
-% }
-% if ( $cover_nocat ) {
-<%= $sep %> <a href="/<%== $langa %>/search?q=<%== enurl ( $url_nocat ) %>"><%== fmt ( $cover_nocat, $lang ) %> <%= $cover_nocat == 1 ? $t->{NOCAT} :  $t->{NOCATA} %></a>
+% } 
+% if ( defined $url_partial ) {
+<%= $sep %> <a href="/<%== $langa %>/search?q=<%== enurl $url_partial %>"><%== fmt ( $cover_partial, $lang ) %> <%= $t->{'HASPARTIAL'.( $cover_partial == 1 ? '' : 'A' )} %></a>
 % }
 % if ( $runmode eq 'search' ) {
 <%= $sep %> <%== include 'block/explain' %>

@@ -17,7 +17,8 @@ When you note that you recognize a cat in a photo and the cat has not yet been
 identified then send us a free form email with the following information:
 <ul>
 <li>The photo id to identify the photo in question. 
-Photo id is always six numbers like <span class="lean">046115</span>. It is 
+Photo id is always six numbers like 
+<a href="/<%== $langa %>/viewall/101157/">101157</a>. It is 
 seen for example when viewing the high resolution photo with the default
 <span class="lean">full data</span> mode or when pointing the mouse over 
 the photo.  It is also found in page's 
