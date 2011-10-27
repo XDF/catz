@@ -42,10 +42,11 @@ my $key_date = conf ( 'result_param_date' );
 my $key_loc = conf ( 'result_param_loc' );
 my $key_name = conf ( 'result_param_name' );
 
+my $agent =
+ text('en')->{SITE} . ' ' . __PACKAGE__ . ' LWP::UserAgent Perl5';
+
 my $ua =  LWP::UserAgent->new (
- agent => text('en')->{SITE} . ' ' . __PACKAGE__ . ' LWP::UserAgent Perl5',
- timeout => 10,
- max_redirect => 5
+ agent => $agent, timeout => 10, max_redirect => 5
 );
 
 sub body {
@@ -106,6 +107,15 @@ sub _count {
  $res and length ( $res ) > 0 and return int ( $res );
 
  return undef;
+
+}
+
+sub _get {
+
+
+ my ( $self, $url ) = @_;
+ 
+ $self->body ( $url );
 
 }
 

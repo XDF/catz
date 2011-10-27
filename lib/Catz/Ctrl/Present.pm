@@ -47,8 +47,10 @@ sub init {
  my $self = shift; my $s = $self->{stash};
  
  foreach my $var ( qw ( 
-  runmode origin what refines breedernat viz_rank trans nats
-  cover_notext cover_nocat url_notext url_nocat maxx total
+  runmode origin what refines breedernat viz_rank trans nats maxx total
+  cover_none cover_partial cover_cate cover_breed 
+  url_none url_partial url_cate url_breed 
+  keys_extra
  ) ) { $s->{$var} = undef }
  
  defined $s->{pri} or $s->{pri} = undef;
@@ -164,7 +166,25 @@ sub single {
  return 1;
 
 }
+
+
+my $extra = { 
+
+ full => [ qw ( +has breed +has cat ) ],
  
+ partial => [ qw ( -has cat ) ],  
+
+ none => [ qw ( -has text ) ],
+
+ cate => [ qw ( +has breed +breed xc? -has cat ) ],
+ 
+ breed => [ qw ( +has breed -breed x?? -has cat ) ],
+
+};
+
+# we need the keys in certain predefined order
+my @keys_extra = qw ( full partial breed cate none );
+  
 sub multi {
 
  # prepare a set of thumbnails for browsing, returns
@@ -196,34 +216,27 @@ sub multi {
  if ( 
   $s->{runmode} eq 'all' or ( $s->{runmode} eq 'pair' and 
    ( $s->{pri} eq 'folder' or $s->{pri} eq 'date' ) )
-  ) {  # coverage provided for limited combinations  
-  # 1/2: the textless photos
+  ) {  # coverage provided for limited combinations
   
-  my @extra = qw ( -has text );
-
-  # make a new search for those that have no text, get the count of photos
-  $s->{cover_notext} = 
-   $self->fetch ( "search#count", @{ $s->{args_array} }, @extra );
+  $s->{keys_extra} = \@keys_extra;
   
-  # if there where those then prepare the url to see them
-  $s->{cover_notext} > 0 and
-  $s->{url_notext} = args2search ( @{ $s->{args_array} }, @extra );
+  foreach my $key ( @keys_extra ) {
   
-  # 2/2: the photos with breed but without a cat
+   $s->{ 'cover_'. $key } = 
+    $self->fetch ( 
+     "search#count", @{ $s->{args_array} }, @{ $extra->{$key} } 
+    );
   
-  @extra = qw ( +has breed -has cat );
-  
-  # make a new search for those and get the count of photos
-  $s->{cover_nocat} = 
-   $self->fetch ( "search#count", @{ $s->{args_array} }, @extra );
   
   # if there where those then prepare the url to see them
-  $s->{cover_nocat} > 0 and
-  $s->{url_nocat} =
-   args2search ( @{ $s->{args_array} }, @extra );
+  $s->{ 'cover_'. $key } > 0 and
+   $s->{ 'url_'. $key } = 
+    args2search ( @{ $s->{args_array} }, @{ $extra->{$key} } );
+  
+  }
   
  }
- 
+   
  # fetch photo texts  
  $s->{texts} = $self->fetch ( 'photo#texts', @{ $s->{xs} } );
 

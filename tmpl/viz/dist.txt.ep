@@ -1,13 +1,16 @@
 % my $dfull = round ( ( ( $full / $total ) * 100 ), 1 );
 % my $dbreed = round ( ( ( $breed / $total ) * 100 ), 1 );
+% my $dcate = round ( ( ( $cate / $total ) * 100 ), 1 );
 % my $dnone = round ( ( ( $none / $total ) * 100 ), 1 );
 % my $tfull = $t->{VIZ_DIST_FULL}.' '.fmt($dfull,$lang).' %';
 % utf8::encode ( $tfull );
-% my $tbreed = $t->{VIZ_DIST_BRCA}.' '.fmt($dbreed,$lang).' %';
+% my $tbreed = $t->{VIZ_DIST_BREED}.' '.fmt($dbreed,$lang).' %';
 % utf8::encode ( $tbreed );
+% my $tcate = $t->{VIZ_DIST_CATE}.' '.fmt($dcate,$lang).' %';
+% utf8::encode ( $tcate );
 % my $tnone = $t->{VIZ_DIST_NONE}.' '.fmt($dnone,$lang).' %';
 % utf8::encode ( $tnone );
-<%== $charturl %>?cht=p&&chs=<%== $style->{viz}->{$action}->{width} %>x<%== $style->{viz}->{$action}->{height} %>&chd=t:<%== $dfull %>,<%== $dbreed %>,<%== $dnone %>&chco=<%== substr($style->{color}->{$palette}->{shade},1) %>|<%== substr($style->{color}->{$palette}->{text},1) %>|<%== substr($style->{color}->{$palette}->{xtra},1) %>&chf=bg,s,<%== substr($style->{color}->{$palette}->{back},1) %>&chdl=<%== enurl $tfull %>|<%== enurl $tbreed %>|<%== enurl $tnone %>&chdlp=b|l&chdls=<%== substr($style->{color}->{$palette}->{text},1) %>,15
+<%== $charturl %>?cht=p&&chs=<%== $style->{viz}->{$action}->{width} %>x<%== $style->{viz}->{$action}->{height} %>&chd=t:<%== $dfull %>,<%== $dbreed %>,<%== $dcate %>,<%== $dnone %>&chco=<%== substr($style->{color}->{$palette}->{shade},1) %>|<%== substr($style->{color}->{$palette}->{text},1) %>|<%== substr($style->{color}->{$palette}->{dim},1) %>|<%== substr($style->{color}->{$palette}->{xtra},1) %>&chf=bg,s,<%== substr($style->{color}->{$palette}->{back},1) %>&chdl=<%== enurl $tfull %>|<%== enurl $tbreed %>|<%== enurl $tcate %>|<%== enurl $tnone %>&chdlp=b|l&chdls=<%== substr($style->{color}->{$palette}->{text},1) %>,15<%== $jmap == 1 ? '&chof=json' : '' %>
 %#
 %# --------------------
 %#

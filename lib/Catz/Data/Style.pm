@@ -113,8 +113,8 @@ $style->{color} = {
 $style->{viz}->{cover}->{width} = 180;
 $style->{viz}->{cover}->{height} = 220;
 
-$style->{viz}->{dist}->{width} = 180;
-$style->{viz}->{dist}->{height} = 220;
+$style->{viz}->{dist}->{width} = 190;
+$style->{viz}->{dist}->{height} = 240;
 
 $style->{viz}->{globe}->{width} = 300 ;
 $style->{viz}->{globe}->{height} = 170 ;

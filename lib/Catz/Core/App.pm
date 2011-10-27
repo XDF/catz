@@ -214,8 +214,9 @@ sub startup {
  # vkey is required to make request version unique but is not used later
   
  $l->route( 
-  '/viz/dist/:full:/:breed/:none/:vkey',
-  full => qr/\d{1,5}/, breed => qr/\d{1,5}/, none => qr/\d{1,5}/, 
+  '/viz/dist/:full:/:breed/:cate/:none/:vkey',
+  full => qr/\d{1,5}/, breed => qr/\d{1,5}/, 
+  cate => qr/\d{1,5}/, none => qr/\d{1,5}/, 
   vkey => qr/\d{14}/
  )->to( 'visualize#dist' );
 
@@ -298,7 +299,7 @@ sub before {
  $s->{isrerouted} = ( $s->{path} =~ m|^/reroute| ? 1 : 0 );
   
  # mark queries to stash -> easy t o use later
- $s->{isquery} = length ( $s->{query} ) > 0 ? 1 : 0; 
+ $s->{isquery} = length ( $s->{query} ) > 0 ? 1 : 0;
  
  # preset analytics keys
  
@@ -374,12 +375,12 @@ sub before {
  #
  # you may ask why but I think this is cool
  #
-
+ 
  ( not $s->{isstatic} ) and
  ( not $s->{isquery} ) and 
  ( not $s->{isrerouted} ) and
  ( substr ( $s->{path}, -1, 1 ) ne '/' ) and
- return bounce ( $self, $s->{path} . '/' );
+  return bounce ( $self, $s->{path} . '/' );
    
  #
  #  we also require paths with query parameters not to end with slash  
@@ -391,7 +392,9 @@ sub before {
  ( $s->{isquery} ) and 
  ( not $s->{isrerouted} ) and
  ( substr ( $s->{path}, -1, 1 ) eq '/' ) and
- return bounce ( $self, ( substr ( $s->{path}, 0, -1 ) . '?' . $s->{query} ) ); 
+  return bounce ( 
+   $self, ( substr ( $s->{path}, 0, -1 ) . '?' . $s->{query} ) 
+  ); 
   
  #
  # we use If-Modified-Since if present in request

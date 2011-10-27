@@ -34,7 +34,6 @@ our @EXPORT_OK = qw (
 ); 
 
 use Digest::MD5 qw ( md5_base64 );
-use MIME::Base32 qw( RFC );
 use URI::Escape::XS qw ( uri_escape uri_unescape );
 
 # prepare a conversion hash to be used by encode

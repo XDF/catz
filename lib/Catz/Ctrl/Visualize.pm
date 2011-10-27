@@ -40,12 +40,17 @@ sub do {
  $s->{style} = style_get ( $s->{palette} ); 
 
  $s->{charturl} = conf ( 'url_chart' );
+ 
+ # special mode to get json map url instead of the image url
+ my $jmap = $self->param ( 'jmap' ) // 0;
 
  my $vurl = $self->render ( 
-  "viz/$s->{action}", format => 'txt', partial => 1 
+  "viz/$s->{action}", format => 'txt', partial => 1, jmap => $jmap 
  );
-  
- return $self->redirect_perm ( $vurl ); 
+ 
+ $jmap and return $self->render_text ( text => $vurl, format => 'text' );
+ 
+ return $self->redirect_perm ( $vurl );
  
 }
 
@@ -53,7 +58,7 @@ sub dist {
 
  my $self = shift; my $s = $self->{stash};
  
- $s->{total} = $s->{full} + $s->{breed} + $s->{none};
+ $s->{total} = $s->{full} + $s->{breed} + $s->{cate} + $s->{none};
 
  $s->{maxx} = $self->fetch ( 'all#maxx' );
  
