@@ -121,27 +121,35 @@ sub moveto { $_[0]->goto ( 302, $_[1] ) } # temporary redirect 302
 
 sub add_reason {
 
- my ( $self, $reason ) = @_;
+ my ( $self, @reason ) = @_; my $s = $self->{stash};
  
- defined $reason or return; 
-
- my $origin = ( caller(2) )[3];
+ # get subroutine and line number
+ my $origin = ( caller(2) )[3] . '[' . ( caller(2) )[2] . ']';
  
  # init if needed
  defined $self->{stash}->{reason} or $self->{stash}->{reason} = [];
  
  push @{ $self->{stash}->{reason} }, $origin;
- push @{ $self->{stash}->{reason} }, $reason->[0] // undef;
- push @{ $self->{stash}->{reason} }, $reason->[1] // undef; 
+ 
+ my $tag = 'FAIL_' . ( shift @reason // 'PASSTHRU' );
+ 
+ my $en = $s->{ten}->{ $tag } // ''; my $fi = $s->{tfi}->{ $tag } // '';
+ 
+ my $ext = join ', ', map { "'$_'" } @reason;
+ 
+ $ext and $ext .= " $ext";
+ 
+ push @{ $self->{stash}->{reason} }, $en.$ext;
+ push @{ $self->{stash}->{reason} }, $fi.$ext; 
  
 
 }
 
 sub fail { # the fail action for controllers
 
- my ( $self, $reason ) = @_;
+ my ( $self, @reason ) = @_;
  
- $self->add_reason ( $reason );
+ $self->add_reason ( @reason );
 
  my $origin = ( caller(2) )[3];
   
@@ -154,6 +162,22 @@ sub fail { # the fail action for controllers
 } 
 
 sub done { 1 } # the ok action for nth level controllers
+
+sub output {
+
+ my ( $self, $template, $format ) = @_;
+ 
+ $self->render( template => $template, format => $format // 'html' );
+
+}
+
+#
+# subs starting with f_ are functional subs = ment to add functionality
+# that other controllers can use
+#
+# it is a simple way to collect them all to the base controller
+# it is not an elegant way
+#
 
 sub f_init {
 
@@ -182,21 +206,19 @@ sub f_init {
 sub f_map { # load mappings
 
  my $self = shift; my $s = $self->{stash};
+ 
+ $s->{action} eq 'find' and goto SKIP_TO_DUAL;
 
  ( $s->{maplink} = $self->fetch ( 'map#link' ) ) or 
-  return $self->fail ( 
-   [ 'link mappings not found', 'linkkien vastaavuuksia ei ole' ]
-  );
+  return $self->fail ( 'MAPP_LINK' );
  
  ( $s->{mapview} = $self->fetch ( 'map#view' ) ) or 
-  return $self->fail ( 
-   [ 'view mappings not found', 'näkymien vastaavuuksia ei ole' ]
-  ); 
+  return $self->fail ( 'MAPP_VIEW' );
+
+ SKIP_TO_DUAL:
  
  ( $s->{mapdual} = $self->fetch ( 'map#dual' ) ) or 
-  return $self->fail ( 
-   [ 'dual mappings not found', 'kaksoisvastaavuuksia ei ole' ]
-  );
+  return $self->fail ( 'MAPP_DUAL' );
    
  return $self->done;
  
@@ -220,9 +242,7 @@ sub f_origin {
   # fetch the corresponding photo vector pointer x 
   $s->{x} = $self->fetch( $s->{runmode} . '#id2x', $s->{id} );
     
-  $s->{x} or return $self->fail ( [
-   "photo $s->{id} does not exist", "kuvaa $s->{id} ei ole"
-  ] );
+  $s->{x} or return $self->fail ( 'NODATA' );
           
  } else { 
  
@@ -238,10 +258,7 @@ sub f_origin {
   # if no first x was not found then it is an error
   # but not in runmode search 
   # (means that the search returns no hits)
-  $s->{runmode} eq 'search' or $s->{x} or 
-   return $self->fail ( [ 
-    'no first photo in the set', 'kuvajoukossa ei ensimmäistä kuvaa'
-   ] );            
+  $s->{runmode} eq 'search' or $s->{x} or return $self->fail ( 'NODATA' );           
  
   # fetch the id corresponding the photo vector pointer x
   $s->{id} = $self->fetch ( $s->{runmode} . '#x2id', $s->{x} ) // undef; 
@@ -249,10 +266,7 @@ sub f_origin {
   # if no id was found then it is an error 
   # but not in runmode search 
   #(means that the search returns no hits)
-  $s->{runmode} eq 'search' or $s->{id} or 
-   return $self->fail ( [
-    'photo set mapping failed', 'kuvajoukon kohdistusvirhe'            
-   ] );  
+  $s->{runmode} eq 'search' or $s->{id} or return $self->fail ( 'NODATA' );  
  }
  
  return $self->done;
@@ -312,14 +326,10 @@ sub f_vizdist {
   );
     
   # prepare coverage counts
-  ( $s->{ 'dist_count_'. $key } = $self->fetch ( "search#count", @sargs ) )
-   or return $self->fail ( [
-    "distribution fetch for key '$key' terminated on error",
-    "jakauman haku avaimella '$key' päättyi virheeseen"
-   ] ); 
- 
+  $s->{ 'dist_count_'. $key } = $self->fetch ( "search#count", @sargs );
+   
   $s->{ 'dist_perc_' . $key } = ( 
-   ( $s->{ 'dist_perc_'. $key } / $s->{dist_count_all} ) * 100
+   ( $s->{ 'dist_count_'. $key } / $s->{dist_count_all} ) * 100
    );
    
   # prepare coverage drill parameters to make urls     

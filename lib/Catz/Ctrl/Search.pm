@@ -26,7 +26,7 @@ package Catz::Ctrl::Search;
 
 use 5.12.0; use strict; use warnings;
 
-use parent 'Catz::Ctrl::Base';
+use parent 'Catz::Ctrl::Present';
 
 use Catz::Data::Search;
 
@@ -34,78 +34,76 @@ use Catz::Util::String qw ( clean noxss trim );
 
 sub search_ok {
 
- # verifies a search pattern, returns
- #  1 in success 
- #  0 on error
+ # verifies and processed a search parameter
+ # and copies it to stash
 
  my ( $self, $par, $var ) = @_; my $s = $self->{stash};
  
- $s->{$var} = $self->param($par) // undef;
+ $s->{$var} = $self->param ( $par ) // undef;
  
- # reject undefined parameter
- defined $s->{$var} or return 0;
+ defined $s->{ $var } or return $self->done;
  
- # length sanity check
- length $s->{$var} > 1234 and return 0;
+ # length sanity check 1/2
+ length $s->{ $var } > 2000 and return $self->fail ( [ 
+  'the search is too long (UTF8)', 'haku on liian pitkä (UTF8)' 
+ ] );
 
  # it appears that browsers typcially send UTF-8 encoded 
  # data when the origin page is UTF-8 -> we decode the data now   
  utf8::decode ( $s->{$var} );
 
+ # length sanity check 2/2
+ length $s->{ $var } > 1234 and return $self->fail ( [ 
+  'the search is too long (ASCII)', 'haku on liian pitkä (ASCII)' 
+ ] );
+ 
  # remove all unnecessary whitespaces     
- $s->{$var} = noxss clean trim $s->{$var};
+ $s->{ $var } = noxss clean trim $s->{ $var };
     
- # we don't allow just ''
- $s->{$var} eq '' and return 0;
+ $s->{ $var } eq '' and $s->{ $var } = undef; 
+
+ return $self->done;
 
 }
 
-sub search_pre {
+sub search_args {
 
- # prepares the search to arguments, returns
- #  1 in success 
- #  0 on error
+ # prorcess a search string to arguments
  
  my $self = shift; my $s = $self->{stash};
  
- # convert search to argument array 
+ # convert search to an argument array 
  $s->{args_array} = search2args ( $s->{what} );
   
- # store argument count separately
+ # store argument count separately to stash
  $s->{args_count} = scalar @{ $s->{args_array} };
  
- if ( 
+ ( 
   $s->{args_count} > 0 and # there are arguments
   $s->{args_count} <= 50 and # not more than 25 pairs   
-  $s->{args_count} % 2 == 0 #args appear in pairs  
-  ) {
+  $s->{args_count} % 2 == 0 # args must appear in pairs  
+ ) or do {
   
-   return 1; # ok
+  # clear bad searches 
+  $s->{args_count} = 0; $s->{args_array} = [];
   
- }
- 
- 
- 
- # clear the errorneous search to 
- # prevent troubles later
- $s->{args_array} = [];
- $s->{args_count} = 0;
+ };
   
- return 0; # error 
+ return $self->done;  
  
 }
 
-sub search_urlother {
+sub urlother {
 
  my $self = shift; my $s = $self->{stash};
-
- $s->{urlother} =  '/' . $s->{langaother} . '/' . $s->{action};
+ 
+ $s->{urlother} = $self->fuseq ( $s->{langaother}, $s->{action} );
  
  if ( $s->{what} ) {
  
   if ( $s->{origin} eq 'id' ) {
   
-   $s->{urlother} .= '/' . $s->{id} . '?q=' .  $self->enurl ( $s->{what} );
+   $s->{urlother} .= "/$s->{id}?q=" . $self->enurl ( $s->{what} );
   
   } else {
   
@@ -125,7 +123,7 @@ sub search_urlother {
   
  }
  
- return 1;
+ return $self->done;
 
 }
 
@@ -133,47 +131,55 @@ sub pattern {
 
  my $self = shift; my $s = $self->{stash};
 
- $self->init or return 0;
+ $self->f_init or return $self->fail;
  
  $s->{runmode} = 'search';
  
- $self->search_ok ( 'q', 'what' );
- $self->search_ok ( 'i', 'init' );
+ $self->search_ok ( 'q', 'what' ) 
+  or return $self->fail ( 'PARAM', 'q' );
  
- # no robots if init is given
- $s->{init} and do {  $s->{meta_index} = 0; $s->{meta_follow} = 0 };
+ if ( $s->{action} eq 'display' ) {
  
- $s->{what} and do {
+  $s->{what} or return $self->fail ( 'SEARCH' );
  
-  $self->search_pre or return 0;
+ }
+ 
+ $self->search_ok ( 'i', 'init' ) or 
+  return $self->fail ( 'PARAM', 'i' );
+  
+ $s->{what} and do { # if a search is available
+ 
+  $self->search_args or return $self->fail;
    
-  $self->load or return 0;
+  $self->f_map or return $self->fail;
  
-  $self->origin or return 0;
+  $self->f_origin or return $self->fail ( 'ORIGIN' );
   
  };
  
- $self->search_urlother or return 0;
+ $self->urlother or return $self->fail;
   
- return 1; # ok
+ return $self->done;
   
 }
 
 sub guide {
 
- # simple fallback method to provide the search page
+ # a simple fallback sub to provide the search page
 
  my $self = shift; my $s = $self->{stash};
  
  $s->{total} = 0;
 
- # if giving guide but search was made then it's not found -> not for robots
-  
- $s->{what} and do {  $s->{meta_index} = 0; $s->{meta_follow} = 0 };
+ # if giving guide but search was made then it's not found -> not for robots  
+ $s->{what} and do { $s->{meta_index} = 0; $s->{meta_follow} = 0 };
  
- $self->render( template => 'page/search', format => 'html' );
+ # no robots if init is given
+ $s->{init} and do {  $s->{meta_index} = 0; $s->{meta_follow} = 0 };
+ 
+ $self->output ( 'page/search' );
 
- return 1;
+ return $self->done;
 
 } 
 
@@ -181,15 +187,19 @@ sub search {
 
  my $self = shift; my $s = $self->{stash};
  
- $self->pattern or return $self->render_not_found;
+ $self->pattern or return $self->fail ( [
+  'search processing failed', 'haun käsittely epäonnistui' 
+ ] );
  
  if ( $s->{x} and $s->{id} ) { # we have results 
  
-  $self->multi or return $self->render_not_found; 
+  $self->multi or return $self->fail ( [
+  'photo set processing failed', 'kuvajoukon käsittely epäonnistui' 
+  ] );
+ 
+ } else { # no results, the fallback is to show the search page 
   
- } else { # no results, fallback to search page 
-  
-  $self->guide or return $self->render_not_found;  
+  $self->guide or return $self->fail;  
 
  } 
 
@@ -198,17 +208,22 @@ sub search {
 sub display {
  
  my $self = shift; my $s = $self->{stash};
- 
- # force that q is present
- $self->param('q') or return $self->render_not_found;
- 
- $self->pattern or return $self->render_not_found;
+  
+ $self->pattern or return $self->fail ( [
+  'search processing failed', 'haun käsittely epäonnistui' 
+ ] );
  
  if ( $s->{x} and $s->{id} ) { # we have results
  
-  $self->single or return $self->render_not_found; 
+  $self->single or return $self->fail ( [
+  'viewing processing failed', 'katselun käsittely epäonnistui' 
+  ] );
   
- } else {  return $self->render_not_found }
+ } else {  
+ 
+  return $self->fail ( [ 'no photos found', 'kuvia ei löytynyt' ] );
+ 
+ }
   
 }
 

@@ -30,7 +30,8 @@ use parent 'Catz::Ctrl::Base';
 
 use XML::RSS;
 
-use Catz::Core::Conf;
+use Catz::Data::Conf;
+
 use Catz::Util::String qw ( limit );
 use Catz::Util::Time qw ( dt dt2epoch epoch2rfc822 );
 
@@ -58,8 +59,7 @@ sub one { # one news article
  ( $s->{new1}, $s->{prev}, $s->{next} ) = 
    @{ $self->fetch ( 'news#one', $s->{article} ) }; 
  
- defined $s->{new1} or 
-  return $self->fail 'article not found|artikkelia ei löydy';
+ defined $s->{new1} or return $self->fail ( 'ARTICLE' );
  
  $self->render( template => 'page/new1', format => 'html' );
 

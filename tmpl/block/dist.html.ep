@@ -3,7 +3,7 @@
 <img id="viz_dist" usemap="#map_dist" alt="<%= $t->{VIZ_DIST_NAME} %>" title="<%= $t->{VIZ_DIST_NAME} %>" class="viz" width="<%== $wmax %>" height="<%== $hmax %>" src="<%== join '/', ( '', $langa, 'viz', 'dist', $dist_count_full, $dist_count_breed, $dist_count_cate, $dist_count_none, $version, '' ) %>">
 <map name="map_dist">
 % my $pos = 0;
-% foreach my $key ( @{ $dist->{keysall} } ) {
+% foreach my $key ( @{ $dist->{keyspie} } ) {
 <area id="map_dist_legend<%= $pos %>" shape="rect" coords="<%== $wmax %>,<%== $hmax %>,<%== $wmax %>,<%== $hmax %>" href="<%== stash ( 'dist_url_' . $key ) // undef %>" title="<%== fmt ( ( stash ( 'dist_count_' . $key ) // undef ), $lang ) %> <%= stash ( 'dist_text_' . $key ) // undef %>">
 <area id="map_dist_data0_<%= $pos %>" shape="poly" coords="<%== $wmax %>,<%== $hmax %>,<%== $wmax %>,<%== $hmax %>" href="<%== stash ( 'dist_url_' . $key ) // undef %>" title="<%== fmt ( ( stash ( 'dist_count_' . $key ) // undef ), $lang ) %> <%= stash ( 'dist_text_' . $key ) // undef %>">
 %  $pos++;

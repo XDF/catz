@@ -28,40 +28,34 @@ use 5.12.0; use strict; use warnings;
 
 use parent 'Catz::Ctrl::Base';
 
-use parent 'Catz::Core::Ctrl';
-
 use List::MoreUtils qw ( any );
 
-use Catz::Core::Conf;
+use Catz::Data::Conf;
 use Catz::Data::List qw ( list_matrix );
 use Catz::Data::Search;
+
 use Catz::Util::Number qw ( round );
 
 sub find {
 
  my $self = shift; my $s = $self->{stash};
- 
- # find is available with both bare lang and with setup
- 
+  
  $s->{what} = $self->param( 's' ) // undef;
  
  # it appears that browsers typcially send UTF-8 encoded data
  # when the origin page is UTF-8 -> we decode now
  utf8::decode ( $s->{what} );
 
- $s->{mapdual} = $self->fetch ( 'map#dual' );
- 
- if ( ( length $s->{what} > 50 ) or ( length $s->{what} == 0 ) ) {
- 
-  $s->{find} = [];
- 
- } else {
-     
-  $s->{find} = $self->fetch ( 'locate#find', $s->{what}, 50 );
+ $self->f_map or return $self->fail ( [ 
+  'loading of mappings failed', 'vastaavuuksien lataaminen epäonnistui' 
+ ] );
 
- }
+  $s->{find} = []; # empty result array as default
  
- $self->render( template => 'block/find', format => 'html' );
+ ( length $s->{what} > 0 ) and ( length $s->{what} < 51 ) and   
+   $s->{find} = $self->fetch ( 'locate#find', $s->{what}, 50 );
+ 
+ $self->output ( 'block/find' );
 
 }
 
@@ -72,29 +66,28 @@ sub list {
  $s->{matrix} = list_matrix;
   
  # verify that the subject is known
- $s->{matrix}->{$s->{subject}} or return $self->render_not_found;
+ $s->{matrix}->{$s->{subject}} 
+  or return $self->fail ( 'MATRIX_SUBJ' ); 
  
  # verify that the mode is known for this subject
  ( any { $s->{mode} eq $_ } @{ $s->{matrix}->{$s->{subject}}->{modes} } )
-  or return $self->render_not_found;
-  
- $s->{urlother} =  
-  '/' . $s->{langaother} . '/' . $s->{action} . '/' . 
-  $s->{subject} . '/' . $s->{mode} . '/';
+  or return $self->fail ( 'MATRIX_SUBJ_MODE' ); 
+ 
+ $s->{urlother} = $self->fuse ( 
+  $s->{langaother} , $s->{action} , $s->{subject} , $s->{mode} 
+ );
    
  my $res = $self->fetch( 'locate#full', $s->{subject}, $s->{mode} );
   
- $s->{total} = $res->[0];
- $s->{idx} = $res->[1];
- $s->{sets} = $res->[2];
+ $s->{total} = $res->[0] // 0;
+ $s->{idx} = $res->[1] // undef;
+ $s->{sets} = $res->[2] // undef;
 
- $s->{total} > 0 or return $self->render_not_found;
+ $s->{total} > 0 or return $self->fail ( 'NODATA' );
  
- $s->{maplink} = $self->fetch ( 'map#link' );
- $s->{mapview} = $self->fetch ( 'map#view' );
- $s->{mapdual} = $self->fetch ( 'map#dual' );
+ $self->f_map or return $self->fail ( 'MAPP_LOAD' );
       
- $self->render(template => 'page/list1', format => 'html' );
+ $self->output ( 'page/list1' );
  
 }
 
@@ -104,12 +97,12 @@ sub lists {
 
  $s->{matrix} = list_matrix;
     
- $s->{urlother} =  
-  '/' . $s->{langaother} . '/' . $s->{action} . '/';
+ $s->{urlother} = $self->fuse ( $s->{langaother}, $s->{action} );  
    
- $s->{prims} = $self->fetch( 'locate#prims' );
+ ( $s->{prims} = $self->fetch( 'locate#prims' ) ) or
+   return $self->fail ( [ 'no lists found', 'luetteloita ei löytynyt' ] ); 
         
- $self->render( template => 'page/lists', format => 'html' );
+ $self->output ( 'page/lists' );
  
 }
 
