@@ -26,90 +26,44 @@ package Catz::Ctrl::Pair;
 
 use 5.12.0; use strict; use warnings;
 
-use parent 'Catz::Ctrl::Base';
-
-use Catz::Util::Number qw ( round );
-
-sub pair_ok {
-
- my $self = shift; my $s = $self->{stash};
-
- # routing already does basic length and character class checking
-
- # check that pri and sec are provided 
- # directly by the routing 
- ( $s->{pri} and $s->{sec} ) or return 0;
-   
- # check that pri is acceptable
- $self->fetch( 'pair#verify', $s->{pri} ) or return 0;
- 
- return 1;
- 
-}
-
-sub pair_pre {
-
- my ( $self, $intent ) = @_; my $s = $self->{stash};
-
- utf8::decode ( $s->{sec} );
- 
- $intent ne 'widget' and 
-  $s->{sec} = $self->decode ( $s->{sec} ); # using decode helper 
- 
- $s->{args_array} = [ $s->{pri}, $s->{sec} ];
- $s->{args_count} = 2;
- 
- return 1;
- 
-}
-
-sub pair_urlother {
- 
- my $self = shift; my $s = $self->{stash};
- 
- # get the translation for this pri-sec -pair 
- $s->{trans} = $self->fetch ( 'map#trans', $s->{pri}, $s->{sec} );
-
- $s->{urlother} =  
-  '/' . ( join '/', $s->{langaother} , $s->{action}, $s->{pri}, 
-  $self->encode( $s->{trans} ) ). '/' .
-  ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
-  
- return 1;
-
-}
-
+use parent 'Catz::Ctrl::Present';
 
 sub pair {
 
  my $self = shift; my $s = $self->{stash};
  
- $self->init or return 0;
+ $self->f_init or return $self->fail;
 
  $s->{runmode} = 'pair';
 
- $self->pair_ok or return 0;
+ # routing already does basic existence, length and character class checking
 
- $self->load or return 0;
+ # check that pri is acceptable
+ $self->fetch( 'pair#verify', $s->{pri} ) or return $self->fail ( 'PRI' );
+ 
+ $s->{sec} = $self->decode ( $s->{sec} );
 
- $self->pair_pre ( 'core' ) or return 0;
+ $self->f_map or return $self->fail ( 'MAPP_LOAD' );
+
+ $s->{args_array} = [ $s->{pri}, $s->{sec} ];
+ $s->{args_count} = 2;
    
- $self->origin or return 0;
+ $self->f_origin or return $self->fail ( 'ORIGIN' );
  
  # get the translation for this pri-sec -pair 
- $s->{trans} = $self->fetch ( 'map#trans', $s->{pri}, $s->{sec} );
+ ( $s->{trans} = $self->fetch ( 'map#trans', $s->{pri}, $s->{sec} ) )
+  or return $self->fail ( 'TRANSL' );
   
- ( $s->{pri} eq 'nat' ) and do {
- 
-  # fetch country names based on codes to be used in meta tags
-  # added 2011-10-16
+ $s->{urlother} = $self->fuse (
+  $s->{langaother}, $s->{action}, $s->{pri}, $self->encode( $s->{trans} )
+ );
   
-  $s->{nats} = $self->fetch ( 'map#nats' );
- 
- };
- 
- $self->pair_urlother or return 0;    
+ $s->{origin} eq 'id' and $s->{urlother} .= $s->{id} . '/';
 
+ # fetch country names based on codes to be used in meta tags
+ # added 2011-10-16  
+ $s->{pri} eq 'nat' and  $s->{nats} = $self->fetch ( 'map#nats' );
+ 
  # if refines are defined for this pri then fetch them 
  defined $s->{matrix}->{ $s->{pri} }->{refines} and 
   $s->{refines} = $self->fetch (
@@ -118,10 +72,11 @@ sub pair {
    @{ $s->{matrix}->{ $s->{pri}} ->{refines} } 
   ); 
 
+ # fetch the extra information for breeder
  ( $s->{pri} eq 'breeder' ) and
   $s->{breedernat} = $self->fetch ( "related#breedermeta", $s->{sec} );
 
- return 1;
+ return $self->done;
 
 }
 
@@ -129,20 +84,20 @@ sub browse {
 
  my $self = shift; 
 
- $self->pair or return $self->render_not_found;
-  
- $self->multi or return $self->render_not_found;
-
+ $self->pair or return $self->fail ( 'PAIR_LOAD' );
+ 
+ $self->multi or return $self->fail ( 'MULTI_LOAD' );
+ 
 }
 
 sub view { 
 
  my $self = shift; 
 
- $self->pair or return $self->render_not_found;
+ $self->pair or return $self->fail ( 'PAIR_LOAD' );
+   
+ $self->single or return $self->fail ( 'SINGLE_LOAD' );
   
- $self->single or return $self->render_not_found;
- 
 }
 
 1;

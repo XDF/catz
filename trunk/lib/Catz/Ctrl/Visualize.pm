@@ -62,9 +62,7 @@ sub dist {
  $s->{maxx} = $self->fetch ( 'all#maxx' );
 
  # the total number of photos must be less or equal to all photos
- $s->{total} <= $s->{maxx} or return $self->fail (
-  [ 'distribution values mismatch', 'epäsopivat jakauman arvot' ]
- );
+ $s->{total} <= $s->{maxx} or return $self->fail ( 'DIST_VALS' );
  
  $s->{dist} = dist_conf;
  
@@ -74,10 +72,12 @@ sub dist {
    ( $s->{ $key } / $s->{total} ) * 100
    ), 1 );
  
-  $s->{ $key . '_label' } = $self->enurl (
-   $s->{t}->{ 'VIZ_DIST_' . uc ( $key ) } . ' ' .
-   $self->fmt ( $s->{ $key . '_perc' }, $s->{lang} )
-  );
+  my $tx =  $s->{t}->{ 'VIZ_DIST_' . uc ( $key ) } . ' ' .
+   $self->fmt ( $s->{ $key . '_perc' }, $s->{lang} ) . ' %';
+   
+  utf8::encode $tx;
+ 
+  $s->{ $key . '_label' } = $self->enurl ( $tx ); 
    
  }
   
@@ -99,9 +99,9 @@ sub rank {
 
  my $self = shift; my $s = $self->{stash};
 
- $self->fetch( 'pair#verify',$s->{pri} ) or return $self->fail (
-  [ 'the concept given is unknown', 'annettu aihe on tuntematon' ]
- );
+ $self->fetch( 'pair#verify',$s->{pri} ) or 
+  return $self->fail ( 'PRI' );
+  
  $s->{sec} = $self->decode ( $s->{sec} ); # using decode helper
  
  $s->{total} = $self->fetch ( 'pair#count', $s->{pri}, $s->{sec} );

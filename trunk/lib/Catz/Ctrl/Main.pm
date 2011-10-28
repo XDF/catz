@@ -66,9 +66,7 @@ sub front {
  
  $s->{seal} = conf ( 'key_seal' );
   
- $self->f_map or return $self->fail (
-  [ 'loading of mappings failed','vastaavuuksien lataaminen epäonnistui' ]
- );
+ $self->f_map or return $self->fail ( 'MAPP_LOAD' );
  
  # load the latest ...
  
@@ -188,60 +186,6 @@ sub info {
  
  $self->render_text ( text => $out, format => 'txt' ); 
  
-}
-
-sub about { 
-
- my $self = shift; my $s = $self->{stash};
-  
- $s->{urlother} = $self->fuse ( $s->{langaother}, 'about', $s->{topic} );
- 
- if ( $s->{topic} eq 'contrib' ) {
- 
-  $s->{breeds} = $self->fetch ( 'related#breeds' );
-  
-  foreach my $breed ( @{ $s->{breeds} } ) {
-  
-   $s->{'url_breed_'.$breed} = join '/', 
-    ( '', $s->{langa}, 'search?q='. $self->enurl ( 
-     "+breed=$breed -has=cat" 
-    ) );
-    
-  }
-
-  $s->{cates} = $self->fetch ( 'related#cates' );
-  
-  foreach my $cate( @{ $s->{cates} } ) {
-  
-   $s->{'url_cate_'.$cate->[0]} = join '/', 
-    ( '', $s->{langa}, 'search?q='. $self->enurl ( 
-     "+cate=$cate->[0] -has=cat" 
-    ) );
-    
-  }
-   
-  $s->{count_total} = $self->fetch ( 'all#maxx' );
-  
-  $s->{search_none} = '-has=text';  
-  $s->{search_breed} = '+has=breed -has=cat';
-  
-  foreach my $key ( qw ( none breed ) ) {
-  
-   $s->{'url_'.$key} = join '/', 
-    ( '', $s->{langa}, 'search?q='. $self->enurl ( $s->{'search_'.$key} ) );
-  
-   $s->{'count_'.$key} = 
-    $self->fetch ( "search#count", @{ search2args $s->{'search_'.$key} } );
-   
-   $s->{'perc_'.$key} = 
-    ( ( $s->{'count_'.$key} / $s->{count_total} ) * 100 );
-  
-  }  
-  
- }
-   
- $self->render( template => 'page/about', format => 'html' );
-
 }
 
 1;

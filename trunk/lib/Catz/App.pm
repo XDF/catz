@@ -477,8 +477,11 @@ sub before {
  
  # fetch texts for the current language and make them available to all
  # controller and templates as variable t 
- $s->{t} = text ( $s->{lang} );
+ 
  $s->{ten} = text ( 'en' );
+ $s->{tfi} = text ( 'fi' );
+ 
+ $s->{t} = $s->{lang} eq 'fi' ?$s->{tfi} :  $s->{ten};
    
 }
 

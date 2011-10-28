@@ -4,7 +4,6 @@
 <div><a href="<%== $t->{URL_CATZA} %>"><%= $t->{TOFRONT} %></a></div>
 <h1><%= content 'msg_en' %><br><%= content 'msg_fi' %></h1>
 <h3>catz<%= join ' ', ( $env, $now, $version ) %></h3>
-<div><a href="<%== $t->{URL_GOOGLECODE} %>">Catz</a> <%= $t->{CREDITS} %></div>
 <div><%= content 'hint' %></div>
 <% end %>
 %#

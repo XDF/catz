@@ -71,7 +71,7 @@ sub single {
  
  result_prepare ( $self, $keys );
           
- $self->render( template => 'page/view', format => 'html' );
+ $self->output ( 'page/view' );
  
  return $self->done;
 
@@ -163,10 +163,10 @@ sub multi {
  # 2011-10-15
  $s->{urlbuild} = undef; 
     
- $self->render( template => 'page/browse', format => 'html' );
+ $self->output ( 'page/browse' );
  
  return $self->done;
-
+ 
 }
 
 1;
