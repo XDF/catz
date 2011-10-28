@@ -161,7 +161,7 @@ if ( $runmode eq 'pair' ) {
 %  my $titl = $t->{PHOTO} . ' ' . $toid;
 %  defined $texts->{ $th->[0] } and $titl .= " $sep " . $texts->{ $th->[0] };
 %  $titl .= " $sep $date";
-<a title="<%= $titl %>" href="<%== include 'href/actionid', toaction => 'auto', langh => $langa, toid => $toid %>"><img alt="<%= $titl %>" src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
+<a title="<%= $titl %>" class="thumb" href="<%== include 'href/actionid', toaction => 'auto', langh => $langa, toid => $toid %>"><img alt="<%= $titl %>" src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
 % }
 </div>
 %#
@@ -169,23 +169,7 @@ if ( $runmode eq 'pair' ) {
 %#
 % given ( $vizmode ) {
 %  when ( 'dist' ) {
-% my $wmax = $style->{viz}->{$vizmode}->{width};
-% my $hmax = $style->{viz}->{$vizmode}->{height};
-<img id="viz_dist" usemap="#map_dist" alt="<%= $t->{VIZ_DIST_NAME} %>" title="<%= $t->{VIZ_DIST_NAME} %>" class="viz" width="<%== $style->{viz}->{$vizmode}->{width} %>" height="<%== $style->{viz}->{$vizmode}->{height} %>" src="/<%== $langa %>/viz/dist/<%== $total - $cover_partial %>/<%== $cover_breed %>/<%== $cover_cate %>/<%== $cover_none %>/<%== $version %>/">
-<map name="map_dist">
-<area id="map_dist_default" name="default" shape="rect" coords="0,0,<%== $wmax %>,<%== $hmax %>" href="" title="">
-% my $mp = 0;
-% foreach my $ky ( @$keys_extra ) {
-%  if ( $ky ne 'partial') {
-%   my $vl = stash ( 'cover_' . $ky ) // undef;
-%   my $ul = stash ( 'url_' . $ky ) // undef;
-%   my $tk = 'HAS' . ( uc $ky ) . ( $vl == 1 ? '' : 'A' );
-<area id="map_dist_legend<%= $mp %>" shape="rect" coords="<%== $wmax %>,<%== $hmax %>,<%== $wmax %>,<%== $hmax %>" href="/<%== $langa %>/search?q=<%== enurl $ul %>" title="<%== fmt ( $vl, $lang ) %> <%= $t->{$tk} %>">
-<area id="map_dist_data0_<%= $mp %>" shape="poly" coords="<%== $wmax %>,<%== $hmax %>,<%== $wmax %>,<%== $hmax %>" href="/<%== $langa %>/search?q=<%== enurl $ul %>" title="<%== fmt ( $vl, $lang ) %> <%= $t->{$tk} %>">
-%  $mp++;
-%  }
-% }
-</map>
+%== include 'block/dist', intent => 'dist';
 %  }
 %  when ( 'rank' ) {
 <img id="viz_rank" alt="<%= $t->{VIZ_RANK_NAME} %>" title="<%= $t->{VIZ_RANK_NAME} %> <%= $sep %> <%= $t->{VIZ_RANK_DESC} %>" class="viz" width="<%== $style->{viz}->{$vizmode}->{width} %>" height="<%== $style->{viz}->{$vizmode}->{height} %>" src="/<%== $langa %>/viz/rank/<%== $pri %>/<%== encode $sec %>/<%== $version %>/">

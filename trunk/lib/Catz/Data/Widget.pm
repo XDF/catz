@@ -272,5 +272,4 @@ sub widget_plate {
  
 }
 
-
 1;

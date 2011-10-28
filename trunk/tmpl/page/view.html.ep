@@ -120,8 +120,8 @@
 % if ( $comm =~ m|^\[[A-Z]{3}| ) { # breed code
 <%= $comm %> 
 <span class="shrink"><%= $t->{NO_CAT_A} %> <%== $id %> <%= $t->{NO_CAT_B} %> <a class="infox" title="<%= $t->{MAILTO_HEAD} %> <%== $id %>" href=""></a></span>
-% } elsif ( $comm =~ m|^\[[A-Z]{2}[1-9]| ) { # category code
-<%= $comm %> 
+% } elsif ( $comm =~ m|^\XC[1-9]| ) { # category code
+<%= $comm %>
 <span class="shrink"><%= $t->{NO_BREED_A} %> <%== $id %> <%= $t->{NO_BREED_B} %> <a class="infox" title="<%= $t->{MAILTO_HEAD} %> <%== $id %>" href=""></a></span>
 % } else { # not just a code, has more data
 <%= $comm %>
@@ -132,6 +132,7 @@
 %   }
 %  }
 % } else { # no comments
+<%== include 'elem/marker' %>
 <span class="shrink"><%= $t->{NO_COMMENT_A} %> <%== $id %> <%= $t->{NO_COMMENT_B} %> <a class="infox" title="<%= $t->{MAILTO_HEAD} %> <%== $id %>" href=""></a></span>
 % }
 % }

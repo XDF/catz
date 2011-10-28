@@ -25,7 +25,7 @@
 package Catz::Ctrl::Reroute;
 
 #
-# handles redirection of old site's urls under /galleries
+# handles redirection of old site's URLs under /galleries
 #
 
 use 5.10.0; use strict; use warnings;

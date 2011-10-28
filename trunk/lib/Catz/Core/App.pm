@@ -46,7 +46,7 @@ use Catz::Util::Time qw(
 );
 use Catz::Util::Number qw ( fmt fullnum33 round );
 use Catz::Util::String qw ( 
- clean enurl decode encode limit trim urirest 
+ clean enurl decode encode limit trim urirest fuse fuseq 
 );
 
 # controls emitting timing information as warnings
@@ -67,7 +67,7 @@ sub startup {
  # we use dynamically generated subs as bridges
  foreach my $sub ( 
   qw ( dt dt2epoch dtdate dttime dtexpand fmt clean enurl html_escape limit 
-  trim fullnum33 thisyear encode decode round urirest ) 
+  trim fullnum33 thisyear encode decode round urirest fuse fuseq ) 
  ) {
 
   # we do shift to ditch self that comes in first in helper calls
@@ -234,6 +234,9 @@ sub startup {
 
  $l->route( '/widget/contrib/:palette', palette => qr/dark|neutral|bright/ )
   ->to( 'widget#contrib' );
+
+ $l->route( '/widget/marker/:palette', palette => qr/dark|neutral|bright/ )
+  ->to( 'widget#marker' );
 
  # disabled 2011-10-25
  # $l->route ( '/build' )->to ( 'widget#build' ); # the widget builder

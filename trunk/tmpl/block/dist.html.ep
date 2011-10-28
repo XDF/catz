@@ -1,0 +1,16 @@
+% my $wmax = $style->{viz}->{$intent}->{width};
+% my $hmax = $style->{viz}->{$intent}->{height};
+<img id="viz_dist" usemap="#map_dist" alt="<%= $t->{VIZ_DIST_NAME} %>" title="<%= $t->{VIZ_DIST_NAME} %>" class="viz" width="<%== $wmax %>" height="<%== $hmax %>" src="<%== join '/', ( '', $langa, 'viz', 'dist', $cover_full, $cover_breed, $cover_cate, $cover_none, $version, '' ) %>">
+<map name="map_dist">
+% my $pos = 0;
+% foreach my $ky ( @{ $dist->{dblock_dist} } ) {
+%  my $vl = stash ( 'cover_' . $ky ) // undef;
+%  my $ul = stash ( 'url_' . $ky ) // undef;
+%  my $tk = 'HAS' . ( uc $ky ) . ( $vl == 1 ? '' : 'A' );
+<area id="map_dist_legend<%= $pos %>" shape="rect" coords="<%== $wmax %>,<%== $hmax %>,<%== $wmax %>,<%== $hmax %>" href="/<%== $langa %>/search?q=<%== enurl $ul %>" title="<%== fmt ( $vl, $lang ) %> <%= $t->{$tk} %>">
+<area id="map_dist_data0_<%= $pos %>" shape="poly" coords="<%== $wmax %>,<%== $hmax %>,<%== $wmax %>,<%== $hmax %>" href="/<%== $langa %>/search?q=<%== enurl $ul %>" title="<%== fmt ( $vl, $lang ) %> <%= $t->{$tk} %>">
+%  $pos++;
+%  }
+% }
+</map>
+%  }
