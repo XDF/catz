@@ -24,30 +24,36 @@
 
 package Catz::Core::Ctrl;
 
+#
 # the base class for all controllers in the system
+# provides the core services required
+#
 # all controlles must inherit from this 
+#
 
 use 5.10.0; use strict; use warnings;
 
 # all controllers are of course also Mojolicious controllers 
 use parent 'Mojolicious::Controller';
 
-use List::MoreUtils qw ( none );
-
 use Catz::Core::Conf;
 
 use Catz::Util::File qw ( findfiles );
-use Catz::Util::String qw ( clean noxss trim );
 
-# this is how we load and access models: when this module gets compiled
-# all models get loaded, instantiated and store to a static hashref  
+#
+# loading of models
+#
+
+# when this module gets compiled all models get loaded, 
+# instantiated and stores to a static hashref  
 
 my $models = {}; # model instances are kept here
 
-# skip these models, this contains abstract models that
-# are not to be instantiated and accessed directly
-my $noload = { 'Common' => 1, 'Vector' => 1 }; 
+# define models to be skipped, like 
+# abstract models that are not to be instantiated
+my $noload = { Common => 1, Vector => 1 }; 
 
+# disk path to models
 my $mpath =  '../lib/Catz/Model';
 
 # we seek the model directory
@@ -58,8 +64,7 @@ foreach my $mfile ( findfiles ( $mpath ) ) {
   
  $noload->{$class} or do {
  
-  # load
-  require $mfile;
+  require $mfile; # load
 
   # instantiate, use lower case name as key    
   $models->{ lc ( $class ) } = "Catz::Model::$class"->new;  
@@ -68,7 +73,24 @@ foreach my $mfile ( findfiles ( $mpath ) ) {
  
 }
 
-sub redirect_perm { # permanent redirect 301
+sub fetch {
+
+ # fetch data from any Model to any Controller 
+ # expects model and sub as 'model#sub' and an argument list
+ 
+ my ( $self, $target, @args ) = @_; my $s = $self->{stash};
+
+ my ( $model, $sub ) = split /#/, $target;
+ 
+ ( $model and $sub ) or die "illegal target '$target'";
+ 
+ defined $models->{$model} or die "model '$model' is not bind";
+  
+ $models->{$model}->fetch( $s->{version}, $s->{lang}, $sub, @args );
+   
+}
+
+sub visit { # permanent redirect 301
 
  # this is a modified copy from Mojolicious core
 
@@ -88,7 +110,7 @@ sub redirect_perm { # permanent redirect 301
  
 }
 
-sub redirect_temp { # temporary redirect 302
+sub move { # temporary redirect 302
 
  # this is a modified copy from Mojolicious core  
 
@@ -108,21 +130,46 @@ sub redirect_temp { # temporary redirect 302
  
 }
 
-sub fetch {
 
- # fetch data from any Model to any Controller 
- # expects model and sub as 'model#sub' and an argument list
- 
- my ( $self, $target, @args ) = @_; my $s = $self->{stash};
+sub add_reason {
 
- my ( $model, $sub ) = split /#/, $target;
+ my ( $self, $reason ) = @_; 
+
+ # init if needed
+ defined $self->{stash}->{reason} or 
+  $self->{stash}->{reason} = [];
  
- ( $model and $sub ) or die "illegal target '$target'";
+ # add reason if defined
+ defined $reason and 
+  unshift @{ $self->{stash}->{reason} }, $reason;
+
+}
+
+sub fail { # the ok action for nth level controllers
+
+ my ( $self, $reason ) = @_;
  
- defined $models->{$model} or die "model '$model' is not bind";
-  
- $models->{$model}->fetch( $s->{version}, $s->{lang}, $sub, @args );
-   
+ $self->add_reason $reason;
+ 
+ 0; 
+
+} 
+
+sub ok { # the ok action for nth level controllers
+
+ 1;
+
+}
+
+sub error { # the failure action for 1st level controllers
+
+ my ( $self, $reason ) = @_;
+ 
+ $self->add_reason $reason;
+ 
+ # this is 1st level action, so pass to Mojolicious
+ return $self->render_not_found; 
+
 }
 
 

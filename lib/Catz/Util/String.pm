@@ -30,7 +30,7 @@ use base 'Exporter';
 
 our @EXPORT_OK = qw ( 
  clean decode deurl dna encode enurl lcc limit 
- label nobreak noxss trim ucc ucclcc urirest
+ label nobreak noxss trim ucc ucclcc urirest fuse fuseq
 ); 
 
 use Digest::MD5 qw ( md5_base64 );
@@ -162,5 +162,16 @@ sub urirest {
  $1 ? $1 : '';
    
 }
+
+#
+# fusion of URL/URI parts
+#
+sub fuse { join '/', ( '', @_, '' ) }
+
+#
+# fusion of URL/URI parts with no ending slash
+#
+sub fuseq { join '/', ( '', @_ ) }
+
 
 1;

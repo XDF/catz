@@ -47,10 +47,9 @@ sub init {
  my $self = shift; my $s = $self->{stash};
  
  foreach my $var ( qw ( 
-  runmode origin what refines breedernat viz_rank trans nats maxx total
-  cover_none cover_partial cover_cate cover_breed 
-  url_none url_partial url_cate url_breed 
-  keys_extra
+  runmode origin what refines breedernat viz_rank trans nats maxx total dist
+  cover_full cover_partial cover_cate cover_breed cover_none
+  url_full url_partial url_cate url_breed url_none 
  ) ) { $s->{$var} = undef }
  
  defined $s->{pri} or $s->{pri} = undef;
@@ -65,49 +64,55 @@ sub init {
 
 sub origin {
 
- # processes incoming photo id or resolves it from data, returns
- #  1 in success 
- #  0 on error
+ #
+ # the photo vector pointer x must be resolved 
+ # in order to browse or view photos
+ #
+ # we resolve it from icnoming photo id or from the data  
+ # 
  
  my $self = shift; my $s = $self->{stash};
  
- if ( $s->{id} ) { 
+ if ( $s->{id} ) { # the request has the photo id defined 
 
-  # mark that this request had an id
-  $s->{origin} = 'id';
+  $s->{origin} = 'id'; # mark that this request had an id
   
-  # fetch the corresponding x 
+  # fetch the corresponding photo vector pointer x 
   $s->{x} = $self->fetch( $s->{runmode} . '#id2x', $s->{id} );
     
-  $s->{x} or return 0; # should be found
+  $s->{x} or return $self->fail
+   qq{photo $s->{id} does not exist|kuvaa $s->{id} ei ole};
           
  } else { 
  
-  # no id was given in the request
-  # must find the id of the first photo in the set
+  # no id was given in the request so we point to
+  # the id of the first photo in the current set
  
-  # mark that the id was resolved
-  $s->{origin} = 'x'; 
+  $s->{origin} = 'x'; # mark that we resolved the photo 
   
-  # fetch the first x of the photo set
-  $s->{x} = $self->fetch ( $s->{runmode} . '#first', @{ $s->{args_array} } );
+  # fetch the first photo vector pointer x in the current photo set
+  $s->{x} = 
+   $self->fetch ( $s->{runmode} . '#first', @{ $s->{args_array} } ) // undef;
   
-  # if no first x then it is an error as default
-  # allow the system to continue if a search returns no hits
-  $s->{runmode} ne 'search' and ( $s->{x} or return 0 );            
+  # if no first x was not found then it is an error
+  # but not in runmode search 
+  # (means that the search returns no hits)
+  $s->{runmode} eq 'search' or $s->{x} or 
+   return $self->fail 
+    'no first photo in the set|kuvajoukossa ei ensimmäistä kuvaa';            
  
-  # fetch the id corresponding the x 
-  $s->{x} and do { 
-   $s->{id} = $self->fetch ( $s->{runmode} . '#x2id', $s->{x} ) 
-  };
+  # fetch the id corresponding the photo vector pointer x
+  $s->{id} = $self->fetch ( $s->{runmode} . '#x2id', $s->{x} ) // undef; 
   
-  # if no id was found then it is an error but
-  # allow the system to continue if a search returns no hit
-  $s->{runmode} ne 'search' and ( $s->{id} or return 0 ); 
-   
+  # if no id was found then it is an error 
+  # but not in runmode search 
+  #(means that the search returns no hits)
+  $s->{runmode} eq 'search' or $s->{id} or 
+   return $self->fail 'photo set mapping failed|kuvajoukon kohdistusvirhe';            
+  
  }
  
- return 1; # ok
+ return $self->ok;
 
 }
 
@@ -126,36 +131,36 @@ sub load {
  $s->{mapview} = $self->fetch ( 'map#view' );
  $s->{mapdual} = $self->fetch ( 'map#dual' );
  
+ return $self->ok;
+ 
 }
 
 sub single {
 
- # prepare a single large photo for viewing, returns
- #  1 in success 
- #  0 on success
+ # prepare a single large photo to stash for viewing
  
  my $self = shift; my $s = $self->{stash};
  
- ( $s->{total}, $s->{pos}, $s->{pin} ) = 
-  @{ 
-   $self->fetch( 
+ ( $s->{total}, $s->{pos}, $s->{pin} ) = @{ 
+   $self->fetch ( 
     $s->{runmode} . '#pointer', 
     $s->{x}, 
     @{ $s->{args_array} } 
    )
   };
      
- $s->{total} == 0 and return 0; # no photo found 
+ $s->{total} == 0 and 
+  return $self->fail 'no photo found|kuvia ei löydy'; 
 
  # fetch the photo metadata
-
- $s->{comment} =  $self->fetch( 'photo#text', $s->{x} ); # comment(s)
  
- $s->{detail} = $self->fetch( 'photo#detail', $s->{x}); # details
+ $s->{comment} = $self->fetch( 'photo#text', $s->{x} ); # comment(s)
  
- $s->{image} =  $self->fetch( 'photo#image', $s->{x} ); # the image itself
+ $s->{detail} = $self->fetch( 'photo#detail', $s->{x} ); # details
  
- # fetch the result keys and prepare them to stash
+ $s->{image} = $self->fetch( 'photo#image', $s->{x} ); # the image itself
+ 
+ # fetch the show result keys and prepare them to stash
  
  my $keys = $self->fetch ( 'photo#resultkey', $s->{x} );
  
@@ -167,24 +172,35 @@ sub single {
 
 }
 
+sub vizpre {
 
-my $extra = { 
-
- full => [ qw ( +has breed +has cat ) ],
  
- partial => [ qw ( -has cat ) ],  
-
- none => [ qw ( -has text ) ],
-
- cate => [ qw ( +has breed +breed xc? -has cat ) ],
+ $s->{vizmode} = 'none';
  
- breed => [ qw ( +has breed -breed x?? -has cat ) ],
-
-};
-
-# we need the keys in certain predefined order
-my @keys_extra = qw ( full partial breed cate none );
+ if ( $s->{runmode} eq 'all' ) {
+ 
+  $s->{vizmode} = 'dist'; 
+ 
+ } elsif ( $s->{runmode} eq 'pair' ) { 
+ 
+  if ( $s->{pri} eq 'folder' or $s->{pri} eq 'date' ) {
   
+   $s->{vizmode} = 'dist';
+  
+  } else {
+
+   ( $self->fetch ( 'related#seccnt', $s->{pri} ) > 9 ) and
+    $s->{vizmode} = 'rank';
+   
+  }
+
+ }
+ 
+ # load style (for viz img tags)
+ $s->{style} = style_get ( $s->{palette} );
+
+}
+
 sub multi {
 
  # prepare a set of thumbnails for browsing, returns
@@ -217,24 +233,10 @@ sub multi {
   $s->{runmode} eq 'all' or ( $s->{runmode} eq 'pair' and 
    ( $s->{pri} eq 'folder' or $s->{pri} eq 'date' ) )
   ) {  # coverage provided for limited combinations
-  
-  $s->{keys_extra} = \@keys_extra;
-  
-  foreach my $key ( @keys_extra ) {
-  
-   $s->{ 'cover_'. $key } = 
-    $self->fetch ( 
-     "search#count", @{ $s->{args_array} }, @{ $extra->{$key} } 
-    );
-  
-  
-  # if there where those then prepare the url to see them
-  $s->{ 'cover_'. $key } > 0 and
-   $s->{ 'url_'. $key } = 
-    args2search ( @{ $s->{args_array} }, @{ $extra->{$key} } );
-  
-  }
-  
+    
+  $self->dist or return $self->error 
+   'distibution prepare error|virhe jakaumien valmistelussa';
+
  }
    
  # fetch photo texts  
@@ -261,34 +263,16 @@ sub multi {
  
  }
  
- # fetch the latest and oldest date in this whole photoset
+ # fetch the latest and oldest date in this whole photoset 
+ # (not just on this page)
  
  $s->{fresh} = $self->fetch ( 'related#date', $s->{xfirst} );
  $s->{ancient} = $self->fetch ( 'related#date', $s->{xlast} );
- 
- $s->{vizmode} = 'none';
- 
- if ( $s->{runmode} eq 'all' ) {
- 
-  $s->{vizmode} = 'dist'; 
- 
- } elsif ( $s->{runmode} eq 'pair' ) { 
- 
-  if ( $s->{pri} eq 'folder' or $s->{pri} eq 'date' ) {
-  
-   $s->{vizmode} = 'dist';
-  
-  } else {
 
-   ( $self->fetch ( 'related#seccnt', $s->{pri} ) > 9 ) and
-    $s->{vizmode} = 'rank';
-   
-  }
-
- }
- 
- # load style (for viz img tags)
- $s->{style} = style_get ( $s->{palette} );
+ # prepare stuff for visualizations
+ $self->vizpre or $self->error
+  'visualization prepare failed|visualisoinnin valmistelu epäonnistui';
+  
  
  # disabled 2011-10-15
  # prepare url for builder access

@@ -201,13 +201,12 @@ sub contrib {
   
  my @back = style_html2dec $style->{color}->{$s->{palette}}->{back};
   
-  my $im = widget_plate (
-   $s->{t}->{MAILTO_TEXT}, \@front, \@back
-  );
+ my $im = widget_plate (
+  $s->{t}->{MAILTO_TEXT}, \@front, \@back
+ );
 
-  $self->render_data ( $im , format => 'png' );
+ $self->render_data ( $im , format => 'png' );
 
 }
-
 
 1;

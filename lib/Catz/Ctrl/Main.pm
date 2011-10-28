@@ -55,7 +55,7 @@ sub detect { # the language detection based on the request headers
  # so we must check it and default to English if needed 
  ( $target and length ( $target ) > 1 ) or $target = 'en'; 
  
- $self->redirect_temp ( "/$target/" );
+ $self->move ( "/$target/" );
 
 }
 
@@ -63,7 +63,7 @@ sub front {
 
  my $self = shift; my $s = $self->{stash};
   
- $s->{urlother} = "/$s->{langaother}/";
+ $s->{urlother} = $self->fuse $s->{langaother};
  
  $s->{seal} = conf ( 'key_seal' );
  
@@ -194,8 +194,7 @@ sub about {
 
  my $self = shift; my $s = $self->{stash};
   
- $s->{urlother} = 
-  join '/', ( '', $s->{langaother}, 'about', $s->{topic}, '' );
+ $s->{urlother} = $self->fuse ( $s->{langaother}, 'about', $s->{topic} );
  
  if ( $s->{topic} eq 'contrib' ) {
  

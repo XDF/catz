@@ -22,6 +22,8 @@
 # THE SOFTWARE.
 #
 
+package Catz::Data::Setup;
+
 use strict; use warnings; use 5.10.0;
 
 use parent 'Exporter';
@@ -54,7 +56,7 @@ my $default = '123321';
  
 my $setkeys = [ map { $_->{name} } @$conf ];
 
-# generate all setups beforehand at compile time
+# generate all valid setups beforehand at compile time
 # easy to test setups and to process them to stash
  
 my $init = {};
@@ -65,15 +67,7 @@ foreach my $a ( 0 .. $#{ $conf->[0]->{values} } ) {
    foreach my $d ( 0 .. $#{ $conf->[3]->{values} } ) {
     foreach my $e ( 0 .. $#{ $conf->[4]->{values} } ) {
      foreach my $f ( 0 .. $#{ $conf->[5]->{values} } ) {
-      $init->{ $a+1 . $b+1 . $c+1 . $d+1 . $e+1 . $f+1 } =
-       [ 
-        $conf->[0]->{values}->[$a],
-        $conf->[1]->{values}->[$b],
-        $conf->[2]->{values}->[$c],
-        $conf->[3]->{values}->[$d],
-        $conf->[4]->{values}->[$e],
-        $conf->[5]->{values}->[$f] 
-      ];
+      $init->{ $a+1 . $b+1 . $c+1 . $d+1 . $e+1 . $f+1 } = 1; 
      } 
     }
    }
@@ -82,10 +76,14 @@ foreach my $a ( 0 .. $#{ $conf->[0]->{values} } ) {
 }
 
 # use Devel::Size qw ( total_size); say total_size $init;
-# 2010-10-25: 552553 bytes 
+# 2010-10-28: 98994 bytes 
 
-# generate mappings: old setup -> key -> [ new value, new setup ] ...
-# at compilation time, easy to provide change structure to controller
+#
+# generate mappings: old setup . key -> [ new value, new setup, ... ]
+# at compilation time, easy to pass change effects to controller
+#
+# it is a two-level structure, a hash of arrays
+#
  
 my $list = {};
 
@@ -104,13 +102,14 @@ foreach my $i ( 0 .. $#{ $conf } ) {
     
    }
    
-   $list->{ $old }->{ $conf->[ $i ]->{name} } =
-    $list->{ $old }->{ $conf->[ $i ]->{name} } // []; # initialize
+   defined $list->{ $old . $conf->[ $i ]->{name} } or
+    $list->{ $old . $conf->[ $i ]->{name} } = []; # initialize
           
-   push @{ $list
-    ->{ $old }
-    ->{ $conf->[ $i ]->{name} } 
-   }, [ $conf->[ $i ]->{values}->[ $j ], $new ne $default ? $new : '' ];    
+   push @{ $list->{ $old . $conf->[ $i ]->{name} } }, 
+    $conf->[ $i ]->{values}->[ $j ]; 
+   
+   push @{ $list->{ $old . $conf->[ $i ]->{name} } }, 
+    $new ne $default ? $new : '';    
        
   } 
  
@@ -119,18 +118,22 @@ foreach my $i ( 0 .. $#{ $conf } ) {
 }
 
 # use Devel::Size qw ( total_size); say total_size $list;
-# 2010-10-25 6423607 bytes 
+# 2010-10-28 4295412 bytes 
 
+sub setup_init { 
 
-sub setup_init { # initialize the setup to application stash
+ # initialize the setup to application application stash
 
  my $app = shift; my $config = shift // $default;
  
  $init->{ $config } or return 0;
-  
+   
  foreach my $i ( 0 .. $#{ $conf } ) {
  
-  $app->{stash}->{ $conf->[ $i ]->{name} } = $init->{$config}->[ $i ];
+  $app->{stash}->{ $conf->[ $i ]->{name} } 
+   = $conf->[ $i ]->{values}->[ 
+    int ( substr ( $config, $i, 1 ) ) - 1
+   ];
    
  } 1;
   
@@ -138,6 +141,6 @@ sub setup_init { # initialize the setup to application stash
 
 sub setup_keys { $setkeys } # get arrayref of all setup keys
 
-sub setup_values { $list->{ $_[0] // $default } } # get change struct
+sub setup_values { $list } # get change struct 
 
 1; 

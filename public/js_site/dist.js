@@ -46,12 +46,8 @@ function catzLoadDistMap() {
    // the next call, now to the chart server and expection JSON
    $.getJSON ( jmapcont, function ( jdata ) {
   
-   // if success ...
-    
-   // remove the default map area from DOM 
-   $('#map_dist_default').remove();
-      
-   // traverse the result and update the map areas
+   // if success, traverse the result and update the map areas
+   
    $.each( jdata.chartshape, function ( i, l ) {
    
     $( '#map_dist_' + l.name ).attr( 'shape', l.type );

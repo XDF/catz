@@ -52,12 +52,14 @@ sub one { # one news article
 
  my $self = shift; my $s = $self->{stash};
   
- $s->{urlother} = '/' . $s->{langaother} . '/news/' . $s->{article} .'/';
+ $s->{urlother} = 
+  join '/', ( '', $s->{langaother}, 'news', $s->{article}, '' );
 
  ( $s->{new1}, $s->{prev}, $s->{next} ) = 
    @{ $self->fetch ( 'news#one', $s->{article} ) }; 
  
- defined $s->{new1} or return $self->render_not_found;
+ defined $s->{new1} or 
+  return $self->fail 'article not found|artikkelia ei löydy';
  
  $self->render( template => 'page/new1', format => 'html' );
 
