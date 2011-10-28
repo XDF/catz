@@ -24,12 +24,12 @@
 
 package Catz::Model::Related;
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 use parent 'Catz::Model::Common';
 
-use Catz::Data::Search;
 use Catz::Data::List;
+use Catz::Data::Search;
 
 use Catz::Util::Number qw ( round );
 

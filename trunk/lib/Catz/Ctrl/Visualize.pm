@@ -24,14 +24,13 @@
 
 package Catz::Ctrl::Visualize;
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
-use parent 'Catz::Core::Ctrl';
+use parent 'Catz::Ctrl::Base';
 
-use Catz::Core::Conf;
-
+use Catz::Data::Conf;
+use Catz::Data::Dist;
 use Catz::Data::Style;
-
 
 sub do {
 
@@ -50,21 +49,38 @@ sub do {
  
  $jmap and return $self->render_text ( text => $vurl, format => 'text' );
  
- return $self->redirect_perm ( $vurl );
+ return $self->moveto ( $vurl );
  
 }
 
 sub dist {
 
  my $self = shift; my $s = $self->{stash};
- 
+
  $s->{total} = $s->{full} + $s->{breed} + $s->{cate} + $s->{none};
 
  $s->{maxx} = $self->fetch ( 'all#maxx' );
- 
+
  # the total number of photos must be less or equal to all photos
- $s->{total} <= $s->{maxx} or return $self->render_not_found;
+ $s->{total} <= $s->{maxx} or return $self->fail (
+  [ 'distribution values mismatch', 'epäsopivat jakauman arvot' ]
+ );
  
+ $s->{dist} = dist_conf;
+ 
+ foreach my $key ( @{ $s->{dist}->{keyspie} } ) {
+  
+  $s->{ $key . '_perc' } = $self->round ( ( 
+   ( $s->{ $key } / $s->{total} ) * 100
+   ), 1 );
+ 
+  $s->{ $key . '_label' } = $self->enurl (
+   $s->{t}->{ 'VIZ_DIST_' . uc ( $key ) } . ' ' .
+   $self->fmt ( $s->{ $key . '_perc' }, $s->{lang} )
+  );
+   
+ }
+  
  return $self->do;
  
 }
@@ -83,13 +99,16 @@ sub rank {
 
  my $self = shift; my $s = $self->{stash};
 
- $self->fetch( 'pair#verify',$s->{pri} ) or return $self->render_not_found;
- 
+ $self->fetch( 'pair#verify',$s->{pri} ) or return $self->fail (
+  [ 'the concept given is unknown', 'annettu aihe on tuntematon' ]
+ );
  $s->{sec} = $self->decode ( $s->{sec} ); # using decode helper
  
  $s->{total} = $self->fetch ( 'pair#count', $s->{pri}, $s->{sec} );
 
- $s->{total} > 0 or return $self->render_not_found;
+ $s->{total} == 0 and return $self->fail (
+  [ 'photo count is zero', 'kuvien määrä on nolla' ]
+ );
  
  $s->{rank} = $self->fetch ( 'related#rank', $s->{pri}, $s->{sec} );
  

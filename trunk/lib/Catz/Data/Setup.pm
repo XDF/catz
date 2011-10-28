@@ -29,7 +29,7 @@ use strict; use warnings; use 5.10.0;
 use parent 'Exporter';
 
 # The external interface is prodecural method calls
-our @EXPORT = qw ( setup_init setup_keys setup_values );
+our @EXPORT = qw ( setup_init setup_keys setup_values setup_default );
 
 #
 # the base system setup array that should be 
@@ -50,11 +50,11 @@ my $conf = [
 
 # the default setup
 
-my $default = '123321';
+my $DEFAULT = '123321';
 
 # the names of the setup keys in correct order
  
-my $setkeys = [ map { $_->{name} } @$conf ];
+my $SETKEYS = [ map { $_->{name} } @$conf ];
 
 # generate all valid setups beforehand at compile time
 # easy to test setups and to process them to stash
@@ -109,7 +109,7 @@ foreach my $i ( 0 .. $#{ $conf } ) {
     $conf->[ $i ]->{values}->[ $j ]; 
    
    push @{ $list->{ $old . $conf->[ $i ]->{name} } }, 
-    $new ne $default ? $new : '';    
+    $new ne $DEFAULT ? $new : '';    
        
   } 
  
@@ -124,7 +124,7 @@ sub setup_init {
 
  # initialize the setup to application application stash
 
- my $app = shift; my $config = shift // $default;
+ my $app = shift; my $config = shift // $DEFAULT;
  
  $init->{ $config } or return 0;
    
@@ -139,8 +139,10 @@ sub setup_init {
   
 }
 
-sub setup_keys { $setkeys } # get arrayref of all setup keys
+sub setup_keys { $SETKEYS } # get arrayref of all setup keys
 
 sub setup_values { $list } # get change struct 
+
+sub setup_default { $DEFAULT }
 
 1; 

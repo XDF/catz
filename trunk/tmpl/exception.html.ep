@@ -1,7 +1,7 @@
-% extends 'base/light';
-<% content 'ptitle' => begin %>500 application exception - 500 sovelluspoikkeus<% end %>
-<% content 'main' => begin %>
-<h1>500 application exception<br>500 sovelluspoikkeus</h1>
+% extends 'base/fail';
+<% content 'msg_en' => begin %>500 application exception <% end %>
+<% content 'msg_fi' => begin %>500 sovellusvirhe<% end %>
+<% content 'hint' => begin %>
 <div><%= $exception->{message} %> (<%= $exception->{line} %>)</div>
 <br>
 <table>

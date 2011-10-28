@@ -26,13 +26,12 @@
 
 package Catz::Model::Photo;
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 use parent 'Catz::Model::Common';
 
 my $HR = '.JPG';
 my $LR = '_LR.JPG';
-
 
 sub _thumb {
 

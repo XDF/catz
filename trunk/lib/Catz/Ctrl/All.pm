@@ -24,37 +24,33 @@
 
 package Catz::Ctrl::All;
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 use parent 'Catz::Ctrl::Present';
 
-sub all_urlother {
+sub init {
 
  my $self = shift; my $s = $self->{stash};
-
- $s->{urlother} =  
-  '/' . $s->{langaother} . '/' . $s->{action} . '/' .
-  ( $s->{origin} eq 'id' ?  $s->{id} . '/' : '' );
-
- return 1;
+  
+ $self->f_init or return $self->fail ( [
+  'controller data init failure', 'kontrollerin tietojen alustus epäonnistui' 
+ ] );
  
-}
-
-sub all {
-
- my $self = shift; my $s = $self->{stash};
- 
- $self->init or return 0;
-
  $s->{runmode} = 'all';
  
- $self->load or return 0;
+ $self->f_map or return $self->fail ( [
+  'loading of mappings failed', 'vastaavuuksien lataaminen epäonnistui'
+ ] );
+  
+ $self->f_origin or return $self->fail ( [
+  'root photo search failed', 'juurikuvan haku epäonnistui'
+ ] );
  
- $self->origin or return 0;
- 
- $self->all_urlother or return 0;
+ $s->{urlother} = $self->fuse ( 
+  $s->{langaother}, $s->{action}, ( $s->{origin} eq 'id' ?  $s->{id} : '' )
+ );
     
- return 1;
+ return $self->done;
     
 }
 
@@ -62,10 +58,14 @@ sub browseall {
 
  my $self = shift; 
 
- $self->all or return $self->render_not_found;
-  
- $self->multi or return $self->render_not_found;
+ $self->init or return $self->fail ( [
+  'all photos browsing init did not succeed',
+  'kaikkien kuvien selauksen alustus ei onnistunut'
+ ] );
  
+ $self->multi or return $self->fail ( [
+  'photos set handling error','kuvajoukon käsittely epäonnistui'
+ ] );
 }
 
 sub viewall {

@@ -24,7 +24,7 @@
 
 package Catz::Data::Result;
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 use parent 'Exporter';
 
@@ -35,7 +35,8 @@ use Crypt::CBC;
 use MIME::Base32 qw ( RFC );
 use Digest::HMAC_MD5 qw(hmac_md5_hex);
 
-use Catz::Core::Conf;
+use Catz::Data::Conf;
+
 use Catz::Util::String qw ( trim );
 use Catz::Util::Time qw ( dtexpand );
 

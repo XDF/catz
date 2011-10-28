@@ -24,7 +24,7 @@
 
 package Catz::Ctrl::Widget;
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 # we inherit from all controller types to be 
 # able to use all three runmode's methods

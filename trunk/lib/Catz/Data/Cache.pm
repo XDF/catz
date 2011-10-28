@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 #  
 
-package Catz::Core::Cache;
+package Catz::Data::Cache;
 
 #
 # The systemwide cache module for all caching purposes
@@ -33,7 +33,7 @@ package Catz::Core::Cache;
 # * database result sets
 #
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 use parent 'Exporter';
 
@@ -43,7 +43,8 @@ our @EXPORT = qw ( cache_set cache_get cache_isup );
 use Cache::Memcached::Fast;
 use Digest::MD5 qw( md5_hex );
 
-use Catz::Core::Conf;
+use Catz::Data::Conf;
+
 use Catz::Util::String qw ( enurl );  
 
 # for debugging or other needs all caching can be
@@ -154,7 +155,7 @@ sub cache_isup {
 
  # test if memcached server is up and working
 
- # generate a random string and value, the idea is from
+ # generate a random key and value, the idea is from
  # http://th.atguy.com/mycode/generate_random_string/
 
 

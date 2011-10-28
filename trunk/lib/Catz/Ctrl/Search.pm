@@ -24,9 +24,9 @@
 
 package Catz::Ctrl::Search;
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
-use parent 'Catz::Ctrl::Present';
+use parent 'Catz::Ctrl::Base';
 
 use Catz::Data::Search;
 

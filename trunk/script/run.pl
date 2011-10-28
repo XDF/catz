@@ -5,11 +5,11 @@ use File::Basename 'dirname';
 use File::Spec;
 
 use lib join '/', File::Spec->splitdir(dirname(__FILE__)), 'lib';
-use lib join '/', File::Spec->splitdir(dirname(__FILE__)), 'libi';
 use lib join '/', File::Spec->splitdir(dirname(__FILE__)), '..', 'lib';
+use lib join '/', File::Spec->splitdir(dirname(__FILE__)), 'libi';
 use lib join '/', File::Spec->splitdir(dirname(__FILE__)), '..', 'libi';
 
-use Catz::Core::Conf;
+use Catz::Data::Conf;
 
 eval 'use Mojolicious::Commands';
 

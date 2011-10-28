@@ -31,6 +31,7 @@ use base 'Exporter';
 our @EXPORT_OK = qw ( 
  clean decode deurl dna encode enurl lcc limit 
  label nobreak noxss trim ucc ucclcc urirest fuse fuseq
+ topiles topilex tolines
 ); 
 
 use Digest::MD5 qw ( md5_base64 );
@@ -173,5 +174,11 @@ sub fuse { join '/', ( '', @_, '' ) }
 #
 sub fuseq { join '/', ( '', @_ ) }
 
+sub tolines { map { trim( $_ ) } split /\n/, trim ( $_[0] ) }
+
+sub topiles { map { trim( $_ ) } split /\#/, trim ( $_[0] ) }
+
+# new processing for changed metacore format 2011-09-02
+sub topilex { map { trim( $_ ) } split /\-{8,}/, trim ( $_[0] ) }
 
 1;

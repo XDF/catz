@@ -24,9 +24,9 @@
 
 package Catz::Model::Map;
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
-use parent 'Catz::Core::Model';
+use parent 'Catz::Model::Base';
 
 my $ROOT = 'ROOT';
 

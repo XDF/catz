@@ -1,6 +1,6 @@
  <select id="setup_<%= $setupkey %>" class="shade" onChange="location.href=$('#setup_<%== $setupkey %>').val()">
-% my $items = $setup_values->{$setup.$setupkey};
-% for ( $i = 0; $i <= $#{ $items }; $i += 2 ) {
+% my $items = $setup_values->{ $setup. $setupkey };
+% for ( my $i = 0; $i <= $#{ $items }; $i += 2 ) {
 %  my $selected = ' ';
 %  $items->[$i] eq stash ( $setupkey ) and $selected = ' selected ';
 %  my $out = $lang . $items->[$i+1] . urirest ( $url );
