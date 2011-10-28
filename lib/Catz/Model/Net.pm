@@ -24,15 +24,16 @@
 
 package Catz::Model::Net;
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
-use parent 'Catz::Core::Model';
+use parent 'Catz::Model::Base';
 
 use LWP::UserAgent;
 
-use Catz::Core::Conf;
-use Catz::Core::Text;
+use Catz::Data::Conf;
+use Catz::Data::Text;
 use Catz::Data::Result;
+
 use Catz::Util::String qw ( enurl );
 
 my $url_count = conf ( 'result_url_count' ); 

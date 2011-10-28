@@ -24,14 +24,13 @@
 
 package Catz::Ctrl::Main;
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
-use parent 'Catz::Core::Ctrl';
+use parent 'Catz::Ctrl::Base';
 
 use I18N::AcceptLanguage;
 
-use Catz::Core::Conf;
-
+use Catz::Data::Conf;
 use Catz::Data::Result;
 use Catz::Data::Search;
 use Catz::Data::Setup;
@@ -48,14 +47,14 @@ my $i18n =
 sub detect { # the language detection based on the request headers 
  
  my $self = shift;
+
+ # it was noted with some wget tests that the target appeared to be unset
+ # so we now set 'en' if undef is returned 
+ my $target = $i18n->accepts ( 
+  $self->req->headers->accept_language, $langs 
+ ) // 'en';
  
- my $target = $i18n->accepts( $self->req->headers->accept_language, $langs );
- 
- # it was noted with some wget tests that the target can be unset
- # so we must check it and default to English if needed 
- ( $target and length ( $target ) > 1 ) or $target = 'en'; 
- 
- $self->move ( "/$target/" );
+ $self->moveto ( "/$target/" );
 
 }
 
@@ -63,19 +62,20 @@ sub front {
 
  my $self = shift; my $s = $self->{stash};
   
- $s->{urlother} = $self->fuse $s->{langaother};
+ $s->{urlother} = "/$s->{langaother}/";
  
  $s->{seal} = conf ( 'key_seal' );
+  
+ $self->f_map or return $self->fail (
+  [ 'loading of mappings failed','vastaavuuksien lataaminen epäonnistui' ]
+ );
  
- $s->{mapview} = $self->fetch ( 'map#view' );
- $s->{mapdual} = $self->fetch ( 'map#dual' );
+ # load the latest ...
  
- $s->{seal_id} = conf ( 'seal_id' );
+ $s->{news} = $self->fetch ( 'news#latest', 8 ); # ... news
  
- $s->{news} = $self->fetch ( 'news#latest', 8 );
- 
- $s->{folders} = $self->fetch ( 'locate#folder', 8 );
- 
+ $s->{folders} = $self->fetch ( 'locate#folder', 8 ); # ... albums
+
  $s->{pris} =  $self->fetch ( 'locate#pris' ); 
 
  $s->{maxx} = $self->fetch ( 'all#maxx' );
@@ -88,10 +88,10 @@ sub front {
 
  $s->{texts} = $self->fetch ( 'photo#texts', @{ $samp } );
  
- # overriding the user's setting for the front page
+  # overriding the user's setting for the front page
  $s->{thumbsize} = 100; # 100px
-
- # load style for globe img tag height and width 
+ 
+ # load style for globe viz img tag height and width 
  $s->{style} = style_get ( $s->{palette} );
      
  $self->render( template => 'page/front', format => 'html' );

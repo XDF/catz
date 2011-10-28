@@ -1,6 +1,12 @@
-<%== $charturl %>?cht=p&&chs=<%== $style->{viz}->{$action}->{width} %>x<%== $style->{viz}->{$action}->{height} %>&chd=t:<%== $full_perc %>,<%== $breed_perc %>,<%== $cate_perc %>,<%== $none_perc %>&chco=<%== substr($style->{color}->{$palette}->{shade},1) %>|<%== substr($style->{color}->{$palette}->{text},1) %>|<%== substr($style->{color}->{$palette}->{dim},1) %>|<%== substr($style->{color}->{$palette}->{xtra},1) %>&chf=bg,s,<%== substr($style->{color}->{$palette}->{back},1) %>&chdl=<%== $full_label %>|<%== $breed_label %>|<%== $cate %>|<%== $none_label %>&chdlp=b|l&chdls=<%== substr($style->{color}->{$palette}->{text},1) %>,15<%== $jmap == 1 ? '&chof=json' : '' %>
-%#
-%# --------------------
+% extends 'base/light'; 
+<% content 'ptitle' => begin %><%= content 'msg_en' %> - <%= content 'msg_fi' %><% end %>
+<% content 'main' => begin %>
+<div><a href="<%== $t->{URL_CATZA} %>"><%= $t->{TOFRONT} %></a></div>
+<h1><%= content 'msg_en' %><br><%= content 'msg_fi' %></h1>
+<h3>catz<%= join ' ', ( $env, $now, $version ) %></h3>
+<div><a href="<%== $t->{URL_GOOGLECODE} %>">Catz</a> <%= $t->{CREDITS} %></div>
+<div><%= content 'hint' %></div>
+<% end %>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
@@ -23,4 +29,4 @@
 %# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 %# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 %# THE SOFTWARE.
-%# 
+%#

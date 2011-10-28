@@ -24,9 +24,9 @@
 
 package Catz::Model::Common;
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
-use parent 'Catz::Core::Model';
+use parent 'Catz::Model::Base';
 
 use Catz::Util::Number qw ( fullnum33 minnum33 );
 

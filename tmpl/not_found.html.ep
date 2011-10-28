@@ -1,11 +1,13 @@
-% extends 'base/light'; 
-<% content 'ptitle' => begin %>404 resource not found - 404 resurssia ei löydy<% end %>
-<% content 'main' => begin %><h1>404 resource not found<br>404 resurssia ei löydy</h1>
+% extends 'base/fail'; 
+<% content 'msg_en' => begin %>404 resource not found<% end %>
+<% content 'msg_fi' => begin %>404 resurssia ei löydy<% end %>
+<% content 'hint' => begin %>
 % my $re = stash ( 'reason' ) // [];
-% for ( $i = 0; $i <= $#{ $re }; $i++ ) {
-%  my @msg = split /\|/, $re->[$i];
-<div><%= $msg->[0] // '' %><br><%= $msg->[1] // ''%></div>
-% } 
+% for ( my $i = 0; $i <= $#{ $re }; $i += 3 ) {
+<div><%= $re->[$i] // '' %> /
+<%= $re->[$i+1] // '' %> /
+<%= $re->[$i+2] // '' %></div>
+% }
 <% end %>
 %#
 %# Catz - the world's most advanced cat show photo engine

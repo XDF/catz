@@ -28,7 +28,7 @@ package Catz::Model::Search;
 # Get photos by a array of search arguments
 #
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 use parent 'Catz::Model::Vector';
 

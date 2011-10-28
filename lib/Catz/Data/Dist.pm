@@ -28,11 +28,11 @@ use 5.10.0; use strict; use warnings;
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( dist );
+our @EXPORT = qw ( dist_conf );
 
-my $base = {
+my $cnf = {
 
- dblock => {
+ blocks => {
  
   full => [ qw ( +has breed +has cat ) ],
   partial => [ qw ( +has breed -has cat ) ],
@@ -42,12 +42,12 @@ my $base = {
   
  },
  
- dblock_all => qw [ ( full partial breed cate none ) ],
- dblock_dist => [ qw ( full breed cate none ) ],
- dblock_link => [ qw ( partial ) ], 
+ keysall => [ qw ( full partial breed cate none ) ],
+ keyspie => [ qw ( full breed cate none ) ],
+ keyslink => [ qw ( partial ) ], 
 
  cate_filter => 'cate < 5 or cate = 7',
 
 };
 
-sub dist { $base }
+sub dist_conf { $cnf }

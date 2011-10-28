@@ -24,7 +24,7 @@
 
 package Catz::Model::Locate;
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 #
 # Notice: this module includes heavy code copy-pasting and 
@@ -35,7 +35,8 @@ use parent 'Catz::Model::Common';
 
 use List::MoreUtils qw ( any );
 
-use Catz::Data::List qw ( list_matrix );
+use Catz::Data::List;
+
 use Catz::Util::String qw ( lcc );
 use Catz::Util::Time qw ( dt dtexpand );
 

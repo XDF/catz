@@ -22,16 +22,17 @@
 # THE SOFTWARE.
 #  
 
-package Catz::Core::Model;
+package Catz::Model::Base;
 
 # the base class for all Models
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 use DBI;
 use Time::HiRes qw ( time );
 
-use Catz::Core::Cache;
+use Catz::Data::Cache;
+
 use Catz::Util::Number qw ( round );
 
 my $db = undef;

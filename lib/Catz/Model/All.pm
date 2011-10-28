@@ -28,7 +28,7 @@ package Catz::Model::All;
 # Get all photos
 #
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 use parent 'Catz::Model::Vector';
 

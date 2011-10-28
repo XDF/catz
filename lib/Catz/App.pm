@@ -22,23 +22,22 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Core::App;
+package Catz::App;
 
 # The Catz Mojolicious application
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 use parent 'Mojolicious';
 
 use Mojo::Util qw ( html_escape );
 use Time::HiRes qw ( time );
 
-use Catz::Core::Cache;
-use Catz::Core::Conf;
-use Catz::Core::Text;
-
-use Catz::Data::List qw ( list_matrix );
+use Catz::Data::Cache;
+use Catz::Data::Conf;
+use Catz::Data::List;
 use Catz::Data::Setup;
+use Catz::Data::Text;
 
 use Catz::Util::File qw ( findlatest );
 use Catz::Util::Time qw( 
@@ -440,7 +439,7 @@ sub before {
    
  if ( $s->{url} =~ /^\/((en|fi)([1-9]{6})?)/ ) {
   
-  $s->{langa} = $1; $s->{lang} = $2; $s->{setup} = $3 // undef;
+  $s->{langa} = $1; $s->{lang} = $2; $s->{setup} = $3 // setup_default;
   
   # prevent indexing of pages with non-default setup  
   $3 and $s->{meta_index} = 0;
