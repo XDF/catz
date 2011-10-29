@@ -47,15 +47,17 @@ function catzLoadDistMap() {
    $.getJSON ( jmapcont, function ( jdata ) {
   
    // if success, traverse the result and update the map areas
-   
-   $.each( jdata.chartshape, function ( i, l ) {
-   
-    $( '#map_dist_' + l.name ).attr( 'shape', l.type );
-    $( '#map_dist_' + l.name ).attr( 'coords', l.coords );
-   
-   
-   });  
+  
+   // but first remove the default map area
+         
+   $( '#map_dist_default' ).remove();
     
+   $.each( jdata.chartshape, function ( i, l ) {
+          
+    $( '#map_dist_' + l.name ).attr( 'coords', l.coords );    
+          
+   });
+          
   }); 
   
   }
