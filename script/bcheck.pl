@@ -22,13 +22,13 @@
 # THE SOFTWARE.
 #
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 use lib '../lib'; use lib '../libi';
 
 use List::Util qw ( shuffle );
 
-use Catz::Core::Conf;
+use Catz::Data::Conf;
 use Catz::Load::Check;
 
 use Catz::Util::Log qw ( logadd logclose logopen logit logdone );
