@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 # 
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 # unbuffered outputs
 # from http://perldoc.perl.org/functions/open.html
@@ -32,22 +32,24 @@ select STDOUT; $| = 1;
 use Test::More;
 use Test::Mojo;
 
-use Catz::Core::Conf;
-use Catz::Core::Text;
+use Catz::Data::Conf;
+use Catz::Data::Text;
 
 use Catz::Util::String qw ( encode enurl );
 
-my $t = Test::Mojo->new( 'Catz::Core::App' );
+my $t = Test::Mojo->new( conf ( 'app' ) );
 
 my @oksetups = qw ( en fi en211211 fi171212 en394211 fi211111 );
 
 my @pages = qw ( privacy contrib );
 
-foreach my $setup ( @oksetups ) {
+my $setup;
+
+foreach my $page ( @pages ) {
+
+ $setup = $oksetups [ rand @oksetups ]; 
 
  my $txt = text ( substr ( $setup, 0, 2 ) );
-
- foreach my $page ( @pages ) {
  
  # dummy test 2011-10-25
  $t->get_ok("/");
@@ -60,9 +62,7 @@ foreach my $setup ( @oksetups ) {
  # without slash should be 301
  # disabled 2011-10-25
  # $t->get_ok("/$page")->status_is(301);
- 
- }  
- 
+  
 }
 
 done_testing;

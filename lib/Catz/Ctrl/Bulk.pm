@@ -28,7 +28,7 @@ use 5.12.0; use strict; use warnings;
 
 use parent 'Catz::Ctrl::Base';
 
-use Catz::Core::Conf;
+use Catz::Data::Conf;
 
 use Catz::Util::String qw ( lcc );
 
@@ -36,9 +36,8 @@ sub photolist {
 
  my $self = shift; my $s = $self->{stash};
   
- ( $s->{langa} eq 'en' or $s->{langa} eq 'fi' )
-  or return $self->render_not_found;
-  
+ length $s->{langa} > 2 and return $self->fail ( 'NOWITHSETUP' );
+   
  $s->{forcefi} and $s->{lang} = 'fi';
      
  $s->{date} = $self->param( 'd' ) // undef;
@@ -50,20 +49,20 @@ sub photolist {
   utf8::decode ( $s->{loc} );
  
   ( ( length $s->{date} == 8 ) or ( length $s->{date} ) == 10 )
-   or return $self->render_not_found; 
+   or return $self->fail ( 'PARAM', 'd' );
    
   if ( length $s->{date} == 10 ) {
   
    $s->{date} =~ m|(\d{4})\-(\d{2})\-(\d{2})|;
     
-   ( $1 and $2 and $3 ) or return $self->render_not_found;
+   ( $1 and $2 and $3 ) or return $self->fail ( 'PARAM', 'd' );
   
    $s->{date} = "$1$2$3";
   
   }
 
   ( ( length $s->{loc} > 100 ) or ( length $s->{loc} < 1 ) )
-   and return $self->render_not_found;
+   and return $self->fail ( 'PARAM', 'l' );
   
   $s->{loc} = lcc $s->{loc};
  
@@ -73,16 +72,15 @@ sub photolist {
   
   $s->{aid} = $self->fetch ( 'bulk#folder', $s->{folder} ) // undef;
   
-  $s->{aid} or return $self->render_not_found;
+  $s->{aid} or return $self->fail ( 'NOFOLDER' );
  
  } else { # use latest
  
-  $s->{date} and return $self->render_not_found;
-  $s->{loc} and return $self->render_not_found;
+  $s->{date} and return $self->fail ( 'PARAMMISM' );
+  $s->{loc} and return $self->fail ( 'PARAMMISM' );
  
-  $s->{aid} = $self->fetch ( 'bulk#latest' ) // undef;
- 
-  $s->{aid} or die "internal error: fetching latest aid that have cats failed";
+  ( $s->{aid} = $self->fetch ( 'bulk#latest' ) )
+   or return $self->fail ( 'NODATA' );
  
  } 
  
@@ -90,7 +88,7 @@ sub photolist {
   
  $s->{site} = conf ( 'url_site' );
  
- $self->render( template => 'bulk/photolist', format => 'txt' );
+ $self->output ( 'bulk/photolist', 'txt' );
  
 }
 

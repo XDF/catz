@@ -24,7 +24,7 @@
 
 package Catz::Load::Data;
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 use base 'Exporter';
 
@@ -35,7 +35,8 @@ our @EXPORT_OK = qw(
 
 use Memoize;
 
-use Catz::Core::Conf;
+use Catz::Data::Conf;
+
 use Catz::Util::File qw ( filenum );
 use Catz::Util::Image qw ( imageinfo );
 use Catz::Util::Number qw ( round );
@@ -146,7 +147,8 @@ my $macro = {
  floor => "\"(floor)|(lattialla)\"",
  bonus => "\"bonus photo|bonuskuva\"",
  view => "\"view over the show site|yleiskuvaa näyttelypaikalta\"",
- panel => "\"the panel|paneeli\""
+ panel => "\"the panel|paneeli\"",
+ del => "\"this photo has been deleted|tämä kuva on poistettu\"" 
 };
 
 memoize ( 'macro' );

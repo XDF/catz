@@ -1,5 +1,5 @@
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 use File::Basename 'dirname';
 use File::Spec;

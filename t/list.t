@@ -23,7 +23,7 @@
 # THE SOFTWARE.
 # 
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 # unbuffered outputs
 # from http://perldoc.perl.org/functions/open.html
@@ -33,15 +33,17 @@ select STDOUT; $| = 1;
 use Test::More;
 use Test::Mojo;
 
-use Catz::Core::Conf;
-use Catz::Core::Text;
+use Catz::Data::Conf;
+use Catz::Data::Text;
 use Catz::Data::List;
 
-my $t = Test::Mojo->new( 'Catz::Core::App' );
+my $t = Test::Mojo->new( conf ( 'app' ) );
 
 my $matrix = list_matrix;
 
 my @oksetups = qw ( en fi en211211 fi171212 en394211 fi211111 );
+
+my $setup; my $txt;
 
 # a few list/mode combinations
 my @oklists = qw (
@@ -61,9 +63,9 @@ my @badpaths = qw ( /list/ /list/a2z/ /list/cat/ /list/cat/a2z/ );
 
 # test list index
 
-foreach my $setup ( @oksetups ) {
-
- my $txt = text ( substr ( $setup, 0, 2 ) );
+foreach $setup ( @oksetups ) {
+ 
+ $txt = text ( substr ( $setup, 0, 2 ) );
  
  $t->get_ok("/$setup/lists/")
    ->status_is(200)
@@ -71,19 +73,14 @@ foreach my $setup ( @oksetups ) {
    ->content_like(qr/$txt->{LISTINGS}/);
 
  $t->get_ok("/$setup/lists")->status_is(301);
- 
-}
- 
-my $i = 0; # ok setup pointer
+
+} 
  
 foreach my $listi ( @oklists ) {
 
- my $setup = $oksetups[$i++]; # we loop the setups list
+ $setup = @oksetups [ rand @oksetups ]; 
+ $txt = text ( substr ( $setup, 0, 2 ) );
 
- $i > $#oksetups and $i = 0;
- 
- my $txt = text ( substr ( $setup, 0, 2 ) ); 
- 
  $listi =~ m|^(.+)\/(.+)$|;
  
  my $list = $1; my $mode = $2;
@@ -116,11 +113,10 @@ foreach my $listi ( @oklists ) {
  
 foreach my $listi ( @badlists ) {
 
- my $setup = $oksetups[$i++]; # we loop the setups list
+ $setup = @oksetups [ rand @oksetups ]; 
+ $txt = text ( substr ( $setup, 0, 2 ) );
 
- $i > $#oksetups and $i = 0;
- 
-  $t->get_ok("/$setup/list/$listi/")->status_is(404); 
+ $t->get_ok("/$setup/list/$listi/")->status_is(404); 
  
 }
 

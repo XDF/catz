@@ -23,7 +23,7 @@
 # THE SOFTWARE.
 # 
 
-use 5.10.0; use strict; use warnings;
+use 5.10.2; use strict; use warnings;
 
 # unbuffered outputs
 # from http://perldoc.perl.org/functions/open.html
@@ -33,9 +33,10 @@ select STDOUT; $| = 1;
 use Test::More;
 use Test::Mojo;
 
-use Catz::Core::Text;
+use Catz::Data::Conf;
+use Catz::Data::Text;
 
-my $t = Test::Mojo->new( 'Catz::Core::App' );
+my $t = Test::Mojo->new( conf ( 'app' ) );
 
 my @oknews = qw ( 20110512234151 20110512234151 20110627222128 );
 
@@ -43,9 +44,12 @@ my @badnews = qw ( 20110415123456 19001010123433 xadsad @$&*aB );
 
 my @oksetups = qw ( en fi en211211 fi171212 en394211 fi211111 );
 
-foreach my $setup ( @oksetups ) {
+my @oklangs = qw ( en fi );
 
- my $txt = text ( substr ( $setup, 0, 2 ) );
+my $setup; my $txt;
+
+ $setup = $oksetups [ rand @oksetups ];
+ $txt = text ( substr ( $setup, 0, 2 ) );
  
  # news index page
  $t->get_ok("/$setup/news/")
@@ -58,6 +62,9 @@ foreach my $setup ( @oksetups ) {
    
  # articles
  foreach my $key ( @oknews ) {
+
+  $setup = $oksetups [ rand @oksetups ];
+  $txt = text ( substr ( $setup, 0, 2 ) );
   
   $t->get_ok("/$setup/news/$key/")
     ->status_is(200)
@@ -69,15 +76,23 @@ foreach my $setup ( @oksetups ) {
  }
 
  # invalid articles
- foreach my $key ( @badnews ) { 
+ foreach my $key ( @badnews ) {
+  
+  $setup = $oksetups [ rand @oksetups ];
+  $txt = text ( substr ( $setup, 0, 2 ) );
  
   $t->get_ok("/$setup/news/$key/")->status_is(404);
  
  }
  
  # the RSS feed
- if ( length ( $setup ) == 2 ) {
  
+ foreach $setup ( @oksetups ) {
+   
+  if ( length $setup == 2 ) {
+  
+  $txt = text ( substr ( $setup, 0, 2 ) );
+  
   $t->get_ok("/$setup/feed/")
     ->status_is(200)
     ->content_type_like(qr/xml/)

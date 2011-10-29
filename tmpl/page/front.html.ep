@@ -38,7 +38,7 @@
 %# --------------------
 %#
 <% content 'bextra' => begin %>
-<a class="shrink" href="/<%== $langa %>/search?q=<%= enurl('+has=breed -has=cat') %>"><%= $t->{DONATE_CAT} %></a>
+<!-- content not set at this point -->
 <% end %>
 %#
 %# --------------------

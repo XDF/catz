@@ -77,7 +77,7 @@ sub dist {
    
   utf8::encode $tx;
  
-  $s->{ $key . '_label' } = $self->enurl ( $tx ); 
+  $s->{ $key . '_label' } = $self->enurl ( $tx );
    
  }
   

@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 # 
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 # unbuffered outputs
 # from http://perldoc.perl.org/functions/open.html
@@ -32,9 +32,10 @@ select STDOUT; $| = 1;
 use Test::More;
 use Test::Mojo;
 
-use Catz::Core::Text;
+use Catz::Data::Conf;
+use Catz::Data::Text;
 
-my $t = Test::Mojo->new( 'Catz::Core::App' );
+my $t = Test::Mojo->new( conf ( 'app' ) );
 
 use constant RESULT_NA => '<!-- N/A -->';
 
@@ -90,7 +91,10 @@ foreach ( 1 .. 20 ) {
 
  push @huges, $key;
  
-} 
+}
+
+# with setup should fail
+$t->get_ok("/en122111/result?x=".$ok[1])->status_is(404);
  
 foreach my $lang ( qw ( en fi ) ) {
 

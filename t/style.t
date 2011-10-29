@@ -23,7 +23,7 @@
 # THE SOFTWARE.
 # 
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 # unbuffered outputs
 # from http://perldoc.perl.org/functions/open.html
@@ -33,11 +33,12 @@ select STDOUT; $| = 1;
 use Test::More;
 use Test::Mojo;
 
+use Catz::Data::Conf;
 use Catz::Data::Style;
 
 use Catz::Util::String qw ( enurl );
     
-my $t = Test::Mojo->new( 'Catz::Core::App' );
+my $t = Test::Mojo->new( conf ( 'app' ) );
 
 my $style = style_get;
 
@@ -51,7 +52,7 @@ $t->get_ok('/style/reset/')
 # no ending slash -> redirect  
 $t->get_ok("/style/reset")->status_is(301);
 
-# base stylesheet with all avaiable palettes
+# base stylesheet with all available palettes
 foreach my $palette ( sort keys %{ $style->{color} } ) {
 
  # prepare palette-specific strings to check for

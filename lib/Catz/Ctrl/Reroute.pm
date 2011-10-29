@@ -34,7 +34,8 @@ use parent 'Catz::Ctrl::Base';
 
 use I18N::AcceptLanguage;
 
-use Catz::Core::Text;
+use Catz::Data::Text;
+
 use Catz::Util::Number qw ( fullnum33 );
 use Catz::Util::String qw ( enurl deurl decode encode );
 
@@ -107,30 +108,28 @@ sub reroute { # does the job
 
  my $self = shift; my $p = $self->{stash}->{src} // '/';
   
- my $lang = $i18n->accepts( $self->req->headers->accept_language, $langs );
- 
- # it was noted with some wget tests that the lagn can be unset
- # so we must check it and default to English if needed 
- ( $lang and length ( $lang ) > 1 ) or $lang = 'en'; 
+ my $lang = $i18n->accepts( 
+  $self->req->headers->accept_language, $langs 
+ ) // 'en';
  
  my $t = text ( $lang );
 
  given ( $p ) {
 
   when ( [ qw ( / index.htm index.html ) ] ) {
-   return $self->redirect_perm ( "/$lang/" );
+   return $self->moveto ( "/$lang/" );
   } 
  
   when ( [ qw ( dates.htm dates.html ) ] ) {  
-   return $self->redirect_perm ( "/$lang/list/date/cron/" );
+   return $self->moveto ( "/$lang/list/date/cron/" );
   } 
 
   when ( [ qw ( locations.htm locations.html ) ] ) {  
-   return $self->redirect_perm ( "/$lang/list/loc/a2z/" );
+   return $self->moveto ( "/$lang/list/loc/a2z/" );
   } 
 
   when ( [ qw ( breeders breeders/ breeders/index.htm breeders/index.html ems/breeders.htm ems/breeders.html ) ] ) {  
-   return $self->redirect_perm ( "/$lang/list/breeder/a2z/" );
+   return $self->moveto ( "/$lang/list/breeder/a2z/" );
   } 
 
   when ( m|^breeders/([a-zA-Z0-9_-]{1,200})\.html$| ) {
@@ -139,18 +138,18 @@ sub reroute { # does the job
   
    if ( $self->fetch("reroute#isbreeder",$br) ) {
 
-    return $self->redirect_perm ("/$lang/browse/breeder/".encode($br).'/');   
+    return $self->moveto ("/$lang/browse/breeder/".encode($br).'/');   
    
    } else {
    
-    return $self->render_not_found;
+    return $self->fail;
    
    }
    
   }
   
   when ( [ qw ( ems ems/ ems/index.htm ems/index.html ) ] ) {  
-   return $self->redirect_perm ( "/$lang/list/breed/a2z/" );
+   return $self->moveto ( "/$lang/list/breed/a2z/" );
   }   
 
   when ( m|^ems/([a-zA-Z]{3,3})\.htm(l)?$| ) {
@@ -167,26 +166,26 @@ sub reroute { # does the job
    
    if ( $self->fetch("reroute#isbreed",$br) ) {
 
-    return $self->redirect_perm ("/$lang/browse/breed/$br/");   
+    return $self->moveto ("/$lang/browse/breed/$br/");   
    
    } else {
    
-    return $self->render_not_found;
+    return $self->fail;
    
    }  
  
   }
    
   when ( m|^bestofbest| ) {
-   return $self->redirect_perm ( "/$lang/" );
+   return $self->moveto ( "/$lang/" );
   }
 
   when ( m|^stat| ) {
-   return $self->redirect_perm ( "/$lang/" );
+   return $self->moveto ( "/$lang/" );
   }
  
   when ( [ qw ( xdf xdf/ ) ] ) {
-   return $self->redirect_perm ( "/$lang/search/" ); 
+   return $self->moveto ( "/$lang/search/" ); 
   }
  
   when ( m|^xdf/(.{1,777}?)(\~\d{4})?$| ) {
@@ -194,11 +193,11 @@ sub reroute { # does the job
    my $tgt = xdf2search ( $1 );
   
    # not found if conversion failed
-   $tgt or return $self->render_not_found;  
+   $tgt or return $self->fail;  
   
    $tgt = enurl $tgt;
      
-   return $self->redirect_perm ( "/$lang/search?q=$tgt" );
+   return $self->moveto ( "/$lang/search?q=$tgt" );
    
   }
  
@@ -226,49 +225,49 @@ sub reroute { # does the job
    
    if ( $classic{$folder} ) { # this is an classic folder still in .com
   
-    return $self->redirect_perm ( "$t->{URL_AUTHOR}photos/$folder/$tail/" );
+    return $self->moveto ( "$t->{URL_AUTHOR}photos/$folder/$tail/" );
     
    } elsif ( my $s = $self->fetch("reroute#folder2s",$folder) ) { # current folder
    
     if ( $tail eq '' or $tail eq 'index.htm' or $tail eq 'index.html' ) {
    
-     return $self->redirect_perm ( "/$lang/browse/folder/$folder/" );
+     return $self->moveto ( "/$lang/browse/folder/$folder/" );
    
     } elsif ( $tail eq 'check1.htm' or $tail eq 'check1.html' ) {
    
      my $search = enurl "+folder=$folder -has=text";
     
-     return $self->redirect_perm ( "/$lang/search?q=$search" );
+     return $self->moveto ( "/$lang/search?q=$search" );
    
     } elsif ( $tail eq 'check2.htm' or $tail eq 'check2.html' ) {
    
      my $search = enurl "+folder=$folder +has=breed -has=cat";
     
-     return $self->redirect_perm ( "/$lang/search?q=$search" );
+     return $self->moveto ( "/$lang/search?q=$search" );
    
     } elsif ( $tail =~ /^(\d{4})\-\d{4}\.htm(l)?$/ ) {
    
      my $id = fullnum33 ( $s, int ( $1 ) );
     
-     return $self->redirect_perm ( "/$lang/browse/folder/$folder/$id/" );
+     return $self->moveto ( "/$lang/browse/folder/$folder/$id/" );
    
     } elsif ( $tail =~ /^(\d{4})\.htm(l)?$/ ) {
 
      my $id = fullnum33 ( $s, int ( $1 ) );
     
-     return $self->redirect_perm ( "/$lang/view/folder/$folder/$id/" );
+     return $self->moveto ( "/$lang/view/folder/$folder/$id/" );
    
     } elsif ( $tail =~ /^(.+\.(JPG|jpg))$/ ) {
     
      my $tgt = uc $1;
    
-     return $self->redirect_perm ( "$t->{URL_CATZA}static/photo/$folder/$tgt" );
+     return $self->moveto ( "$t->{URL_CATZA}static/photo/$folder/$tgt" );
    
-    } else { return $self->render_not_found }
+    } else { return $self->fail }
     
    }  
   
-   return $self->render_not_found; 
+   return $self->fail; 
   
   }
  

@@ -120,7 +120,7 @@
 % if ( $comm =~ m|^\[[A-Z]{3}| ) { # breed code
 <%= $comm %> 
 <span class="shrink"><%= $t->{NO_CAT_A} %> <%== $id %> <%= $t->{NO_CAT_B} %> <a class="infox" title="<%= $t->{MAILTO_HEAD} %> <%== $id %>" href=""></a></span>
-% } elsif ( $comm =~ m|^\XC[1-9]| ) { # category code
+% } elsif ( $comm =~ m|^\[XC[1-9]| ) { # category code
 <%= $comm %>
 <span class="shrink"><%= $t->{NO_BREED_A} %> <%== $id %> <%= $t->{NO_BREED_B} %> <a class="infox" title="<%= $t->{MAILTO_HEAD} %> <%== $id %>" href=""></a></span>
 % } else { # not just a code, has more data

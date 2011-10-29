@@ -244,7 +244,10 @@ sub _folder {
 
  my ( $self, $n ) = @_; my $lang = $self->{lang};
 
- return $self->dball("select folder,max(n) from album natural join photo group by folder order by s desc limit $n");
+ return $self->dball( qq {
+  select folder,max(n) from album natural join photo 
+  group by folder order by s desc limit $n
+ });
               
 }
 
@@ -264,6 +267,7 @@ sub _find {
  my ( $self, $pattern, $limit ) = @_; my $lang = $self->{lang};
  
  # escape like wildcards to prevent them going thru
+ $pattern =~ s|\\|\\\\|;
  $pattern =~ s|\_|\\_|; 
  $pattern =~ s|\%|\\%|;
  
@@ -280,7 +284,7 @@ sub _find {
     f.rowid limit $limit
   ) order by disp,lower(sort),cntphoto
  },$pattern);
-
+ 
 }
 
 sub _prims {

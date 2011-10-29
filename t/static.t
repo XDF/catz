@@ -23,7 +23,7 @@
 # THE SOFTWARE.
 # 
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 # unbuffered outputs
 # from http://perldoc.perl.org/functions/open.html
@@ -33,9 +33,9 @@ select STDOUT; $| = 1;
 use Test::More;
 use Test::Mojo;
 
-use Catz::Core::Conf;
+use Catz::Data::Conf;
 
-my $t = Test::Mojo->new( 'Catz::Core::App' );
+my $t = Test::Mojo->new( conf ( 'app' ) );
 
 my $static = conf ( 'static' );
 
@@ -54,7 +54,7 @@ foreach my $path ( keys %{ $static } ) {
  $t->get_ok( $path )->status_is(200);
  
  }
-  
+   
 }
 
 done_testing;

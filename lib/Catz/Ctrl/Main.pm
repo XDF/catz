@@ -54,7 +54,7 @@ sub detect { # the language detection based on the request headers
   $self->req->headers->accept_language, $langs 
  ) // 'en';
  
- $self->moveto ( "/$target/" );
+ $self->visitat ( "/$target/" );
 
 }
 
@@ -115,7 +115,7 @@ sub result {
  my $self = shift; my $s = $self->{stash};
  
  # result available only without setup
- $s->{langa} ne $s->{lang} and return $self->render_not_found;
+ length $s->{langa} > 2 and return $self->fail ( 'NOTWITHSETUP' );
 
  my $key = $self->param( 'x' ) // undef;
 
@@ -146,7 +146,7 @@ sub result {
   $s->{result} = $res->[0];
   $s->{attrib} = $res->[1];
  
-  $self->render( template => 'elem/result', format => 'html' ) and return;
+  return $self->output ( 'elem/result' );
  
  };
  
@@ -167,11 +167,11 @@ sub info {
  my $self = shift; my $s = $self->{stash}; my $base = undef;
  
  # info available only without setup
- $s->{langa} ne $s->{lang} and $self->render_not_found;
+ length $s->{langa} > 2 and return $self->fail ( 'NOWITHSETUP' );
 
  if ( $s->{cont} eq 'std' ) { $base = $s->{t}->{MAILTO_TEXT} }
    
-  else { return $self->render_not_found }
+  else { return $self->fail ( 'UNSUPP' ) }
   
   # the 0th element
   my $out = $cset->[ rand @{ $cset } ];

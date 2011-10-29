@@ -126,8 +126,8 @@ sub startup {
  ### content pages
  ###
   
- $l->route( '/about/:topic', topic => qr/contrib|privacy/ )
-  ->to( 'main#about' );
+ #$l->route( '/about/:topic', topic => qr/contrib|privacy/ )
+ # ->to( 'main#about' );
  
  ###
  ### the news service
@@ -231,11 +231,11 @@ sub startup {
  ### Widget features
  ###
 
- $l->route( '/widget/contrib/:palette', palette => qr/dark|neutral|bright/ )
-  ->to( 'widget#contrib' );
+ #$l->route( '/widget/contrib/:palette', palette => qr/dark|neutral|bright/ )
+ # ->to( 'widget#contrib' );
 
- $l->route( '/widget/marker/:palette', palette => qr/dark|neutral|bright/ )
-  ->to( 'widget#marker' );
+ #$l->route( '/widget/marker/:palette', palette => qr/dark|neutral|bright/ )
+ # ->to( 'widget#marker' );
 
  # disabled 2011-10-25
  # $l->route ( '/build' )->to ( 'widget#build' ); # the widget builder
@@ -285,11 +285,13 @@ my $static = conf ( 'static' );
 sub before {
 
  my $self = shift; my $s = $self->{stash};
-
- $s->{env} = conf ( 'env' ); # copy production enviroment id to stash
          
  $s->{time_start} = time();
 
+ $s->{env} = conf ( 'env' ); # copy production enviroment id to stash
+  
+ $s->{now} = dtlang ( $s->{lang} );
+ 
  $s->{url} = $self->req->url;  # let the url be in the stash also
  $s->{path} = $self->req->url->path;  # and also the path part
  $s->{query} = $self->req->query_params->to_string; # and also the query params
@@ -366,7 +368,7 @@ sub before {
  # checking path validity: we accept dots in path only for rerouting
  # paths and static paths
  
- index ( $s->{path}, '.' ) > -1 and ( not $s->{isrerouted} )  and do {
+ index ( $s->{path}, '.' ) > -1 and ( not $s->{isrerouted} ) and do {
   
   $s->{isstatic} or return $self->render_not_found;
    
@@ -472,9 +474,7 @@ sub before {
 
  $s->{photobase} = conf ( 'base_photo' ); # the url where the all photos are
  $s->{flagbase} = conf ( 'base_flag' );  # the url where the all flag gifs are
-   
- $s->{now} = dtlang ( $s->{lang} );
- 
+    
  # fetch texts for the current language and make them available to all
  # controller and templates as variable t 
  

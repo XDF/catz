@@ -23,7 +23,7 @@
 # THE SOFTWARE.
 # 
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 # unbuffered outputs
 # from http://perldoc.perl.org/functions/open.html
@@ -33,7 +33,9 @@ select STDOUT; $| = 1;
 use Test::More;
 use Test::Mojo;
 
-my $t = Test::Mojo->new( 'Catz::Core::App' );
+use Catz::Data::Conf;
+
+my $t = Test::Mojo->new( conf ( 'app' ) );
 
 $t->max_redirects( 0 );
 
@@ -49,24 +51,28 @@ my @oksetups = qw ( en fi en394211 fi211111 );
 
 my @okmodes = qw ( browseall viewall );
 
-foreach my $setup ( @oksetups ) {
- 
- foreach my $mode ( @okmodes ) {
+my $setup;
+
+foreach my $mode ( @okmodes ) {
+
+  $setup = @oksetups [ rand @oksetups ];
 
   $t->get_ok("/$setup/$mode/")
     ->status_is(200)
     ->content_type_like(qr/text\/html/)
-    ->content_like(qr/ alt=\"\[/)
+    ->content_like(qr/alt=\"\w{4,5} \d{6}/) # photo alt text
     ->content_like(qr/\.JPG/);
  
   $t->get_ok("/$setup/$mode")->status_is(301);
   
   foreach my $id ( @okids ) {
 
+   $setup = @oksetups [ rand @oksetups ];
+
    $t->get_ok("/$setup/$mode/$id/")
      ->status_is(200)
      ->content_type_like(qr/text\/html/)
-     ->content_like(qr/ alt=\"\[/)
+     ->content_like(qr/alt=\"\w{4,5} \d{6}/) # photo alt text
      ->content_like(qr/\.JPG/);     
      
    $t->get_ok("/$setup/$mode/$id")->status_is(301);
@@ -75,14 +81,14 @@ foreach my $setup ( @oksetups ) {
 
   foreach my $id ( @badids ) {
   
+   $setup = @oksetups [ rand @oksetups ];
+  
    $t->get_ok("/$setup/$mode/$id/")->status_is(404);
    
    $t->get_ok("/$setup/$mode/". ( enurl $id ) . '/')->status_is(404);   
   
   }
  
- }
-   
 }
 
 done_testing;
