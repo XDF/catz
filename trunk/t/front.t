@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 # 
 
-use 5.10.0; use strict; use warnings;
+use 5.11.0; use strict; use warnings;
 
 # unbuffered outputs
 # from http://perldoc.perl.org/functions/open.html
@@ -32,12 +32,12 @@ select STDOUT; $| = 1;
 use Test::More;
 use Test::Mojo;
 
-use Catz::Core::Conf;
-use Catz::Core::Text;
+use Catz::Data::Conf;
+use Catz::Data::Text;
 
 use Catz::Util::String qw ( encode enurl );
 
-my $t = Test::Mojo->new( 'Catz::Core::App' );
+my $t = Test::Mojo->new( conf ( 'app' ) );
 
 # bare root should do temporary redirect
 
@@ -58,10 +58,10 @@ foreach my $setup ( @oksetups ) {
    ->content_like(qr/$txt->{NOSCRIPT}/)
    ->content_like(qr/$txt->{VIZ_GLOBE_NAME}/)
    ->content_like(qr/href=\"\/$setup\/list\/breeder\/a2z\/\"/)
-   ->content_like(qr/alt="\[(kuva|photo) \d{6}\]"/)
+   ->content_like(qr/alt=\"\w{4,5} \d{6}/)
    ->content_like(qr/\.JPG/);
  
- # without slash should be 301
+ # without trailing slash should be 301
  $t->get_ok("/$setup")->status_is(301);
  
 }

@@ -23,7 +23,7 @@
 # THE SOFTWARE.
 # 
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 # unbuffered outputs
 # from http://perldoc.perl.org/functions/open.html
@@ -33,12 +33,12 @@ select STDOUT; $| = 1;
 use Test::More;
 use Test::Mojo;
 
-use Catz::Core::Conf;
-use Catz::Core::Text;
+use Catz::Data::Conf;
+use Catz::Data::Text;
 
 use Catz::Util::String qw ( encode enurl );
 
-my $t = Test::Mojo->new( 'Catz::Core::App' );
+my $t = Test::Mojo->new( conf ( 'app' ) );
 
 my @miscsetups = qw (
  en fi en264312 fi264322 en897123 fi189492 fi2643a2 en1 ann
@@ -68,13 +68,11 @@ foreach ( 1 .. 10 ) {
     ) . '/'
    )->status_is(404); 
  
-
   foreach my $setup ( @miscsetups ) {
-
-   $t->get_ok( 
-    "/$setup/" .  
+  
+   $t->get_ok( "/$setup/" .  
     ( join '/', map { $badplain [ rand @badplain ] } ( 1 .. $i ) ) .
-    '/'
+    '/' 
    )->status_is(404);
    
    $t->get_ok( 
@@ -107,7 +105,7 @@ foreach my $setup ( qw ( en fi en264312 fi264322 ) ) {
   
  $t->get_ok("/$setup/search.xs?q=mimosan")->status_is(404);
  $t->get_ok("/$setup/search?q=mimo.san")->status_is(200);
-  
+ $t->get_ok("/$setup/search?q=mimo.s.an .san an.")->status_is(200);   
  $t->get_ok("/$setup/search.java?q=mimo.san")->status_is(404);
      
 }

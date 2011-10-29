@@ -22,23 +22,22 @@
 # THE SOFTWARE.
 #
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 use lib '../lib'; use lib '../libi';
 
 use File::Path qw( remove_tree );
 
-use Catz::Core::Conf;
+use Catz::Data::Conf;
 
 use Catz::Load::Loader;
 use Catz::Load::Parse;
-use Catz::Load::Data qw ( topiles topilex );
 
 use Catz::Util::File qw ( 
  dnafolder filecopy fileread finddirs filewrite findlatest pathcut 
 );
 use Catz::Util::Log qw ( logclose logopen logit );
-use Catz::Util::String qw ( dna );
+use Catz::Util::String qw ( dna topiles topilex );
 use Catz::Util::Time qw ( dt dtexpand dtlang );
 
 $| = 1; # unbuffered printing

@@ -24,19 +24,17 @@
 
 package Catz::Load::Parse;
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 use parent 'Exporter';
 
 our @EXPORT = qw ( parse_pile );
 
-use Data::Dumper;
-
 use Catz::Load::Data qw ( 
- exid expmacro exptext loc org plaincat tolines umb 
+ exid expmacro exptext loc org plaincat umb 
 );
 use Catz::Util::Log qw ( logit );
-use Catz::Util::String qw ( clean trim );
+use Catz::Util::String qw ( clean tolines trim );
 
 sub cat {
 

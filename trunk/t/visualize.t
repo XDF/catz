@@ -23,7 +23,7 @@
 # THE SOFTWARE.
 # 
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 # unbuffered outputs
 # from http://perldoc.perl.org/functions/open.html
@@ -33,12 +33,16 @@ select STDOUT; $| = 1;
 use Test::More;
 use Test::Mojo;
 
-my $t = Test::Mojo->new( 'Catz::Core::App' );
+use Catz::Data::Conf;
+
+my $t = Test::Mojo->new( conf ( 'app' ) );
 
 $t->max_redirects( 5 );
 
 # these include all three palettes
 my @oksetups = qw ( en fi en214221 fi372222 );
+
+my $setup;
 
 my @okversions = qw ( 20101012123456 20111019164540 );
 
@@ -56,24 +60,20 @@ my @badcombs = qw (
  blobe ? x 8
 );
 
-my $i = 0; # ok setup pointer  
-
 foreach my $comb ( @okcombs ) {
 
- my $setup = $oksetups[$i++]; # we loop the setups list
+ $setup = $oksetups [ rand @oksetups ];
 
- $i > $#oksetups and $i = 0;
- 
  $t->get_ok("/$setup/viz/$comb/$okversions[0]/")
    ->status_is(200)
    ->content_type_like(qr/image\/png/);
    
- # json mode test for distribution visualizations
  $comb =~ m|^dist| and do {
 
- $t->get_ok("/$setup/viz/$comb/$okversions[0]?json=1")
+ $t->get_ok("/$setup/viz/$comb/$okversions[0]?jmap=1")
    ->status_is(200)
-   ->content_type_like(qr/application\/json/);
+   ->content_type_like(qr/text\/plain/) # expecting just URL as text
+   ->content_like(qr/^http\:\/\//);
  
  };
    
@@ -81,10 +81,8 @@ foreach my $comb ( @okcombs ) {
 
 foreach my $comb ( @badcombs ) {
 
- my $setup = $oksetups[$i++]; # we loop the setups list
+ $setup = $oksetups [ rand @oksetups ];
 
- $i > $#oksetups and $i = 0;
- 
  $t->get_ok("/$setup/viz/$comb/$okversions[1]/")
   ->status_is(404);
 
@@ -92,9 +90,7 @@ foreach my $comb ( @badcombs ) {
  
 foreach my $version ( @badversions ) {
  
- my $setup = $oksetups[$i++]; # we loop the setups list
-
- $i > $#oksetups and $i = 0;
+ $setup = $oksetups [ rand @oksetups ];
   
  foreach my $comb ( @okcombs ) {
  

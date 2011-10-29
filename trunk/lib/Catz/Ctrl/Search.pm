@@ -44,18 +44,14 @@ sub search_ok {
  defined $s->{ $var } or return $self->done;
  
  # length sanity check 1/2
- length $s->{ $var } > 2000 and return $self->fail ( [ 
-  'the search is too long (UTF8)', 'haku on liian pitkä (UTF8)' 
- ] );
+ length $s->{ $var } > 2000 and return $self->fail ( 'SEARCH_LONG' );
 
  # it appears that browsers typcially send UTF-8 encoded 
  # data when the origin page is UTF-8 -> we decode the data now   
  utf8::decode ( $s->{$var} );
 
  # length sanity check 2/2
- length $s->{ $var } > 1234 and return $self->fail ( [ 
-  'the search is too long (ASCII)', 'haku on liian pitkä (ASCII)' 
- ] );
+ length $s->{ $var } > 1234 and return $self->fail ( 'SEARCH_LONG' );
  
  # remove all unnecessary whitespaces     
  $s->{ $var } = noxss clean trim $s->{ $var };
@@ -78,17 +74,6 @@ sub search_args {
  # store argument count separately to stash
  $s->{args_count} = scalar @{ $s->{args_array} };
  
- ( 
-  $s->{args_count} > 0 and # there are arguments
-  $s->{args_count} <= 50 and # not more than 25 pairs   
-  $s->{args_count} % 2 == 0 # args must appear in pairs  
- ) or do {
-  
-  # clear bad searches 
-  $s->{args_count} = 0; $s->{args_array} = [];
-  
- };
-  
  return $self->done;  
  
 }
@@ -101,7 +86,7 @@ sub urlother {
  
  if ( $s->{what} ) {
  
-  if ( $s->{origin} eq 'id' ) {
+  if ( defined $s->{origin} and ( $s->{origin} eq 'id' ) ) {
   
    $s->{urlother} .= "/$s->{id}?q=" . $self->enurl ( $s->{what} );
   
@@ -148,13 +133,19 @@ sub pattern {
   return $self->fail ( 'PARAM', 'i' );
   
  $s->{what} and do { # if a search is available
- 
-  $self->search_args or return $self->fail;
-   
+
   $self->f_map or return $self->fail;
  
-  $self->f_origin or return $self->fail ( 'ORIGIN' );
-  
+  $self->search_args or return $self->fail;
+      
+  if ( 
+   $s->{args_count} > 0 and # there are arguments
+   $s->{args_count} <= 50 and # not more than 25 pairs   
+   $s->{args_count} % 2 == 0 # args must appear in pairs  
+  ) {
+   $self->f_origin or return $self->fail ( 'ORIGIN' );  
+  } else { $s->{x} = undef; $s->{id} = undef; }
+
  };
  
  $self->urlother or return $self->fail;
@@ -187,15 +178,11 @@ sub search {
 
  my $self = shift; my $s = $self->{stash};
  
- $self->pattern or return $self->fail ( [
-  'search processing failed', 'haun käsittely epäonnistui' 
- ] );
- 
+ $self->pattern or return $self->fail ( 'SEARCH_LOAD' );
+  
  if ( $s->{x} and $s->{id} ) { # we have results 
  
-  $self->multi or return $self->fail ( [
-  'photo set processing failed', 'kuvajoukon käsittely epäonnistui' 
-  ] );
+  $self->multi or return $self->fail ( 'MULTI_LOAD' );
  
  } else { # no results, the fallback is to show the search page 
   
@@ -209,19 +196,15 @@ sub display {
  
  my $self = shift; my $s = $self->{stash};
   
- $self->pattern or return $self->fail ( [
-  'search processing failed', 'haun käsittely epäonnistui' 
- ] );
+ $self->pattern or return $self->fail ( 'SEARCH_LOAD' );
  
  if ( $s->{x} and $s->{id} ) { # we have results
  
-  $self->single or return $self->fail ( [
-  'viewing processing failed', 'katselun käsittely epäonnistui' 
-  ] );
+  $self->single or return $self->fail ( 'SINGLE_LOAD' );
   
  } else {  
  
-  return $self->fail ( [ 'no photos found', 'kuvia ei löytynyt' ] );
+  return $self->fail ( 'NODATA' );
  
  }
   

@@ -41,19 +41,17 @@ sub find {
  my $self = shift; my $s = $self->{stash};
   
  $s->{what} = $self->param( 's' ) // undef;
- 
+  
  # it appears that browsers typcially send UTF-8 encoded data
  # when the origin page is UTF-8 -> we decode now
  utf8::decode ( $s->{what} );
-
- $self->f_map or return $self->fail ( [ 
-  'loading of mappings failed', 'vastaavuuksien lataaminen epäonnistui' 
- ] );
-
-  $s->{find} = []; # empty result array as default
+ 
+ $s->{find} = []; # empty result array as default
  
  ( length $s->{what} > 0 ) and ( length $s->{what} < 51 ) and   
    $s->{find} = $self->fetch ( 'locate#find', $s->{what}, 50 );
+
+ $self->f_map or return $self->fail ( 'MAPP_LOAD' );
  
  $self->output ( 'block/find' );
 

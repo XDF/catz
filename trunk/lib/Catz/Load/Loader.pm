@@ -24,7 +24,7 @@
 
 package Catz::Load::Loader;
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 use parent 'Exporter';
 
@@ -37,14 +37,14 @@ use Data::Dumper;
 use DBI;
 
 use Catz::Data::List qw ( list_matrix );
-use Catz::Load::Data qw ( exifsort exif fixgap lens tolines topiles );
+use Catz::Load::Data qw ( exifsort exif fixgap lens );
 use Catz::Load::Parse;
 use Catz::Util::Time qw ( dtexpand );
 use Catz::Util::File qw ( filehead filesize filethumb findphotos pathcut );
 use Catz::Util::Image qw ( widthheight );
 use Catz::Util::Log qw ( logit logadd logdone );
 use Catz::Util::Number qw ( fullnum33 round );
-use Catz::Util::String qw ( trim );
+use Catz::Util::String qw ( tolines topiles trim );
 
 my $sql = { 
 

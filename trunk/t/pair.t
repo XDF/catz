@@ -23,7 +23,7 @@
 # THE SOFTWARE.
 # 
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 # unbuffered outputs
 # from http://perldoc.perl.org/functions/open.html
@@ -33,14 +33,17 @@ select STDOUT; $| = 1;
 use Test::More;
 use Test::Mojo;
 
-use Catz::Core::Text;
+use Catz::Data::Conf;
+use Catz::Data::Text;
 
 use Catz::Util::String qw ( encode );
 
-my $t = Test::Mojo->new( 'Catz::Core::App' );
+my $t = Test::Mojo->new( conf ( 'app' ) );
 
 # all ok setups must show all photo details
 my @oksetups = qw ( en fi en264312 fi384322 );
+
+my $setup; my $txt;
 
 my @okcombs = qw (
  org/TUROK/146161
@@ -90,11 +93,8 @@ foreach my $mode ( qw ( browse view ) ) {
  
  foreach my $comp ( @okcombs ) {
  
-  my $setup = $oksetups[$i++]; # we loop the setups list
-
-  $i > $#oksetups and $i = 0;
- 
-  my $txt = text ( substr ( $setup, 0, 2 ) );
+  $setup = $oksetups [ rand @oksetups ]; 
+  $txt = text ( substr ( $setup, 0, 2 ) );
  
   my @elem = split m|/|, $comp;
 
@@ -107,14 +107,14 @@ foreach my $mode ( qw ( browse view ) ) {
    $t->get_ok("/$setup/$mode/$elem[0]/$elem[1]/")
      ->status_is(200)
      ->content_type_like(qr/text\/html/)
-     ->content_like(qr/ alt=\"\[/)
+     ->content_like(qr/alt=\"\w{4,5} \d{6}/) # photo alt text
      ->content_like(qr/\.JPG/);
 
    # ok browse with photo id
    $t->get_ok("/$setup/$mode/$elem[0]/$elem[1]/$elem[2]/")
      ->status_is(200)
      ->content_type_like(qr/text\/html/)
-     ->content_like(qr/ alt=\"\[/)
+     ->content_like(qr/alt=\"\w{4,5} \d{6}/) # photo alt text
      ->content_like(qr/\.JPG/); 
 
    # check visualization
@@ -161,11 +161,9 @@ foreach my $mode ( qw ( browse view ) ) {
      
  foreach my $comp ( @badids ) {
  
-  my $setup = $oksetups[$i++]; # we loop the setups list
-
-  $i > $#oksetups and $i = 0;
-  
-      
+  $setup = $oksetups [ rand @oksetups ]; 
+  $txt = text ( substr ( $setup, 0, 2 ) );
+        
   my @elem = split m|/|, $comp;
   
   $t->get_ok("/$setup/$mode/$elem[0]/$elem[1]/$elem[2]/")->status_is(404);
@@ -174,9 +172,8 @@ foreach my $mode ( qw ( browse view ) ) {
        
  foreach my $comp ( @badcombs ) {
  
-  my $setup = $oksetups[$i++]; # we loop the setups list
-
-  $i > $#oksetups and $i = 0;
+  $setup = $oksetups [ rand @oksetups ]; 
+  $txt = text ( substr ( $setup, 0, 2 ) );
   
   my @elem = split m|/|, $comp;
   
@@ -190,9 +187,8 @@ foreach my $mode ( qw ( browse view ) ) {
  
  foreach ( 1 .. 50 ) {
  
-  my $setup = $oksetups[$i++]; # we loop the setups list
-
-  $i > $#oksetups and $i = 0;  
+  $setup = $oksetups [ rand @oksetups ]; 
+  $txt = text ( substr ( $setup, 0, 2 ) );
  
    my $pri = 
     join '', map { chr $_ } map { 49 + int(rand(95)) } 

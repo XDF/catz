@@ -115,16 +115,16 @@ sub goto {
 
 }
 
-sub visitat { $_[0]->goto ( 301, $_[1] ) } # permanent redirect 301 
+sub moveto { $_[0]->goto ( 301, $_[1] ) } # permanent redirect 301 
 
-sub moveto { $_[0]->goto ( 302, $_[1] ) } # temporary redirect 302
+sub visitat { $_[0]->goto ( 302, $_[1] ) } # temporary redirect 302
 
 sub add_reason {
 
  my ( $self, @reason ) = @_; my $s = $self->{stash};
  
- # get subroutine and line number
- my $origin = ( caller(2) )[3] . '[' . ( caller(2) )[2] . ']';
+ # get subroutine
+ my $origin = ( caller(2) )[3];
  
  # init if needed
  defined $self->{stash}->{reason} or $self->{stash}->{reason} = [];
@@ -338,7 +338,7 @@ sub f_vizdist {
   );
   
   $s->{ 'dist_text_'. $key } = $s->{t}->{ 'HAS' . uc ( $key ) .
-   ( $s->{ 'dist_count_'. $key } == 1 ? 'A' : '' ) };
+   ( $s->{ 'dist_count_'. $key } == 1 ? '' : 'A' ) };
       
  }
 

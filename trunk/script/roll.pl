@@ -22,11 +22,12 @@
 # THE SOFTWARE.
 #
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 use lib '../lib'; use lib '../libi';
 
-use Catz::Core::Conf;
+use Catz::Data::Conf;
+
 use Catz::Util::File qw ( fileread filewrite fileremove findlatest pathcut );
 
 my $rolled = 0;

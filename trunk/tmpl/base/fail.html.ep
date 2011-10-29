@@ -1,11 +1,20 @@
 % extends 'base/light'; 
 <% content 'ptitle' => begin %><%= content 'msg_en' %> - <%= content 'msg_fi' %><% end %>
 <% content 'main' => begin %>
-<div><a href="<%== $t->{URL_CATZA} %>"><%= $t->{TOFRONT} %></a></div>
 <h1><%= content 'msg_en' %><br><%= content 'msg_fi' %></h1>
-<h3>catz<%= join ' ', ( $env, $now, $version ) %></h3>
-<div><%= content 'hint' %></div>
-<% end %>
+% if ( stash ( 't' ) ) {
+<div><a href="" onclick="javascript: history.go(-1);"><%= stash ( 't' )->{BACKTOPREV} %></a>
+<a href="<%== stash ( 't' )->{URL_CATZA} %>"><%= stash ( 't' )->{BACKTOFRONT} %></a></div>
+% }
+% if ( 
+%  defined ( stash ( 'env' ) ) and 
+%  defined ( stash ( 'now' ) ) and 
+%  defined ( stash ( 'version' ) ) 
+% ) {
+<h3>catz<%= join ' ', ( stash ( 'env' ), stash ( 'now' ), stash ( 'version' ) ) %></h3>
+% }
+<div><%= content 'hint' %>
+<% end %></div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

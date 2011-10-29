@@ -23,7 +23,7 @@
 # THE SOFTWARE.
 # 
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 # unbuffered outputs
 # from http://perldoc.perl.org/functions/open.html
@@ -33,13 +33,16 @@ select STDOUT; $| = 1;
 use Test::More;
 use Test::Mojo;
 
-use Catz::Core::Text;
+use Catz::Data::Conf;
+use Catz::Data::Text;
 
 use Catz::Util::String qw ( enurl );
 
-my $t = Test::Mojo->new( 'Catz::Core::App' );
+my $t = Test::Mojo->new( conf ( 'app' ) );
 
-my @oksetups = qw ( en fi en en264311 fi365312 );
+my @oksetups = qw ( en fi en264311 fi365312 );
+
+my $setup; my $txt;
 
 # some searches that return photos
 my @oksearches = (
@@ -93,7 +96,8 @@ my $i = 0;
 # search main page
 foreach my $setup ( @oksetups ) {
 
- my $txt = text ( substr ( $setup, 0, 2 ) );
+ $setup = $oksetups [ rand @oksetups ];
+ $txt = text ( substr ( $setup, 0, 2 ) );
 
  $t->get_ok("/$setup/search/")
    ->status_is(200)
@@ -117,12 +121,9 @@ foreach my $mode ( qw ( search display ) ) {
  
  foreach my $search ( @oksearches ) {
 
-  my $setup = $oksetups[$i++]; # we loop the setups list
+  $setup = $oksetups [ rand @oksetups ];
+  $txt = text ( substr ( $setup, 0, 2 ) );
 
-  $i > $#oksetups and $i = 0;
-
-  my $txt = text ( substr ( $setup, 0, 2 ) );
-  
   $mode eq 'search' and do { 
   
    # search page with init parameter 
@@ -137,7 +138,7 @@ foreach my $mode ( qw ( search display ) ) {
    $t->get_ok("/$setup/$mode?q=".enurl($search))
     ->status_is(200)
     ->content_type_like(qr/text\/html/)
-    ->content_like(qr/ alt=\"\[/)
+    ->content_like(qr/alt=\"\w{4,5} \d{6}/) # photo alt text
     ->content_like(qr/\.JPG/);
  
   # with ending slash -> redirect
@@ -147,10 +148,7 @@ foreach my $mode ( qw ( search display ) ) {
 
  foreach my $search ( @badsearches ) {
  
-  my $setup = $oksetups[$i++]; # we loop the setups list
-
-  $i > $#oksetups and $i = 0;
-
+  my $setup = $oksetups [ rand @oksetups ];
   my $txt = text ( substr ( $setup, 0, 2 ) );
 
   if ( $mode eq 'search' ) {
@@ -174,10 +172,9 @@ foreach my $mode ( qw ( search display ) ) {
  
  foreach my $search ( @okcombs ) {
   
-  my $setup = $oksetups[$i++]; # we loop the setups list
+  $setup = $oksetups [ rand @oksetups ];
+  $txt = text ( substr ( $setup, 0, 2 ) );
 
-  $i > $#oksetups and $i = 0;
-  
   $t->get_ok("/$setup/$mode/$search")
     ->status_is(200)
     ->content_type_like(qr/text\/html/)
@@ -187,9 +184,8 @@ foreach my $mode ( qw ( search display ) ) {
 
  foreach my $search ( @badcombs ) {
   
-  my $setup = $oksetups[$i++]; # we loop the setups list
-
-  $i > $#oksetups and $i = 0;
+  $setup = $oksetups [ rand @oksetups ];
+  $txt = text ( substr ( $setup, 0, 2 ) );
 
   $t->get_ok("/$setup/$mode/$search")
     ->status_is(404);
@@ -220,11 +216,8 @@ my @chars = ('a'..'z','A'..'Z','0'..'9',qw (å ä ö Å Ä Ö ? - * @ !));
  
 foreach ( 1 .. 50 ) {
   
-   my $setup = $oksetups[$i++]; # we loop the setups list
-
-   $i > $#oksetups and $i = 0;
-   
-   my $txt = text ( substr ( $setup, 0, 2 ) );
+   $setup = $oksetups [ rand @oksetups ];
+   $txt = text ( substr ( $setup, 0, 2 ) );
    
    my $elems = int(rand(50)) + 1;
    
@@ -240,9 +233,9 @@ foreach ( 1 .. 50 ) {
    }
    
    my $search = join ' ', @patt;
-   
-  if ( ( length ( $search ) <= 1234 ) and $elems <= 25 ) {
-    
+         
+  if ( ( length ( $search ) < 1234 ) and $elems <= 25 ) {
+  
    $t->get_ok("/$setup/search?q=".enurl($search))
      ->status_is(200)
      ->content_type_like(qr/text\/html/)
@@ -251,7 +244,7 @@ foreach ( 1 .. 50 ) {
      ->content_like(qr/$txt->{SEARCH_NOTHING}/);
 
   }
-  
+   
   $t->get_ok("/$setup/display?q=".enurl($search))->status_is(404);
   
 }

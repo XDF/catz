@@ -71,7 +71,7 @@ sub feed { # RSS feed of news
  my $self = shift; my $s = $self->{stash};
  
  # feed available only without setup
- ( $s->{langa} ne $s->{lang} ) and return $self->render_not_found;
+ length $s->{langa} > 2 and return $self->fail ( 'NOWITHSETUP' );
 
  my $news = $self->fetch ( 'news#latest', 10 ); # max 10 latest
     

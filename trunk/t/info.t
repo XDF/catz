@@ -2,7 +2,7 @@
 # Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
 # Licensed under The MIT License
-#
+# 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
@@ -22,49 +22,38 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Ctrl::All;
-
 use 5.12.0; use strict; use warnings;
 
-use parent 'Catz::Ctrl::Present';
+# unbuffered outputs
+# from http://perldoc.perl.org/functions/open.html
+select STDERR; $| = 1; 
+select STDOUT; $| = 1; 
 
-sub all {
+use Test::More;
+use Test::Mojo;
 
- my $self = shift; my $s = $self->{stash};
-  
- $self->f_init or return $self->fail;
+use Catz::Data::Conf;
+use Catz::Data::Text;
+
+my $t = Test::Mojo->new( conf ( 'app' ) );
+
+my @oklangs = qw ( en fi );
+
+my @oksetups = qw ( en394211 fi211111 );
+
+foreach my $lang ( @oklangs ) {
  
- $s->{runmode} = 'all';
- 
- $self->f_map or return $self->fail ( 'MAPP_LOAD' );
-  
- $self->f_origin or return $self->fail ( 'ORIGIN' );
- 
- $s->{urlother} = $self->fuse ( 
-  $s->{langaother}, $s->{action}, ( $s->{origin} eq 'id' ?  $s->{id} : '' )
- );
-    
- return $self->done;
-    
-}
+ $t->get_ok("/$lang/info/std/")
+  ->status_is(200)->content_type_like(qr/text\/plain/);
 
-sub browseall {
-
- my $self = shift; 
-
- $self->all or return $self->fail ( 'ALL_LOAD' );
- 
- $self->multi or return $self->fail ( 'MULTI_LOAD' );
-}
-
-sub viewall {
-
- my $self = shift;
-
- $self->all or return $self->fail ( 'ALL_LOAD' );
-   
- $self->single or return $self->fail ( 'SINGLE_LOAD' ); 
+ $t->get_ok("/$lang/info/std")->status_is(301);
 
 }
 
-1;
+foreach my $setup ( @oksetups ) {
+
+ $t->get_ok("/$setup/info/std/")->status_is(404);
+
+}  
+
+done_testing;

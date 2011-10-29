@@ -23,7 +23,7 @@
 # THE SOFTWARE.
 # 
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 # unbuffered outputs
 # from http://perldoc.perl.org/functions/open.html
@@ -33,11 +33,13 @@ select STDOUT; $| = 1;
 use Test::More;
 use Test::Mojo;
 
+use Catz::Data::Conf;
+
 use Catz::Util::String qw ( enurl );
 
-my $t = Test::Mojo->new( 'Catz::Core::App' );
+my $t = Test::Mojo->new( conf ( 'app' ) );
 
-my @oklangs = qw ( en fi );
+my @oksetups = qw ( en fi en264312 fi384321 );
 
 # these should return results in both languages
 my @oktexts = qw ( 
@@ -54,82 +56,91 @@ my @mixa = qw ( 2010- 2005-07- associati category shorthair );
 # finnish only, english bad
 my @mixb = qw ( 10.10. 7.2005 yhdistys kategoria lyhytkarva );
 
-foreach my $lang ( @oklangs ) {
+my $lang;
 
- foreach my $find ( map { enurl $_ } @oktexts ) {
+foreach my $find ( map { enurl $_ } @oktexts ) {
+  
+ $lang = @oksetups [ rand @oksetups ];
   
  $t->get_ok("/$lang/find?s=$find")
    ->status_is(200)
    ->content_type_like(qr/text\/html/)
    ->element_exists('div[class~="rounded"] a');
   
- }
+}
   
 
- foreach my $find ( map { enurl $_ } @badtexts ) {
+foreach my $find ( map { enurl $_ } @badtexts ) {
+
+  $lang = @oksetups [ rand @oksetups ];
   
   $t->get_ok("/$lang/find?s=$find")
    ->status_is(200)
    ->content_type_like(qr/text\/html/)
    ->content_is('');
   
- }
+}
+
+
+foreach $lang ( @oksetups ) {
  
  foreach my $mix ( @mixa ) {
 
-  if ( $lang eq 'en' ) {
+ if ( $lang =~ /^en/ ) {
  
    $t->get_ok("/$lang/find?s=$mix")
     ->status_is(200)
     ->content_type_like(qr/text\/html/)
     ->element_exists('div[class~="rounded"] a');
    
-  } else {
+ } else {
  
    $t->get_ok("/$lang/find?s=$mix")
     ->status_is(200)
     ->content_type_like(qr/text\/html/)
     ->content_is(''); 
-  }
+ }
  
  }
  
- foreach my $mix ( @mixb ) {
+}
+
+foreach $lang ( @oksetups ) {
  
-  if ( $lang eq 'fi' ) {
+foreach my $mix ( @mixb ) {
+ 
+  if ( $lang =~ /^fi/ ) {
  
    $t->get_ok("/$lang/find?s=$mix")
     ->status_is(200)
     ->content_type_like(qr/text\/html/)
     ->element_exists('div[class~="rounded"] a');
    
-  } else {
+ } else {
  
    $t->get_ok("/$lang/find?s=$mix")
     ->status_is(200)
     ->content_type_like(qr/text\/html/)
     ->content_is(''); 
-  } 
+ } 
  
- }
+}
 
 }
 
 # stress test
 
-foreach my $lang ( @oklangs ) {
+foreach my $i ( 1 .. 77 ) {
 
- foreach my $i ( 1 .. 50 ) {
-
-  my $c = 20 + int(rand(20));
-   
-  $t->get_ok("/$lang/find?s=".enurl
-   ( join '', map { chr $_ } map { 33 + int(rand(95)) } ( 1 .. $c ) )
-   )->content_type_like(qr/text\/html/)
-    ->content_is(''); 
+ $lang = @oksetups [ rand @oksetups ];
   
- }
- 
+ my $c = 20 + int(rand(20));
+   
+ $t->get_ok("/$lang/find?s=".enurl
+ ( join '', map { chr $_ } map { 33 + int(rand(95)) } ( 1 .. $c ) )
+  )->content_type_like(qr/text\/html/)
+   ->content_is(''); 
+  
 }
 
 done_testing;

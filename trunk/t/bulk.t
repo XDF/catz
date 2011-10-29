@@ -23,7 +23,7 @@
 # THE SOFTWARE.
 # 
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 # unbuffered outputs
 # from http://perldoc.perl.org/functions/open.html
@@ -33,12 +33,13 @@ select STDOUT; $| = 1;
 use Test::More;
 use Test::Mojo;
 
+use Catz::Data::Conf;
 use Catz::Load::Data qw ( loc );
 
 use Catz::Util::String qw ( enurl ucc );
 use Catz::Util::Time qw ( dtexpand );
 
-my $t = Test::Mojo->new( 'Catz::Core::App' );
+my $t = Test::Mojo->new( conf ( 'app' ) );
 
 $t->max_redirects( 0 );
 
@@ -51,6 +52,8 @@ my @okfolders = qw (
 );
 
 my @badfolders = qw ( 20040805utsjoki 2007070!kem%%le /20070808@AKKE''.mpele );
+
+my $lang;
 
 sub splitf {
 
@@ -74,35 +77,37 @@ foreach my $setup ( @oksetups ) {
 
 }
 
-foreach my $setup ( @oklangs ) {
+ $lang = @oklangs [ rand @oklangs ]; 
 
- $t->get_ok( "/$setup/bulk/photolist/" )
+ $t->get_ok( "/$lang/bulk/photolist/" )
   ->status_is(200)
   ->content_type_like(qr/text\/plain/)
   ->content_like(qr/\.JPG/);
  
  # no ending slash -> redirect
- $t->get_ok( "/setup/bulk/photolist" )->status_is(301);
+ $t->get_ok( "/$lang/bulk/photolist" )->status_is(301);
  
  # then with folder definitions   
  foreach my $data ( @okfolders ) {
 
   my ( $date, $datel, $loc ) = splitf $data;
- 
+  
   foreach my $d ( ( $date, $datel ) ) {
 
-   $t->get_ok( "/$setup/bulk/photolist?d=$d&l=$loc" )
+   $lang = @oklangs [ rand @oklangs ];
+
+   $t->get_ok( "/$lang/bulk/photolist?d=$d&l=$loc" )
     ->status_is(200)
     ->content_type_like(qr/text\/plain/)
     ->content_like(qr/\.JPG/); 
 
    # just date parameter                
-   $t->get_ok( "/$setup/bulk/photolist?d=$d" )->status_is(404);
+   $t->get_ok( "/$lang/bulk/photolist?d=$d" )->status_is(404);
    
   }
   
   # just location parameter
-  $t->get_ok( "/$setup/bulk/photolist?l=$loc" )->status_is(404);
+  $t->get_ok( "/$lang/bulk/photolist?l=$loc" )->status_is(404);
 
  }
  
@@ -111,14 +116,13 @@ foreach my $setup ( @oklangs ) {
 
   my ( $date, $datel, $loc ) = splitf $data;
  
-  foreach my $d ( ( $date, $datel ) ) { 
- 
-   $t->get_ok( "/$setup/bulk/photolist?d=$d&l=$loc" )->status_is(404);
+  foreach my $d ( ( $date, $datel ) ) {
+  
+   $lang = @oklangs [ rand @oklangs ];
+  
+   $t->get_ok( "/$lang/bulk/photolist?d=$d&l=$loc" )->status_is(404);
        
   }
-
- }
-
-}    
+ }    
  
 done_testing;
