@@ -24,7 +24,7 @@
 
 use 5.12.0; use strict; use warnings;
 
-use lib '../lib'; use lib '../libi';
+use lib '../lib';
 
 use File::Path qw( remove_tree );
 

@@ -24,7 +24,7 @@
  
 package Catz::Data::Widget;
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 use parent 'Exporter';
 
@@ -36,7 +36,7 @@ use GD;
 use GD::Text;
 use List::MoreUtils qw ( any );
 
-use Catz::Core::Text;
+use Catz::Data::Text;
 
 use Catz::Util::Number qw ( round );
 use Catz::Util::String qw ( enurl );

@@ -120,7 +120,7 @@ sub multi {
    ( $s->{pri} eq 'folder' or $s->{pri} eq 'date' ) )
   ) {  # coverage provided for limited combinations
     
-  $self->f_vizdist or return $self->fail ( [ 
+  $self->f_dist or return $self->fail ( [ 
    'distibution prepare error', 'virhe jakaumien valmistelussa'
   ] );
 

@@ -181,9 +181,7 @@ a:link, a:visited, a:active {
 } 
 
 a:hover {
- background-color: <%== $st->{color}->{$palette}->{high} %>;
- color: <%== $st->{color}->{$palette}->{back} %>;
- text-decoration: none;   
+ text-decoration: underline;   
 }
 
 /* photo thumbnails */
@@ -198,6 +196,8 @@ a:hover {
  overflow: hidden;  
  vertical-align: middle;
 }
+
+
 
 .cca {
  float: right;
@@ -220,10 +220,4 @@ a:hover {
  border-style: solid;
  border-width: 2px;
  border-color: <%== $st->{color}->{$palette}->{dim} %>;  
-}
-
-/* by default hide entry to builder */
-/* it is made visible by JavaScript */
-#entry {
- display: inline;
 }

@@ -24,11 +24,9 @@
 
 package Catz::Util::Number;
 
-use strict;
-use warnings;
+use 5.12.0; use strict; use warnings;
 
 use Number::Format;
-use Memoize;
 
 use base 'Exporter';
 
@@ -63,9 +61,6 @@ sub float {
 # in: number, language code
 # out: formatted number (string)
 #
-
-# used a lot with limited set of values -> memoizing
-memoize ( 'fmt' ); 
 
 sub fmt {
   
@@ -105,12 +100,6 @@ sub minnum33 {
 
 }
 
-#
-# rounds a float
-#
-# in: float, number of decimals (defaults to zero)
-# out: the rounded float
-#
 sub round { sprintf '%.' . ( defined $_[1] ? $_[1] : 0 ) . 'f', $_[0] }
 
 sub logn {  log ( $_[0] ) / log ( $_[1] ) }

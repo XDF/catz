@@ -35,11 +35,13 @@
 %# 
 <% end %>
 <% content 'main' => begin %>
+<div class="outer">
 % if ( $lang eq 'fi' ) {
 <%== include "content/$topic" . '_' . $lang %>
 % } else {
 <%== include "content/$topic" . '_' . $lang %>
 % }
+</div>
 <% end %>
 %#
 %# --------------------
