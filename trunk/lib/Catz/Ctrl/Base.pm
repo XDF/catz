@@ -43,6 +43,8 @@ use Catz::Data::Style;
 
 use Catz::Util::File qw ( findfiles );
 
+use Catz::Util::Number qw ( round );
+
 #
 # loading of models
 #
@@ -308,7 +310,7 @@ sub f_vizinit {
 
 }
  
-sub f_vizdist {
+sub f_dist {
 
  # get stuff required by distribution visualization a.k.a the pie diagram
 
@@ -328,10 +330,10 @@ sub f_vizdist {
   # prepare coverage counts
   $s->{ 'dist_count_'. $key } = $self->fetch ( "search#count", @sargs );
    
-  $s->{ 'dist_perc_' . $key } = ( 
+  $s->{ 'dist_perc_' . $key } = round ( ( 
    ( $s->{ 'dist_count_'. $key } / $s->{dist_count_all} ) * 100
-   );
-   
+   ), 1 );
+      
   # prepare coverage drill parameters to make urls     
   $s->{ 'dist_url_'. $key } = $self->fuseq ( 
    $s->{langa}, ( 'search?q=' . $self->enurl ( args2search ( @sargs ) ) )

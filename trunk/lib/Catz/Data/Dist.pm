@@ -28,7 +28,7 @@ use 5.12.0; use strict; use warnings;
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( dist_conf );
+our @EXPORT = qw ( dist_conf dist_url );
 
 my $cnf = {
 
@@ -39,15 +39,21 @@ my $cnf = {
   breed => [ qw ( +has breed -breed xc? -has cat ) ],  
   cate => [ qw ( +has breed +breed xc? -has cat ) ],
   none => [ qw ( -has text ) ],
-  
+  tailer => [ qw ( -has cat ) ], 
  },
  
  keysall => [ qw ( full partial breed cate none ) ],
+ keyscontrib => [ qw ( none cate breed full ) ],
  keyspie => [ qw ( full breed cate none ) ],
  keyslink => [ qw ( partial ) ], 
-
- cate_filter => 'cate < 5 or cate = 7',
 
 };
 
 sub dist_conf { $cnf }
+
+sub dist_url {
+
+
+
+
+}

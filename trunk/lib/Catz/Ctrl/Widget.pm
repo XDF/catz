@@ -191,7 +191,7 @@ sub embed { # the widget renderer
   
 }
 
-sub contrib {
+sub contact {
 
  my $self = shift; my $s = $self->{stash};
   

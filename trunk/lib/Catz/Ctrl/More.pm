@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 # 
 
-package Catz::Ctrl::About;
+package Catz::Ctrl::More;
 
 use 5.12.0; use strict; use warnings;
 
@@ -31,65 +31,60 @@ use parent 'Catz::Ctrl::Base';
 use I18N::AcceptLanguage;
 
 use Catz::Data::Conf;
-use Catz::Data::Result;
 use Catz::Data::Search;
-use Catz::Data::Setup;
-use Catz::Data::Style;
 
 use Catz::Util::Number qw ( fmt round );
 use Catz::Util::Time qw ( dt );
 
-sub about { 
+sub contrib { 
 
  my $self = shift; my $s = $self->{stash};
-  
- $s->{urlother} = $self->fuse ( $s->{langaother}, 'about', $s->{topic} );
  
- if ( $s->{topic} eq 'contrib' ) {
+ $s->{topic} = 'contrib';
  
-  $s->{breeds} = $self->fetch ( 'related#breeds' );
+ $self->f_init;
+ 
+ $self->f_dist;
   
-  foreach my $breed ( @{ $s->{breeds} } ) {
-  
-   $s->{'url_breed_'.$breed} = join '/', 
-    ( '', $s->{langa}, 'search?q='. $self->enurl ( 
-     "+breed=$breed -has=cat" 
-    ) );
-    
-  }
-
-  $s->{cates} = $self->fetch ( 'related#cates' );
-  
-  foreach my $cate( @{ $s->{cates} } ) {
-  
-   $s->{'url_cate_'.$cate->[0]} = join '/', 
-    ( '', $s->{langa}, 'search?q='. $self->enurl ( 
-     "+cate=$cate->[0] -has=cat" 
-    ) );
-    
-  }
-   
-  $s->{count_total} = $self->fetch ( 'all#maxx' );
-  
-  $s->{search_none} = '-has=text';  
-  $s->{search_breed} = '+has=breed -has=cat';
-  
-  foreach my $key ( qw ( none breed ) ) {
-  
-   $s->{'url_'.$key} = join '/', 
-    ( '', $s->{langa}, 'search?q='. $self->enurl ( $s->{'search_'.$key} ) );
-  
-   $s->{'count_'.$key} = 
-    $self->fetch ( "search#count", @{ search2args $s->{'search_'.$key} } );
-   
-   $s->{'perc_'.$key} = 
-    ( ( $s->{'count_'.$key} / $s->{count_total} ) * 100 );
-  
-  }  
-  
+ $s->{urlother} = $self->fuse ( 
+  $s->{langaother}, 'about', $s->{topic} 
+ );
+ 
+ $s->{breeds} = $self->fetch ( 'related#breeds' );
+ 
+ foreach my $breed ( @{ $s->{breeds} } ) {
+ 
+  $s->{'dist_url_'.$breed} = $self->fuseq ( 
+   $s->{langa}, ( 'search?q=' . $self->enurl ( 
+    args2search (  
+     @{ $s->{dist}->{blocks}->{tailer} },
+     '+breed', $breed 
+    ) ) ) );
+ 
  }
-   
- $self->render( template => 'page/about', format => 'html' );
+  
+ $s->{cates} = $self->fetch ( 'related#cates' );
+
+ foreach my $cate ( @{ $s->{cates} } ) {
+ 
+  $s->{'dist_url_'.$cate->[0]} = $self->fuseq ( 
+   $s->{langa}, ( 'search?q=' . $self->enurl ( 
+    args2search ( 
+     @{ $s->{dist}->{blocks}->{tailer} }, 
+    '+cate', $cate->[0] 
+   ) ) ) );
+ 
+ }
+     
+ $self->common;
+
+}
+
+sub common {
+
+ my $self = shift; my $s = $self->{stash};
+
+ $self->render( template => 'page/more', format => 'html' );
 
 }
 

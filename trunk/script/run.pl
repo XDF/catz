@@ -6,8 +6,6 @@ use File::Spec;
 
 use lib join '/', File::Spec->splitdir(dirname(__FILE__)), 'lib';
 use lib join '/', File::Spec->splitdir(dirname(__FILE__)), '..', 'lib';
-use lib join '/', File::Spec->splitdir(dirname(__FILE__)), 'libi';
-use lib join '/', File::Spec->splitdir(dirname(__FILE__)), '..', 'libi';
 
 use Catz::Data::Conf;
 

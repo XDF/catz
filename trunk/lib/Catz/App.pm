@@ -126,8 +126,7 @@ sub startup {
  ### content pages
  ###
   
- #$l->route( '/about/:topic', topic => qr/contrib|privacy/ )
- # ->to( 'main#about' );
+ $l->route( '/more/:action') ->to ( controller => 'more' );
  
  ###
  ### the news service
@@ -228,11 +227,11 @@ sub startup {
   ->to( 'visualize#globe' );
   
  ###
- ### Widget features
+ ### Widget features = special graphical elements
  ###
 
- #$l->route( '/widget/contrib/:palette', palette => qr/dark|neutral|bright/ )
- # ->to( 'widget#contrib' );
+ $l->route( '/widget/contact/:palette', palette => qr/dark|neutral|bright/ )
+  ->to( 'widget#contact' );
 
  #$l->route( '/widget/marker/:palette', palette => qr/dark|neutral|bright/ )
  # ->to( 'widget#marker' );
