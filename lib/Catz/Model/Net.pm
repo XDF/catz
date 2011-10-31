@@ -52,8 +52,8 @@ my $ua =  LWP::UserAgent->new (
 
 sub body {
 
- my $url = shift;
- 
+ my ( $self, $url ) = @_;
+  
  my $res =  $ua->get( $url );
  
  $res->is_success and return $res->content;
@@ -88,7 +88,7 @@ sub _data {
  
  my $url = urld ( $url_data, $date, $loc, $name );
 
- my $res = body ( $url );
+ my $res = $self->body ( $url );
 
  $res and ( length ( $res ) > 3 ) and
   return ( result_process ( $res ) );
@@ -103,7 +103,7 @@ sub _count {
 
  my $url = urlc ( $url_count, $date, $loc );
 
- my $res = body ( $url );
+ my $res = $self->body ( $url );
 
  $res and length ( $res ) > 0 and return int ( $res );
 
@@ -113,9 +113,8 @@ sub _count {
 
 sub _get {
 
-
  my ( $self, $url ) = @_;
- 
+   
  $self->body ( $url );
 
 }

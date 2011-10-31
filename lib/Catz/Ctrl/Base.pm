@@ -43,8 +43,6 @@ use Catz::Data::Style;
 
 use Catz::Util::File qw ( findfiles );
 
-use Catz::Util::Number qw ( round );
-
 #
 # loading of models
 #
@@ -330,7 +328,7 @@ sub f_dist {
   # prepare coverage counts
   $s->{ 'dist_count_'. $key } = $self->fetch ( "search#count", @sargs );
    
-  $s->{ 'dist_perc_' . $key } = round ( ( 
+  $s->{ 'dist_perc_' . $key } = $self->round ( ( 
    ( $s->{ 'dist_count_'. $key } / $s->{dist_count_all} ) * 100
    ), 1 );
       

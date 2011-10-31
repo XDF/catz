@@ -47,10 +47,22 @@ sub do {
   "viz/$s->{action}", format => 'txt', partial => 1, jmap => $jmap 
  );
  
- $jmap and return $self->render_text ( text => $vurl, format => 'text' );
+ if ( $jmap ) {
  
- return $self->moveto ( $vurl );
+  my $json = $self->fetch( 'net#get', $vurl );
+  
+  length ( $json ) > 15 or return $self->fail ( '3PARTYREQ' );
  
+  # we return text content type on purpose
+ 
+  return $self->render_text ( text => $json, format => 'text' );
+ 
+ } else {
+ 
+  return $self->moveto ( $vurl );
+ 
+ }
+  
 }
 
 sub dist {
@@ -67,11 +79,11 @@ sub dist {
  $s->{dist} = dist_conf;
  
  foreach my $key ( @{ $s->{dist}->{keyspie} } ) {
-  
-  $s->{ $key . '_perc' } = $self->round ( ( 
+ 
+ $s->{ $key . '_perc' } = $self->round ( ( 
    ( $s->{ $key } / $s->{total} ) * 100
    ), 1 );
- 
+   
   my $tx =  $s->{t}->{ 'VIZ_DIST_' . uc ( $key ) } . ' ' .
    $self->fmt ( $s->{ $key . '_perc' }, $s->{lang} ) . ' %';
    
