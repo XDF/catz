@@ -72,8 +72,7 @@ foreach my $comb ( @okcombs ) {
 
  $t->get_ok("/$setup/viz/$comb/$okversions[0]?jmap=1")
    ->status_is(200)
-   ->content_type_like(qr/text\/plain/) # expecting just URL as text
-   ->content_like(qr/^http\:\/\//);
+   ->content_type_like(qr/text\/plain/); # json data but as text
  
  };
    

@@ -100,6 +100,12 @@ sub minnum33 {
 
 }
 
+#
+# rounds a float
+#
+# in: float, number of decimals (defaults to zero)
+# out: the rounded float
+#
 sub round { sprintf '%.' . ( defined $_[1] ? $_[1] : 0 ) . 'f', $_[0] }
 
 sub logn {  log ( $_[0] ) / log ( $_[1] ) }

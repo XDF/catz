@@ -24,46 +24,35 @@
 
 function catzLoadDistMap() {
 
- // get the original address of the distribution image
+ // get the original unredirected address of the chart
  var jmapurl = $('#viz_dist').attr('src');
 
- // add json parameter to get the json destination instead 
+ // remember to remove the trailing slash
+ // add a parameter to the end get the json data
  jmapurl = jmapurl.substring ( 0, jmapurl.length - 1 ) + '?jmap=1';
  
- //
- // can't get a simple redirect straight from the server due to
- // an open Firefox bug (open as 2011-10-27), must first fetch the
- // address from server and then request it separately (one more call)
- //
- // http://bugs.jquery.com/ticket/9155
- //
- 
- $.get( jmapurl, function( jmapcont ) { 
- 
-  // if a decent repsonse
-  if ( jmapcont.substring ( 0, 4 ) == 'http' ) {
+ // fetch the JSON data using $.ajax and dataType: 'text' 
+ // instead of $.getJSON due to some issues on IE
   
-   // the next call, now to the chart server and expection JSON
-   $.getJSON ( jmapcont, function ( jdata ) {
+ $.ajax ({ url: jmapurl, dataType: 'text', success: function ( data ) {
   
-   // if success, traverse the result and update the map areas
+   // success
   
-   // but first remove the default map area
-         
-   $( '#map_dist_default' ).remove();
+   var jdata = $.parseJSON( data );
     
+  // remove the default map area set by the page    
+   $( '#map_dist_default' ).remove();
+   
+   // push true image map coordinates to the predefined imagemap 
    $.each( jdata.chartshape, function ( i, l ) {
           
     $( '#map_dist_' + l.name ).attr( 'coords', l.coords );    
           
    });
           
-  }); 
+ }});
   
-  }
-
- });
-
 }
+
  
 $(document).ready(function() { catzLoadDistMap(); }); 
