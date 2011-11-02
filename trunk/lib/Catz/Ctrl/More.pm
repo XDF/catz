@@ -33,21 +33,18 @@ use I18N::AcceptLanguage;
 use Catz::Data::Conf;
 use Catz::Data::Search;
 
-use Catz::Util::Number qw ( fmt round );
-use Catz::Util::Time qw ( dt );
-
 sub contrib { 
 
  my $self = shift; my $s = $self->{stash};
  
  $s->{topic} = 'contrib';
  
- $self->f_init;
+ $self->f_init or $self->fail ( 'f_init exit' );
  
- $self->f_dist;
+ $self->f_dist or $self->fail ( 'dist exit' );
   
  $s->{urlother} = $self->fuse ( 
-  $s->{langaother}, 'about', $s->{topic} 
+  $s->{langaother}, 'more', $s->{topic} 
  );
  
  $s->{breeds} = $self->fetch ( 'related#breeds' );

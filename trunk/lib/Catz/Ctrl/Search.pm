@@ -44,14 +44,14 @@ sub search_ok {
  defined $s->{ $var } or return $self->done;
  
  # length sanity check 1/2
- length $s->{ $var } > 2000 and return $self->fail ( 'SEARCH_LONG' );
+ length $s->{ $var } > 2000 and return $self->fail ( 'search too long' );
 
  # it appears that browsers typcially send UTF-8 encoded 
  # data when the origin page is UTF-8 -> we decode the data now   
  utf8::decode ( $s->{$var} );
 
  # length sanity check 2/2
- length $s->{ $var } > 1234 and return $self->fail ( 'SEARCH_LONG' );
+ length $s->{ $var } > 1234 and return $self->fail ( 'too many characters' );
  
  # remove all unnecessary whitespaces     
  $s->{ $var } = noxss clean trim $s->{ $var };
@@ -116,27 +116,27 @@ sub pattern {
 
  my $self = shift; my $s = $self->{stash};
 
- $self->f_init or return $self->fail;
+ $self->f_init or return $self->fail ( 'f_init exit' );
  
  $s->{runmode} = 'search';
  
  $self->search_ok ( 'q', 'what' ) 
-  or return $self->fail ( 'PARAM', 'q' );
+  or return $self->fail ( 'illegal parameter' );
  
  if ( $s->{action} eq 'display' ) {
  
-  $s->{what} or return $self->fail ( 'SEARCH' );
+  $s->{what} or return $self->fail ( 'no search' );
  
  }
  
  $self->search_ok ( 'i', 'init' ) or 
-  return $self->fail ( 'PARAM', 'i' );
+  return $self->fail ( 'illegal parameter' );
   
  $s->{what} and do { # if a search is available
 
-  $self->f_map or return $self->fail;
+  $self->f_map or return $self->fail ( 'f_map exit' );
  
-  $self->search_args or return $self->fail;
+  $self->search_args or return $self->fail ('search_args exit' );
       
   if ( 
    $s->{args_count} > 0 and # there are arguments
@@ -148,7 +148,7 @@ sub pattern {
 
  };
  
- $self->urlother or return $self->fail;
+ $self->urlother or return $self->fail ( 'urlother exit' );
   
  return $self->done;
   
@@ -178,15 +178,15 @@ sub search {
 
  my $self = shift; my $s = $self->{stash};
  
- $self->pattern or return $self->fail ( 'SEARCH_LOAD' );
+ $self->pattern or return $self->fail ( 'pattern exit' );
   
  if ( $s->{x} and $s->{id} ) { # we have results 
  
-  $self->multi or return $self->fail ( 'MULTI_LOAD' );
+  $self->multi or return $self->fail ( 'multi exit' );
  
  } else { # no results, the fallback is to show the search page 
   
-  $self->guide or return $self->fail;  
+  $self->guide or return $self->fail ( 'guide exit' );  
 
  } 
 
@@ -196,15 +196,15 @@ sub display {
  
  my $self = shift; my $s = $self->{stash};
   
- $self->pattern or return $self->fail ( 'SEARCH_LOAD' );
+ $self->pattern or return $self->fail ( 'pattern exit' );
  
  if ( $s->{x} and $s->{id} ) { # we have results
  
-  $self->single or return $self->fail ( 'SINGLE_LOAD' );
+  $self->single or return $self->fail ( 'single exit' );
   
  } else {  
  
-  return $self->fail ( 'NODATA' );
+  return $self->fail ( 'no data' );
  
  }
   

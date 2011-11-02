@@ -49,7 +49,14 @@ sub do {
  
  if ( $jmap ) {
  
-  my $json = $self->fetch( 'net#get', $vurl );
+  # this is a pseudo parameter passed to the model that contains the
+  # current dt down to hours, so this parameter changes in every
+  # hour and this makes cached model data live at most one hour
+  my $pseudo = substr ( $self->dt, 0, -4 );
+  # so in case that data loading fails the failed data gets cleared
+  # from the cache within a reasonable time
+ 
+  my $json = $self->fetch( 'net#get', $vurl, $pseudo );
   
   length ( $json ) > 15 or return $self->fail ( '3PARTYREQ' );
  
@@ -118,9 +125,7 @@ sub rank {
  
  $s->{total} = $self->fetch ( 'pair#count', $s->{pri}, $s->{sec} );
 
- $s->{total} == 0 and return $self->fail (
-  [ 'photo count is zero', 'kuvien määrä on nolla' ]
- );
+ $s->{total} == 0 and return $self->fail ( 'NODATA' );
  
  $s->{rank} = $self->fetch ( 'related#rank', $s->{pri}, $s->{sec} );
  

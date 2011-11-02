@@ -69,6 +69,9 @@ pre { display: inline; }
 /* more room between lines */
 .roomy { line-height: <%== $st->{lineh}->{large} %>; }
 
+/* more room on around */
+.pad { padding: 0.4em; }
+
 /* text styling */
 .heavy { font-weight: 600; }
 .lean { font-style: italic; }

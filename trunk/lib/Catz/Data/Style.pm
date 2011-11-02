@@ -24,7 +24,7 @@
  
 package Catz::Data::Style;
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 use parent 'Exporter';
 
@@ -127,12 +127,12 @@ sub style_get { $style }
 sub style_html2dec {
 
  # convert html color to decimals
+  
+ my $htmlc = shift; 
  
- my $html = shift;
+ $htmlc =~ m|^.(..)(..)(..)|; 
  
- $html =~ m|^.(..)(..)(..)|;
- 
- hex($1), hex($2), hex($3); 
+ hex($1), hex($3), hex($3); 
 
 }
 

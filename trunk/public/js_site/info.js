@@ -48,33 +48,54 @@ function catzDemess( mess ) {
 
 function catzInfo() {
 
- // process elements that belong 
- // to class info or infox
+ // process elements that belong to class info or infox
  
  // extract '/fi' or '/en' from the current URL
  // to make info language sensitive but without setup
  var head = $(location).attr('pathname').toString().substring ( 0, 3 );
 
  $.ajax ({
+ 
   url: head + '/info/std/',
-  success: function( data ) { // when the request completes this get executed
+  
+  success: function( data ) { 
    
    plain = catzDemess ( data );
-
-   if ( $('.info').length != 0 ) {       
-    $('.info').attr('href','mai' + 'lto:' + plain );
-    $('.info').attr('title',plain );
-    $('.info').html(plain);
-   }
-    
-   if ( $('.infox').length != 0 ) {   
-    $('.infox').attr(
-     'href', 'mai' + 'lto:' + plain + '?subject=' + 
-     encodeURI ( $('.infox').attr('title') ) 
-    );
-    $('.infox').html(plain);  
-   }
    
+   $('.info').each ( function () {
+    
+    if ( this.length != 0 ) {
+     
+     $(this).html(''); // clear the default content
+     
+     $(this).html( // put in the new content
+      '<a href="' + 'mai' + 'lto:' + plain + '" ' +
+      'title="' + plain + '">' + plain + '</a>'         
+     );
+    
+    }
+    
+   });
+   
+   $('.infox').each ( function () {
+    
+    if ( this.length != 0 ) {
+    
+     // store the title from the inside img
+     var titl = $(this).attr ( 'title' );
+     
+     $(this).html(''); // clear the default content
+     
+     $(this).html( // put the new content
+      '<a href="' + 'mai' + 'lto:' + plain + '?subject=' +
+       encodeURI ( titl ) + '" ' +      
+      'title="' + plain + '">' + plain + '</a>'         
+     );
+    
+    }
+    
+   });        
+     
   }
   
  });

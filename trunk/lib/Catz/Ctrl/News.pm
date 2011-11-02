@@ -59,7 +59,7 @@ sub one { # one news article
  ( $s->{new1}, $s->{prev}, $s->{next} ) = 
    @{ $self->fetch ( 'news#one', $s->{article} ) }; 
  
- defined $s->{new1} or return $self->fail ( 'ARTICLE' );
+ defined $s->{new1} or return $self->fail ( 'unknown article' );
  
  $self->render( template => 'page/new1', format => 'html' );
 
@@ -71,7 +71,7 @@ sub feed { # RSS feed of news
  my $self = shift; my $s = $self->{stash};
  
  # feed available only without setup
- length $s->{langa} > 2 and return $self->fail ( 'NOWITHSETUP' );
+ length $s->{langa} > 2 and return $self->fail ( 'setup set so stopping' );
 
  my $news = $self->fetch ( 'news#latest', 10 ); # max 10 latest
     

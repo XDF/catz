@@ -55,7 +55,7 @@ sub single {
   };
      
  $s->{total} == 0 and 
-  return $self->fail ( [ 'no photo found', 'kuvaa ei löydy' ] ); 
+  return $self->fail ( 'photo not found' ); 
 
  # fetch the photo metadata
  
@@ -96,21 +96,17 @@ sub multi {
   ) };
 
  $s->{total} == 0 and 
-  return $self->fail ( [ 'no photos found', 'kuvia ei löydy' ] );  
+  return $self->fail ( 'no photos found' );  
 
  scalar @{ $s->{xs} } == 0 and 
-  return $self->fail ( [ 
-   'no photos for this page found', 'kuvia ei löydy tälle sivulle' 
-  ] ); 
+  return $self->fail ( 'no photos for this page' ); 
   
  # fetch the thumbs and their included earliest - latest metadata
  ( $s->{thumbs}, $s->{earliest}, $s->{latest} ) = 
   @{ $self->fetch( 'photo#thumb', @{ $s->{xs} } ) };
   
   # prepare stuff for visualizations
-  $self->f_vizinit or return $self->fail ( [ 
-   'visualization init error', 'virhe visualisoinnin alustuksessa'
-  ] );
+  $self->f_vizinit or return $self->fail ( 'f_vizinit exit' );
 
 
  # generate converage counts and urls for coverage information displays
@@ -120,9 +116,7 @@ sub multi {
    ( $s->{pri} eq 'folder' or $s->{pri} eq 'date' ) )
   ) {  # coverage provided for limited combinations
     
-  $self->f_dist or return $self->fail ( [ 
-   'distibution prepare error', 'virhe jakaumien valmistelussa'
-  ] );
+  $self->f_dist or return $self->fail ( 'f_dist exit' );
 
  }
    

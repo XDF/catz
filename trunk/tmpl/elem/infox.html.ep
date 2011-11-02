@@ -1,0 +1,1 @@
+ <span class="infox" title="<%= $t->{MAILTO_HEAD} %> <%== $id %>"><img class="middle" src="/<%== $lang %>/widget/contact/missing/<%== $palette %>/"></span>

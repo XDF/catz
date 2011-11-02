@@ -230,8 +230,10 @@ sub startup {
  ### Widget features = special graphical elements
  ###
 
- $l->route( '/widget/contact/:palette', palette => qr/dark|neutral|bright/ )
-  ->to( 'widget#contact' );
+ $l->route( '/widget/contact/:intent/:palette',
+  intent => qr/contrib|missing|margin/,  
+  palette => qr/dark|neutral|bright/ 
+ )->to( 'widget#contact' );
 
  #$l->route( '/widget/marker/:palette', palette => qr/dark|neutral|bright/ )
  # ->to( 'widget#marker' );
