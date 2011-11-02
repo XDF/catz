@@ -32,13 +32,13 @@ sub all {
 
  my $self = shift; my $s = $self->{stash};
   
- $self->f_init or return $self->fail;
+ $self->f_init or return $self->fail ( 'init exit' );
  
  $s->{runmode} = 'all';
  
- $self->f_map or return $self->fail ( 'MAPP_LOAD' );
+ $self->f_map or return $self->fail ( 'f_map exit' );
   
- $self->f_origin or return $self->fail ( 'ORIGIN' );
+ $self->f_origin or return $self->fail ( 'f_origin exit' );
  
  $s->{urlother} = $self->fuse ( 
   $s->{langaother}, $s->{action}, ( $s->{origin} eq 'id' ?  $s->{id} : '' )
@@ -52,18 +52,18 @@ sub browseall {
 
  my $self = shift; 
 
- $self->all or return $self->fail ( 'ALL_LOAD' );
+ $self->all or return $self->fail ( 'all exit' );
  
- $self->multi or return $self->fail ( 'MULTI_LOAD' );
+ $self->multi or return $self->fail ( 'multi exit' );
 }
 
 sub viewall {
 
  my $self = shift;
 
- $self->all or return $self->fail ( 'ALL_LOAD' );
+ $self->all or return $self->fail ( 'all exit' );
    
- $self->single or return $self->fail ( 'SINGLE_LOAD' ); 
+ $self->single or return $self->fail ( 'single exit' ); 
 
 }
 

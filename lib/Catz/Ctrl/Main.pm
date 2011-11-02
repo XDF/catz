@@ -37,7 +37,6 @@ use Catz::Data::Setup;
 use Catz::Data::Style;
 
 use Catz::Util::Number qw ( fmt round );
-use Catz::Util::Time qw ( dt );
 
 my $langs = [ 'en', 'fi' ];
  
@@ -66,7 +65,7 @@ sub front {
  
  $s->{seal} = conf ( 'key_seal' );
   
- $self->f_map or return $self->fail ( 'MAPP_LOAD' );
+ $self->f_map or return $self->fail ( 'f_map exit' );
  
  # load the latest ...
  
@@ -115,7 +114,7 @@ sub result {
  my $self = shift; my $s = $self->{stash};
  
  # result available only without setup
- length $s->{langa} > 2 and return $self->fail ( 'NOTWITHSETUP' );
+ length $s->{langa} > 2 and return $self->fail ( 'setup set so stopped' );
 
  my $key = $self->param( 'x' ) // undef;
 
@@ -132,7 +131,7 @@ sub result {
  # this is a pseudo parameter passed to the model that contains the
  # current dt down to 10 minutes, so this parameter changes in every
  # 10 minutes and this makes cached model data live at most 10 minutes
- my $pseudo = substr ( dt, 0, -3 );
+ my $pseudo = substr ( $self->dt, 0, -3 );
   
  my $count = $self->fetch ( 'net#count', $keys[0], $keys[1], $pseudo ) // 0;
   
@@ -167,11 +166,11 @@ sub info {
  my $self = shift; my $s = $self->{stash}; my $base = undef;
  
  # info available only without setup
- length $s->{langa} > 2 and return $self->fail ( 'NOWITHSETUP' );
+ length $s->{langa} > 2 and return $self->fail ( 'setup set so stopped' );
 
  if ( $s->{cont} eq 'std' ) { $base = $s->{t}->{MAILTO_TEXT} }
    
-  else { return $self->fail ( 'UNSUPP' ) }
+  else { return $self->fail ( 'unsupported mode requested' ) }
   
   # the 0th element
   my $out = $cset->[ rand @{ $cset } ];

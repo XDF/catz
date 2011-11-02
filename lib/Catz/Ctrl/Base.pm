@@ -210,15 +210,15 @@ sub f_map { # load mappings
  $s->{action} eq 'find' and goto SKIP_TO_DUAL;
 
  ( $s->{maplink} = $self->fetch ( 'map#link' ) ) or 
-  return $self->fail ( 'MAPP_LINK' );
+  return $self->fail ( 'map#link exit' );
  
  ( $s->{mapview} = $self->fetch ( 'map#view' ) ) or 
-  return $self->fail ( 'MAPP_VIEW' );
+  return $self->fail ( 'map#view exit' );
 
  SKIP_TO_DUAL:
  
  ( $s->{mapdual} = $self->fetch ( 'map#dual' ) ) or 
-  return $self->fail ( 'MAPP_DUAL' );
+  return $self->fail ( 'map#dual exit' );
    
  return $self->done;
  
@@ -242,7 +242,7 @@ sub f_origin {
   # fetch the corresponding photo vector pointer x 
   $s->{x} = $self->fetch( $s->{runmode} . '#id2x', $s->{id} );
     
-  $s->{x} or return $self->fail ( 'NODATA' );
+  $s->{x} or return $self->fail ( 'no data' );
           
  } else { 
  
@@ -258,7 +258,7 @@ sub f_origin {
   # if no first x was not found then it is an error
   # but not in runmode search 
   # (means that the search returns no hits)
-  $s->{runmode} eq 'search' or $s->{x} or return $self->fail ( 'NODATA' );           
+  $s->{runmode} eq 'search' or $s->{x} or return $self->fail ( 'no data' );           
  
   # fetch the id corresponding the photo vector pointer x
   $s->{id} = $self->fetch ( $s->{runmode} . '#x2id', $s->{x} ) // undef; 
@@ -266,7 +266,7 @@ sub f_origin {
   # if no id was found then it is an error 
   # but not in runmode search 
   #(means that the search returns no hits)
-  $s->{runmode} eq 'search' or $s->{id} or return $self->fail ( 'NODATA' );  
+  $s->{runmode} eq 'search' or $s->{id} or return $self->fail ( 'no data' );  
  }
  
  return $self->done;

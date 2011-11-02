@@ -36,6 +36,7 @@ use GD;
 use GD::Text;
 use List::MoreUtils qw ( any );
 
+use Catz::Data::Style;
 use Catz::Data::Text;
 
 use Catz::Util::Number qw ( round );
@@ -245,29 +246,64 @@ sub widget_stripe {
 
 }
 
-my $plate_width = 129;
+my $plate = {
 
+ width_contrib => 129,
+ width_margin => 115,
+ width_missing => 115,
+ 
+ height_contrib => 22,
+ height_margin => 18,
+ height_missing => 18,
+ 
+ x_contrib => 2,
+ x_margin => 1,
+ x_missing => 1,
+ 
+ y_contrib => 2,
+ y_margin => 1,
+ y_missing => 1,
+ 
+ font_contrib => gdGiantFont,
+ font_margin => gdLargeFont,
+ font_missing => gdLargeFont,
+ 
+};
+
+my $plate_width = 129;
 my $plate_height = 22;
 
 sub widget_plate {
 
- my ( $text, $front, $back ) = @_;
-  
- my $im = new GD::Image ( $plate_width , $plate_height );
-  
- my $c_front = $im->colorAllocate ( 
-  $front->[0], $front->[1], $front->[2]
- );
-
- my $c_back = $im->colorAllocate ( 
-  $back->[0], $back->[1], $back->[2]
- );
-
- $im->filledRectangle( 0, 0, $plate_width, $plate_height, $c_back );
+ my ( $text, $palette, $intent ) = @_;
  
- $im->string( gdGiantFont, 2, 2, $text, $c_front );
+ my $style = style_get;
  
+ my @front = style_html2dec $style->{color}->{$palette}->{text};
+    
+ my @back = $intent eq 'margin' ?
+   style_html2dec $style->{color}->{$palette}->{shade} 
+ : style_html2dec $style->{color}->{$palette}->{back};
 
+  
+ my $im = new GD::Image ( 
+  $plate->{'width_'.$intent}, $plate->{'height_'.$intent} 
+ );
+  
+ my $c_front = $im->colorAllocate ( @front ); 
+ 
+ my $c_back = $im->colorAllocate ( @back );
+ 
+ $im->filledRectangle ( 
+  0, 0, $plate->{'width_'.$intent}, $plate->{'height_'.$intent}, $c_back 
+ );
+ 
+ $im->string( 
+  $plate->{'font_'.$intent},
+  $plate->{'x_'.$intent}, $plate->{'y_'.$intent},
+  $text, $c_front 
+ );
+ 
  $im->png;
  
 }

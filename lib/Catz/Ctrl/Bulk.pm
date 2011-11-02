@@ -36,7 +36,7 @@ sub photolist {
 
  my $self = shift; my $s = $self->{stash};
   
- length $s->{langa} > 2 and return $self->fail ( 'NOWITHSETUP' );
+ length $s->{langa} > 2 and return $self->fail ( 'setup set so stopped' );
    
  $s->{forcefi} and $s->{lang} = 'fi';
      
@@ -49,20 +49,20 @@ sub photolist {
   utf8::decode ( $s->{loc} );
  
   ( ( length $s->{date} == 8 ) or ( length $s->{date} ) == 10 )
-   or return $self->fail ( 'PARAM', 'd' );
+   or return $self->fail ( 'illegal parameter value' );
    
   if ( length $s->{date} == 10 ) {
   
    $s->{date} =~ m|(\d{4})\-(\d{2})\-(\d{2})|;
     
-   ( $1 and $2 and $3 ) or return $self->fail ( 'PARAM', 'd' );
+   ( $1 and $2 and $3 ) or return $self->fail ( 'illegal parameter value' );
   
    $s->{date} = "$1$2$3";
   
   }
 
   ( ( length $s->{loc} > 100 ) or ( length $s->{loc} < 1 ) )
-   and return $self->fail ( 'PARAM', 'l' );
+   and return $self->fail ( 'illegal parameter value' );
   
   $s->{loc} = lcc $s->{loc};
  
@@ -72,15 +72,15 @@ sub photolist {
   
   $s->{aid} = $self->fetch ( 'bulk#folder', $s->{folder} ) // undef;
   
-  $s->{aid} or return $self->fail ( 'NOFOLDER' );
+  $s->{aid} or return $self->fail ( 'folder not found' );
  
  } else { # use latest
  
-  $s->{date} and return $self->fail ( 'PARAMMISM' );
-  $s->{loc} and return $self->fail ( 'PARAMMISM' );
+  $s->{date} and return $self->fail ( 'illegal parameters' );
+  $s->{loc} and return $self->fail ( 'illegal parameters' );
  
   ( $s->{aid} = $self->fetch ( 'bulk#latest' ) )
-   or return $self->fail ( 'NODATA' );
+   or return $self->fail ( 'no data' );
  
  } 
  

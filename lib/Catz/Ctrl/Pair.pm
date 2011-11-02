@@ -32,27 +32,27 @@ sub pair {
 
  my $self = shift; my $s = $self->{stash};
  
- $self->f_init or return $self->fail;
+ $self->f_init or return $self->fail ( 'f_init exit' );
 
  $s->{runmode} = 'pair';
 
  # routing already does basic existence, length and character class checking
 
  # check that pri is acceptable
- $self->fetch( 'pair#verify', $s->{pri} ) or return $self->fail ( 'PRI' );
+ $self->fetch( 'pair#verify', $s->{pri} ) or return $self->fail ( 'illegal concept' );
  
  $s->{sec} = $self->decode ( $s->{sec} );
 
- $self->f_map or return $self->fail ( 'MAPP_LOAD' );
+ $self->f_map or return $self->fail ( 'f_map exit' );
 
  $s->{args_array} = [ $s->{pri}, $s->{sec} ];
  $s->{args_count} = 2;
    
- $self->f_origin or return $self->fail ( 'ORIGIN' );
+ $self->f_origin or return $self->fail ( 'f_origin exit' );
  
  # get the translation for this pri-sec -pair 
  ( $s->{trans} = $self->fetch ( 'map#trans', $s->{pri}, $s->{sec} ) )
-  or return $self->fail ( 'TRANSL' );
+  or return $self->fail ( 'translation error' );
   
  $s->{urlother} = $self->fuse (
   $s->{langaother}, $s->{action}, $s->{pri}, $self->encode( $s->{trans} )
@@ -84,9 +84,9 @@ sub browse {
 
  my $self = shift; 
 
- $self->pair or return $self->fail ( 'PAIR_LOAD' );
+ $self->pair or return $self->fail ( 'pair exit' );
  
- $self->multi or return $self->fail ( 'MULTI_LOAD' );
+ $self->multi or return $self->fail ( 'multi exit' );
  
 }
 
@@ -94,9 +94,9 @@ sub view {
 
  my $self = shift; 
 
- $self->pair or return $self->fail ( 'PAIR_LOAD' );
+ $self->pair or return $self->fail ( 'pair exit' );
    
- $self->single or return $self->fail ( 'SINGLE_LOAD' );
+ $self->single or return $self->fail ( 'single exit' );
   
 }
 

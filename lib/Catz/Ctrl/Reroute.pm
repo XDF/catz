@@ -142,7 +142,7 @@ sub reroute { # does the job
    
    } else {
    
-    return $self->fail;
+    return $self->fail ( 'unknown breeder' );
    
    }
    
@@ -170,7 +170,7 @@ sub reroute { # does the job
    
    } else {
    
-    return $self->fail;
+    return $self->fail ( 'unknown breed' );
    
    }  
  
@@ -193,7 +193,7 @@ sub reroute { # does the job
    my $tgt = xdf2search ( $1 );
   
    # not found if conversion failed
-   $tgt or return $self->fail;  
+   $tgt or return $self->fail ( 'search conversion error' );  
   
    $tgt = enurl $tgt;
      
@@ -263,11 +263,11 @@ sub reroute { # does the job
    
      return $self->moveto ( "$t->{URL_CATZA}static/photo/$folder/$tgt" );
    
-    } else { return $self->fail }
+    } else { return $self->fail ( 'folder mapping error' }
     
    }  
   
-   return $self->fail; 
+   return $self->fail ( 'old url leftover' ); 
   
   }
  

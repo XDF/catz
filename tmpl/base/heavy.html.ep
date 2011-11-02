@@ -102,7 +102,7 @@
 <div class="stripebottom"><%= content 'down' %></div>
 % };
 <div class="shrink center">
-<a class="info" href=""></a> <%= $sep %> <%= $t->{COPYRIGHT} %>
+<span class="info"><img class="middle" src="/<%== $lang %>/widget/contact/margin/<%== $palette %>/"></span> <%= $sep %> <%= $t->{COPYRIGHT} %>
 <a href="<%== $t->{URL_AUTHOR} %>"><%= $t->{AUTHOR} %></a> <%= $t->{FIRSTYEAR} %>-<%= thisyear %> <%= $sep %>
 <a href="<%== $t->{URL_LICENCE} %>"><%= $t->{LICENCE} %></a>
 </div></div>

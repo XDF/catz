@@ -51,7 +51,7 @@ sub find {
  ( length $s->{what} > 0 ) and ( length $s->{what} < 51 ) and   
    $s->{find} = $self->fetch ( 'locate#find', $s->{what}, 50 );
 
- $self->f_map or return $self->fail ( 'MAPP_LOAD' );
+ $self->f_map or return $self->fail ( 'f_map exit' );
  
  $self->output ( 'block/find' );
 
@@ -65,11 +65,11 @@ sub list {
   
  # verify that the subject is known
  $s->{matrix}->{$s->{subject}} 
-  or return $self->fail ( 'MATRIX_SUBJ' ); 
+  or return $self->fail ( 'subject not in matrix' ); 
  
  # verify that the mode is known for this subject
  ( any { $s->{mode} eq $_ } @{ $s->{matrix}->{$s->{subject}}->{modes} } )
-  or return $self->fail ( 'MATRIX_SUBJ_MODE' ); 
+  or return $self->fail ( 'subject and mode not in matrix' ); 
  
  $s->{urlother} = $self->fuse ( 
   $s->{langaother} , $s->{action} , $s->{subject} , $s->{mode} 
@@ -81,9 +81,9 @@ sub list {
  $s->{idx} = $res->[1] // undef;
  $s->{sets} = $res->[2] // undef;
 
- $s->{total} > 0 or return $self->fail ( 'NODATA' );
+ $s->{total} > 0 or return $self->fail ( 'no data' );
  
- $self->f_map or return $self->fail ( 'MAPP_LOAD' );
+ $self->f_map or return $self->fail ( 'f_map exit' );
       
  $self->output ( 'page/list1' );
  
@@ -98,7 +98,7 @@ sub lists {
  $s->{urlother} = $self->fuse ( $s->{langaother}, $s->{action} );  
    
  ( $s->{prims} = $self->fetch( 'locate#prims' ) ) or
-   return $self->fail ( [ 'no lists found', 'luetteloita ei löytynyt' ] ); 
+   return $self->fail ( 'no lists found' ); 
         
  $self->output ( 'page/lists' );
  
