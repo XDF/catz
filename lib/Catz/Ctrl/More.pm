@@ -32,6 +32,7 @@ use I18N::AcceptLanguage;
 
 use Catz::Data::Conf;
 use Catz::Data::Search;
+use Catz::Data::Style;
 
 sub contrib { 
 
@@ -42,6 +43,8 @@ sub contrib {
  $self->f_init or $self->fail ( 'f_init exit' );
  
  $self->f_dist or $self->fail ( 'dist exit' );
+ 
+ $s->{style} = style_get;
   
  $s->{urlother} = $self->fuse ( 
   $s->{langaother}, 'more', $s->{topic} 

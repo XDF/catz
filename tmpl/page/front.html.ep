@@ -38,7 +38,7 @@
 %# --------------------
 %#
 <% content 'bextra' => begin %>
-<!-- content not set at this point -->
+<a class="shrink" href="/<%== $langa %>/more/contrib/"><%= $t->{TO_CONTRIB} %></a>
 <% end %>
 %#
 %# --------------------

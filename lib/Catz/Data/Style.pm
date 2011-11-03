@@ -113,9 +113,6 @@ $style->{color} = {
 $style->{viz}->{dist}->{width} = 190;
 $style->{viz}->{dist}->{height} = 240;
 
-$style->{viz}->{contrib}->{width} = 220;
-$style->{viz}->{contrib}->{height} = 300;
-
 $style->{viz}->{globe}->{width} = 300;
 $style->{viz}->{globe}->{height} = 170;
 

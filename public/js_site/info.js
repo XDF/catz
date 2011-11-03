@@ -63,23 +63,17 @@ function catzInfo() {
    plain = catzDemess ( data );
    
    $('.info').each ( function () {
-    
-    if ( this.length != 0 ) {
-     
+         
      $(this).html(''); // clear the default content
      
      $(this).html( // put in the new content
       '<a href="' + 'mai' + 'lto:' + plain + '" ' +
       'title="' + plain + '">' + plain + '</a>'         
      );
-    
-    }
-    
+        
    });
    
    $('.infox').each ( function () {
-    
-    if ( this.length != 0 ) {
     
      // store the title from the inside img
      var titl = $(this).attr ( 'title' );
@@ -91,9 +85,7 @@ function catzInfo() {
        encodeURI ( titl ) + '" ' +      
       'title="' + plain + '">' + plain + '</a>'         
      );
-    
-    }
-    
+        
    });        
      
   }

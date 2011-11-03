@@ -257,11 +257,11 @@ my $plate = {
  height_missing => 18,
  
  x_contrib => 2,
- x_margin => 1,
+ x_margin => 0,
  x_missing => 1,
  
  y_contrib => 2,
- y_margin => 1,
+ y_margin => 0,
  y_missing => 1,
  
  font_contrib => gdGiantFont,

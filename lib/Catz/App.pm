@@ -214,7 +214,7 @@ sub startup {
  $l->route( 
   '/viz/dist/:full:/:breed/:cate/:none/:vkey',
   full => qr/\d{1,5}/, breed => qr/\d{1,5}/, 
-  cate => qr/\d{1,5}/, none => qr/\d{1,5}/, 
+  cate => qr/\d{1,5}/, none => qr/\d{1,5}/,
   vkey => qr/\d{14}/
  )->to( 'visualize#dist' );
 

@@ -41,28 +41,34 @@ my $t = Test::Mojo->new( conf ( 'app' ) );
 
 my @oksetups = qw ( en fi en211211 fi171212 en394211 fi211111 );
 
-my @pages = qw ( privacy contrib );
+my @pages = qw ( contrib );
+
+my $buzz = 'more';
 
 my $setup;
 
-foreach my $page ( @pages ) {
-
- $setup = $oksetups [ rand @oksetups ]; 
+foreach my $setup ( @oksetups ) {
 
  my $txt = text ( substr ( $setup, 0, 2 ) );
+
+ foreach my $page ( @pages ) {
+
+  $t->get_ok("/$setup/$buzz/$page/")
+    ->status_is(200)
+    ->content_type_like(qr/text\/html/)
+    ->content_like(qr/$txt->{uc($page).'_TITLE'}/)
+    ->content_like(qr/$txt->{URL_EMS}/)
+    ->content_like(qr/TUA/);
  
- # dummy test 2011-10-25
- $t->get_ok("/");
- 
- # disabled 2011-10-25
- # $t->get_ok("/$page/")
- #  ->status_is(200)
- #  ->content_type_like(qr/text\/html/);
- 
- # without slash should be 301
- # disabled 2011-10-25
- # $t->get_ok("/$page")->status_is(301);
+   # no ending slash
+   $t->get_ok("/$setup/$buzz/$page")->status_is(301);
+  
+   $t->get_ok("/$setup/about/$page/")->status_is(404);
+    
+ }
   
 }
+
+
 
 done_testing;
