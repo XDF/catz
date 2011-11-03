@@ -2,6 +2,14 @@
 %#
 %# --------------------
 %#
+<% content 'jsadd' => begin %>
+% ( $topic eq 'contrib' ) and do {
+%== include 'elem/js', jstype => 'site', jsfile => 'dist';
+% };
+<% end %>
+%#
+%# --------------------
+%#
 <% content 'ptitleadd' => begin %>
 <%= $t->{ ( uc $topic ) . '_TITLE' } %>
 <% end %>
@@ -17,19 +25,6 @@
 <% content 'metaadd' => begin %>
 <meta name="og:title" content="<%= $t->{ ( uc $topic ) . '_TITLE' } %>"> 
 <meta name="og:type" content="article">
-%#
-%# --------------------
-%#
-<% content 'bextra' => begin %>
-% given ( $topic ) {
-%  when ( 'contrib' ) {
-<a href="/<%= $langa %>/about/privacy/"><%= $t->{TO_PRIVACY} %></a>
-%  }
-%  when ( 'privacy' ) {
-<a href="/<%= $langa %>/about/contrib/"><%= $t->{TO_CONTRIB} %></a>
-%  }
-% }
-<% end %>
 %#
 %# --------------------
 %# 

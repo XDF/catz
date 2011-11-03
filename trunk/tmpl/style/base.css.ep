@@ -104,7 +104,7 @@ pre { display: inline; }
  background-color: <%== $st->{color}->{$palette}->{field_back} %>;
 }
 
-/*  spacing */
+/* spacing */
 
 .aero { padding: 0 <%== $st->{space}->{y} %> 0 <%== $st->{space}->{y} %> ; }
 
@@ -128,9 +128,9 @@ pre { display: inline; }
  border-radius: <%== $st->{roundness} %>;
 }
 
-.outer { margin: 0 15% 0 15%; }
+.outer { margin: 0 12% 0 12%; }
 
-.inner { margin: 0 20% 0 20%; }
+.inner { margin: 0 17% 0 17%; }
 
 .flag {
  border-style: solid;
@@ -200,12 +200,7 @@ a:hover {
  vertical-align: middle;
 }
 
-
-
-.cca {
- float: right;
- margin: 2px;
-}
+.cca { float: right; margin: 2px; }
 
 .cc {
  border: 0;
@@ -214,13 +209,12 @@ a:hover {
  vertical-align: middle;
 }
 
-.viz {
- float: right;
- margin: 7px;
-}
+.viz { float: right; margin: 7px; }
+
+.vizl { float: left; margin: 7px; }
 
 .box {
  border-style: solid;
  border-width: 2px;
- border-color: <%== $st->{color}->{$palette}->{dim} %>;  
+ border-color: <%== $st->{color}->{$palette}->{xtra} %>;  
 }

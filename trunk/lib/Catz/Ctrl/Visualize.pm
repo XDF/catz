@@ -36,7 +36,7 @@ sub do {
 
  my $self = shift; my $s = $self->{stash};
 
- $s->{style} = style_get ( $s->{palette} ); 
+ $s->{style} = style_get; 
 
  $s->{charturl} = conf ( 'url_chart' );
  
@@ -58,7 +58,7 @@ sub do {
  
   my $json = $self->fetch( 'net#get', $vurl, $pseudo );
   
-  length ( $json ) > 15 or return $self->fail ( '3PARTYREQ' );
+  length ( $json ) > 15 or return $self->fail ( '3rd party request failed' );
  
   # we return text content type on purpose
  
@@ -81,7 +81,8 @@ sub dist {
  $s->{maxx} = $self->fetch ( 'all#maxx' );
 
  # the total number of photos must be less or equal to all photos
- $s->{total} <= $s->{maxx} or return $self->fail ( 'DIST_VALS' );
+ $s->{total} <= $s->{maxx} or 
+  return $self->fail ( 'illegal distribution values' );
  
  $s->{dist} = dist_conf;
  
@@ -119,13 +120,13 @@ sub rank {
  my $self = shift; my $s = $self->{stash};
 
  $self->fetch( 'pair#verify',$s->{pri} ) or 
-  return $self->fail ( 'PRI' );
+  return $self->fail ( 'illegal concept' );
   
  $s->{sec} = $self->decode ( $s->{sec} ); # using decode helper
  
  $s->{total} = $self->fetch ( 'pair#count', $s->{pri}, $s->{sec} );
 
- $s->{total} == 0 and return $self->fail ( 'NODATA' );
+ $s->{total} == 0 and return $self->fail ( 'no data' );
  
  $s->{rank} = $self->fetch ( 'related#rank', $s->{pri}, $s->{sec} );
  

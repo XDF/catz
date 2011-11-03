@@ -37,17 +37,44 @@ use Catz::Data::Text;
 
 my $t = Test::Mojo->new( conf ( 'app' ) );
 
-my @oksetups = qw ( en fi en211211 fi171212 en394211 fi211111 );
+my @oksetups = qw ( en fi );
 
-foreach my $setup ( @oksetups ) {
- 
- # not yet implemented
- 
- # dummy test 2011-10-25
- 
- $t->get_ok("/");
+my @okintents = qw ( contrib margin missing );
 
-  
+my @okpalettes = qw ( dark neutral bright );
+ 
+foreach my $intent ( @okintents ) {
+ 
+ foreach my $palette ( @okpalettes ) {
+
+  my $setup = $oksetups [ rand @oksetups ];
+ 
+  $t->get_ok("/$setup/widget/contact/$intent/$palette/")
+    ->status_is(200)
+    ->content_type_like(qr/png/);  
+
+  # no ending slash
+  $t->get_ok("/$setup/widget/contact/$intent/$palette")->status_is(301); 
+ 
+ } 
+ 
+ 
 }
 
+# illegal intents
+
+$t->get_ok("/en/widget/contact/noxious/dark/")
+  ->status_is(404);
+
+$t->get_ok("/fi/widget/contact/undef/bright/")
+  ->status_is(404);
+
+# with setup
+
+$t->get_ok("/en211211/widget/contact/contrib/neutral/")
+  ->status_is(404);
+
+$t->get_ok("/fi171212/widget/contact/missing/bright/")
+  ->status_is(404);
+ 
 done_testing;

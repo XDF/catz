@@ -3,10 +3,8 @@
 <% content 'msg_fi' => begin %>404 resurssia ei löydy<% end %>
 <% content 'hint' => begin %>
 % my $re = stash ( 'reason' ) // [];
-% for ( my $i = 0; $i <= $#{ $re }; $i += 3 ) {
-<div><%= $re->[$i] // '' %>:
-<%= $re->[$i+1] // '' %> /
-<%= $re->[$i+2] // '' %></div>
+% for ( my $i = 0; $i <= $#{ $re }; $i += 2 ) {
+<div><%= $re->[$i] // '' %> : <%= $re->[$i+1] // '' %>
 % }
 <% end %>
 %#

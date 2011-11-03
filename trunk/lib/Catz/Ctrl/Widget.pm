@@ -26,17 +26,11 @@ package Catz::Ctrl::Widget;
 
 use 5.12.0; use strict; use warnings;
 
-# we inherit from all controller types to be 
-# able to use all three runmode's methods
+use parent 'Catz::Ctrl::Base';
 
-use parent qw ( Catz::Ctrl::All Catz::Ctrl::Pair Catz::Ctrl::Search );
-
-use List::MoreUtils qw ( any );
 use List::Util qw ( shuffle );
 
 use Catz::Data::Widget;
-
-use Catz::Util::Number qw ( round );
 
 use constant SOFT => 0; # replace illegal parameter values with default value
 use constant HARD => 1; # raise an error on illegal parameter value
@@ -193,6 +187,8 @@ sub embed { # the widget renderer
 sub contact {
 
  my $self = shift; my $s = $self->{stash};
+   
+ length $s->{langa} > 2 and return $self->fail ( 'setup set so stopping' );
   
  my $im = widget_plate (
   $s->{t}->{MAILTO_TEXT}, $s->{palette}, $s->{intent}

@@ -121,7 +121,7 @@ sub visitat { $_[0]->goto ( 302, $_[1] ) } # temporary redirect 302
 
 sub add_reason {
 
- my ( $self, @reason ) = @_; my $s = $self->{stash};
+ my ( $self, $reason ) = @_; my $s = $self->{stash};
  
  # get subroutine
  my $origin = ( caller(2) )[3];
@@ -130,26 +130,16 @@ sub add_reason {
  defined $self->{stash}->{reason} or $self->{stash}->{reason} = [];
  
  push @{ $self->{stash}->{reason} }, $origin;
+  
+ push @{ $self->{stash}->{reason} }, $reason;
  
- my $tag = 'FAIL_' . ( shift @reason // 'PASSTHRU' );
- 
- my $en = $s->{ten}->{ $tag } // ''; my $fi = $s->{tfi}->{ $tag } // '';
- 
- my $ext = join ', ', map { "'$_'" } @reason;
- 
- $ext and $ext .= " $ext";
- 
- push @{ $self->{stash}->{reason} }, $en.$ext;
- push @{ $self->{stash}->{reason} }, $fi.$ext; 
- 
-
 }
 
 sub fail { # the fail action for controllers
 
- my ( $self, @reason ) = @_;
+ my ( $self, $reason ) = @_;
  
- $self->add_reason ( @reason );
+ $self->add_reason ( $reason );
 
  my $origin = ( caller(2) )[3];
   
