@@ -33,7 +33,6 @@ our @EXPORT = qw (
 );
 
 use GD;
-use GD::Text;
 use List::MoreUtils qw ( any );
 
 use Catz::Data::Style;
