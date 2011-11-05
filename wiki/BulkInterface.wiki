@@ -1,8 +1,8 @@
 #summary Description of and user's guide to the bulk interface
 
-*Please note that the bulk interface described here are targeted to be used by 
+Please note that the bulk interface described here are targeted to be used by 
 [http://www.catshow.fi/ www.catshow.fi]. While the interface is made public it 
-is constantly subject to sudden changes negotiated solely between 
+is subject to changes negotiated solely between 
 [http://catza.net/ catza.net] and [http://www.catshow.fi/ www.catshow.fi].*
 
 <wiki:toc max_depth="2" />

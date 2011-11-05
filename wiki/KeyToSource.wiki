@@ -1,0 +1,30 @@
+#summary How to get started with the source code
+
+= Parts not distributed =
+
+If you get the code from SVN you don't get a working system. The
+following parts are not distibuted.
+
+|| /data || the tagged text source data files that get loaded to the database ||
+|| /db   || the SQLite database that is required by the system to run ||
+|| /lib/Catz/Data/Conf.pm || the system configuration module ||
+|| /lib/Catz/Data/Text.pm || the visible text strings for pages ||
+|| /tmpl/content || content-heavy templates to provide textual pages ||
+|| ../static || the photos and static assets served by the service || 
+
+=  The key points =
+
+|| /lib/Catz/App.pm || the Mojolicious application ||
+|| /lib/Catz/Ctrl || the controllers where Base.pm is the base controller ||
+|| /lib/Catz/Data || data related procedural modules providing caching functionality, page styles, search syntax handling etc. ||
+|| /lib/Catz/Load || procedural modules used only at data load time, not at runtime ||
+|| /lib/Catz/Model || the models based where Base.pm is the base model ||
+|| /lib/Catz/Util || procedural utility modules used all over the service ||
+|| /script/create_master.sql || the database creation script ||
+|| /script/load.pl || the data loading script ||
+|| /script/run.pl || the script that fires up the application ||
+|| /t || the functional tests run against the application ||
+|| /tmpl || Mojolicious ep templates ||
+
+
+                                                                              
