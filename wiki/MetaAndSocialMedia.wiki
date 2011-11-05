@@ -63,8 +63,7 @@ Facebook Share uses
   * og:title as text
 
 Google+ button uses
-  * medium size button with no annotation
-  * asynchronous loading     
+  * medium size button with no annotation     
   
 Twitter Tweet uses
   * the URL/GET API

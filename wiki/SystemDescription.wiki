@@ -20,9 +20,7 @@ Here are some of the technologies chosen during the project. My target was to ch
 || *Technology* || *What* || *Why* ||
 || Core language || Perl || I had been using Perl for a long time but my skills with it were limited. I chose Perl because the language is highly effective and this project was a good opportunity to learn how to master the language in an modern way. ||
 || Framework || Mojolicious MVC Framework || I was aware of Mason and mod_perl but now I thought that it was a time to give MVC a go. [FrameworkComparison I tested several Perl MVC frameworks] and chose Mojolicious. ||
-|| Database || SQLite || [DatabaseComparison I considered both Postgres and
-SQLite] for the project but at the end SQLite was a natural choice since
-it offered all I needed in a minimal package. ||
+|| Database || SQLite || [DatabaseComparison I considered both Postgres and SQLite] for the project but at the end SQLite was a natural choice since it offered all I needed in a minimal package. ||
 || Templating engine || Mojoicious' built'in ep || Is fast and feature rich and included in Mojolicious. Uses Perl as control langauge so there is no need to learn a separate langauge. ||
 || Caching || Memcached || Very reliable and tested caching solution to throw in key-value -pairs and to get them evicted on a LRU rule when the memory gets filled. ||
 || JavaScript library || JQuery || Widely used industry standard ||
