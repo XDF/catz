@@ -3,11 +3,7 @@
 
 <wiki:toc max_depth="2" />
 
-= Summary =
-
-Here are a few server benchmarks ran 2011-07-26 also posted to http://www.webhostingtalk.com/showthread.php?t=924581
-
-== Xencon x|pro 512 VPS ==
+= Xencon x|pro 512 VPS =
 
   * Xencon x|pro 512 VPS
   * Dual CPU
@@ -22,7 +18,6 @@ Here are a few server benchmarks ran 2011-07-26 also posted to http://www.webhos
 {{{
 UnixBench 5.1.2
 ./Run dhry2reg whetstone-double syscall pipe context1 spawn execl shell1 shell8 shell16
-
 
 ========================================================================
    BYTE UNIX Benchmarks (Version 5.1.2)
@@ -112,7 +107,7 @@ Timing buffered disk reads: 224 MB in  3.01 seconds =  74.53 MB/sec
 
 Disclaimer: based on my experience disk performance testing with dd and hdparm are crude methods. The real-life disk load of a web service cannot be emulated with dd or hdparm.
 
-== Hetzner VQ 19 VPS ==
+= Hetzner VQ 19 VPS =
 
   * Hetzner VQ 19 VPS
   * Single Core
@@ -185,7 +180,7 @@ Timing buffered disk reads: 606 MB in  3.01 seconds = 201.37 MB/sec
 
 Disclaimer: based on my experience disk performance testing with dd and hdparm are crude methods. The real-life disk load of a web service cannot be emulated with dd or hdparm.
 
-== Hetzner EQ 4 Dedicated Server ==
+= Hetzner EQ 4 Dedicated Server =
 
   * Hetzner EQ 4 Dedicated Server
   * i7-920 Quadcore
@@ -301,7 +296,7 @@ Timing buffered disk reads: 334 MB in  3.01 seconds = 110.84 MB/sec
 
 Disclaimer: based on my experience disk performance testing with dd and hdparm are crude methods. The real-life disk load of a web service cannot be emulated with dd or hdparm.
 
-== Hetzner EX 4 Dedicated Server ==
+= Hetzner EX 4 Dedicated Server =
 
   * Hetzner EQ 4 Dedicated Server
   * i7-2600 Quadcore
