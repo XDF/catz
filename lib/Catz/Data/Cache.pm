@@ -61,7 +61,7 @@ my $cache = new Cache::Memcached::Fast {
  connect_timeout => 0.1, 
  max_failures => 2, # let connect fail 2 times ...
  failure_timeout => 15, # ... and then rest for 15 seconds
- compress_threshold => 30_000,
+ compress_threshold => 15_000, # ... over 15 kb and compress
  nowait => 1 # should speed up set by not waiting for confirmation for success
 };
 
@@ -79,11 +79,7 @@ sub shrink { substr ( $_[0], 0 , 218 ) . md5_hex ( substr ( $_[0], 218 ) ) }
 # preparing of the cache key by joining the parts
 sub keyer {
 
- my @args = @_;
-
- # we map undefined key parts to string 'undef' to be safe
- my $key = enurl join $sep,
-   map { $_ = $_ // 'undef'; $_ =~ tr/ /_/; $_  } @args;
+ my $key = enurl join $sep, map { $_ // 'undef' } @_;
    
  length $key > 250 and return shrink $key;
  
@@ -102,7 +98,7 @@ sub cache_set {
  
  my $key = keyer ( @args );
  
- $cache_trace and warn "CACHE SET $key";
+ $cache_trace and warn "CACHE SET  $key";
   
  {
  
@@ -121,8 +117,7 @@ sub cache_set {
   # changes and so all keys change rendering
   # old cache entries unused and to LRU
 
-  $cache->set( keyer ( @args ), $val ); 
-  
+  $cache->set( $key, $val );   
   
  }
  
@@ -135,12 +130,12 @@ sub cache_get {
  my @args = @_;
  
  my $key = keyer @args;
-  
- my $ret = $cache->get( keyer @args );
+
+ my $ret = $cache->get( $key );
  
  $cache_trace and do {
  
- if ( defined $ret ) { warn "CACHE HIT $key" }
+ if ( defined $ret ) { warn "CACHE HIT  $key" }
   else { warn "CACHE MISS $key" }
  
  };

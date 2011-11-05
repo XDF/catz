@@ -69,7 +69,7 @@ sub pair {
   $s->{refines} = $self->fetch (
    'related#refines', 
    $s->{pri}, $s->{sec}, 
-   @{ $s->{matrix}->{ $s->{pri}} ->{refines} } 
+   @{ $s->{matrix}->{ $s->{pri}}->{refines} } 
   ); 
 
  # fetch the extra information for breeder

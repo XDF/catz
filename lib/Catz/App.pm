@@ -293,8 +293,10 @@ sub before {
   
  $s->{now} = dtlang ( $s->{lang} );
  
- $s->{url} = $self->req->url;  # let the url be in the stash also
- $s->{path} = $self->req->url->path;  # and also the path part
+ $s->{url} = $self->req->url->to_string;  # let the url be in the stash also
+
+ $s->{path} = $self->req->url->path->to_string;  # and also the path part
+
  $s->{query} = $self->req->query_params->to_string; # and also the query params
  
  # all static resources served must be pre-defined
@@ -421,7 +423,7 @@ sub before {
  #
  # attempt to fetch from cache
  #
-   
+
  if ( $s->{cache_obj} = cache_get ( cachekey ( $self ) ) ) {  
   
   # cache hit
@@ -429,9 +431,7 @@ sub before {
   return $self->rendered;
 
  }
-  
- # Some cache control logic
- 
+   
  $s->{lang} = 'en'; # default to English
  $s->{langa} = 'en';
 
