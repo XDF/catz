@@ -15,7 +15,8 @@
 %# --------------------
 %#
 %== include 'elem/js', jstype => 'lib', jsfile => 'jquery';
-%== include 'elem/js', jstype => 'site', jsfile => 'info'; 
+%== include 'elem/js', jstype => 'site', jsfile => 'info';
+<script type="text/javascript" src="<%== $t->{URL_IG_GOOGLE} %>"><%== $lang eq 'fi' ? " { lang: '$lang' } " : '' %></script>
 <%= content 'jsadd' %>
 %#
 %# --------------------

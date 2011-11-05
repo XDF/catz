@@ -93,7 +93,7 @@ pre { display: inline; }
 .right { text-align: right; }
 .top { vertical-align: top; }
 .middle { vertical-align: middle; }
-.bottom { vertical-align: middle; }
+.bottom { vertical-align: bottom; }
 
 /* makes sure that no floated elements overlap */
 .clearbefore { clear: both; }
@@ -195,9 +195,18 @@ a:hover {
 
 .ig {
  border: 0;
- border-style: none;
- overflow: hidden;  
+ border-style: none; 
  vertical-align: middle;
+}
+
+.middler { /* google plus button hacks part 1/2 */
+ vertical-align: middle;
+}
+
+.middler > div { /* google plus button hacks part 2/2 */
+ vertical-align: middle !important;
+ position: relative !important;
+ top: -3px !important;
 }
 
 .cca { float: right; margin: 2px; }

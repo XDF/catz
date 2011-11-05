@@ -118,13 +118,13 @@
 <%= $sep %>
 % };
 % if ( $comm =~ m|^\[[A-Z]{3}| ) { # breed code
-<%= $comm %> <%== include 'elem/mark' %>
+<%= $comm %> <%== include 'elem/ig', igurl => stash ( 'cn' ), igtext => stash ( 'desc' ) %> <%== include 'elem/mark' %>
 <span class="shrink"><%= $t->{NO_CAT_A} %> <%== $id %> <%= $t->{NO_CAT_B} %> <%== include 'elem/infox' %></span>
 % } elsif ( $comm =~ m|^\[XC[1-9]| ) { # category code
-<%= $comm %> <%== include 'elem/mark' %>
+<%= $comm %> <%== include 'elem/ig', igurl => stash ( 'cn' ), igtext => stash ( 'desc' ) %> <%== include 'elem/mark' %>
 <span class="shrink"><%= $t->{NO_BREED_A} %> <%== $id %> <%= $t->{NO_BREED_B} %> <%== include 'elem/infox' %></span>
 % } else { # not just a code, has more data
-<%= $comm %>
+<%= $comm %> <%== include 'elem/ig', igurl => stash ( 'cn' ), igtext => stash ( 'desc' ) %>
 % }  
 %   if ( defined $resultkey->[$i] ) {
 <span class="result lean shrink" id="<%== $resultkey->[$i] %>"></span>
@@ -158,16 +158,7 @@
 % }
 <%= $sep %> <%= $t->{PHOTO_ID} %> <%== fullnum33 ( $image->[0], $image->[1] ) %>
 % }
-% if ( $display ne 'none' ) {
-%  $display eq 'full' and do {
-<%= $sep %>
-%  };
-%== include 'elem/ig', igurl => stash ( 'cn' ), igtext => stash ( 'desc' );
-% if ( $peek eq 'on' ) {
-<%= $sep %> <%= $t->{PHOTO_REF} %> <%== $image->[2] %>:P<%== $image->[1] %> 
-% } 
-</span>
-% } 
+</span> 
 </div>
 %#
 %# --------------------

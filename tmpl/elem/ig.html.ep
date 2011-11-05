@@ -3,6 +3,7 @@
 % utf8::encode ( $igtext );
 <a title="<%== $t->{IG_TWITTER} %>" href="http://twitter.com/share?url=<%== enurl $igurl %>&amp;via=<%== enurl $twitterkey %>&amp;text=<%== enurl $igtext %>&amp;lang=en"><img class="ig" src="/img/twitter.png" height="20" width="20" alt="<%== $t->{IG_TWITTER} %>"></a>
 <a title="<%== $t->{IG_FACEBOOK} %>" href="http://www.facebook.com/sharer.php?u=<%== enurl $igurl %>&amp;t=<%== enurl $igtext %>"><img class="ig" src="/img/facebook.png" height="20" width="20" alt="<%== $t->{IG_FACEBOOK} %>"></a>
+<span class="middler"><g:plusone size="medium" count="false" href="<%== $igurl %>"></g:plusone></span>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala
