@@ -49,7 +49,9 @@ my @okpaths = qw (
  /favicon.ico /img/catz.png /js_lib/jquery.js /js_site/find.js
  /en/ /fi/ /en/list/lens/top/ /en/browse/folder/20110918orimattila/
  /en172211/browse/title/EP/ /fi223211/viewall/122126/ /en/feed/ 
- /fi123211/news/20111002212228/ /en/find?s=im /fi/find?s=ou 
+ /fi123211/news/20111002212228/ /en/find?s=im /fi/find?s=ou
+ /fi112211/search/182007?q=%2Bhas%3Dbreed%20-has%3Dcat%20date%3D2011*
+ /en162112/search?q=%2BMCO%20d%20e%20f 
 );
 
 foreach my $path ( @okpaths ) {
