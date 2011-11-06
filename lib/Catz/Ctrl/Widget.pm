@@ -94,8 +94,8 @@ sub start  {
  
  $self->f_init or return $self->fail ( 'f_init exit' );
 
- $s->{pri} = $self->param ( 'pri' ) // undef; 
- $s->{sec} = $self->param ( 'sec' ) // undef;
+ $s->{pri} = $self->param ( 'p' ) // undef; 
+ $s->{sec} = $self->param ( 's' ) // undef;
 
  if ( $s->{pri} and $s->{sec} ) {
 
@@ -120,8 +120,8 @@ sub start  {
 
  }
 
- $s->{total} = $self->fetch ( "$s->{runmode}#count", @{ $s->{search_args} } );
-
+ $s->{total} = $self->fetch ( "$s->{runmode}#count", @{ $s->{args_array} } );
+ 
  $s->{total} > 0 or return $self->fail ( 'no data' );
 
  widget_init ( $self, $strict ) 
@@ -135,12 +135,12 @@ sub build { # the widget builder
 
  $self->start ( SOFT ) or return $self->fail ( 'start exit' );
 
- $s->{tail} = widget_ser ( $s );
-
+ $s->{tail} = widget_ser ( $s, 'build' );
+ 
  $self->build_urlother or return $self->fail ( 'build_urlother exit' );
  
  # we omit the first slash, it will be added in template
- $s->{urltarget} = $s->{lang} . '/embed?' . $s->{tail};
+ $s->{urltarget} = $s->{lang} . '/embed?' . widget_ser ( $s, 'embed' );
   
  $self->output ( 'page/build' );
  
@@ -152,29 +152,31 @@ sub embed { # the widget renderer
   
  $self->start ( HARD ) or return $self->fail ( 'start exit' );
  
+ my $n = 100;
+ 
  if ( $s->{runmode} eq 'pair' ) {
 
-  $self->pair_pre;
+  $self->f_pair_start;
   
-   $s->{xs} = $self->fetch ( 'pair#array_rand_n', @{ $s->{args_array} }, $s->{n_estim} ); 
+   $s->{xs} = $self->fetch ( 'pair#array_rand_n', @{ $s->{args_array} }, $n ); 
           
  } elsif ( $s->{runmode} eq 'search' ) {
   
-  $s->{xs} = $self->fetch ( 'search#array_rand_n', @{ $s->{args_array} }, $s->{n_estim} ); 
+  $s->{xs} = $self->fetch ( 'search#array_rand_n', @{ $s->{args_array} }, $n ); 
     
  } else {
   
-  $s->{xs} = $self->fetch ( 'all#array_rand_n', $s->{n_estim} );
+  $s->{xs} = $self->fetch ( 'all#array_rand_n', $n );
   
  }
 
- scalar @{ $s->{xs} } == 0 and return 0; 
+ scalar @{ $s->{xs} } == 0 and return $self->fail ( 'no photos found' ); 
   
  # fetch corresponding thumbnails 
  ( $s->{thumbs}, undef, undef ) = 
   @{ $self->fetch( 'photo#thumb', @{ $s->{xs} } ) };
 
- # reshuffle
+ # reshuffle to break the default album ordering
  $s->{thumbs} = [ shuffle @{  $s->{thumbs} } ];
   
  my $im = 

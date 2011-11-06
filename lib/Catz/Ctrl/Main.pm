@@ -36,8 +36,6 @@ use Catz::Data::Search;
 use Catz::Data::Setup;
 use Catz::Data::Style;
 
-use Catz::Util::Number qw ( fmt round );
-
 my $langs = [ 'en', 'fi' ];
  
 my $i18n = 
@@ -76,22 +74,11 @@ sub front {
  $s->{pris} =  $self->fetch ( 'locate#pris' ); 
 
  $s->{maxx} = $self->fetch ( 'all#maxx' );
- 
- my $samp = $self->fetch ( 'all#array_rand_n', 40 );
- 
- my $th = $self->fetch ( 'photo#thumb', @{ $samp } );
-
- $s->{thumbs} = $th->[0];
-
- $s->{texts} = $self->fetch ( 'photo#texts', @{ $samp } );
- 
-  # overriding the user's setting for the front page
- $s->{thumbsize} = 100; # 100px
- 
+  
  # load style for globe viz img tag height and width 
  $s->{style} = style_get ( $s->{palette} );
      
- $self->render( template => 'page/front', format => 'html' );
+ $self->output ( 'page/front' );
  
 }
 
@@ -185,6 +172,34 @@ sub info {
  
  $self->render_text ( text => $out, format => 'txt' ); 
  
+}
+
+sub sample {
+
+ my $self = shift; my $s = $self->{stash}; my $base = undef;
+ 
+ # samples available only without setup
+ length $s->{langa} > 2 and return $self->fail ( 'setup set so stopped' );
+ 
+ $s->{width} < 200 and return $self->fail ( 'width too small' );
+ 
+ $s->{width} > 2000 and return $self->fail ( 'width too large' );
+ 
+ ( $s->{width} % 10 == 0 ) or return $self->fail ( 'width not tenths' );
+
+ my $samp = $self->fetch ( 'all#array_rand_n', 100 );
+  
+ my $th = $self->fetch ( 'photo#thumb', @{ $samp } );
+
+ $s->{thumbs} = $th->[0];
+
+ $s->{texts} = $self->fetch ( 'photo#texts', @{ $samp } );
+ 
+  # overriding the user's setting for the front page
+ $s->{thumbsize} = 100; # 100px
+
+ $self->output ( 'block/sample' );
+
 }
 
 1;

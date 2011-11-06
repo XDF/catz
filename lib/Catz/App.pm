@@ -236,12 +236,10 @@ sub startup {
  )->to( 'widget#contact' );
 
  # the widget builder
- 
- # $l->route ( '/build' )->to ( 'widget#build' );
+ $l->route ( '/build' )->to ( 'widget#build' );
 
  # the widget renderer
-
- # l->route ( '/embed' )->to ( 'widget#embed' );
+ $l->route ( '/embed' )->to ( 'widget#embed' );
  
  ###
  ### AJAX interface(s)
@@ -255,7 +253,10 @@ sub startup {
  
  # the info base data provider AJAX interface
  $l->route( '/info/:cont', cont => qr/std/ )->to ( 'main#info' );
- 
+
+ # front page sample photos
+ $l->route( '/sample/:width', width => qr/\d{3,4}/ )->to ( 'main#sample' );
+
  # add Mojolicious hooks
  $self->hook ( before_dispatch => \&before );  
  $self->hook ( after_dispatch => \&after );

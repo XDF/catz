@@ -36,9 +36,7 @@ use parent 'Catz::Ctrl::Base';
 use Catz::Data::Result;
 use Catz::Data::Search;
 use Catz::Data::Style;
-
-# disbled 2011-10-25
-# use Catz::Data::Widget;
+use Catz::Data::Widget;
 
 sub single {
 
@@ -150,12 +148,10 @@ sub multi {
  $s->{fresh} = $self->fetch ( 'related#date', $s->{xfirst} );
  $s->{ancient} = $self->fetch ( 'related#date', $s->{xlast} );
  
- # disabled 2011-10-15
  # prepare url for builder access
- # $s->{urlbuild} = '/' . $s->{langaother} . '/build?' . widget_ser ( $s );
- 
- # 2011-10-15
- $s->{urlbuild} = undef; 
+ $s->{urlbuild} = $s->{runmode} eq 'all' ? 
+  '/' . $s->{langa} . '/build/' :
+  '/' . $s->{langa} . '/build?' . widget_ser ( $s, 'entry' );
     
  $self->output ( 'page/browse' );
  

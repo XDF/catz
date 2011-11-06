@@ -5,6 +5,7 @@
 %# --------------------
 %#
 <% content 'jsadd' => begin %>
+%== include 'elem/js', jstype => 'site', jsfile => 'sample';
 %== include 'elem/js', jstype => 'site', jsfile => 'find';
 <% end %>
 %#
@@ -104,19 +105,7 @@
 %#
 %# --------------------
 %#
-<div class="bar">
-% foreach my $th ( @{ $thumbs } ) {
-%  my $toid = fullnum33 ( $th->[1], $th->[2] );
-%  my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
-%  my $date = dtexpand ( dtdate ( $th->[3] ), $lang ); # get date from folder name
-%  my $titl = $t->{PHOTO} . ' ' . $toid;
-%  defined $texts->{ $th->[0] } and $titl .= " $sep " . $texts->{ $th->[0] };
-%  $titl .= " $sep $date"; 
-<a title="<%= $titl %>" href="/<%== $langa %>/viewall/<%== $toid %>/">
-<img src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" alt="<%= $titl %>" width="<%== $width %>" height="<%== $thumbsize %>">
-</a>
-% }
-</div>
+<div id="sample" class="bar"></div>
 %#
 %# --------------------
 %#
@@ -127,10 +116,6 @@
 %#
 %# --------------------
 %#
-
-%#
-%# --------------------
-%#      
 <% end %>
 %#
 %# Catz - the world's most advanced cat show photo engine
