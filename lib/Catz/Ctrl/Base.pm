@@ -42,6 +42,7 @@ use Catz::Data::Search;
 use Catz::Data::Style;
 
 use Catz::Util::File qw ( findfiles );
+use Catz::Util::String qw ( clean noxss trim );
 
 #
 # loading of models
@@ -334,6 +335,83 @@ sub f_dist {
 
  return $self->done;
   
+}
+
+sub f_pair_start {
+
+ my $self = shift; my $s = $self->{stash};
+
+ $s->{runmode} = 'pair';
+
+ $s->{controller} eq 'widget' and do { 
+
+  # run basic checks, not done by Mojolicious router
+
+  $s->{pri} =~ /^[a-z]{1,25}$/
+   or return $self->fail ( 'concept malformed' );
+
+  $s->{sec} =~ /^[A-ZA-z0-9_-]{1,500}$/
+   or return $self->fail ( 'subject malformed' );
+
+ };
+
+ # check that pri is acceptable
+ $self->fetch( 'pair#verify', $s->{pri} ) 
+  or return $self->fail ( 'illegal concept' );
+ 
+ $s->{sec} = $self->decode ( $s->{sec} );
+
+ $s->{args_array} = [ $s->{pri}, $s->{sec} ];
+ $s->{args_count} = 2;
+
+ return $self->done;
+
+}
+
+sub f_search_ok {
+
+ # verifies and processed a search parameter
+ # and copies it to stash
+
+ my ( $self, $par, $var ) = @_; my $s = $self->{stash};
+ 
+ $s->{$var} = $self->param ( $par ) // undef;
+ 
+ defined $s->{ $var } or return $self->done;
+ 
+ # length sanity check 1/2
+ length $s->{ $var } > 2000 and return $self->fail ( 'search too long' );
+
+ # it appears that browsers typcially send UTF-8 encoded 
+ # data when the origin page is UTF-8 -> we decode the data now   
+ utf8::decode ( $s->{$var} );
+
+ # length sanity check 2/2
+ length $s->{ $var } > 1234 and return $self->fail ( 'too many characters' );
+ 
+ # remove all unnecessary whitespaces     
+ $s->{ $var } = noxss clean trim $s->{ $var };
+    
+ $s->{ $var } eq '' and $s->{ $var } = undef; 
+
+ return $self->done;
+
+}
+
+sub f_search_args {
+
+ # prorcess a search string to arguments
+ 
+ my $self = shift; my $s = $self->{stash};
+ 
+ # convert search to an argument array 
+ $s->{args_array} = search2args ( $s->{what} );
+  
+ # store argument count separately to stash
+ $s->{args_count} = scalar @{ $s->{args_array} };
+ 
+ return $self->done;  
+ 
 }
 
 1;

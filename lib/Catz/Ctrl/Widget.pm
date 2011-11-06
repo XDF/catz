@@ -52,10 +52,8 @@ sub build_urlother {
 
  my $self = shift; my $s = $self->{stash};
 
- my $head = qq{/$s->{langaother}/$s->{action}};
- 
- my $tail = widget_ser ( $self );
- 
+ my $head = "/$s->{langaother}/$s->{action}";
+  
  given ( $s->{runmode} ) {
  
   when ( 'pair' )  {
@@ -64,68 +62,70 @@ sub build_urlother {
       
    $s->{urlother} =
     $head . '?' . 'p=' . $s->{pri} . '&s=' . 
-    $self->enurl ( $s->{trans} ) . "&$tail";
+    $self->enurl ( $s->{trans} ) . "&$s->{tail}";
   
   }
   
   when ( 'search' ) {
 
    $s->{urlother} =
-    $head . '?' . 'q=' . $self->enurl ( $s->{what} ) . "&$tail";
+    $head . '?' . 'q=' . $self->enurl ( $s->{what} ) . "&$s->{tail}";
   
   }
   
   default { # default to all
 
    $s->{urlother} =
-    length ( $tail ) > 0 ?
-      $head . '?' . $tail :
+    length ( $s->{tail} ) > 0 ?
+      $head . '?' . $s->{tail} :
       $head . '/';
    
   }
   
  }
  
- return 1;
+ return $self->done;
 
 }
 
 sub start  {
 
- my ( $self, $hard ) = @_; my $s = $self->{stash};
+ my ( $self, $strict ) = @_; my $s = $self->{stash};
  
- $self->init or return 0;
- 
- $s->{n_estim} = 30;
-  
- $s->{pri} = $self->param('p') // undef;
- $s->{sec} = $self->param('s') // undef;
- 
- if ( $self->pair_ok ) {
- 
-  $s->{runmode} = 'pair';
-  
-  $self->pair_pre ( 'widget' ) or return 0;
-  
-  $s->{total} = $self->fetch ( 'pair#count', @{ $s->{args_array} } ); 
-          
- } elsif ( $self->search_ok ( 'q', 'what' ) ) {
- 
-  $s->{runmode} = 'search';
-  
-  $s->{total} = $self->fetch ( 'search#count', @{ $s->{args_array} } ); 
-    
+ $self->f_init or return $self->fail ( 'f_init exit' );
+
+ $s->{pri} = $self->param ( 'pri' ) // undef; 
+ $s->{sec} = $self->param ( 'sec' ) // undef;
+
+ if ( $s->{pri} and $s->{sec} ) {
+
+   $self->f_pair_start or return $self->fail ( 'f_pair_start exit' );
+
  } else {
- 
-  $s->{runmode} = 'all'; # default to all
-  
-  $s->{total} = $self->fetch ( 'all#count' );
-  
+
+  $self->f_search_ok ( 'q', 'what' ) 
+   or return $self->fail ( 'illegal parameter' );
+
+  if ( $s->{what} ) {
+
+   $s->{runmode} = 'search';
+
+   $self->f_search_args or return $self->fail ( 'f_search_args exit' );
+
+  } else {
+
+   $s->{runmode} = 'all';
+
+  }
+
  }
 
- $s->{total} == 0 and return 0;
+ $s->{total} = $self->fetch ( "$s->{runmode}#count", @{ $s->{search_args} } );
 
- $self->params or return 0;
+ $s->{total} > 0 or return $self->fail ( 'no data' );
+
+ widget_init ( $self, $strict ) 
+  or return $self->fail ( 'widget parameters verification failed' ); 
  
 }
 
@@ -133,14 +133,16 @@ sub build { # the widget builder
 
  my $self = shift; my $s = $self->{stash};
 
- $self->start ( SOFT ) or return $self->render_not_found;
+ $self->start ( SOFT ) or return $self->fail ( 'start exit' );
 
- $self->build_urlother or return $self->render_not_found;
+ $s->{tail} = widget_ser ( $s );
+
+ $self->build_urlother or return $self->fail ( 'build_urlother exit' );
  
  # we omit the first slash, it will be added in template
- $s->{urltarget} = $s->{lang} . '/embed?' . widget_ser ( $s );
+ $s->{urltarget} = $s->{lang} . '/embed?' . $s->{tail};
   
- $self->render( template => 'page/build', format => 'html' );
+ $self->output ( 'page/build' );
  
 }
 
@@ -148,7 +150,7 @@ sub embed { # the widget renderer
 
  my $self = shift; my $s = $self->{stash};
   
- $self->start ( HARD ) or return $self->render_not_found;
+ $self->start ( HARD ) or return $self->fail ( 'start exit' );
  
  if ( $s->{runmode} eq 'pair' ) {
 

@@ -263,7 +263,7 @@ sub reroute { # does the job
    
      return $self->moveto ( "$t->{URL_CATZA}static/photo/$folder/$tgt" );
    
-    } else { return $self->fail ( 'folder mapping error' }
+    } else { return $self->fail ( 'folder mapping error' ) }
     
    }  
   

@@ -235,12 +235,13 @@ sub startup {
   palette => qr/dark|neutral|bright/ 
  )->to( 'widget#contact' );
 
- #$l->route( '/widget/marker/:palette', palette => qr/dark|neutral|bright/ )
- # ->to( 'widget#marker' );
+ # the widget builder
+ 
+ # $l->route ( '/build' )->to ( 'widget#build' );
 
- # disabled 2011-10-25
- # $l->route ( '/build' )->to ( 'widget#build' ); # the widget builder
- # $l->route ( '/embed' )->to ( 'widget#embed' ); # the widget viewer
+ # the widget renderer
+
+ # l->route ( '/embed' )->to ( 'widget#embed' );
  
  ###
  ### AJAX interface(s)

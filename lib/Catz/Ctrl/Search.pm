@@ -30,54 +30,6 @@ use parent 'Catz::Ctrl::Present';
 
 use Catz::Data::Search;
 
-use Catz::Util::String qw ( clean noxss trim );
-
-sub search_ok {
-
- # verifies and processed a search parameter
- # and copies it to stash
-
- my ( $self, $par, $var ) = @_; my $s = $self->{stash};
- 
- $s->{$var} = $self->param ( $par ) // undef;
- 
- defined $s->{ $var } or return $self->done;
- 
- # length sanity check 1/2
- length $s->{ $var } > 2000 and return $self->fail ( 'search too long' );
-
- # it appears that browsers typcially send UTF-8 encoded 
- # data when the origin page is UTF-8 -> we decode the data now   
- utf8::decode ( $s->{$var} );
-
- # length sanity check 2/2
- length $s->{ $var } > 1234 and return $self->fail ( 'too many characters' );
- 
- # remove all unnecessary whitespaces     
- $s->{ $var } = noxss clean trim $s->{ $var };
-    
- $s->{ $var } eq '' and $s->{ $var } = undef; 
-
- return $self->done;
-
-}
-
-sub search_args {
-
- # prorcess a search string to arguments
- 
- my $self = shift; my $s = $self->{stash};
- 
- # convert search to an argument array 
- $s->{args_array} = search2args ( $s->{what} );
-  
- # store argument count separately to stash
- $s->{args_count} = scalar @{ $s->{args_array} };
- 
- return $self->done;  
- 
-}
-
 sub urlother {
 
  my $self = shift; my $s = $self->{stash};
@@ -120,7 +72,7 @@ sub pattern {
  
  $s->{runmode} = 'search';
  
- $self->search_ok ( 'q', 'what' ) 
+ $self->f_search_ok ( 'q', 'what' ) 
   or return $self->fail ( 'illegal parameter' );
  
  if ( $s->{action} eq 'display' ) {
@@ -129,14 +81,14 @@ sub pattern {
  
  }
  
- $self->search_ok ( 'i', 'init' ) or 
+ $self->f_search_ok ( 'i', 'init' ) or 
   return $self->fail ( 'illegal parameter' );
   
  $s->{what} and do { # if a search is available
 
   $self->f_map or return $self->fail ( 'f_map exit' );
  
-  $self->search_args or return $self->fail ('search_args exit' );
+  $self->f_search_args or return $self->fail ('search_args exit' );
       
   if ( 
    $s->{args_count} > 0 and # there are arguments
