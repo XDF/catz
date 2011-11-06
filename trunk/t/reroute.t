@@ -38,7 +38,7 @@ use Catz::Data::Text;
 
 my $t = Test::Mojo->new( conf ( 'app' ) );
 
-$t->max_redirects( 1 ); 
+$t->max_redirects( 5 ); 
 
 #
 # 2011-10-29
@@ -47,9 +47,9 @@ $t->max_redirects( 1 );
 
  $t->get_ok('/');
 
-done_testing;
+ done_testing;
 
-__END__
+ __END__
 
 my $txt = text ( 'en' );
 

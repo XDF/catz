@@ -34,20 +34,10 @@ sub pair {
  
  $self->f_init or return $self->fail ( 'f_init exit' );
 
- $s->{runmode} = 'pair';
-
- # routing already does basic existence, length and character class checking
-
- # check that pri is acceptable
- $self->fetch( 'pair#verify', $s->{pri} ) or return $self->fail ( 'illegal concept' );
- 
- $s->{sec} = $self->decode ( $s->{sec} );
-
  $self->f_map or return $self->fail ( 'f_map exit' );
 
- $s->{args_array} = [ $s->{pri}, $s->{sec} ];
- $s->{args_count} = 2;
-   
+ $self->f_pair_start or return $self->fail ( 'f_pair_args exit' );
+    
  $self->f_origin or return $self->fail ( 'f_origin exit' );
  
  # get the translation for this pri-sec -pair 

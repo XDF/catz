@@ -63,7 +63,7 @@ $widget->{limits} = {
 };
 
 $widget->{allowed} = {
- type => [ qw ( strip ) ],
+ type => [ qw ( stripe ) ],
  run => [ qw ( leftright topdown ) ],
  mark => [ qw ( yes no ) ],
  back => [ qw ( yes no ) ], 
@@ -75,16 +75,18 @@ sub widget_params { @{ $widget->{params} } }
 
 sub widget_init {
 
- my ( $app, $hard ) = @_; my $s = $app->{stash};
+ my ( $app, $strict ) = @_; my $s = $app->{stash};
  
  $s->{widget} = $widget;
  
  foreach my $par ( @{ $widget->{params} } ) {
+
+  warn $par;
  
   $s->{ $par } = $app->param ( $par ) // undef;
  
   defined $s->{ $par } or do {
-   $hard and return 0; 
+   $strict and return 0; 
    $s->{$par} = $widget->{defaults}->{ $par };
   };
 
@@ -95,14 +97,14 @@ sub widget_init {
     $s->{ $par } >= $widget->{limits}->{ $par }->{min} and
     $s->{ $par } <= $widget->{limits}->{ $par }->{max} 
    ) or do { 
-    $hard and return 0; $s->{$par} = $widget->{defaults}->{ $par } 
+    $strict and return 0; $s->{$par} = $widget->{defaults}->{ $par } 
    }; 
   
   } elsif ( exists $widget->{allowed}->{ $par } ) {
   
    ( any { $s->{$par} eq $_ } @{  $widget->{allowed}->{ $par } } )
     or do {
-     $hard and return 0; 
+     $strict and return 0; 
      $s->{$par} = $widget->{defaults}->{ $par };
     };
   
