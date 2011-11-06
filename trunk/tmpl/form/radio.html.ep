@@ -1,1 +1,0 @@
-<input class="aero" type="radio" name="<%== $name %>" value="<%== $value %>"<%= $checked ? ' checked' : '' %>> 

@@ -46,14 +46,13 @@ my $widget = {}; # widget config
 
 my $t = text ( 'en' );
 
-$widget->{params} = [ qw ( type run size limit mark back ) ];
+$widget->{params} = [ qw ( type run size limit back ) ];
 
 $widget->{defaults} = {
  type => 'stripe',
  run => 'leftright',
  size => 100,
  limit => 600,
- mark => 'yes',
  back => 'yes',
 };
 
@@ -65,7 +64,6 @@ $widget->{limits} = {
 $widget->{allowed} = {
  type => [ qw ( stripe ) ],
  run => [ qw ( leftright topdown ) ],
- mark => [ qw ( yes no ) ],
  back => [ qw ( yes no ) ], 
 };
 
@@ -81,7 +79,8 @@ sub widget_init {
  
  foreach my $par ( @{ $widget->{params} } ) {
 
-  warn $par;
+  # embed mode = image rendering doesn't reguire back parameter
+  $s->{action} eq 'embed' and $par eq 'back' and goto SKIP_THIS;
  
   $s->{ $par } = $app->param ( $par ) // undef;
  
@@ -110,6 +109,8 @@ sub widget_init {
   
   } else { die "interal error: not enough information for parameter '$par'" }
   
+  SKIP_THIS:
+  
  }
  
  return 1;
@@ -118,9 +119,7 @@ sub widget_init {
 
 sub widget_ser {
 
- my $s = shift; # Mojolicious stash
- 
- my $out;
+ my ( $s, $intent ) = @_;
  
  my @coll = ();
  
@@ -134,28 +133,23 @@ sub widget_ser {
   push @coll, 'q=' . enurl $s->{what};
   
  }
-
+ 
+ $intent eq 'entry' and goto SKIP_PARAMS;
+ 
  foreach my $par ( @{ $widget->{params} } ) {
  
   my $val = $widget->{defaults}->{ $par };
 
   defined $s->{ $par } and $val = $s->{ $par };
-
-  push @coll, "$par=" . enurl $val; 
+  
+  $intent eq 'embed' and ( $par ne 'back' ) and  
+   push @coll, "$par=" . enurl $val; 
  
  }
-
- return join '&', @coll;
-
-}
-
-sub widget_tn_est {
-
- my ( $widht, $height ) = @_;
  
- # the safe (= far too large) estimate of the needed thumbnails
-
- return 100;
+ SKIP_PARAMS:
+ 
+ return join '&', @coll;
 
 }
 

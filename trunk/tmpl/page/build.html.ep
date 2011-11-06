@@ -17,27 +17,18 @@
 %# --------------------
 %#
 <% content 'pathadd' => begin %>
-<%== include 'elem/path' %>
-% given ( $runmode ) {
-%  when ( 'pair' ) {
-<a href="/<%== $langa %>/browse/<%== $pri %>/<%== encode $sec %>/">
-<%= limit ( $sec, 30 ) %></a> 
-%  } 
-%  when ( 'search' ) {
-<%= $what %>  <%= $pathsep %> 
-%  } 
-%  default {
-<a href="/<%== $langa %>/browseall/"><%= $t->{ALL} %> <%= $t->{PHOTOS} %><a>
-%  }
-% } 
-<%= $pathsep %>
+<%== include 'elem/path' %> <%== include 'elem/back', intent => 'path' %> <%= $pathsep %>
 <% end %>
 %#
 %# --------------------
 %#
 <% content 'main' => begin %>
-<div><h2><%= $t->{WID_SETUP} %></h2>
 <form id="widgets" class="block bar" action="/<%= $langa %>/build" method="get">
+<h2><%= $t->{WID_SETUP} %></h2> <input type="submit" value="<%= $t->{WID_SUBMIT} %>">
+%#
+%# --------------------
+%#
+<input type="hidden" name="type" value="stripe">
 % given ( $runmode ) {
 %  when ( 'pair' ) { 
 <input type="hidden" name="p" value="<%== $pri %>">
@@ -47,39 +38,50 @@
 <input type="hidden" name="q" value="<%== $what %>">
 %  }
 % }
-<input type="hidden" name="type" value="stripe">
-<ul>
-<li><span class="heavy sparse"><%= $t->{'WID_RUN'} %></span><span class="aero">
+%#
+%# --------------------
+%#
+<ul class="roomy"><li><span class="sparse"><%= $t->{'WID_RUN'} %></span>
 % foreach my $val ( @{ $widget->{allowed}->{run} } ) { 
-<%== include 'form/radio', name => 'run', value => $val, checked => $val eq $run ? 1 : 0 %>
+<input type="radio" name="run" value="<%== $val %>"<%= $val eq $run ? ' checked' : '' %>>
 <%= $t->{'WID_RUN_'.uc($val)} %>
 % }
-</span><li><span class="heavy"><%= $t->{'WID_SIZE'} %></span>
-<span class="aero">
-%== include 'form/field', name => 'size', value => $size, size => 4;
+</li>
+%#
+%# --------------------
+%#
+<li><span class="sparse"><%= $t->{'WID_SIZE'} %></span>
+<input type="field" name="size" value="<%== $size %>" size="4">
 <%= $t->{'WID_PIXELS'} %> 
-(<%= $widget->{limits}->{size}->{min} %>-<%= $widget->{limits}->{size}->{max} %>)
-</span><li><span class="heavy"><%= $t->{'WID_LIMIT'} %></span>
-%== include 'form/field', name => 'limit', value => $limit, size => 4;
-</div><div class="bar">
-<li><%= $t->{'WID_MARK'} %>
-% foreach my $val ( @{ $widget->{allowed}->{mark} } ) {
-<%== include 'form/radio', name => 'mark', value => $val, checked => $val eq $mark ? 1 : 0 %>
-<%= $t->{'WID_MARK_'.uc($val)} %>
-% }
+(<%= $widget->{limits}->{size}->{min} %> - <%= $widget->{limits}->{size}->{max} %>)</li>
+%#
+%# --------------------
+%#
+<li><span class="sparse"><%= $t->{'WID_LIMIT'} %></span>
+<input type="field" name="limit" value="<%== $limit %>" size="4">
+<%= $t->{'WID_PIXELS'} %> 
+(<%= $widget->{limits}->{limit}->{min} %> - <%= $widget->{limits}->{limit}->{max} %>)</li>
+%#
+%# --------------------
+%#
 <li><%= $t->{'WID_BACK'} %>
 % foreach my $val ( @{ $widget->{allowed}->{back} } ) {
-<%== include 'form/radio', name => 'back', value => $val, checked => $val eq $back ? 1 : 0 %>
+<input type="radio" name="back" value="<%== $val %>"<%= $val eq $back ? ' checked' : '' %>>
 <%= $t->{'WID_BACK_'.uc($val)} %>
 % } 
-</div><div class="bar">
-<%= $sep %>
-<input type="submit" value="<%= $t->{WID_SUBMIT} %>">
-<input type="reset" value="<%= $t->{WID_RESET} %>">
-</div></ul></form></div>
+</li></ul></form></div>
+%#
+%# --------------------
+%# 
 <div class="bar">
 <h2><%= $t->{WID_CODE} %></h2><div class="bar lean enlarge">
+% if ( $back eq 'yes' ) {
+%= $self->render ( 'elem/back', partial => 1, intent => 'embed' );
+% }
 %= $self->render ( 'elem/stripe', partial => 1, intent => 'code' );
+% if ( $back eq 'yes' ) {
+<%= '</a>' %>
+% }
 </div></div>
 <div class="bar">
 <h2><%= $t->{WID_VIEW} %></h2>
@@ -89,4 +91,11 @@
 <div class="bar">
 %== include 'content/build';
 </div>
+%#
+%# --------------------
+%#
+<h2><%= $t->{WID_ABOUT} %></h2>
+%#
+%# --------------------
+%#
 <% end %>

@@ -77,12 +77,12 @@ sub dist {
  my $self = shift; my $s = $self->{stash};
 
  $s->{total} = $s->{full} + $s->{breed} + $s->{cate} + $s->{none};
-
+  
  $s->{maxx} = $self->fetch ( 'all#maxx' );
 
  # the total number of photos must be less or equal to all photos
  $s->{total} <= $s->{maxx} or 
-  return $self->fail ( 'illegal distribution values' );
+  return $self->fail ( 'illegal distribution of values' );
  
  $s->{dist} = dist_conf;
  

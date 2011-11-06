@@ -33,9 +33,9 @@ var catzCSSAttrib = 'background-color';
 
 var catzCSSValue = '#FF7777';
 
-// keeps a reference to the previous find and sample requests
-// in order to make them abortable if a new requests are issued
-// before the previous ones have been completed
+// keeps a reference to the previous find request
+// in order to make it abortable if a new request is issued
+// before the previous one has been completed
 var catzPrevReqFind;
 
 function catzDoFind() {

@@ -350,8 +350,8 @@ sub f_pair_start {
   $s->{pri} =~ /^[a-z]{1,25}$/
    or return $self->fail ( 'concept malformed' );
 
-  $s->{sec} =~ /^[A-ZA-z0-9_-]{1,500}$/
-   or return $self->fail ( 'subject malformed' );
+  length $s->{sec} > 1000
+   and return $self->fail ( 'subject too long' );
 
  };
 
@@ -359,7 +359,8 @@ sub f_pair_start {
  $self->fetch( 'pair#verify', $s->{pri} ) 
   or return $self->fail ( 'illegal concept' );
  
- $s->{sec} = $self->decode ( $s->{sec} );
+ $s->{controller} ne 'widget' and
+  $s->{sec} = $self->decode ( $s->{sec} );
 
  $s->{args_array} = [ $s->{pri}, $s->{sec} ];
  $s->{args_count} = 2;
