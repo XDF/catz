@@ -132,7 +132,7 @@
 %   }
 %  }
 % } else { # no comments
-<%== include 'elem/mark' %> <span class="shrink"><%= $t->{NO_COMMENT_A} %> <%== $id %> <%= $t->{NO_COMMENT_B} %> <%== include 'elem/infox' %></span>
+<%== include 'elem/ig', igurl => stash ( 'cn' ), igtext => stash ( 'desc' ) %> <%== include 'elem/mark' %> <span class="shrink"><%= $t->{NO_COMMENT_A} %> <%== $id %> <%= $t->{NO_COMMENT_B} %> <%== include 'elem/infox' %></span>
 % }
 % }
 % if ( $display eq 'full' ) { # detailed info only when full display

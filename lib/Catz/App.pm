@@ -236,10 +236,10 @@ sub startup {
  )->to( 'widget#contact' );
 
  # the widget builder
- $l->route ( '/build' )->to ( 'widget#build' );
+ #  $l->route ( '/build' )->to ( 'widget#build' );
 
  # the widget renderer
- $l->route ( '/embed' )->to ( 'widget#embed' );
+ # $l->route ( '/embed' )->to ( 'widget#embed' );
  
  ###
  ### AJAX interface(s)

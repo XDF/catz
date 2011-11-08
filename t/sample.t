@@ -33,57 +33,43 @@ use Test::More;
 use Test::Mojo;
 
 use Catz::Data::Conf;
-use Catz::Data::Text;
 
 my $t = Test::Mojo->new( conf ( 'app' ) );
 
-# bare root should do temporary redirect
-
-$t->get_ok('/')->status_is(302);
-
-my @oksetups = qw ( en fi en211211 fi171212 en394211 fi211111 );
+my @oksetups = qw ( en fi en211211 fi171212 );
 
 foreach my $setup ( @oksetups ) {
-
- my $txt = text ( substr ( $setup, 0, 2 ) );
  
- # front page
+ if ( length ( $setup ) == 2 ) {
+
+  # no ending slash
+  $t->get_ok("/$setup/1000")->status_is(301);  
    
- $t->get_ok("/$setup/")
-   ->status_is(200)
-   ->content_type_like(qr/text\/html/)
-   ->element_exists('html body h1')
-   ->content_like(qr/$txt->{NOSCRIPT}/)
-   ->content_like(qr/$txt->{VIZ_GLOBE_NAME}/)
-   ->content_like(qr/href=\"\/$setup\/list\/breeder\/a2z\/\"/);
+  # too small
+  $t->get_ok("/$setup/sample/50/")->status_is(404);
+
+  # too big
+  $t->get_ok("/$setup/sample/5000/")->status_is(404);
+
+  # not tenths
+  $t->get_ok("/$setup/sample/999/")->status_is(404);
+
+  # too weird
+  $t->get_ok("/$setup/sample/5ajdj3848DdD/")->status_is(404);
  
- # without trailing slash should be 301
- $t->get_ok("/$setup")->status_is(301);
+  $t->get_ok("/$setup/sample/1000/")
+    ->status_is(200)
+    ->content_type_like(qr/text\/html/)
+    ->content_like(qr/alt=\"\w{4,5} \d{6}/)
+    ->content_like(qr/\.JPG/);
  
-}
-
-# site seal test added 2011-10-18
-# site seal must appear in english front page
-
-my $seal = conf ( 'key_seal' );
-
-$t->get_ok("/en/")->content_like(qr/$seal/);
-
-# analytics tests added 2011-10-18
-# analytics must appear on linux platforms
-
-conf ( 'lin' )  and do {
-
- my $ana_godaddy = conf ( 'key_ana_godaddy' );
- my $ana_google = conf ( 'key_ana_google' );
-
- foreach my $setup ( @oksetups ) {
+ } else {
  
-  $t->get_ok("/$setup/")->content_like(qr/$ana_godaddy/);
-  $t->get_ok("/$setup/")->content_like(qr/$ana_google/);
+  # called with setup
+  $t->get_ok("/$setup/sample/1000/")->status_is(404);
   
  }
-
-}; 
+ 
+}
 
 done_testing;
