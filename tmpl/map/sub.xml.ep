@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+% foreach my $surl ( @$surls ) {
+ <url>
+  <loc><%== $t->{URL_CATZA} %><%== $lang %><%== $surl->[0] %></loc>
+  <lastmod><%== $version_w3c %></lastmod>
+  <changefreq><%==  $surl->[1] // 'weekly' %></changefreq>
+  <priority><%== round ( $surl->[2], 1 ) // 0.5 %></priority>
+ </url>
+% }
+</urlset>

@@ -28,6 +28,7 @@ use strict;
 use warnings;
 
 use DateTime;
+use DateTime::Format::W3CDTF;
 use Email::Date::Format qw( email_gmdate );
 use HTTP::Date;
 use POSIX qw( floor mktime );
@@ -37,7 +38,7 @@ use parent 'Exporter';
 
 our @EXPORT_OK = qw(
  dtdate dttime dtexpand dt dt2epoch dtlang 
- epoch2rfc822 epoch2http http2epoch
+ epoch2rfc822 epoch2http http2epoch dt2w3c
  s2dhms thisyear 
 );
 
@@ -149,6 +150,16 @@ sub dt2epoch {
  $dt =~ /^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/;
   
  mktime ( $6, $5, $4, $3, $2 - 1, $1 - 1900 );
+
+}
+
+my $w3c = new DateTime::Format::W3CDTF;
+
+sub dt2w3c {
+
+ my $dt = DateTime->from_epoch ( epoch => dt2epoch $_[0] );
+
+ $w3c->format_datetime ( $dt );
 
 }
 

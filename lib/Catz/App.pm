@@ -105,7 +105,7 @@ sub startup {
  $r->route( '/style/:palette', palette => qr/dark|neutral|bright/ )
   ->to( 'main#base' );
 
- # DEPRECATED - WILL BE REMOVED IN FUTURE
+ # DEPRECATED - WILL BE REMOVED IN THE FUTURE
  # old case: latest album with sufficient number of data
  $r->route( '/lastshow' )->to( 'bulk#photolist', forcefi => 1 );
 
@@ -121,6 +121,16 @@ sub startup {
  
  # the front page is at the root under the language
  $l->route( '/' )->to( 'main#front' );
+
+ ###
+ ### sitemap(s)
+ ###
+
+ # without langauge
+ $r->route( '/sitemap/index' )->to( 'locate#mapidx' );
+
+ # with langauge
+ $l->route( '/sitemap/:mapsub' )->to( 'locate#mapsub' );
 
  ###
  ### content pages
@@ -369,6 +379,12 @@ sub before {
  # 
  
  $s->{protocol} =  $self->req->headers->header('X-Protocol') // 'http';
+
+ # no indexing of https stuff
+
+ $s->{protocol} eq 'https' and do {
+  $s->{meta_index} = 0; $s->{meta_follow} = 0;
+ };
  
  # checking path validity: we accept dots in path only for rerouting
  # paths and static paths
@@ -459,6 +475,8 @@ sub before {
    return $self->render_not_found; 
     
  }
+
+
                 
  # let some definitions to be globally available to all controllers
  
