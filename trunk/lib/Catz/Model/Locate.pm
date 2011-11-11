@@ -304,8 +304,9 @@ sub _secs {
  
  $self->dball( qq { 
   select pri,sec
-  from sec_$lang natural join pri
-  where pri not in ('text','album')
+  from sec_$lang natural join pri natural join _prim natural join _secm
+  where pri not in ('text','album') and 
+  cntdate > 0 and cntphoto > 0 and cntpri> 0
  } );
  
 }

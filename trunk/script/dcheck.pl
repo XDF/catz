@@ -80,7 +80,7 @@ logit "----- catza.net bcheck started at $s->{started_en}";
 
 # open report file at early stage so if it 
 # doesn't open then the check is aborted
-open REPORT, '>../log/bheck.html' or die $!;
+open REPORT, '>../log/dcheck.html' or die $!;
 
 logit 'initializing';
 
