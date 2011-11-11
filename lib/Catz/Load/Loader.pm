@@ -196,11 +196,6 @@ sub load_begin {
 }
 
 sub load_end {
-
- my $vacuum = 0; # default is not to vacuum
- 
- # for every fifth run do vacuum 
- ( load_exec ( 'run_count_one' ) % 5 == 0 ) and $vacuum = 1;
    
  logit ( 'finishing statements' );
  
@@ -213,21 +208,24 @@ sub load_end {
  logit ( 'analyzing database' );
  
  $dbc->do( 'analyze' );
- 
- if ( $vacuum ) {
- 
-  logit ( 'vacuuming database' );
 
+ # for every fifth run do more tasks   
+ if ( load_exec ( 'run_count_one' ) % 5 == load_exec ( 'run_count_one' ) % 5 ) {
+ 
   {
   
    local $dbc->{AutoCommit} = 1;
+
+   logit ( 'reindexing database' );
+   $dbc->do( 'reindex' );
  
+   logit ( 'vacuuming database' );
    $dbc->do( 'vacuum' );
  
   }
   
  }
-
+  
  logit ( 'disconnecting database' );
 
  $dbc->disconnect;  

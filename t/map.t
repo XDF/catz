@@ -40,14 +40,14 @@ my $t = Test::Mojo->new( conf ( 'app' ) );
 
 my @oklangs = qw ( en fi );
 
-$txt = text ( 'en' );
+my $txt = text ( 'en' );
 
 # index
 
 $t->get_ok("/sitemap/index/")
   ->status_is(200)
   ->content_type_like(qr/xml/)
-  ->content_is($txt->{URL_CATZA});
+  ->content_like(qr/$txt->{URL_CATZA}/);
 
 my $i = 0;
 
@@ -55,10 +55,10 @@ foreach my $map ( qw ( core news list pair photo ) ) {
 
  my $lang = $oklangs [ $i++ % 2 ];
 
- $t->get_ok("/sitemap/$map/")
+ $t->get_ok("/$lang/sitemap/$map/")
    ->status_is(200)
    ->content_type_like(qr/xml/)
-   ->content_is($txt->{URL_CATZA});
+   ->content_like(qr/$txt->{URL_CATZA}/);
 
 }
 

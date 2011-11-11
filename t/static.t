@@ -57,4 +57,10 @@ foreach my $path ( keys %{ $static } ) {
    
 }
 
+# check that link for sitemap index is defined
+
+$t->get_ok( '/robots.txt' )
+  ->status_is(200)
+  ->content_like(qr/\/sitemap\/index\//);
+
 done_testing;

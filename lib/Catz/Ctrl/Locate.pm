@@ -188,11 +188,11 @@ sub mapsub {
     
     foreach ( my $i = 0; $i < scalar @$titles; $i++ ) {
     
-     my $p = 1 - ( $i / 10 ); $p < 0.1 and $p = 0.1;
+     my $p = 1 - ( $i / 20 ); $p < 0.1 and $p = 0.1;
       
      my $cap = 'daily';
      
-     $p < 0.8 and $cap = 'weekly';
+     $p < 0.7 and $cap = 'weekly';
      
      $p < 0.2 and $cap = 'monthly';   
     
