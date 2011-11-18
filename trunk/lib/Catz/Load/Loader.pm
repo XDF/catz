@@ -473,6 +473,12 @@ sub load_simple {
   my @lines = tolines ( $pile );
   
   given ( $table  ) {
+  
+   when ( 'mbreed' ) {
+   
+    $lines[0] =~ /^[A-Z]{2}[A-Z12347]$/ or die "invalid breed code $lines[0]";
+       
+   }
        
    when ( 'mnat' ) {
    
@@ -486,7 +492,7 @@ sub load_simple {
     $lines[5] or $lines[5] = undef;
     $lines[6] or $lines[6] = undef; 
    }
-         
+            
   } 
   
   $stm->execute ( @lines );
@@ -755,9 +761,9 @@ sub load_post {
  
  load_do( qq { 
   delete from album where aid not in ( 
-   select aid from inalbum union 
-   select aid from inexif union 
-   select aid from inpos union 
+   select aid from inalbum union all 
+   select aid from inexif union all
+   select aid from inpos union all
    select aid from photo )
    
  });
@@ -783,10 +789,10 @@ sub load_post {
 
  load_do( qq { 
   delete from sec where sid not in ( 
-   select sid from inalbum union 
-   select sid_meta from inexif union 
-   select sid_data from inexif union 
-   select sid_file from inexif union 
+   select sid from inalbum union all 
+   select sid_meta as sid from inexif where sid_meta is not null union all
+   select sid_data as sid from inexif where sid_data is not null union all
+   select sid_file as sid from inexif where sid_file is not null union all
    select sid from inpos
   )
  });
