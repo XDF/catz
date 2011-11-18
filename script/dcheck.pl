@@ -26,115 +26,51 @@ use 5.12.0; use strict; use warnings;
 
 use lib '../lib';
 
-use List::Util qw ( shuffle );
-
 use Catz::Data::Conf;
-use Catz::Load::Check;
+
+use Catz::Load::Check qw ( check_begin check_any check_end );
 
 use Catz::Util::Log qw ( logadd logclose logopen logit logdone );
-use Catz::Util::Time qw ( dt dtexpand s2dhms dt2epoch );
+use Catz::Util::Time qw ( dt dtlang dtexpand s2dhms dt2epoch );
 
-sub ok {
-
- my ( $s, $breeder, $status ) = @_;
-
- $s->{breeders}->{$breeder}->{status} = $status;
- 
- logit "$breeder $status";
- 
- $s->{breeders}->{$breeder}->{done} = 1;
-  
-}
-
-sub fail {
-
- my ( $s, $breeder, $status ) = @_;
-
- $s->{breeders}->{$breeder}->{status} = $status;
- 
- logit "$breeder $status";
-  
-}
-
-sub failf {
-
- my ( $s, $breeder, $status ) = @_;
-  
- fail ( $s, $breeder, $status );
- 
- $s->{breeders}->{$breeder}->{done} = 1;
-
-} 
+use Catz::Util::File qw ( filecopy findlatest );
 
 $| = 1; # unbuffered printing
 
-logopen ( "../log/bcheck.log" );
+logopen ( "../log/dcheck.log" );
 
-# we use a MVC-like stash to hold data
-my $s = {};
+logit "----- catza.net dcheck started at " . dtlang ( 'en' );
 
-$s->{started} = dt;
-$s->{started_en} = dtexpand $s->{started}, 'en';
+my $db = findlatest ( '../db', 'db' );
 
-logit "----- catza.net bcheck started at $s->{started_en}"; 
+#my $olddb = findlatest ( '../db', 'db' );
 
-# open report file at early stage so if it 
-# doesn't open then the check is aborted
-open REPORT, '>../log/dcheck.html' or die $!;
+#defined $olddb or die "old database lookup failed";
 
-logit 'initializing';
+#my $db = "../db/$dt.db";
 
-check_init ( $s );
+#logit ( "copying database '$olddb' to '$db'" );
 
-logit 'total ' . (  scalar keys %{ $s->{breeders} } ) . ' breeders';
+#filecopy ( $olddb, $db ); 
 
-my $rounds = 3;
+my $dt = check_begin ( $db );
 
-foreach my $r ( 1 .. $rounds ) {
+logit "checking data version '$dt'";
 
- logit "--- check round $r/$rounds";
+check_any ( 'breed_exists' );
 
- foreach my $b ( shuffle @{ $s->{bers} } ) {
-      
-  if ( $s->{breeders}->{$b}->{done} == 0 ) {
+check_any ( 'feature_exists' );
 
-   logit "$b ...";
-      
-   if ( 
-   defined $s->{breeders}->{$b}->{url_ok} and (
-   (
-    dt2epoch ( $s->{started} ) - 
-    dt2epoch ( $s->{breeders}->{$b}->{url_ok} . '000000' ) )  
-    < 60 * 60 * 24 * $s->{fresh} # skip for 180 days
-   ) ) {
-   
-    ok ( $s, $b, 'FRESH' )
-    
-   } else {
-   
-    my $status = check_url $s->{breeders}->{$b}->{url};
-   
-    if ( $status eq 'OK' ) { ok ( $s, $b, $status ) } 
-     elsif ( $r == $rounds ) { failf ( $s, $b, $status ) }
-     else { fail ( $s, $b, $status ) }
-     
-    }
-    
-  }
-   
- }
- 
-}
+check_any ( 'title_exists' );
 
-$s->{ended} = dt;
-$s->{ended_en} = dtexpand $s->{ended}, 'en';
+check_any ( 'subject_case' );
 
-$s->{took} = [ s2dhms ( $s->{ended} - $s->{started} ) ];
+check_any ( 'subject_approx' );
 
-print REPORT check_report $s;
+check_any ( 'breeder_nation' );
 
-close REPORT;
+check_end;
 
-logit "----- catza.net bcheck finished at $s->{ended_en}";
+logit "----- catza.net dcheck finished at " . dtlang ( 'en' ) ;
 
 logclose;
