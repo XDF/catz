@@ -261,7 +261,7 @@ sub plaincat {
 # lenses' internal techical names and the corresponding visible names 
 my $lensname = {
  'lbc' => 'Lensbaby Composer',
- 'lbc_dg' => 'Lensbaby Composer & Dougle Glass Optic',
+ 'lbc_dg' => 'Lensbaby Composer & Double Glass Optic',
  'lbc_sg' => 'Lensbaby Composer & Single Glass Optic',
  'lbc_sf' => 'Lensbaby Composer & Soft Focus Optic',
  'peleng8' => 'Peleng 8mm f/3.5 Fisheye',
@@ -284,6 +284,7 @@ my $lensname = {
  'sigma10' => 'Sigma 10mm f/2.8 EX DC HSM Fisheye',
  'sigma50' => 'Sigma 50mm f/1.4 EX DG HSM',
  'sigma85' => 'Sigma 85mm f/1.4 EX DG HSM',
+ 'canon100l' => 'Canon EF 100mm f/2.8 L Macro IS USM',
  'canon135l' => 'Canon EF 135mm f/2.0 L USM',
  'canon200l' => 'Canon EF 200mm f/2.8 L II USM',
  'lx3leica' => 'Leica DC Vario-Summicron 5.1-12.8mm f/2.0-2.8',
@@ -296,6 +297,8 @@ memoize ( 'lens' );
 sub lens {
 
  my ( $album, $flen, $fnum ) = @_;
+ 
+ ( $flen and $fnum ) or return undef; 
     
  my $date = substr ( $album, 0, 8 ); # use only date part
 
@@ -316,6 +319,7 @@ sub lens {
       
   }
   when ( 85 )  { $lens = 'sigma85' }
+  when ( 100 ) { $lens = 'canon100l' }
   when ( 135 ) { $lens = 'canon135l' }   
   when ( 200 ) { $lens = 'canon200l' }
   
@@ -529,16 +533,20 @@ sub exif {
  # resolve lens only for albums 2011 and beyond
  int ( substr ( $album, 0, 4 ) ) > 2010 and do {
  
-  $o->{lens} = lens ( $album, $o->{flen}, $o->{fnum} );
+  if ( $o->{flen} and $o->{fnum} ) { 
  
-  $o->{lens} and $lensflen->{$o->{lens}} and do {  
-   $o->{flen} = $lensflen->{$o->{lens}};
-  }; 
+   $o->{lens} = lens ( $album, $o->{flen} , $o->{fnum} );
+ 
+   $o->{lens} and $lensflen->{$o->{lens}} and do {  
+    $o->{flen} = $lensflen->{$o->{lens}};
+   }; 
 
-  if ( $o->{lens} and $lensname->{$o->{lens}} ) {
-   $o->{lens} = $lensname->{$o->{lens}};
-  } else {
-   die "lens '".$o->{lens}."' is giving trouble at file '$file'"; 
+   if ( $o->{lens} and $lensname->{$o->{lens}} ) {
+    $o->{lens} = $lensname->{$o->{lens}};
+   } else {
+    die "lens '".$o->{lens}."' is giving trouble at file '$file'"; 
+   }
+   
   } 
       
  };

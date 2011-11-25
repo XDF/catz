@@ -43,6 +43,14 @@ our @EXPORT = qw ( cache_set cache_get cache_isup );
 use Cache::Memcached::Fast;
 use Digest::MD5 qw( md5_hex );
 
+# we "use Storable" just to set it's static variables to
+# allow storage of CODE references - this appears to be
+# required for Mojo response caching after ugrading to 
+# Mojolicious 2.32
+use Storable;
+$Storable::Deparse = 1;
+$Storable::Eval = 1; 
+
 use Catz::Data::Conf;
 
 use Catz::Util::String qw ( enurl );  

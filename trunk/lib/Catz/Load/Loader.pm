@@ -199,7 +199,9 @@ sub load_end {
    
  logit ( 'finishing statements' );
  
- foreach ( keys %{ $stm } ) { $stm->{$_}->finish }
+ my $run_count = load_exec ( 'run_count_one' );
+ 
+ foreach ( keys %{ $stm } ) { $stm->{$_}->finish; $stm->{$_} = undef }
   
  logit ( 'committing database' );
 
@@ -210,7 +212,7 @@ sub load_end {
  $dbc->do( 'analyze' );
 
  # for every fifth run do more tasks   
- if ( load_exec ( 'run_count_one' ) % 5 == 0 ) {
+ if ( $run_count % 5 == 0 ) {
  
   {
   
