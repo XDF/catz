@@ -40,16 +40,12 @@ sub contrib {
  
  $s->{topic} = 'contrib';
  
- $self->f_init or $self->fail ( 'f_init exit' );
+ $self->f_init or return $self->fail ( 'f_init exit' );
  
- $self->f_dist or $self->fail ( 'dist exit' );
+ $self->f_dist or return $self->fail ( 'dist exit' );
  
  $s->{style} = style_get;
-  
- $s->{urlother} = $self->fuse ( 
-  $s->{langaother}, 'more', $s->{topic} 
- );
- 
+   
  $s->{breeds} = $self->fetch ( 'related#breeds' );
  
  foreach my $breed ( @{ $s->{breeds} } ) {
@@ -80,10 +76,35 @@ sub contrib {
 
 }
 
+sub quality {
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ # reject, added temporarily 2011-11-25
+ return $self->fail ( 'quality reports temporarily disabled' );
+ 
+ $s->{topic} = 'quality';
+ 
+ $self->f_init or return $self->fail ( 'f_init exit' );
+ 
+ foreach my $item ( qw ( dt detail ) ) {
+ 
+  $s->{ "qa$item" } = $self->fetch ( "bulk#qa$item" );
+ 
+ }
+ 
+ $self->common;
+
+}
+
 sub common {
 
  my $self = shift; my $s = $self->{stash};
 
+ $s->{urlother} = $self->fuse ( 
+  $s->{langaother}, 'more', $s->{topic} 
+ );
+ 
  $self->render( template => 'page/more', format => 'html' );
 
 }

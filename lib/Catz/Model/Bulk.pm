@@ -79,4 +79,26 @@ sub _photolist {
   
 }
 
+sub _qadt { $_[0]->dball ( 'select dt from crun' ) }
+
+sub _qadetail {
+
+ my $self = shift; 
+
+ my $classes = 
+  $self->dball ( 'select class,cntitem,cntskip from cclass order by phase' );
+  
+ foreach my $class ( @$classes ) {
+ 
+  $class->[3] = 
+   $self->dball ( qq { 
+    select item,mess,pri,sec,sec2 from citem where class=? order by item 
+   }, $class->[0] );
+ 
+ } 
+ 
+ return $classes;
+  
+}
+
 1;
