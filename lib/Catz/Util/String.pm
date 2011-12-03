@@ -24,18 +24,24 @@
 
 package Catz::Util::String;
 
-use 5.10.0; use strict; use warnings;
+use 5.12.0; use strict; use warnings;
 
 use base 'Exporter';
 
 our @EXPORT_OK = qw ( 
- clean decode deurl dna encode enurl lcc limit 
- label nobreak noxss trim ucc ucclcc urirest fuse fuseq
- topiles topilex tolines
+ base32decode base32encode clean decode deurl digesthex 
+ dna encode enurl lcc limit label nobreak noxss trim ucc 
+ ucclcc urirest fuse fuseq topiles topilex tolines
 ); 
 
+use MIME::Base32 qw ( RFC );
+use Digest::HMAC_MD5 qw( hmac_md5_hex );
 use Digest::MD5 qw ( md5_base64 );
 use URI::Escape::XS qw ( uri_escape uri_unescape );
+
+sub base32decode { MIME::Base32::decode $_[0] }
+
+sub base32encode { MIME::Base32::encode $_[0] }
 
 # prepare a conversion hash to be used by encode
 # the hash was addded to make encoding run faster
@@ -75,6 +81,8 @@ sub decode { $_ = $_[0]; s/\-(\d\d\d)/chr($1)/ge; s|_| |g; return $_; }
 # url decodes a string
 #
 sub deurl { uri_unescape $_[0] }
+
+sub digesthex { hmac_md5_hex $_[0] } 
  
 #
 # returns MD5 checksum for a string as a base64 string

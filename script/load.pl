@@ -109,7 +109,7 @@ SKIP_FOLDER:
 $guide{'meta'} or goto SKIP_META;
 
 my @metafiles =  qw ( 
- metaexif metanews metanat metacate metabreed 
+ metaexif metanews metaskip metanat metacate metabreed 
  metabreeder metafeat metatitle metacore
 );
 

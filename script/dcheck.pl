@@ -67,6 +67,8 @@ check_any ( 'subject_case' );
 
 check_any ( 'subject_approx' );
 
+check_any ( 'nation_exists' );
+
 check_any ( 'breeder_nation' );
 
 check_end;

@@ -32,12 +32,10 @@ our @EXPORT = qw ( result_prepare result_pack result_unpack result_process );
 
 use Crypt::Blowfish;
 use Crypt::CBC;
-use MIME::Base32 qw ( RFC );
-use Digest::HMAC_MD5 qw(hmac_md5_hex);
 
 use Catz::Data::Conf;
 
-use Catz::Util::String qw ( trim );
+use Catz::Util::String qw ( base32decode base32encode digesthex trim );
 use Catz::Util::Time qw ( dtexpand );
 
 my $eng = Crypt::CBC->new( 
@@ -75,10 +73,10 @@ sub result_prepare {
 sub result_pack {
 
  # join the data, run it thru encrypter and encode
- my $data = MIME::Base32::encode ( $eng->encrypt ( join '|', @_ ) );
+ my $data = base32encode ( $eng->encrypt ( join '|', @_ ) );
  
  # calculate md5 digest using the configured key, output as hex
- my $dig = uc ( hmac_md5_hex ( $data, conf ( 'key_result' ) ) );
+ my $dig = uc ( digesthex ( $data, conf ( 'key_result' ) ) );
                
  # the outputted key contains 
  # * a letter to make it HTML DOM id save
@@ -100,11 +98,11 @@ sub result_unpack {
  
   my $data = $1; my $dig = $2;
   
-  my $cmp = uc ( hmac_md5_hex ( $data, conf ( 'key_result' ) ) );
+  my $cmp = uc ( digesthex ( $data, conf ( 'key_result' ) ) );
    
   $dig ne $cmp and return (); # data digest mismatch
  
-  return split /\|/, $eng->decrypt ( MIME::Base32::decode ( $data ) );  
+  return split /\|/, $eng->decrypt ( base32decode ( $data ) );  
   
  } else {
  
