@@ -1,0 +1,224 @@
+a
+blue
+sininen
+#
+b
+chocolate
+suklaa
+#
+c
+lilac
+lila
+#
+d
+red
+punainen
+#
+e
+cream
+creme
+#
+f
+black tortie
+kilpikonna
+#
+g
+blue tortie
+sinikilpikonna
+#
+h
+chocolate tortie
+suklaakilpikonna
+#
+j
+lilac tortie
+lilakilpikonna
+#
+m
+dilution modifier
+diluution muokkaaja
+#
+am
+caramel based on blue 
+karamelli perustuu siniseen
+#
+cm
+caramel based on lilac 
+karamelli perustuu lilaan 
+#
+pm
+caramell based on fawn
+karamelli perustuu beigeen
+#
+em
+apricot based on creme
+aprikoosi perustuu cremeen
+#
+x*m
+caramel
+karamelli
+#
+n 
+black or seal or ruddy
+musta tai ruskea tai riista
+#
+o
+cinnamon or sorrel
+kaneli tai punainen
+#
+p 
+fawn
+beige
+#
+q
+cinnamon tortoiseshell or sorrel tortoiseshell
+kanelikilpikonna tai punakilpikonna
+#
+r
+fawn tortoiseshell
+beigekiplikonna
+#
+s
+silver
+hopea
+#
+w
+white
+valkoinen
+#
+x
+unrecognized
+hyväksymätön
+#
+y
+golden
+golden
+#
+nt
+amber
+amber
+#
+at
+light amber
+vaalea amber
+#
+01
+van
+van
+#
+02
+harlequin
+harlekiini
+#
+03
+bicolour
+valkoisella
+#
+04
+mitted
+mitted
+#
+05
+snowshoe
+snowshoe
+#
+09
+with white
+valkoista
+#
+11
+shaded
+shaded
+#
+12
+shell
+shell
+#
+21
+classic tabby
+tabby
+#
+22
+blotched tabby
+klassinen tabby
+#
+23
+mackerel tabby
+tiikeri
+#
+24
+spotted tabby
+täplikäs
+#
+25
+ticked tabby
+tickedtabby
+#
+31
+shading pattern
+burmanaamio
+#
+32
+shading pattern
+tonkineesinaamio
+#
+33
+pointed pattern
+himalajanaamio
+#
+61
+blue eyed
+siniset silmät
+#
+62
+orange eyed
+oranssit silmät
+#
+63
+odd eyed
+eriväriset silmät
+#
+64
+green eyed
+vihreät silmät
+#
+65
+burmese
+burma-silmät
+#
+66
+tonkinese
+tonkineesi-silmät
+#
+67
+siamese eyes
+naamiokissan siniset silmät
+#
+51
+rumpy
+rumpy
+#
+52
+rumpy riser
+rumpy riser
+#
+53
+stumpy
+stumpy
+#
+54
+longie
+pitkä häntä
+#
+71
+straight ears
+normaalit korvat
+#
+72
+curled ears
+taaksepäin kaareutuvat korvat
+#
+73
+folded ears
+eteenpäin taipuneet korvat
+#

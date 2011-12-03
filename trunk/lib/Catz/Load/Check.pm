@@ -35,21 +35,19 @@ use Catz::Util::Log qw ( logadd logclose logopen logit logdone );
 use DBI;
 use Text::LevenshteinXS qw( distance );
 
-#use Catz::Core::Text;
-use Catz::Util::File qw ( findlatest );
 use Catz::Util::String qw ( lcc digesthex );
 
-my $dbc;
+my $dbc; # static reference to the database
 
 my $phase = 1; # static test phase counter
 
 my $item = 1;  # static test item counter
 
-my $skip = 0;
+my $skip = 0; # count skipped items
 
-my $fail = 0;
+my $fail = 0; # count failed tests
 
-my $class = undef;
+my $class = undef; # static storing of the current test
 
 sub check_begin { 
 
@@ -62,40 +60,61 @@ sub check_begin {
   { AutoCommit => 0, RaiseError => 1, PrintError => 1 } 
  )  or die "unable to connect to database $dbfile: $DBI::errstr";
  
- logit ( 'registering functions' );
-  
- # sequence
- $dbc->func( 'lcc', 1, \&lcc, 'create_function' );
-
- logit ( 'initializing check tables' );
-  
+ logit ( 'clearing check tables' ); 
  $dbc->do( 'delete from crun' );
  $dbc->do( 'delete from cclass' );
  $dbc->do( 'delete from citem' ); 
  
+ logit ( 'initializing check tables' );
  $dbc->do( 'insert into crun select max(dt) from run' );
  
  return $dbc->selectrow_array ( 'select dt from crun' );
  
 }
 
+my $joiner = ';';
+
 sub item {
 
- my $mess = join ';', ( $class, @_ );
- 
- warn $mess;
- 
- my $cnt = $dbc->selectrow_array ( 'select count(*) from mskip where mess=?', undef, $mess );
- 
- $cnt > 0 and return; # supressed case
+ # handle a test failure
 
- $fail++;
+ my ( $pri, $sec1, $sec2 ) = @_;
+ 
+ defined $pri or die "internal error: pri not set for an item";
+ 
+ defined $sec1 or die "internal error: sec not set for an item";
+ 
+ my $key1 = 
+  defined $sec2 ?
+  join $joiner, ( $class, $pri, $sec1, $sec2 ) : 
+  join $joiner, ( $class, $pri, $sec1 );
 
- foreach ( 1 .. 3 ) { defined $_[$_] or $_[$_] = undef }  
+ my $key2 = # secs in reversed order to catch reversed skip keys
+  defined $sec2 ?
+  join $joiner, ( $class, $pri, $sec2, $sec1 ) : 
+  undef;
+  
+ my $sql = 'select count(*) from mskip where skipkey=?';
+ 
+ my @args =  ( $sql, undef, $key1 );
+ 
+ defined $key2 and do { 
+ 
+  $sql .= ' or skipkey=?';
+  
+  @args =  ( $sql, undef, $key1, $key2 );
+  
+ };
+ 
+ my $cnt = $dbc->selectrow_array ( @args );
+ 
+ $cnt > 0 and do { $skip++; return }; # supressed case, skip altogether
+  
+ $fail++; # yes, this is a test failure 
 
  $dbc->do (
-  'insert into citem values (?,?,?,?,?,?)', 
-  undef, $class, $item++, $mess, @_ 
+  'insert into citem values (?,?,?,?,?)', 
+  undef, $class, $item++, $pri, $sec1, $sec2
  ); 
 
 }

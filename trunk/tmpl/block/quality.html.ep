@@ -1,0 +1,47 @@
+<div class="bar">
+<%= $t->{QUALITY_DESC} %> <%= $t->{QUALITY_LAST_DATA} %> <%= $lastdata %>
+<%= $t->{QUALITY_LAST_QA} %> <%= $lastqa %> 
+% if ( $lastdata eq $lastqa ) {
+<%= $t->{QUALITY_UPTODATE} %>
+% } else {
+(<%= $diffdt %> <%= $t->{EARLIER} %>) 
+<%= $t->{QUALITY_NOTUPTODATE} %></span>.
+% }
+</div>
+% foreach my $det ( @$qadetail ) {
+<div class="bar stripetop">
+<h2><%= $t->{'QUALITY_'.uc($det->[0])} %></h2> <%= $sep %>
+% if ( $det->[1] == 0 ) {
+<%= $t->{QUALITY_ITEM_NO} %>
+% } else {
+<span class="xtra enlarge"><%= $det->[1] %></span> 
+<%= $t->{'QUALITY_ITEM'.($det->[1] == 1 ? '' : 'A')} %>
+% }
+<%= $sep %>
+% if ( $det->[2] == 0 ) {
+<%= $t->{QUALITY_SKIP_NO} %>
+% } else {
+<span class="xtra enlarge"><%= $det->[2] %></span> 
+<%= $t->{'QUALITY_SKIP'.($det->[2] == 1 ? '' : 'A')} %>
+% }
+<%= $sep %> <%= $t->{'QUALITY_'.uc($det->[0]).'_DESC'} %>
+<ul>
+<div class="bar">
+% foreach my $item ( @{ $det->[3] } ) {
+<li><span class="sparse"><%= $item->[1] %>
+% defined $item->[2] and do {
+- <%= $item->[2] %>
+% };
+</span><span class="shrink aero">
+% my $t1 = $t->{QUALITY_SKIPKEY_IS};
+% $t1 =~ s/\'/\\\'/g;
+% my $t2 = $item->[3];
+% $t2 =~ s/\'/\\\'/g;
+<a href="JavaScript:catzPresentKey('<%= $t1 %>','<%= $t2 %>');">
+<%= $t->{QUALITY_SKIPKEY_GET} %></a>
+<span class="lean sparse aero"><%= $t->{uc($item->[0])} %></span>
+</span></li>
+% }
+</ul>
+</div>
+% }

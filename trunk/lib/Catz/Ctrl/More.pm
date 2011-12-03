@@ -79,19 +79,49 @@ sub contrib {
 sub quality {
 
  my $self = shift; my $s = $self->{stash};
- 
- # reject, added temporarily 2011-11-25
- # return $self->fail ( 'quality reports temporarily disabled' );
- 
+  
  $s->{topic} = 'quality';
  
  $self->f_init or return $self->fail ( 'f_init exit' );
  
  foreach my $item ( qw ( dt detail ) ) {
  
-  $s->{ "qa$item" } = $self->fetch ( "bulk#qa$item" );
+  my $data = $self->fetch ( "bulk#qa$item" ) // undef;
+  
+  defined $data or return $self->fail ( 
+   'unable to provide quality report since there is no stored quality data'
+  );
+ 
+  $s->{ "qa$item" } = $data
  
  }
+ 
+ 
+ $s->{lastdata} = $self->dtexpand ( $s->{version}, $s->{lang} );
+ $s->{lastqa} = $self->dtexpand ( $s->{qadt}, $s->{lang} );
+ 
+ my $lastdata = $self->dt2epoch ( $s->{version} );
+ my $lastqa = $self->dt2epoch ( $s->{qadt} );
+ 
+ my $secs = $lastdata - $lastqa;
+  
+ my @diff = $self->s2dhms ( $secs );
+  
+ $s->{diffdt} = '';
+ 
+ foreach my $spec ( qw ( day hour minute second ) ) {
+ 
+  my $this = shift @diff;
+  
+  if ( $this > 0 ) {
+    
+   $s->{diffdt} .= $this . ' ' . 
+    ( $this == 1 ? $s->{t}->{uc($spec)} : $s->{t}->{uc($spec).'S'} ) .
+    ( $spec eq 'second' ? '' : ' ' );
+
+  }
+   
+ } 
  
  $self->common;
 

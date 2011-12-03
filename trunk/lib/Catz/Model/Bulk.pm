@@ -79,23 +79,32 @@ sub _photolist {
   
 }
 
-sub _qadt { $_[0]->dball ( 'select dt from crun' ) }
+sub _qadt { $_[0]->dbone ( 'select dt from crun' ) }
 
 sub _qadetail {
 
  my $self = shift; 
 
  my $classes = 
-  $self->dball ( 'select class,cntitem,cntskip from cclass order by phase' );
+  $self->dball ( 'select class,cntitem,cntskip from cclass order by disp' );
   
  foreach my $class ( @$classes ) {
  
   $class->[3] = 
    $self->dball ( qq { 
-    select item,mess,pri,sec,sec2 from citem where class=? order by item 
+    select pri,sec1,sec2 from citem where class=? order by sort 
    }, $class->[0] );
+
+  foreach my $row ( @{ $class->[3] } ) { # add skipkeys
+   
+   $row->[3] = defined $row->[2] ? 
+   join ';', ( $class->[0], @{ $row } ) :
+   join ';', ( $class->[0], @{ $row }[0,1] ) 
+     
+  } 
  
- } 
+ }
+ 
  
  return $classes;
   

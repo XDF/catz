@@ -1,0 +1,155 @@
+BW
+Breed Winner
+Breed Winner
+#
+CH
+Champion
+Champion
+#
+DGC
+Double Grand Champion
+Double Grand Champion
+#
+DGCA
+Double Grand Champion Alter
+Double Grand Champion Alter
+#
+DGM
+Double Grand Master
+Double Grand Master
+#
+DM
+Distinguished Merit
+Distinguished Merit
+#
+DSM
+Distinguished Show Merit
+Distinguished Show Merit
+#
+DVM
+Distinguished Variety Merit
+Distinguished Variety Merit
+#
+DW
+Divisional Winner
+Divisional Winner
+#
+EC
+European Champion
+European Champion
+#
+EP
+European Premior
+European Premior
+#
+GC
+Grand Champion
+Grand Champion
+#
+GCA
+Grand Champion Alter
+Grand Champion Alter
+#
+GIC
+Grand International Champion
+Grand International Champion
+#
+GIP
+Grand International Premior
+Grand International Premior
+#
+GM
+Grand Master
+Grand Master
+#
+GP
+Grand Premior
+Grand Premior
+#
+GRC
+Grand Champion
+Grand Champion
+#
+GRCA
+Grand Champion Alter
+Grand Champion Alter
+#
+GRM
+Grand Master
+Grand Master
+#
+IC
+International Champion
+International Champion
+#
+IP
+International Premior
+International Premior
+#
+JW
+Junior Winner
+Junior Winner
+#
+MS
+Master
+Master
+#
+PR
+Premior
+Premior
+#
+QGC
+Quadruple Grand Champion
+Quadruple Grand Champion
+#
+QGCA
+Quadruple Grand Champion Alter
+Quadruple Grand Champion Alter
+#
+RW
+Regional Winner
+Regional Winner
+#
+SC
+Supreme Champion
+Supreme Champion
+#
+SGC
+Supreme Grand Champion
+Supreme Grand Champion
+#
+SGCA
+Supreme Grand Champion Alter
+Supreme Grand Champion Alter
+#
+SGM
+Supreme Grand Master
+Supreme Grand Master
+#
+SP
+Supreme Premior
+Supreme Premior
+#
+SW
+Scandinavian Winner / Season Winner
+Scandinavian Winner / Season Winner
+#
+TGC
+Triple Grand Champion
+Triple Grand Champion
+#
+TGCA
+Triple Grand Champion Alter
+Triple Grand Champion Alter
+#
+TGM
+Triple Grand Master
+Triple Grand Master
+#
+V 
+National Winner
+Voittaja
+#
+WW
+World Winner
+World Winner
