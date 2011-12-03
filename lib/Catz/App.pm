@@ -41,7 +41,8 @@ use Catz::Data::Text;
 
 use Catz::Util::File qw ( findlatest );
 use Catz::Util::Time qw( 
- dt dt2epoch dtdate dttime dtexpand dtlang epoch2http http2epoch thisyear 
+ dt dt2epoch dtdate dttime dtexpand dtlang 
+ epoch2http http2epoch s2dhms thisyear 
 );
 use Catz::Util::Number qw ( fmt fullnum33 round );
 use Catz::Util::String qw ( 
@@ -65,8 +66,9 @@ sub startup {
  # map utility subs from different modules to Mojolicious helpers
  # we use dynamically generated subs as bridges
  foreach my $sub ( 
-  qw ( dt dt2epoch dtdate dttime dtexpand fmt clean enurl html_escape limit 
-  trim fullnum33 thisyear encode decode round urirest fuse fuseq ) 
+  qw ( dt dt2epoch dtdate dttime dtexpand s2dhms fmt clean 
+  enurl html_escape limit  trim fullnum33 thisyear encode 
+  decode round urirest fuse fuseq ) 
  ) {
 
   # we do shift to ditch self that comes in first in helper calls

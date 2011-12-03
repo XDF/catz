@@ -6,6 +6,9 @@
 % ( $topic eq 'contrib' ) and do {
 %== include 'elem/js', jstype => 'site', jsfile => 'dist';
 % };
+% ( $topic eq 'quality' ) and do {
+%== include 'elem/js', jstype => 'site', jsfile => 'key';
+% };
 <% end %>
 %#
 %# --------------------
@@ -25,16 +28,23 @@
 <% content 'metaadd' => begin %>
 <meta name="og:title" content="<%= $t->{ ( uc $topic ) . '_TITLE' } %>"> 
 <meta name="og:type" content="article">
+<% end %>
 %#
 %# --------------------
 %# 
-<% end %>
+
 <% content 'main' => begin %>
 <div class="outer">
-% if ( $lang eq 'fi' ) {
+% given ( $topic ) {
+%  when ( 'contrib' ) {
 <%== include "content/$topic" . '_' . $lang %>
-% } else {
-<%== include "content/$topic" . '_' . $lang %>
+%  }
+%  when ( 'quality' ) {
+<%== include "block/$topic" %>
+%  }
+%  default {
+%   die "internal error: handling not implemented for topic '$topic'";
+%  }
 % }
 </div>
 <% end %>

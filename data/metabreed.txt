@@ -1,0 +1,355 @@
+AMS
+9
+American Shorthair
+amerikkalainen lyhytkarva
+#
+AWS
+9
+American Wirehair
+amerikkalainen wirehair
+#
+EXO
+1
+Exotic
+exotic
+#
+PER
+1
+Persian
+persialainen
+#
+ACL
+2
+American Curl Longhair
+pitkäkarvainen amerikan curl
+#
+ACS
+2
+American Curl Shorthair
+lyhytkarvainen amerikan curl
+#
+BOS
+9
+Bombay Shorthair
+lyhytkarvainen bombay
+#
+MCO
+2
+Maine Coon
+maine coon
+#
+NFO
+2
+Norwegian Forest Cat
+norjalainen metsäkissa
+#
+RAG
+2
+Ragdoll
+ragdoll
+#
+SBI
+2
+Sacred Birman
+pyhä birma
+#
+SIB
+2
+Siberian Cat
+siperian kissa
+#
+TUA
+2
+Turkish Angora
+turkkilainen angora
+#
+TUV
+2
+Turkish Van
+turkkilainen van
+#
+ABY
+3
+Abyssinian
+abessinialainen
+#
+BEN
+3
+Bengal
+bengali
+#
+BML
+3
+Burmilla
+burmilla
+#
+BRI
+3
+British
+brittiläinen
+#
+BUR
+3
+Burmese
+burma
+#
+CHA
+3
+Chartreux
+kartusiaani
+#
+CRX
+3
+Cornish Rex
+cornish rex
+#
+DRX
+3
+Devon Rex
+devon rex
+#
+EUR
+3
+European
+eurooppalainen
+#
+GRX
+3
+German Rex
+german rex
+#
+JBL
+0
+Japanese Bobtail Longhair
+pitkäkarvainen japanin bobtail
+#
+JBT
+3
+Japanese Bobtail Shorthair
+lyhytkarvainen japanin bobtail
+#
+KBL
+3
+Kurilean Bobtail Longhair
+pitkäkarvainen kuriilien bobtail
+#
+KBS
+3
+Kurilean Bobtail Shorthair
+lyhytkarvainen kuriilien bobtail
+#
+KOR
+3
+Korat
+korat
+#
+MAN
+3
+Manx
+manx
+#
+MAU
+3
+Egyptian Mau
+egyptinmau
+#
+OCI
+3
+Ocicat
+ocicat
+#
+RUS
+3
+Russian Blue
+venäjänsininen
+#
+SNO
+3
+Snowshoe
+showshoe
+#
+SOK
+3
+Sokoke
+sokoke
+#
+SOM
+3
+Somali
+somali
+#
+SPH
+3
+Sphynx
+sfinx
+#
+BAL
+4
+Balinese
+balineesi
+#
+OLH
+4
+Oriental Longhair
+itämainen pitkäkarva
+#
+OSH
+4
+Oriental Shorthair
+itämainen lyhytkarva
+#
+SIA
+4
+Siamese
+siamilainen
+#
+CYM
+3
+Cymric
+cymric
+#
+PEB
+8
+Peterbald
+peterbald
+#
+XLH
+9
+Unrecognized Longhair
+hyväksymätön pitkä-/puolipitkäkarva
+#
+XSH
+9
+Unrecognized Shorthair
+hyväksymätön lyhytkarva
+#
+SFL
+9
+Scottish Fold Longhair
+pitkäkarvainen scottish fold
+#
+SFS
+9
+Scottish Fold Shorthair
+lyhytkarvainen scottish fold
+#
+SIN
+9
+Singapura
+singapura
+#
+SYS
+4
+Seychellois Shorthair
+seychellien lyhytkarva
+#
+SYL
+4
+Seychellois Longhair
+seychellien pitkäkarva
+#
+DSP
+3
+Don Sphynx
+don sfinx
+#
+SRL
+9
+Selkirk Rex Longhair
+pitkäkarvainen selkirk rex
+#
+SRS
+9
+Selkirk Rex Shorthair
+lyhytkarvainen selkirk rex
+#
+THA
+9
+Thai
+thai
+#
+HCS
+7
+Shorthair Housecat
+lyhytkarvainen kotikissa
+#
+HCL
+7
+Longhair Housecat
+pitkäkarvainen kotikissa
+#
+TGR
+9
+Toyger
+toyger
+#
+TIE
+9
+Tiffanie
+tiffanie
+#
+MCL
+9
+Munchkin Longhair
+pitkäkarvainen munchkin
+#
+LPL
+9
+LaPerm Longhair
+pitkäkarvainen laperm
+#
+NEM
+2
+Neva Masquerade
+neva masquerade
+#
+BAM
+9
+Bambino
+bambino
+#
+PBL
+9
+Pixie-Bob Longhair
+pitkäkarvainen pixie-bob
+#
+NAS
+9
+Napoleon Shorthair
+lyhytkarvainen napoleon
+#
+NAL
+9
+Napoleon Longhair
+pitkäkarvainen napoleon
+#
+XC1
+1
+Category I breed
+kategorian I rotu
+# 
+XC2
+2
+Category II breed
+kategorian II rotu
+#
+XC3
+3
+Category III breed
+kategorian III rotu
+#
+XC4
+4
+Category IV breed
+kategorian IV rotu
+#
+XC7
+7
+Housecat
+kotikissa
+#
+SAV
+9
+Savannah
+savannah
+#

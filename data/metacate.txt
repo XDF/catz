@@ -1,0 +1,28 @@
+1
+category I
+kategoria I
+# 
+2
+category II
+kategoria II
+#
+3
+category III
+kategoria III
+#
+4
+category IV
+kategoria IV
+#
+7
+housecats
+kotikissat
+#
+8
+preliminaries
+alustavat
+#
+9
+others
+muut
+#
