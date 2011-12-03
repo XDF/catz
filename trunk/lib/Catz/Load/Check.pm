@@ -35,6 +35,7 @@ use Catz::Util::Log qw ( logadd logclose logopen logit logdone );
 use DBI;
 use Text::LevenshteinXS qw( distance );
 
+use Catz::Util::Number qw ( ceil floor );
 use Catz::Util::String qw ( lcc digesthex );
 
 my $dbc; # static reference to the database
@@ -93,7 +94,7 @@ sub item {
   defined $sec2 ?
   join $joiner, ( $class, $pri, $sec2, $sec1 ) : 
   undef;
-  
+    
  my $sql = 'select count(*) from mskip where skipkey=?';
  
  my @args =  ( $sql, undef, $key1 );
@@ -106,7 +107,7 @@ sub item {
   
  };
  
- my $cnt = $dbc->selectrow_array ( @args );
+ my $cnt = int ( $dbc->selectrow_array ( @args ) );
  
  $cnt > 0 and do { $skip++; return }; # supressed case, skip altogether
   
@@ -154,38 +155,37 @@ sub _subject_case {
    select sec from sec_fi where pid=(select pid from pri where pri=?)
   },undef, $pri, $pri )}; 
  
- my $match = {};
+  my $match = {};
  
- foreach my $sec ( @secs ) {
+  foreach my $sec ( @secs ) {
  
-  if ( defined $match->{lcc($sec)} ) {
+   if ( defined $match->{lcc($sec)} ) {
   
-   push @{ $match->{lcc($sec)} }, $sec;
+    push @{ $match->{lcc($sec)} }, $sec;
   
-  } else {
+   } else {
   
-   $match->{lcc($sec)} = [ $sec ];
+    $match->{lcc($sec)} = [ $sec ];
     
+   } 
+ 
+  }
+ 
+  foreach my $key ( keys %{ $match } ) {
+ 
+   if ( scalar @{ $match->{$key} } > 1 ) {
+  
+    foreach ( 1 .. ( scalar @{ $match->{$key} } ) - 1 ) {
+  
+     item ( $pri, $match->{$key}->[0], $match->{$key}->[$_] );   
+   
+    }
+   
+   }  
+ 
   } 
  
  }
- 
- foreach my $key ( keys %{ $match } ) {
- 
-
-  if ( scalar @{ $match->{$key} } > 1 ) {
-  
-   foreach ( 1 .. ( scalar @{ $match->{$key} } ) - 1 ) {
-  
-    item ( $pri, $match->{$key}->[0], $match->{$key}->[$_] );   
-   
-  }
-   
- }  
- 
-} 
- 
-}
 
 }
 
@@ -212,32 +212,30 @@ sub _subject_approx {
    $stm->execute ( $pri, $sec->[0], $head );  
 
    foreach my $com ( $stm->fetchrow_array ) {
+
+    # allow one difference per 5 characters  
+    my $len = length $sec->[1];
+    my $allow = ceil ( ( $len + 1 )  / 5 );
+    
+    say "$len allows $allow"; 
   
-    my $allowed = 1;
-  
-    length $sec->[1] > 5 and $allowed = 2;
+    if ( distance ( $sec->[1], $com ) <= $allow ) {
+    
+     ( exists $seenb->{$sec->[1]} and exists $seena->{$com} ) or do { 
+    
+     $seena->{$sec->[1]} = 1;
+     $seenb->{$com} = 1;
+    
+     item ( $pri, $sec->[1], $com );
+    
+    };   
    
-    length $sec->[1] > 15 and $allowed = 3;
-   
-  
-   if ( distance ( $sec->[1], $com ) <= $allowed ) {
-    
-    ( exists $seenb->{$sec->[1]} and exists $seena->{$com} ) or do { 
-    
-    $seena->{$sec->[1]} = 1;
-    $seenb->{$com} = 1;
-    
-    item ( $pri, $sec->[1], $com );
-    
-   };   
-   
+   }
+ 
   }
  
  }
  
- }
-
-  
 }
 
 

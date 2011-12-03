@@ -41,7 +41,7 @@ my $t = Test::Mojo->new( conf ( 'app' ) );
 
 my @oksetups = qw ( en fi en211211 fi171212 en394211 fi211111 );
 
-my @pages = qw ( contrib );
+my @pages = qw ( contrib quality );
 
 my $buzz = 'more';
 
@@ -56,9 +56,7 @@ foreach my $setup ( @oksetups ) {
   $t->get_ok("/$setup/$buzz/$page/")
     ->status_is(200)
     ->content_type_like(qr/text\/html/)
-    ->content_like(qr/$txt->{uc($page).'_TITLE'}/)
-    ->content_like(qr/$txt->{URL_EMS}/)
-    ->content_like(qr/TUA/);
+    ->content_like(qr/$txt->{uc($page).'_TITLE'}/);
  
    # no ending slash
    $t->get_ok("/$setup/$buzz/$page")->status_is(301);
@@ -68,7 +66,5 @@ foreach my $setup ( @oksetups ) {
  }
   
 }
-
-
 
 done_testing;
