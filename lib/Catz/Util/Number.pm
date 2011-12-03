@@ -26,13 +26,16 @@ package Catz::Util::Number;
 
 use 5.12.0; use strict; use warnings;
 
+use POSIX; # for floor and ceil
 use Number::Format;
 
 use base 'Exporter';
 
 our @EXPORT_OK = qw( 
- float fmt fullnum3 fullnum4 fullnum33 minnum minnum33 round logn 
+ floor ceil float fmt fullnum3 fullnum4 fullnum33 minnum minnum33 round logn 
 ); 
+
+# floor and ceil are pass-thrus to POSIX so there no subs here
 
 # Static creation of Number::Format objects, used later in formatting sub
 
