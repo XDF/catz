@@ -148,7 +148,18 @@ sub cat {
   
  }
   
- scalar ( @titles ) > 0 and $d->{title} = \@titles;
+ scalar ( @titles ) > 0 and do {
+ 
+  foreach my $title ( @titles ) {
+  
+   $title =~ /^[A-Z]+(\d{4})?$/ or 
+    die "malformed title '$title' in '$data'";
+  
+  }
+ 
+  $d->{title} = \@titles;
+  
+ };
   
  # store the cat itself, if any left
  
@@ -180,7 +191,30 @@ sub comment {
  my $d = []; # all findings get packed to this arrayref
  
  # data splitting with & is prevented by writing it &&, now convert it back
- $text =~ s/\&\&/\&/g; 
+ $text =~ s/\&\&/\&/g;
+
+ # find pre nation codes
+ my @pre = $text =~  /([A-Za-z]+)\*(?:\{|\w)/g; 
+ 
+ # find post nation codes
+ my @post = $text =~ /(?:\}|\w)\*([A-Za-z]+)/g;
+ 
+ ( scalar @pre > 0 or scalar @post > 0 ) and do {
+  
+  foreach my $nat ( ( @pre, @post ) ) {
+  
+  length ( $nat ) == 2 or die
+   "found nation code '$nat' in '$text' that is not two characters";
+   
+  $nat eq 'FI' and die
+   "found nation code '$nat' in '$text', we don't store $nat";
+   
+  ( $nat eq uc ( $nat ) ) or die
+   "found nation code '$nat' in text '$text' that is not in upper case";  
+ 
+  }
+  
+ };
   
  # expand all macros
  $text = expmacro ( $text );

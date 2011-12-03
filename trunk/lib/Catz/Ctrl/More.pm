@@ -81,7 +81,7 @@ sub quality {
  my $self = shift; my $s = $self->{stash};
  
  # reject, added temporarily 2011-11-25
- return $self->fail ( 'quality reports temporarily disabled' );
+ # return $self->fail ( 'quality reports temporarily disabled' );
  
  $s->{topic} = 'quality';
  

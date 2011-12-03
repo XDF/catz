@@ -37,7 +37,7 @@ use Text::LevenshteinXS qw( distance );
 
 #use Catz::Core::Text;
 use Catz::Util::File qw ( findlatest );
-use Catz::Util::String qw ( lcc );
+use Catz::Util::String qw ( lcc digesthex );
 
 my $dbc;
 
@@ -79,20 +79,24 @@ sub check_begin {
  
 }
 
-
 sub item {
 
- defined $_[0] or die 'test item need message';
+ my $mess = join ';', ( $class, @_ );
  
- my $cnt = $dbc->selectrow_array ( 'select count(*) from mskip where mess=?', undef, $_[0] );
+ warn $mess;
  
- $cnt > 0 and return;
+ my $cnt = $dbc->selectrow_array ( 'select count(*) from mskip where mess=?', undef, $mess );
+ 
+ $cnt > 0 and return; # supressed case
 
  $fail++;
 
  foreach ( 1 .. 3 ) { defined $_[$_] or $_[$_] = undef }  
 
- $dbc->do ( 'insert into citem values (?,?,?,?,?,?)', undef, $class, $item++, @_ ); 
+ $dbc->do (
+  'insert into citem values (?,?,?,?,?,?)', 
+  undef, $class, $item++, $mess, @_ 
+ ); 
 
 }
 
@@ -104,9 +108,7 @@ sub _breed_exists {
   sec not in ( select breed from mbreed ) order by sort; 
  })}; 
 
- foreach ( @not ) {
-  item ( qq{breed '$_' appears in data but not is not a defined breed code}, 'breed', $_ ); 
- }
+ foreach ( @not ) { item ( 'breed', $_ ) }
 
 }
 
@@ -118,9 +120,7 @@ sub _breeder_nation {
   sec not in ( select breeder from mbreeder ) order by sort; 
  })}; 
 
- foreach ( @not ) {
-  item ( qq{breeder '$_' has no nation set}, 'breeder', $_ ); 
- }
+ foreach ( @not ) { item ( 'breeder', $_ ) }
 
 }
 
@@ -158,7 +158,7 @@ sub _subject_case {
   
    foreach ( 1 .. ( scalar @{ $match->{$key} } ) - 1 ) {
   
-    item ( qq{subjects '$match->{$key}->[0]' and '$match->{$key}->[$_]' differ only by case}, $pri, $match->{$key}->[0], $match->{$key}->[$_] );   
+    item ( $pri, $match->{$key}->[0], $match->{$key}->[$_] );   
    
   }
    
@@ -174,55 +174,55 @@ sub _subject_approx {
 
  my $stm = $dbc->prepare ( qq {
   select sec_en from sec where pid=(select pid from pri where pri=?) and
-  sid<>? and substr ( sec_en, 1, 3 )=?
+  sid<>? and substr ( sec_en, 1, 2 )=?
  } );
 
  foreach my $pri ( qw ( breeder cat ) ) {
 
+  my $seena = {};
+  my $seenb = {};
+   
   my @secs = @{ $dbc->selectall_arrayref ( qq {
    select sid,sec_en from sec where pid=(select pid from pri where pri=?)
   },undef, $pri )};
     
   foreach my $sec ( @secs ) {
- 
-  my $head = substr ( $sec->[1], 0, 3 );
+    
+   my $head = substr ( $sec->[1], 0, 2 );
 
-  $stm->execute ( $pri, $sec->[0], $head );  
+   $stm->execute ( $pri, $sec->[0], $head );  
 
-  foreach my $com ( $stm->fetchrow_array ) {
+   foreach my $com ( $stm->fetchrow_array ) {
   
-   #say "$pri $sec->[0] $sec->[1] $head $com";
+    my $allowed = 1;
+  
+    length $sec->[1] > 5 and $allowed = 2;
    
-   if ( length $sec->[1] > 14 ) {
-
-   if ( distance ( $sec->[1], $com ) == 2 ) {
+    length $sec->[1] > 15 and $allowed = 3;
+   
+  
+   if ( distance ( $sec->[1], $com ) <= $allowed ) {
     
-      item ( qq{subjects '$sec->[1]' and '$com' differ only by two edits}, $pri, $sec->[1], $com );
+    ( exists $seenb->{$sec->[1]} and exists $seena->{$com} ) or do { 
     
-     }   
-   
-   
-   } else {
-
-   if ( distance ( $sec->[1], $com ) == 1 ) {
+    $seena->{$sec->[1]} = 1;
+    $seenb->{$com} = 1;
     
-      item ( qq{subjects '$sec->[1]' and '$com' differ only by one edit}, $pri, $sec->[1], $com );
+    item ( $pri, $sec->[1], $com );
     
-     }   
+   };   
    
-   
-   }
-    
-   
-   }
+  }
  
  }
  
+ }
+
+  
 }
 
- $stm->finish; 
-  
 
+ $stm->finish; 
 
 }
 
@@ -235,7 +235,7 @@ sub _feature_exists {
  })}; 
 
  foreach ( @not ) {
-  item ( qq{feature '$_' appears in data but is not a defined feature code}, 'feat', $_ ); 
+  item ( 'feat', $_ ); 
  }
 
 }
@@ -250,8 +250,36 @@ sub _title_exists {
  })}; 
 
  foreach ( @not ) {
-  item ( qq{title '$_' appears in data but is not a defined title code}, 'title', $_ ); 
+  item ( 'title', $_ ); 
  }
+
+}
+
+sub _nation_exists {
+
+ my %nats = map { $_ => 1 }
+  @{ $dbc->selectcol_arrayref ( qq { select nat from mnat } ) };
+
+ my @text = @{ $dbc->selectcol_arrayref ( qq { 
+  select sec from sec_en where pid=(select pid from pri where pri='text')
+  order by sec  
+ } ) };
+ 
+ foreach my $text ( @text ) {
+   
+  if ( $text =~ /([A-Z]+)\*\w/ ) {
+    
+   exists $nats{$1} or 
+    item ( 'nation', $_ );  
+  
+  } elsif ( $text =~ /\w\*([A-Z]+)/ ) {
+    
+   exists $nats{$1} or 
+    item ( 'nation', $_ );  
+    
+  }
+ 
+ } 
 
 }
 
