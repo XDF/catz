@@ -1,2 +1,10 @@
+subject_approx;breeder;Ferox;Ferme
+#
+subject_approx;breeder;Preciousice;Precious
+#
+subject_approx;breeder;Usvaniityn;Usvaneidon
+#
 subject_approx;cat;Misu;Miisu
+#
+subject_approx;cat;Pekka;Peku
 #

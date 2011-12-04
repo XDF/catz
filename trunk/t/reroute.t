@@ -45,11 +45,11 @@ $t->max_redirects( 5 );
 # after an upgrade it apperas that Mojo no longer handles redirects
 # as expected and these test no longer work 
 
- $t->get_ok('/');
+$t->get_ok('/');
 
- done_testing;
+done_testing;
 
- __END__
+__END__
 
 my $txt = text ( 'en' );
 
