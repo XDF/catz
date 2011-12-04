@@ -28,6 +28,7 @@ use lib '../lib';
 
 use Catz::Data::Conf;
 
+use Catz::Load::Check;
 use Catz::Load::Loader;
 use Catz::Load::Parse;
 
@@ -64,18 +65,17 @@ logit ( "copying database '$olddb' to '$db'" );
 
 filecopy ( $olddb, $db );
 
-load_begin ( $dt, $db );
-
-my %guide = ();
+my %guide = (); # contains the features requested
 
 foreach my $arg ( map { lc $_ } @ARGV ) { $guide{$arg} = 1 }
 
-scalar @ARGV == 0 and do {
- $guide{'folder'} = 1; 
- $guide{'meta'} = 1;
- $guide{'post'} = 1;
-};
+scalar @ARGV == 0 and do { $guide{$_} = 1 } 
+ foreach ( qw ( folder meta post check ) );
+ 
+( $guide{'folder'} or $guide{'meta'} or $guide{'post'} ) or goto NO_LOAD;
 
+load_begin ( $dt, $db );
+ 
 # phase 1: load folders
 
 $guide{'folder'} or goto SKIP_FOLDER;
@@ -188,9 +188,32 @@ SKIP_POST:
 
 load_end; # finish
 
+NO_LOAD:
+
+$guide{'check'} or goto SKIP_CHECK;
+
+$dt = check_begin ( $db );
+
+logit "running data checks";
+
+check_any ( 'subject_case' );
+check_any ( 'subject_approx' );
+check_any ( 'breed_exists' );
+check_any ( 'feature_exists' );
+check_any ( 'title_exists' );
+check_any ( 'nation_exists' );
+check_any ( 'breeder_nation' );
+
+check_end;
+
+SKIP_CHECK:
+
+logit ( 'rolling' );
+
+system ( 'perl roll.pl' );
+
 my $etime = time();
 
 logit ( 'catz loader finished at ' .  dtlang() . ' (' . ( $etime - $btime ) . ' seconds)' );
 
 logclose();
-

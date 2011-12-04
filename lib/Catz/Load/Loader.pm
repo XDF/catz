@@ -212,7 +212,7 @@ sub load_end {
  $dbc->do( 'analyze' );
 
  # for every fifth run do more tasks   
- if ( $run_count % 5 == 0 ) {
+ if ( $run_count % 10 == 0 ) {
  
   {
   
