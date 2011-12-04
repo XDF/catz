@@ -1,4 +1,4 @@
-% use 5.10.0;
+% use 5.12.0;
 % extends 'base/heavy';
 % my $ttl = $t->{PHOTO} . " $id"; 
 % $ttl .= @$comment > 0 ? join " $sep ",  ( '', @$comment ) : '';
@@ -118,13 +118,13 @@
 <%= $sep %>
 % };
 % if ( $comm =~ m|^\[[A-Z]{3}| ) { # breed code
-<%= $comm %> <%== include 'elem/ig', igurl => stash ( 'cn' ), igtext => stash ( 'desc' ) %> <%== include 'elem/mark' %>
+<%= $comm %> <%== include 'elem/mark' %>
 <span class="shrink"><%= $t->{NO_CAT_A} %> <%== $id %> <%= $t->{NO_CAT_B} %> <%== include 'elem/infox' %></span>
 % } elsif ( $comm =~ m|^\[XC[1-9]| ) { # category code
-<%= $comm %> <%== include 'elem/ig', igurl => stash ( 'cn' ), igtext => stash ( 'desc' ) %> <%== include 'elem/mark' %>
+<%= $comm %> <%== include 'elem/mark' %>
 <span class="shrink"><%= $t->{NO_BREED_A} %> <%== $id %> <%= $t->{NO_BREED_B} %> <%== include 'elem/infox' %></span>
 % } else { # not just a code, has more data
-<%= $comm %> <%== include 'elem/ig', igurl => stash ( 'cn' ), igtext => stash ( 'desc' ) %>
+<%= $comm %>
 % }  
 %   if ( defined $resultkey->[$i] ) {
 <span class="result lean shrink" id="<%== $resultkey->[$i] %>"></span>
@@ -132,7 +132,7 @@
 %   }
 %  }
 % } else { # no comments
-<%== include 'elem/ig', igurl => stash ( 'cn' ), igtext => stash ( 'desc' ) %> <%== include 'elem/mark' %> <span class="shrink"><%= $t->{NO_COMMENT_A} %> <%== $id %> <%= $t->{NO_COMMENT_B} %> <%== include 'elem/infox' %></span>
+<%== include 'elem/mark' %> <span class="shrink"><%= $t->{NO_COMMENT_A} %> <%== $id %> <%= $t->{NO_COMMENT_B} %> <%== include 'elem/infox' %></span>
 % }
 % }
 % if ( $display eq 'full' ) { # detailed info only when full display
@@ -157,6 +157,9 @@
 % };
 % }
 <%= $sep %> <%= $t->{PHOTO_ID} %> <%== fullnum33 ( $image->[0], $image->[1] ) %>
+% }
+% if ( $display ne 'none' ) {
+%== include 'elem/ig', igurl => stash ( 'cn' ), igtext => stash ( 'desc' );
 % }
 </span> 
 </div>

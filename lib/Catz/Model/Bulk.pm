@@ -81,6 +81,12 @@ sub _photolist {
 
 sub _qadt { $_[0]->dbone ( 'select dt from crun' ) }
 
+sub _qastat { 
+ $_[0]->dbrow ( 
+  'select count(1),sum(cntitem),sum(cntskip) from cclass' 
+ )
+}
+
 sub _qadetail {
 
  my $self = shift; 
@@ -95,7 +101,7 @@ sub _qadetail {
     select pri,sec1,sec2 from citem where class=? order by sort 
    }, $class->[0] );
 
-  foreach my $row ( @{ $class->[3] } ) { # add skipkeys
+  foreach my $row ( @{ $class->[3] } ) { # generate skipkeys
    
    $row->[3] = defined $row->[2] ? 
    join ';', ( $class->[0], @{ $row } ) :
@@ -104,7 +110,6 @@ sub _qadetail {
   } 
  
  }
- 
  
  return $classes;
   

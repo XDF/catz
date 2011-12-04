@@ -82,7 +82,7 @@ sub decode { $_ = $_[0]; s/\-(\d\d\d)/chr($1)/ge; s|_| |g; return $_; }
 #
 sub deurl { uri_unescape $_[0] }
 
-sub digesthex { hmac_md5_hex $_[0] } 
+sub digesthex { hmac_md5_hex @_ } 
  
 #
 # returns MD5 checksum for a string as a base64 string

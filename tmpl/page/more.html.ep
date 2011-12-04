@@ -31,8 +31,18 @@
 <% end %>
 %#
 %# --------------------
+%#
+<% content 'bextra' => begin %>
+% ( $topic eq 'contrib' ) and do {
+<a class="shrink" href="/<%== $langa %>/more/quality/"><%= $t->{QUALITY_TITLE} %></a>
+% };
+% ( $topic eq 'quality' ) and do {
+<a class="shrink" href="/<%== $langa %>/more/contrib/"><%= $t->{CONTRIB_TITLE} %></a>
+% };
+<% end %>
+%#
+%# --------------------
 %# 
-
 <% content 'main' => begin %>
 <div class="outer">
 % given ( $topic ) {

@@ -39,7 +39,7 @@
 %# --------------------
 %#
 <% content 'bextra' => begin %>
-<a class="shrink" href="/<%== $langa %>/more/contrib/"><%= $t->{TO_CONTRIB} %></a>
+<a class="shrink" href="/<%== $langa %>/more/contrib/"><%= $t->{CONTRIB_TITLE} %></a>
 <% end %>
 %#
 %# --------------------
