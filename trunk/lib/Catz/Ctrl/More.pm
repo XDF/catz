@@ -84,7 +84,7 @@ sub quality {
  
  $self->f_init or return $self->fail ( 'f_init exit' );
  
- foreach my $item ( qw ( dt detail ) ) {
+ foreach my $item ( qw ( dt stat detail ) ) {
  
   my $data = $self->fetch ( "bulk#qa$item" ) // undef;
   
@@ -116,7 +116,7 @@ sub quality {
   if ( $this > 0 ) {
     
    $s->{diffdt} .= $this . ' ' . 
-    ( $this == 1 ? $s->{t}->{uc($spec)} : $s->{t}->{uc($spec).'S'} ) .
+    ( $this == 1 ? $s->{t}->{uc($spec).'G'} : $s->{t}->{uc($spec).'S'} ) .
     ( $spec eq 'second' ? '' : ' ' );
 
   }

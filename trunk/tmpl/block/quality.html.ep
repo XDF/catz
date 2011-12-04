@@ -2,19 +2,7 @@
 % foreach my $det ( @$qadetail ) {
 <div class="bar stripetop">
 <h2><%= $t->{'QUALITY_'.uc($det->[0])} %></h2> <%= $sep %>
-% if ( $det->[1] == 0 ) {
-<%= $t->{QUALITY_ITEM_NO} %>
-% } else {
-<span class="xtra sparse"><%= $det->[1] %></span> 
-<%= $t->{'QUALITY_ITEM'.($det->[1] == 1 ? '' : 'A')} %>
-% }
-<%= $sep %>
-% if ( $det->[2] == 0 ) {
-<%= $t->{QUALITY_SKIP_NO} %>
-% } else {
-<%= $det->[2] %>
-<%= $t->{'QUALITY_SKIP'.($det->[2] == 1 ? '' : 'A')} %> 
-% }
+%== include 'elem/qastat', checks => undef, fails => $det->[1], skips => $det->[2];
 <%= $sep %> <%= $t->{'QUALITY_'.uc($det->[0]).'_DESC'} %>
 </div><div class="bar"><ul> 
 % foreach my $item ( @{ $det->[3] } ) {

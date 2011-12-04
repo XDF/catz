@@ -69,7 +69,7 @@ sub check_begin {
  logit ( 'initializing check tables' );
  $dbc->do( 'insert into crun select max(dt) from run' );
  
- return $dbc->selectrow_array ( 'select dt from crun' );
+ return int ( $dbc->selectrow_array ( 'select dt from crun' ) );
  
 }
 
@@ -212,32 +212,28 @@ sub _subject_approx {
    $stm->execute ( $pri, $sec->[0], $head );  
 
    foreach my $com ( $stm->fetchrow_array ) {
-
-    # allow one difference per 5 characters  
+  
     my $len = length $sec->[1];
     my $allow = ceil ( ( $len + 1 )  / 5 );
     
-    say "$len allows $allow"; 
-  
     if ( distance ( $sec->[1], $com ) <= $allow ) {
     
      ( exists $seenb->{$sec->[1]} and exists $seena->{$com} ) or do { 
     
-     $seena->{$sec->[1]} = 1;
-     $seenb->{$com} = 1;
+      $seena->{$sec->[1]} = 1;
+      $seenb->{$com} = 1;
     
-     item ( $pri, $sec->[1], $com );
+      item ( $pri, $sec->[1], $com );
     
-    };   
+     };   
    
-   }
+    }
  
+   }
+    
   }
  
  }
- 
-}
-
 
  $stm->finish; 
 
@@ -285,14 +281,12 @@ sub _nation_exists {
  foreach my $text ( @text ) {
    
   if ( $text =~ /([A-Z]+)\*\w/ ) {
-    
-   exists $nats{$1} or 
-    item ( 'nation', $_ );  
+ 
+   exists $nats{$1} or item ( 'nation', $1 );  
   
   } elsif ( $text =~ /\w\*([A-Z]+)/ ) {
     
-   exists $nats{$1} or 
-    item ( 'nation', $_ );  
+   exists $nats{$1} or item ( 'nation', $1 );  
     
   }
  
@@ -300,34 +294,24 @@ sub _nation_exists {
 
 }
 
-
 sub check_any {
 
  my $what = shift;
 
- my $sub = "_$what";
- 
- $class = $what;
+ my $sub = "_$what"; $class = $what;
  
  logit ( "check $what" );
  
  $skip = 0; $fail = 0;
  
-
- {
-  
-  no strict 'refs';
-  
-  $sub->();
+ { no strict 'refs'; $sub->() }
  
- }
- 
- $dbc->do ( 'insert into cclass values (?,?,?,?)', undef, $class, $phase++, $fail, $skip ); 
-
+ $dbc->do ( 
+  'insert into cclass values (?,?,?,?)', undef, $class, $phase++, $fail, $skip 
+ ); 
 
 }
 
-sub check_end { $dbc->commit }
-
+sub check_end { logit ( 'checking done' ); $dbc->commit; $dbc->disconnect }
 
 1;

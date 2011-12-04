@@ -142,6 +142,7 @@ sub mapsub {
     $s->{surls} = [
      [ '/', 'daily', 1 ],
      [ '/more/contrib/', 'weekly', 0.9 ],
+     [ '/more/quality/', 'monthly', 0.1 ],
      [ '/search/', 'monthly', 0.8 ],
      [ '/news/', 'weekly', 0.4 ],
      [ '/lists/', 'monthly', 0.2 ],    

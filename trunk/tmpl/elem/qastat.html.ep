@@ -1,0 +1,15 @@
+% defined $checks and do {
+<%= $checks %> <%= $t->{QUALITY_CHECKS} %><%= defined $checks ? ',' : " $sep" %>
+% };
+% if ( $fails == 0 ) {
+<%= $t->{QUALITY_ITEM_NO} %><%= defined $checks ? ',' : " $sep" %>
+% } else {
+<span class="xtra"><%= $fails %></span> 
+<%= $t->{'QUALITY_ITEM'.($fails == 1 ? '' : 'A')} %><%= defined $checks ? ',' : " $sep" %>
+% }
+% if ( $skips == 0 ) {
+<%= $t->{QUALITY_SKIP_NO} %>
+% } else {
+<%= $skips %>
+<%= $t->{'QUALITY_SKIP'.($skips == 1 ? '' : 'A')} %><%= defined $checks ? '.' : '' %> 
+% }
