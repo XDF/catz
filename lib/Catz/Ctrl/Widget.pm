@@ -31,80 +31,130 @@ use parent 'Catz::Ctrl::Base';
 use List::Util qw ( shuffle );
 
 use Catz::Data::Widget;
+use Catz::Data::Style;
 
-use constant SOFT => 0; # replace illegal parameter values with default value
-use constant HARD => 1; # raise an error on illegal parameter value
 
-sub params {
-
- # verify / process widget parameters
- 
- my ( $self, $hard ) = @_; my $s = $self->{stash};
-
- # pass to widget module for the work
- widget_init ( $self, $hard ) or return 0;
- 
- return 1;
-
-}
-
-sub build_urlother {
+sub urlothers {
 
  my $self = shift; my $s = $self->{stash};
-
- my $head = "/$s->{langaother}/$s->{action}";
+ 
+ # only for builder, embed has no language change link
   
  given ( $s->{runmode} ) {
  
   when ( 'pair' )  {
   
-   $s->{trans} = $self->fetch ( 'map#trans', $s->{pri}, $s->{sec} );
+   my $enc = $self->encode ( $s->{sec} );
+  
+   $s->{urlconfa} = 
+    $self->fuse ( $s->{langa}, $s->{func}, $s->{pri}, $enc );
+          
+   $s->{urlconfb} = '/';
+  
+   $s->{urlembed} = $self->fuse ( 
+    $s->{lang}, 'embed', $s->{pri}, $enc, $s->{widcon} 
+   );
+
+   $s->{trans} = $self->fetch ( 'map#trans', $s->{pri}, $enc );
       
-   $s->{urlother} =
-    $head . '?' . 'p=' . $s->{pri} . '&s=' . 
-    $self->enurl ( $s->{trans} ) . "&$s->{tail}";
+   $s->{urlother} = $self->fuse ( 
+    $s->{langaother}, $s->{func}, $s->{pri}, $s->{trans}, $s->{widcon} 
+   );
   
   }
   
   when ( 'search' ) {
 
-   $s->{urlother} =
-    $head . '?' . 'q=' . $self->enurl ( $s->{what} ) . "&$s->{tail}";
+   $s->{urlconfa} = $self->fuse ( $s->{langa}, $s->{func} );   
+   $s->{urlconfb} =  '?q=' . $self->enurl ( $s->{what} );
+
+   $s->{urlembed} = $self->fuseq ( 
+    $s->{lang}, 'embed', $s->{widcon} 
+   ) . '?q=' . $self->enurl ( $s->{what} );
+  
+   $s->{urlother} = $self->fuseq ( 
+    $s->{langaother}, $s->{func}, $s->{widcon} 
+   ) . '?q=' . $self->enurl ( $s->{what} );
   
   }
   
-  default { # default to all
+  default { # default to runmode all
 
-   $s->{urlother} =
-    length ( $s->{tail} ) > 0 ?
-      $head . '?' . $s->{tail} :
-      $head . '/';
-   
+   $s->{urlconfa} = $self->fuse ( $s->{langa}, $s->{func} );   
+   $s->{urlconfb} = '/';
+
+   $s->{urlembed} = $self->fuse ( 
+    $s->{lang}, 'embed', $s->{widcon} 
+   );
+
+   $s->{urlother} = $self->fuse ( 
+    $s->{langaother}, $s->{func}, $s->{widcon} 
+   );
+      
   }
   
  }
  
  return $self->done;
-
+ 
 }
 
 sub start  {
 
- my ( $self, $strict ) = @_; my $s = $self->{stash};
+ my $self = shift; my $s = $self->{stash};
+
+ given ( $s->{func} ) {
+ 
+  #
+  # build = widget builder
+  #
+  
+  when ( 'build' ) {
+  
+   if ( defined $s->{widcon} ) { 
+ 
+    # this is not the builder's entry pages, prevent indexing
+    $s->{meta_index} = 0; $s->{meta_follow} = 0;
+    
+   } else {
+   
+    # no config, load the default
+    $s->{widcon} = widget_default;
+   
+   }
+  
+  }
+ 
+  #
+  # embed = widget rendering
+  #
+ 
+  when ( 'embed' ) {
+  
+   length $s->{langa} > 2 and return $self->fail ( 'setup set so stopping' );
+   
+   defined $s->{widcon} or # can't render without config 
+    return $self->fail ( 'widget configuration missing' );
+    
+   # widget "pages" shouldn't be indexed 
+   $s->{meta_index} = 0; $s->{meta_follow} = 0;
+  
+  }
+  
+  default { return $self->fail ( 'unknown widget function' ) }
+ 
+ }
  
  $self->f_init or return $self->fail ( 'f_init exit' );
-
- $s->{pri} = $self->param ( 'p' ) // undef; 
- $s->{sec} = $self->param ( 's' ) // undef;
-
+ 
  if ( $s->{pri} and $s->{sec} ) {
-
-   $self->f_pair_start or return $self->fail ( 'f_pair_start exit' );
+ 
+  $self->f_pair_start or return $self->fail ( 'f_pair_start exit' );
 
  } else {
 
   $self->f_search_ok ( 'q', 'what' ) 
-   or return $self->fail ( 'illegal parameter' );
+   or return $self->fail ( 'illegal search' );
 
   if ( $s->{what} ) {
 
@@ -119,73 +169,64 @@ sub start  {
   }
 
  }
+ 
+ return $self->done; 
+ 
+}
 
+sub do { # the common entry point for buidler and renderer
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ $self->start or return $self->fail ( 'start exit' );
+ 
+ # better check and process the widget configuration now
+ 
+ ( $s->{widcons} = widget_conf ( $s->{widcon} ) )
+  or $self->fail ( 'widget setup verfication failed' );
+ 
  $s->{total} = $self->fetch ( "$s->{runmode}#count", @{ $s->{args_array} } );
  
- $s->{total} > 0 or return $self->fail ( 'no data' );
+ $s->{total} > 0 or return $self->fail ( 'no photos' );
 
- widget_init ( $self, $strict ) 
-  or return $self->fail ( 'widget parameters verification failed' ); 
+ $s->{func} eq 'build' and do {
+ 
+  $self->urlothers or $self->fail ( 'urlothers exit' );
+ 
+ };
+ 
+ $s->{func} eq 'embed' and do {
+ 
+  $self->photos or $self->fail ( 'phtos exit' );
+ 
+ };
+ 
+ # use thumbsize from widget configuration, not the global value 
+ $s->{thumbsize} = $s->{widcons}->{s};
+   
+ $self->output ( "page/$s->{func}" );
  
 }
 
-sub build { # the widget builder
-
- my $self = shift; my $s = $self->{stash};
-
- $self->start ( SOFT ) or return $self->fail ( 'start exit' );
-
- $s->{tail} = widget_ser ( $s, 'build' );
- 
- $self->build_urlother or return $self->fail ( 'build_urlother exit' );
- 
- # we omit the first slash, it will be added in template
- $s->{urltarget} = $s->{lang} . '/embed?' . widget_ser ( $s, 'embed' );
-  
- $self->output ( 'page/build' );
- 
-}
-
-sub embed { # the widget renderer
+sub photos { # the widget renderer
 
  my $self = shift; my $s = $self->{stash};
   
- $self->start ( HARD ) or return $self->fail ( 'start exit' );
+ my $n = 100; # we assume that this number of photos is always enough
  
- my $n = 100;
- 
- if ( $s->{runmode} eq 'pair' ) {
-
-  $self->f_pair_start;
-  
-   $s->{xs} = $self->fetch ( 'pair#array_rand_n', @{ $s->{args_array} }, $n ); 
+ $s->{xs} = $self->fetch ( 
+  "$s->{runmode}#array_rand_n", @{ $s->{args_array} }, $n 
+ ); 
           
- } elsif ( $s->{runmode} eq 'search' ) {
-  
-  $s->{xs} = $self->fetch ( 'search#array_rand_n', @{ $s->{args_array} }, $n ); 
-    
- } else {
-  
-  $s->{xs} = $self->fetch ( 'all#array_rand_n', $n );
-  
- }
-
  scalar @{ $s->{xs} } == 0 and return $self->fail ( 'no photos found' ); 
   
- # fetch corresponding thumbnails 
+ # fetch the corresponding thumbnails 
  ( $s->{thumbs}, undef, undef ) = 
   @{ $self->fetch( 'photo#thumb', @{ $s->{xs} } ) };
 
- # reshuffle to break the default album ordering
- $s->{thumbs} = [ shuffle @{  $s->{thumbs} } ];
-  
- my $im = 
-  widget_stripe ( 
-   map { $s->{ $_ } } qw ( thumbs run size limit mark ) 
-  );  
+ # fetch photo texts  
+ $s->{texts} = $self->fetch ( 'photo#texts', @{ $s->{xs} } );
    
- $self->render_data ( $im , format => 'jpeg' );
-  
 }
 
 sub contact {
@@ -199,6 +240,16 @@ sub contact {
  );
 
  $self->render_data ( $im , format => 'png' );
+
+}
+
+sub style {
+
+ my $self = shift; my $s = $self->{stash};
+ 
+ $s->{st} = style_get; $s->{palette} = 'light'; 
+
+ $self->render ( 'style/widget', format => 'css' );
 
 }
 

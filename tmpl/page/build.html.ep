@@ -10,6 +10,12 @@
 %#
 %# --------------------
 %#
+<% content 'jsadd' => begin %>
+%== include 'elem/js', jstype => 'site', jsfile => 'copy';
+<% end %>
+%#
+%# --------------------
+%#
 <% content 'btitle' => begin %>
 <h1><%= $t->{WID_HEAD} . ' ' . $t->{'WID_TAIL_'.uc($runmode)} %></h1>
 <% end %>
@@ -23,72 +29,64 @@
 %# --------------------
 %#
 <% content 'main' => begin %>
-<form id="widgets" class="block bar" action="/<%= $langa %>/build" method="get">
-<h2><%= $t->{WID_SETUP} %></h2> <input type="submit" value="<%= $t->{WID_SUBMIT} %>">
+<div class="bar">
+<h2><%= $t->{WID_SETUP} %></h2><ul class="roomy">
 %#
 %# --------------------
 %#
-<input type="hidden" name="type" value="stripe">
-% given ( $runmode ) {
-%  when ( 'pair' ) { 
-<input type="hidden" name="p" value="<%== $pri %>">
-<input type="hidden" name="s" value="<%== $sec %>">
-%  } 
-%  when ( 'search' ) {
-<input type="hidden" name="q" value="<%== $what %>">
-%  }
-% }
+%# d = direction 
 %#
-%# --------------------
-%#
-<ul class="roomy"><li><span class="sparse"><%= $t->{'WID_RUN'} %></span>
-% foreach my $val ( @{ $widget->{allowed}->{run} } ) { 
-<input type="radio" name="run" value="<%== $val %>"<%= $val eq $run ? ' checked' : '' %>>
-<%= $t->{'WID_RUN_'.uc($val)} %>
+<li><span class="sparse"><%= $t->{'WID_CONF_D'} %></span>
+% foreach my $val ( qw ( 1 2 ) ) {
+<%= $sep %> 
+%   $widcons->{d} ne $val and do {
+<a href="<%== $urlconfa %>t<%== $widcons->{t} %>d<%== $val %>s<%== $widcons->{s} %>l<%== $widcons->{l} %><%== $urlconfb %>">
+%  };
+<%= $t->{'WID_CONF_D_'.$val} %><%== $widcons->{d} eq $val ? '' : '</a>' %>
 % }
 </li>
-%#
 %# --------------------
 %#
-<li><span class="sparse"><%= $t->{'WID_SIZE'} %></span>
-<input type="field" name="size" value="<%== $size %>" size="4">
-<%= $t->{'WID_PIXELS'} %> 
-(<%= $widget->{limits}->{size}->{min} %> - <%= $widget->{limits}->{size}->{max} %>)</li>
+%# s = size 
 %#
-%# --------------------
-%#
-<li><span class="sparse"><%= $t->{'WID_LIMIT'} %></span>
-<input type="field" name="limit" value="<%== $limit %>" size="4">
-<%= $t->{'WID_PIXELS'} %> 
-(<%= $widget->{limits}->{limit}->{min} %> - <%= $widget->{limits}->{limit}->{max} %>)</li>
-%#
-%# --------------------
-%#
-<li><%= $t->{'WID_BACK'} %>
-% foreach my $val ( @{ $widget->{allowed}->{back} } ) {
-<input type="radio" name="back" value="<%== $val %>"<%= $val eq $back ? ' checked' : '' %>>
-<%= $t->{'WID_BACK_'.uc($val)} %>
-% } 
-</li></ul></form></div>
-%#
-%# --------------------
-%# 
-<div class="bar">
-<h2><%= $t->{WID_CODE} %></h2><div class="bar lean enlarge">
-% if ( $back eq 'yes' ) {
-%= $self->render ( 'elem/back', partial => 1, intent => 'embed' );
+<li><span class="sparse"><%= $t->{'WID_CONF_S'} %></span>
+% foreach my $val ( qw ( 60 80 100 120 140 160 200 ) ) {
+<%= $sep %> 
+%  $widcons->{s} ne $val and do {
+<a href="<%== $urlconfa %>t<%== $widcons->{t} %>d<%== $widcons->{d} %>s<%== $val %>l<%== $widcons->{l} %><%== $urlconfb %>">
+%  };
+<%= $val %><%== $widcons->{s} eq $val ? '' : '</a>' %>
 % }
-%= $self->render ( 'elem/stripe', partial => 1, intent => 'code' );
-% if ( $back eq 'yes' ) {
-<%= '</a>' %>
+%# --------------------
+%#
+%# l = size 
+%#
+</li><li><span class="sparse"><%= $t->{'WID_CONF_L'} %></span>
+% foreach my $val ( qw ( 400 500 600 700 800 1000 1200 1400 1600 1800 2000 ) ) {
+<%= $sep %>
+%  $widcons->{l} ne $val and do { 
+<a href="<%== $urlconfa %>t<%== $widcons->{t} %>d<%== $widcons->{d} %>s<%== $widcons->{s} %>l<%== $val %><%== $urlconfb %>">
+%  };
+<%= $val %><%== $widcons->{l} eq $val ? '' : '</a>' %>
 % }
-</div></div>
-<div class="bar">
-<h2><%= $t->{WID_VIEW} %></h2>
-<div class="bar">
-%== $self->render ( 'elem/stripe', partial => 1, intent => 'preview' );
-</div>
-<div class="bar">
+%#
+%# --------------------
+%#
+</li></ul></div><div class="bar">
+% my $wh = $widcons->{d} eq 1 ? $widcons->{s} : $widcons->{l};
+% my $ww = $widcons->{d} eq 1 ? $widcons->{l} : $widcons->{s};
+% my $txt = $self->render ( 'block/embed', partial => 1, intent => 'render', wurl => $urlembed, wheight => $wh, wwidth => $ww );
+% $txt =~ s|\&|\&amp;|g;
+% my $t1 = $t->{WID_COPYCODE};
+% $t1 =~ s/\'/\\\'/g;
+% my $t2 = $txt;
+% $t2 =~ s/\'/\\\'/g;
+<h2><%= $t->{WID_CODE} %></h2>
+<a href="JavaScript:catzCopyCode('<%= $t1 %>','<%= $t2 %>');"><%= $t->{WID_COPY} %></a> 
+<div class="bar lean enlarge"><%= $txt %></div>
+</div><div class="bar"><h2><%= $t->{WID_VIEW} %></h2><div class="bar">
+%== include 'block/embed', intent => 'include', wurl => $urlembed, wheight => $wh, wwidth => $ww;
+</div><div class="bar">
 %== include 'content/build';
 </div>
 %#

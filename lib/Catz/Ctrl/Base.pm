@@ -343,24 +343,11 @@ sub f_pair_start {
 
  $s->{runmode} = 'pair';
 
- $s->{controller} eq 'widget' and do { 
-
-  # run basic checks, not done by Mojolicious router
-
-  $s->{pri} =~ /^[a-z]{1,25}$/
-   or return $self->fail ( 'concept malformed' );
-
-  length $s->{sec} > 1000
-   and return $self->fail ( 'subject too long' );
-
- };
-
  # check that pri is acceptable
  $self->fetch( 'pair#verify', $s->{pri} ) 
   or return $self->fail ( 'illegal concept' );
  
- $s->{controller} ne 'widget' and
-  $s->{sec} = $self->decode ( $s->{sec} );
+ $s->{sec} = $self->decode ( $s->{sec} );
 
  $s->{args_array} = [ $s->{pri}, $s->{sec} ];
  $s->{args_count} = 2;

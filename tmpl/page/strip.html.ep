@@ -1,5 +1,0 @@
-% extends 'base/widget';
-<% content 'main' => begin %>
-%== include 'block/thumbs', intent => 'embed', thumbsize => $size;
-%== include 'content/widget';
-<% end %>

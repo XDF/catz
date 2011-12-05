@@ -28,9 +28,7 @@ use 5.12.0; use strict; use warnings;
 
 use parent 'Exporter';
 
-our @EXPORT = qw (
- widget_conf widget_init widget_ser widget_params widget_stripe widget_plate
-);
+our @EXPORT = qw ( widget_default widget_conf widget_plate );
 
 use GD;
 use List::MoreUtils qw ( any );
@@ -42,204 +40,91 @@ use Catz::Util::Number qw ( round );
 use Catz::Util::String qw ( enurl );
 use Catz::Util::Time qw ( dtlang );
 
-my $widget = {}; # widget config
+sub widget_conf { 
 
-my $t = text ( 'en' );
-
-$widget->{params} = [ qw ( type run size limit back ) ];
-
-$widget->{defaults} = {
- type => 'stripe',
- run => 'leftright',
- size => 100,
- limit => 600,
- back => 'yes',
-};
-
-$widget->{limits} = {
- size => { min => 50, max => 200 },
- limit => { min => 200, max => 2000 },
-};
-
-$widget->{allowed} = {
- type => [ qw ( stripe ) ],
- run => [ qw ( leftright topdown ) ],
- back => [ qw ( yes no ) ], 
-};
-
-sub widget_conf { $widget }
-
-sub widget_params { @{ $widget->{params} } }
-
-sub widget_init {
-
- my ( $app, $strict ) = @_; my $s = $app->{stash};
+ my $widcon = shift;
+   
+ my $con = {}; # target
+  
+ length $widcon > 1000 and return undef;
  
- $s->{widget} = $widget;
+ my @wc = split /([a-z])/, $widcon;
  
- foreach my $par ( @{ $widget->{params} } ) {
-
-  # embed mode = image rendering doesn't reguire back parameter
-  $s->{action} eq 'embed' and $par eq 'back' and goto SKIP_THIS;
- 
-  $s->{ $par } = $app->param ( $par ) // undef;
- 
-  defined $s->{ $par } or do {
-   $strict and return 0; 
-   $s->{$par} = $widget->{defaults}->{ $par };
-  };
-
-  if ( exists $widget->{limits}->{ $par } ) {
+ shift @wc; # the first value is undef
     
-   ( 
-    $s->{ $par } =~ m|^\d{1,4}$| and
-    $s->{ $par } >= $widget->{limits}->{ $par }->{min} and
-    $s->{ $par } <= $widget->{limits}->{ $par }->{max} 
-   ) or do { 
-    $strict and return 0; $s->{$par} = $widget->{defaults}->{ $par } 
-   }; 
+ ( scalar @wc % 2 ) == 0 or return undef;
+ 
+ for ( my $i = 0; $i < scalar @wc; $i += 2 ) {
+ 
+  warn "$wc[$i] = $wc[$i+1]";
+ 
+  defined $wc[$i] or return undef;
+  defined $wc[$i+1] or return undef;
+ 
+  given ( $wc[$i] ) {
   
-  } elsif ( exists $widget->{allowed}->{ $par } ) {
-  
-   ( any { $s->{$par} eq $_ } @{  $widget->{allowed}->{ $par } } )
-    or do {
-     $strict and return 0; 
-     $s->{$par} = $widget->{defaults}->{ $par };
-    };
-  
-  } else { die "interal error: not enough information for parameter '$par'" }
-  
-  SKIP_THIS:
-  
- }
- 
- return 1;
-
-}
-
-sub widget_ser {
-
- my ( $s, $intent ) = @_;
- 
- my @coll = ();
- 
- if ( $s->{runmode} eq 'pair' ) {
- 
-  push @coll, 'p=' . $s->{pri};  
-  push @coll, 's=' . enurl $s->{sec}; 
- 
- } elsif ( $s->{runmode} eq 'search' ) {
- 
-  push @coll, 'q=' . enurl $s->{what};
-  
- }
- 
- $intent eq 'entry' and goto SKIP_PARAMS;
- 
- foreach my $par ( @{ $widget->{params} } ) {
- 
-  my $val = $widget->{defaults}->{ $par };
-
-  defined $s->{ $par } and $val = $s->{ $par };
-  
-  $intent eq 'embed' and ( $par ne 'back' ) and  
-   push @coll, "$par=" . enurl $val; 
- 
- }
- 
- SKIP_PARAMS:
- 
- return join '&', @coll;
-
-}
-
-sub widget_stripe {
-
- use Time::HiRes qw ( time );
- 
- my $time_start = time();
-
- my ( $thumbs, $run, $size, $limit, $mark ) = @_;
+   when ( 'd' ) { # direction
    
- my $use = -1; my $curr = 0; my @widths = (); my @heights = ();
- 
- foreach my $th ( @{ $thumbs } ) {
- 
-  my ( $width, $height );
+    my $x = int ( $wc[$i+1] );
+    
+    ( $x == 1 or $x == 2 ) or return undef;
+    
+    $con->{d} = $x;   
+   
+   }
+
+   when ( 'l' ) { # limit
+   
+    my $x = int ( $wc[$i+1] );
+    
+    $x > 2000 and return undef; 
+    
+    $x < 200 and return undef;
+    
+    $x % 100 == 0 or return undef;
+     
+    $con->{l} = $x;   
+   
+   }
   
-  if ( $run eq 'topdown' ) {
- 
-   $width = $size;
-   $height = round ( $th->[6] * ( $size / $th->[5] ) );
-      
-   } else {
   
-   $width = round ( ( $size / $th->[6] ) * $th->[5] );
-   $height = $size;
+   when ( 's' ) { # size
+
+    my $x = int ( $wc[$i+1] );
+    
+    $x > 200 and return undef; 
+    
+    $x < 50 and return undef;
+    
+    $x % 20 == 0 or return undef;
+     
+    $con->{s} = $x;
    
-  } 
-  
-  if ( 
-   ( $run eq 'topdown' and ( $curr + $height < $limit ) )
-    or ( $run ne 'topdown' and  ( $curr + $width < $limit ) ) 
-  ) { 
- 
-   push @widths, $width;  
-   push @heights, $height;
+   }
+
+   when ( 't' ) { # type
    
-   if ( $run eq 'topdown' ) { $curr += $height } else { $curr += $width } 
+    my $x = int ( $wc[$i+1] );
+        
+    $x == 1 or return undef;
+        
+    $con->{t} = $x;   
    
-   $use++;
-   
+   }
+
+   default { return undef } # unknown character in widget config
    
   }
- 
+  
  }
-  
- my $gd =
-  $run eq 'topdown' ?
-  new GD::Image( $size, $curr, 1 ) : 
-  new GD::Image( $curr, $size, 1 ); 
-  # 1 = TrueColor
-   
- my $currx = 0; my $curry = 0;
-  
- foreach my $i ( 0 .. $use ) {
  
- #
- # we use a relative path here
- #
- # due to the fact that the directory structure is fixed
- # in all environments this appers to work without hassle
- #
+ do { exists $con->{$_} or return undef } foreach qw ( t d s l );
  
-  my $nd = newFromJpeg GD::Image ( 
-   "../../static/photo/$thumbs->[$i]->[3]/$thumbs->[$i]->[4]", 1 
-  );
-  
-  $gd->copyResampled ( 
-   $nd, $currx, $curry, 0, 0, $widths[$i], $heights[$i],
-   $thumbs->[$i]->[5], $thumbs->[$i]->[6]
-  );
-
-  if ( $run eq 'topdown' ) { $curry +=  $heights[$i] } 
-   else { $currx +=  $widths[$i] } 
-
- }
-         
- my $gdd = $gd->jpeg(95);
-   
- my $time_end = time();
+ return $con;
  
- my $timing = round ( 
- ( ( $time_end - $time_start  ) * 1000 ), 0 
- ) . ' ms';
- 
- warn $timing;
-  
- return $gdd;
-
 }
+
+sub widget_default { 't1d1s100l800' }
 
 my $plate = {
 
@@ -264,9 +149,6 @@ my $plate = {
  font_missing => gdLargeFont,
  
 };
-
-my $plate_width = 129;
-my $plate_height = 22;
 
 sub widget_plate {
 
