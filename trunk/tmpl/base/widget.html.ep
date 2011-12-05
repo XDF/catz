@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+%#
+%# --------------------
+%# An abstract template for widget iframe content
+%# --------------------
+%#
+<html lang="<%== $lang %>"><head>
+<title><%= $t->{WIDGET_TITLE} %> - <%= $t->{SITE} %></title>
+%#
+%# --------------------
+%#
+<link rel="stylesheet" type="text/css" href="/style/reset/">
+<link rel="stylesheet" type="text/css" href="/style/widget/">
+%#
+%# --------------------
+%#
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta http-equiv="content-language" content="<%== $lang %>">
+<link rel="shortcut icon" href="/favicon.ico">
+<meta name="author" content="<%== $t->{AUTHOR} %>">
+<meta name="copyright" content="<%= $t->{COPYRIGHT} %> <%= $t->{AUTHOR} %> <%= $t->{FIRSTYEAR} %>-<%= thisyear %>. <%= $t->{LICENCE} %>.">
+<link rel="copyright" href="<%== $t->{URL_LICENCE} %>"> 
+<meta name="og:site_name" content="<%= $t->{SITE} %>">
+<meta name="robots" content="none">
+<meta name="generator" content="<%= $t->{GENERATOR} %>">
+<meta name="loaded" content="<%= dtexpand ( $version, $lang ) %>">
+<meta name="rendered" content="<%= $now %>">
+<meta name="environment" content="catz<%= $env %>">
+<meta name="credits" content="<%= $t->{CREDITS} %>">
+</head>
+%#
+%# --------------------
+%#
+<body lang="<%== $lang %>"><div id="page">
+%#
+%# --------------------
+%#
+<%= content 'main' %>
+%#
+%# --------------------
+%#
+<br>
+<div class="bar megaspace">
+<%= $t->{WIDGET_EMBED_INFO} %> <a href="<%== $t->{URL_CATZA} %>"><%= $t->{SITE} %></a>.
+</div>
+%== include 'block/analytics';
+</body></html>
+%#
+%# --------------------
+%#
+%#
+%# Catz - the world's most advanced cat show photo engine
+%# Copyright (c) 2010-2011 Heikki Siltala
+%# Licensed under The MIT License
+%# 
+%# Permission is hereby granted, free of charge, to any person obtaining a copy
+%# of this software and associated documentation files (the "Software"), to deal
+%# in the Software without restriction, including without limitation the rights
+%# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+%# copies of the Software, and to permit persons to whom the Software is
+%# furnished to do so, subject to the following conditions:
+%# 
+%# The above copyright notice and this permission notice shall be included in
+%# all copies or substantial portions of the Software.
+%# 
+%# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+%# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+%# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+%# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+%# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+%# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+%# THE SOFTWARE.
+%#

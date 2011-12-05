@@ -101,6 +101,9 @@ sub startup {
  
  # reset
  $r->route( '/style/reset' )->to( 'main#reset' );
+
+ # widget
+ $r->route( '/style/widget' )->to( 'widget#style' );
  
  # the single stylesheet contains all style definitions
  # it's color settings are dependent on the palette 
@@ -198,12 +201,12 @@ sub startup {
   
  # with photo id
  $p->route( ':pri/:sec/:id', 
-  pri => qr/[a-z]{1,25}/, sec => qr/[A-ZA-z0-9_-]{1,500}/, id => qr/\d{6}/ 
+  pri => qr/[a-z]{1,25}/, sec => qr/[A-Za-z0-9_-]{1,500}/, id => qr/\d{6}/ 
  )->to( controller => 'pair' );
  
  # without photo id
  $p->route( ':pri/:sec/', 
-  pri => qr/[a-z]{1,25}/, sec => qr/[A-ZA-z0-9_-]{1,500}/ )->to( 
+  pri => qr/[a-z]{1,25}/, sec => qr/[A-Za-z0-9_-]{1,500}/ )->to( 
    controller => 'pair', id => undef 
   );
 
@@ -232,7 +235,7 @@ sub startup {
 
  $l->route( 
   '/viz/rank/:pri/:sec/:vkey',
-  pri => qr/[a-z]{1,25}/, sec => qr/[A-ZA-z0-9_-]{1,500}/, vkey => qr/\d{14}/
+  pri => qr/[a-z]{1,25}/, sec => qr/[A-Za-z0-9_-]{1,500}/, vkey => qr/\d{14}/
  )->to( 'visualize#rank' );
 
  $l->route( '/viz/globe/:vkey', vkey => qr/\d{14}/ )
@@ -247,12 +250,29 @@ sub startup {
   palette => qr/dark|neutral|bright/ 
  )->to( 'widget#contact' );
 
- # the widget builder
- #  $l->route ( '/build' )->to ( 'widget#build' );
-
- # the widget renderer
- # $l->route ( '/embed' )->to ( 'widget#embed' );
+ ###
+ ### the widget builder and renderer
+ ###
  
+ my $w = $l->route( '/:func', func => qr/build|embed/ );
+
+ $w->route ( 
+  '/:pri/:sec/:widcon', 
+  pri => qr/[a-z]{1,25}/, sec => qr/[A-Za-z0-9_-]{1,500}/,
+  widcon => qr/[a-z0-9]{1,500}/
+ )->to ( "widget#do" );
+  
+ $w->route ( 
+  '/:pri/:sec', 
+  pri => qr/[a-z]{1,25}/, sec => qr/[A-Za-z0-9_-]{1,500}/ 
+ )->to ( "widget#do" );
+ 
+ $w->route ( 
+  '/:widcon', widcon => qr/[a-z0-9]{1,500}/
+ )->to ( "widget#do" );
+
+ $w->route ( '/' )->to ( "widget#do" );
+  
  ###
  ### AJAX interface(s)
  ###

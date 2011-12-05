@@ -149,10 +149,33 @@ sub multi {
  $s->{ancient} = $self->fetch ( 'related#date', $s->{xlast} );
  
  # prepare url for builder access
- $s->{urlbuild} = $s->{runmode} eq 'all' ? 
-  '/' . $s->{langa} . '/build/' :
-  '/' . $s->{langa} . '/build?' . widget_ser ( $s, 'entry' );
-    
+ 
+ given ( $s->{runmode} ) {
+ 
+  when ( 'pair' ) {
+
+   my $enc = $self->encode ( $s->{sec} );
+         
+   $s->{urlbuild} = 
+    $self->fuse ( $s->{langa}, 'build', $s->{pri}, $enc );
+  
+  }
+  
+  when ( 'search' ) {
+
+   $s->{urlembed} = $self->fuseq ( $s->{langa}, 'build' ) . 
+    '?q=' . $self->enurl ( $s->{what} );  
+  
+  }
+  
+  default {
+  
+   $s->{urlembed} = $self->fuse (  $s->{langa}, 'build' ); 
+  
+  }
+ 
+ }
+      
  $self->output ( 'page/browse' );
  
  return $self->done;
