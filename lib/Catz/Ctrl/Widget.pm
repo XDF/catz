@@ -52,13 +52,13 @@ sub urlothers {
    $s->{urlconfb} = '/';
   
    $s->{urlembed} = $self->fuse ( 
-    $s->{lang}, 'embed', $s->{pri}, $enc, $s->{widcon} 
+    $s->{lang}, 'embed', $s->{pri}, $enc, $s->{wspec} 
    );
 
    $s->{trans} = $self->fetch ( 'map#trans', $s->{pri}, $enc );
       
    $s->{urlother} = $self->fuse ( 
-    $s->{langaother}, $s->{func}, $s->{pri}, $s->{trans}, $s->{widcon} 
+    $s->{langaother}, $s->{func}, $s->{pri}, $s->{trans}, $s->{wspec} 
    );
   
   }
@@ -69,11 +69,11 @@ sub urlothers {
    $s->{urlconfb} =  '?q=' . $self->enurl ( $s->{what} );
 
    $s->{urlembed} = $self->fuseq ( 
-    $s->{lang}, 'embed', $s->{widcon} 
+    $s->{lang}, 'embed', $s->{wspec} 
    ) . '?q=' . $self->enurl ( $s->{what} );
   
    $s->{urlother} = $self->fuseq ( 
-    $s->{langaother}, $s->{func}, $s->{widcon} 
+    $s->{langaother}, $s->{func}, $s->{wspec} 
    ) . '?q=' . $self->enurl ( $s->{what} );
   
   }
@@ -84,11 +84,11 @@ sub urlothers {
    $s->{urlconfb} = '/';
 
    $s->{urlembed} = $self->fuse ( 
-    $s->{lang}, 'embed', $s->{widcon} 
+    $s->{lang}, 'embed', $s->{wspec} 
    );
 
    $s->{urlother} = $self->fuse ( 
-    $s->{langaother}, $s->{func}, $s->{widcon} 
+    $s->{langaother}, $s->{func}, $s->{wspec} 
    );
       
   }
@@ -101,6 +101,8 @@ sub urlothers {
 
 sub start  {
 
+ # common starting tasks for widget builder and widget renderer
+
  my $self = shift; my $s = $self->{stash};
 
  given ( $s->{func} ) {
@@ -111,15 +113,16 @@ sub start  {
   
   when ( 'build' ) {
   
-   if ( defined $s->{widcon} ) { 
+   if ( defined $s->{wspec} ) { 
  
+    
     # this is not the builder's entry pages, prevent indexing
     $s->{meta_index} = 0; $s->{meta_follow} = 0;
     
    } else {
    
     # no config, load the default
-    $s->{widcon} = widget_default;
+    $s->{wspec} = widget_default;
    
    }
   
@@ -133,7 +136,7 @@ sub start  {
   
    length $s->{langa} > 2 and return $self->fail ( 'setup set so stopping' );
    
-   defined $s->{widcon} or # can't render without config 
+   defined $s->{wspec} or # can't render without config 
     return $self->fail ( 'widget configuration missing' );
     
    # widget "pages" shouldn't be indexed 
@@ -144,6 +147,8 @@ sub start  {
   default { return $self->fail ( 'unknown widget function' ) }
  
  }
+ 
+ # calling general initialization routines on base controller
  
  $self->f_init or return $self->fail ( 'f_init exit' );
  
@@ -182,14 +187,19 @@ sub do { # the common entry point for buidler and renderer
  
  # better check and process the widget configuration now
  
- ( $s->{widcons} = widget_verify ( $s->{widcon} ) )
+ ( $s->{wrun} = widget_verify ( $s->{wspec} ) )
   or $self->fail ( 'widget setup verfication failed' );
  
  $s->{total} = $self->fetch ( "$s->{runmode}#count", @{ $s->{args_array} } );
  
  $s->{total} > 0 or return $self->fail ( 'no photos' );
+ 
+ $s->{total} > 9 or 
+  return $self->fail ( 'builder and widget requires at least 10 photos' );
 
  $s->{func} eq 'build' and do {
+ 
+  $self->f_map or $self->fail ( 'map exit' );
  
   $self->urlothers or $self->fail ( 'urlothers exit' );
   
@@ -205,7 +215,7 @@ sub do { # the common entry point for buidler and renderer
  };
  
  # use thumbsize from widget configuration, not the global value 
- $s->{thumbsize} = $s->{widcons}->{s};
+ $s->{thumbsize} = $s->{wrun}->{size};
    
  $self->output ( "page/$s->{func}" );
  
@@ -225,9 +235,9 @@ sub photos { # the widget renderer
  my $add = '_rand'; my $order = 'random()';
  
  # change settings if latest photos requested
- $s->{widcons}->{o} == 2 and do {
+ $s->{wrun}->{choose} == 2 and do {
  
-  $add = ''; #$order = 's asc,n desc';
+  $add = ''; $order = 's asc,n desc';
    
  };
  

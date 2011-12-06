@@ -34,7 +34,7 @@ use POSIX qw( floor ceil );
 
 sub bsearch {
 
-  # static binary search aka half-interval search method
+  # binary search aka half-interval search method
   # http://en.wikipedia.org/wiki/Binary_search_algorithm
  
   # this code is a modified version of
@@ -72,8 +72,8 @@ sub _base {
  my $res;
  
  # sql statements returning photo x don't use distinct or group by to
- # remove duplicats since it appears to faster to just pass them
- # Bit::Vector Index_List_Store that doesn't mind the duplicats
+ # remove duplicates since it is tested to be faster to just pass them
+ # Bit::Vector Index_List_Store and it doesn't mind the duplicates
        
  if ( $pri eq 'has' ) { 
  

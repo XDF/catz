@@ -257,9 +257,9 @@ sub startup {
  my $w = $l->route( '/:func', func => qr/build|embed/ );
 
  $w->route ( 
-  '/:pri/:sec/:widcon', 
+  '/:pri/:sec/:wspec', 
   pri => qr/[a-z]{1,25}/, sec => qr/[A-Za-z0-9_-]{1,500}/,
-  widcon => qr/[a-z0-9]{1,500}/
+  wspec => qr/[a-z0-9]{1,500}/
  )->to ( "widget#do" );
   
  $w->route ( 
