@@ -1,17 +1,43 @@
-% extends 'base/widget';
+% extends 'base/widget';  
 %#
 %# --------------------
 %# 
 <% content 'main' => begin %>
+% my $justif = 'left';
+% my $bonus = 0;
+% given ( $widcons->{j} ) {
+%  when ( 2 ) {  
+%   $justif = 'center'
+%  }
+%  when ( 3 ) {  
+%   $justif = 'right'
+%  }
+% }
+<div class="<%== $justif %> zerofont">
+% my $supress = 0;
+% my $agg = 0;
 % foreach my $th ( @{ $thumbs } ) {
 %  my $toid = fullnum33 ( $th->[1], $th->[2] );
-%  my $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
-%  my $date = dtexpand ( dtdate ( $th->[3] ), $lang ); # get date from folder name
-%  my $titl = $t->{PHOTO} . ' ' . $toid;
-%  defined $texts->{ $th->[0] } and $titl .= " $sep " . $texts->{ $th->[0] };
-%  $titl .= " $sep $date";
-<a title="<%= $titl %>" target="_blank" class="thumb" href="<%== include 'href/actionid', toaction => 'view', langh => $langa, toid => $toid %>"><img align="left" class="thumbi" alt="<%= $titl %>" src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $thumbsize %>"></a>
+%  my $width; my $height;
+%  if ( $widcons->{d} == 1 ) {
+%   $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
+%   $height = $thumbsize;
+%   $agg += $width + $bonus; 
+%  } else {
+%   $height = int ( ( $thumbsize / $th->[5] ) * $th->[6] );
+%   $width = $thumbsize;
+%   $agg += $height + $bonus;
+%  }
+%  $agg > $widcons->{l} and $supress = 1;
+%  not $supress and do {   
+%   my $date = dtexpand ( dtdate ( $th->[3] ), $lang ); # get date from folder name
+%   my $titl = $t->{SITE}; 
+%   defined $texts->{ $th->[0] } and $titl .= " $sep " . $texts->{ $th->[0] };
+%   $titl .= " $sep $date $sep $t->{PHOTO} $toid";
+<a title="<%= $titl %>" target="_blank" class="thumb" href="<%== include 'href/actionid', toaction => 'view', langh => $langa, toid => $toid %>"><img class="thumb gap<%== <%== $widcons->{d}.$widcons->{g} %>" alt="<%= $titl %>" src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $height  %>"></a>
+%  };
 % }
+</div>
 <% end %>
 %#
 %# --------------------

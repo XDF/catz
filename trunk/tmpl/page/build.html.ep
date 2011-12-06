@@ -17,7 +17,11 @@
 %# --------------------
 %#
 <% content 'btitle' => begin %>
+% if ( $runmode eq 'pair' ) {
+<h1><%= $t->{WID_HEAD} . ' ' . $t->{WID_TAIL_PAIR} . ' ' . limit ( $sec, 30 ) %></h1>
+% } else {
 <h1><%= $t->{WID_HEAD} . ' ' . $t->{'WID_TAIL_'.uc($runmode)} %></h1>
+% }
 <% end %>
 %#
 %# --------------------
@@ -34,45 +38,24 @@
 %#
 %# --------------------
 %#
-%# d = direction 
-%#
-<li><span class="sparse"><%= $t->{'WID_CONF_D'} %></span>
-% foreach my $val ( qw ( 1 2 ) ) {
-<%= $sep %> 
-%   $widcons->{d} ne $val and do {
-<a href="<%== $urlconfa %>t<%== $widcons->{t} %>d<%== $val %>s<%== $widcons->{s} %>l<%== $widcons->{l} %><%== $urlconfb %>">
-%  };
-<%= $t->{'WID_CONF_D_'.$val} %><%== $widcons->{d} eq $val ? '' : '</a>' %>
-% }
-</li>
-%# --------------------
-%#
-%# s = size 
-%#
-<li><span class="sparse"><%= $t->{'WID_CONF_S'} %></span>
-% foreach my $val ( qw ( 60 80 100 120 140 160 200 ) ) {
-<%= $sep %> 
-%  $widcons->{s} ne $val and do {
-<a href="<%== $urlconfa %>t<%== $widcons->{t} %>d<%== $widcons->{d} %>s<%== $val %>l<%== $widcons->{l} %><%== $urlconfb %>">
-%  };
-<%= $val %><%== $widcons->{s} eq $val ? '' : '</a>' %>
-% }
-%# --------------------
-%#
-%# l = size 
-%#
-</li><li><span class="sparse"><%= $t->{'WID_CONF_L'} %></span>
-% foreach my $val ( qw ( 400 500 600 700 800 1000 1200 1400 1600 1800 2000 ) ) {
+% foreach my $cu ( grep { $_ ne 't' } @{ $wconf->{keys} } ) {
+<li><span class="sparse enlarge shade"><%= $t->{'WID_CONF_'.uc($cu)} %></span><span class="aero">
+% my $i = 1;
+%  foreach my $val ( @{ $wconf->{values}->{$cu} } ) {
+% $i++ > 1 and do {
 <%= $sep %>
-%  $widcons->{l} ne $val and do { 
-<a href="<%== $urlconfa %>t<%== $widcons->{t} %>d<%== $widcons->{d} %>s<%== $widcons->{s} %>l<%== $val %><%== $urlconfb %>">
-%  };
-<%= $val %><%== $widcons->{l} eq $val ? '' : '</a>' %>
+% };
+%   $widcons->{$cu} ne $val and do {
+<a href="<%== $urlconfa %><%== join '', map { $_ eq $cu ? "$_$val" : $_.$widcons->{$_} } @{ $wconf->{keys} } %><%== $urlconfb %>">
+%   };
+<%= $t->{uc('WID_CONF_'.$cu.'_'.$val)} // $val %><%== $widcons->{$cu} eq $val ? '' : '</a>' %>
+%  }
+</span></li>
 % }
 %#
 %# --------------------
 %#
-</li></ul></div><div class="bar">
+</ul></div><div class="bar">
 % my $wh = $widcons->{d} eq 1 ? $widcons->{s} : $widcons->{l};
 % my $ww = $widcons->{d} eq 1 ? $widcons->{l} : $widcons->{s};
 % my $txt = $self->render ( 'block/embed', partial => 1, intent => 'render', wurl => $urlembed, wheight => $wh, wwidth => $ww );
@@ -81,18 +64,16 @@
 % $t1 =~ s/\'/\\\'/g;
 % my $t2 = $txt;
 % $t2 =~ s/\'/\\\'/g;
-<h2><%= $t->{WID_CODE} %></h2>
-<a href="JavaScript:catzCopyCode('<%= $t1 %>','<%= $t2 %>');"><%= $t->{WID_COPY} %></a> 
-<div class="bar lean enlarge"><%= $txt %></div>
+<h2><%= $t->{WID_CODE} %></h2> <a class="aero" href="JavaScript:catzCopyCode('<%= $t1 %>','<%= $t2 %>');"><%= $t->{WID_COPY} %></a> 
+<div class="bar lean"><%= $txt %></div>
 </div><div class="bar"><h2><%= $t->{WID_VIEW} %></h2><div class="bar">
 %== include 'block/embed', intent => 'include', wurl => $urlembed, wheight => $wh, wwidth => $ww;
-</div><div class="bar">
-%== include 'content/build';
 </div>
 %#
 %# --------------------
 %#
-<h2><%= $t->{WID_ABOUT} %></h2>
+<div class="bar"><h2><%= $t->{WID_ABOUT} %></h2></div>
+<div class="bar"><%== include 'content/build' %></div>
 %#
 %# --------------------
 %#

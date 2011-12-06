@@ -35,7 +35,9 @@ my $LR = '_LR.JPG';
 
 sub _thumb {
 
- my ( $self, @xs ) = @_;
+ my ( $self, $order, @xs ) = @_;
+ 
+ $order =~ /^\d/ and die 'internal error: thumbnails requested without order';
  
  my $min = 99999999;
  my $max = 00000000; 
@@ -43,7 +45,7 @@ sub _thumb {
  my $thumbs = $self->dball ( qq {
   select x,s,n,folder,file||'$LR',lwidth,lheight 
   from photo natural join album 
-  where x in ( } . ( join ',', @xs ) .  ') order by x' 
+  where x in ( } . ( join ',', @xs ) .  ") order by $order" 
  );
 
  foreach my $row ( @$thumbs ) { 

@@ -41,10 +41,20 @@ function catzLoadSample() {
  if ( catzPrevSampleWidth != width ) {
   
   catzPrevSampleWidth = width;
+
+  // extract langauge & setup from location
   
-  // extract '/fi' or '/en' from the current URL
-  // to make samples language sensitive but without setup
-  var head = $(location).attr('pathname').toString().substring ( 0, 3 );
+  var loc = $(location).attr('pathname').toString();
+  
+  var head = loc.substring ( 0, 3 );
+  
+  if ( loc.search ( /^\/[a-z]{2}\d{6}/ ) > -1 ) {
+  
+   // has setup -> must take it also
+  
+   head = loc.substring ( 0, 9 );
+    
+  } 
 
   // terminate ongoing request if any
   if ( catzPrevReqSample ) { catzPrevReqSample.abort(); }  

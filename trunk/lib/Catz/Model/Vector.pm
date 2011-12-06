@@ -130,6 +130,21 @@ sub _array { # vector as an array of indexes
  
 }
 
+sub _array_n { # vector as an array limited
+
+ my ( $self, @args ) = @_;
+
+ my $n = pop @args // 5;
+
+ my $bvec = $self->array ( @args );
+ 
+ scalar @$bvec > $n and 
+  return [ @{ $bvec } [ 0 .. $n - 1 ] ];
+  
+ return $bvec; 
+ 
+}
+
 sub _array_rand { # vector as array of indexes in random order 
 
  my ( $self, @args ) = @_;

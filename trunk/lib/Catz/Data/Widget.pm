@@ -28,7 +28,7 @@ use 5.12.0; use strict; use warnings;
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( widget_default widget_conf widget_plate );
+our @EXPORT = qw ( widget_conf widget_default widget_verify widget_plate );
 
 use GD;
 use List::MoreUtils qw ( any );
@@ -40,13 +40,40 @@ use Catz::Util::Number qw ( round );
 use Catz::Util::String qw ( enurl );
 use Catz::Util::Time qw ( dtlang );
 
-sub widget_conf { 
+# widget setup configuration as a single hashref
+
+my $wconf = {
+
+ keys => [ qw ( t d o j g s l ) ],
+ defaults => { t => 1, d => 1, o => 1, j => 2, g => 1, s => 150, l => 800 },
+ values => {
+  t => [ 1 ],                                      # type
+  d => [ 1, 2 ],                                   # direction
+  o => [ 1, 2 ],                                   # order
+  j => [ 1, 2, 3 ],                                # justification
+  g => [ 1, 2, 3, 4, 5 ],                          # gaps
+  s => [ map { $_ * 10 } ( 5 .. 20 ) ],            # size
+  l => [ map { 300 + ( $_ * 100 ) } ( 1 .. 17 ) ], # limit
+ },
+
+};
+
+# prepare the default setup string
+
+my $wdefault = 
+ join '', map { $_.$wconf->{defaults}->{$_} } @{ $wconf->{keys} };
+ 
+# pre-prepare changes
+ 
+sub widget_conf { $wconf }
+
+sub widget_verify { 
 
  my $widcon = shift;
    
  my $con = {}; # target
-  
- length $widcon > 1000 and return undef;
+   
+ length $widcon > 500 and return undef;
  
  my @wc = split /([a-z])/, $widcon;
  
@@ -55,76 +82,27 @@ sub widget_conf {
  ( scalar @wc % 2 ) == 0 or return undef;
  
  for ( my $i = 0; $i < scalar @wc; $i += 2 ) {
- 
-  warn "$wc[$i] = $wc[$i+1]";
- 
+  
   defined $wc[$i] or return undef;
+  
   defined $wc[$i+1] or return undef;
+  
+  exists $wconf->{values}->{$wc[$i]} or return undef;
  
-  given ( $wc[$i] ) {
-  
-   when ( 'd' ) { # direction
-   
-    my $x = int ( $wc[$i+1] );
-    
-    ( $x == 1 or $x == 2 ) or return undef;
-    
-    $con->{d} = $x;   
-   
-   }
-
-   when ( 'l' ) { # limit
-   
-    my $x = int ( $wc[$i+1] );
-    
-    $x > 2000 and return undef; 
-    
-    $x < 200 and return undef;
-    
-    $x % 100 == 0 or return undef;
+  ( any { $_ eq $wc[$i+1] } @{ $wconf->{values}->{$wc[$i]} } )
+   or return undef;
      
-    $con->{l} = $x;   
+  $con->{$wc[$i]} = $wc[$i+1];
    
-   }
-  
-  
-   when ( 's' ) { # size
-
-    my $x = int ( $wc[$i+1] );
-    
-    $x > 200 and return undef; 
-    
-    $x < 50 and return undef;
-    
-    $x % 20 == 0 or return undef;
-     
-    $con->{s} = $x;
-   
-   }
-
-   when ( 't' ) { # type
-   
-    my $x = int ( $wc[$i+1] );
-        
-    $x == 1 or return undef;
-        
-    $con->{t} = $x;   
-   
-   }
-
-   default { return undef } # unknown character in widget config
-   
-  }
-  
  }
- 
- do { exists $con->{$_} or return undef } foreach qw ( t d s l );
+
+ do { exists $con->{$_} or return undef } foreach @{ $wconf->{keys} };
  
  return $con;
  
 }
 
-sub widget_default { 't1d1s100l800' }
+sub widget_default { $wdefault }
 
 my $plate = {
 
