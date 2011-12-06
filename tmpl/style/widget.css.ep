@@ -29,7 +29,6 @@ The stylesheet for <%== $t->{SITE} %> widgets by <%== $t->{AUTHOR} %>
 html { background-color: transparent; height: 100%; }
 
 body {
- color: <%== $st->{color}->{$palette}->{text} %>;
  background-color: transparent;
  font-family: <%== $st->{font} %>; 
  font-size: <%== $st->{size}->{normal} %>;
@@ -40,49 +39,6 @@ body {
 
 .full { width: 100%; }
 
-ul {
- margin-top: 0.2em;
- margin-bottom: 0.2em;
-}
-
-li {
- margin-left: 2.5em;
- margin-top: 0.5em;
- margin-bottom: 0.5em; 
- list-style: square outside;
-}
-
-/*  all forms are displayed inline */
-form { display: inline; }
-
-/*  pre texts inline, this is only for noscript warning */
-pre { display: inline; }
-
-/* text sizes */
-.shrink { font-size: 88%; }
-.shrinkmore { font-size: 68%; }
-.shrinkless { font-size: 93%; }
-.enlarge { font-size: 118%; }
-.enlargemore { font-size: 133%; }
-
-/* more room between lines */
-.roomy { line-height: <%== $st->{lineh}->{large} %>; }
-
-/* more room on around */
-.pad { padding: 0.4em; }
-
-/* text styling */
-.heavy { font-weight: 600; }
-.lean { font-style: italic; }
-.sparse { letter-spacing: 1px; }
-
-/* extra style used on site name presentation on the front page */
-.xtra { font-weight: 800; color: <%== $st->{color}->{$palette}->{xtra} %>; }
-
-/* error texts */
-.error { color: <%== $st->{color}->{$palette}->{xtra} %>; }
-
-/* the ablitity to set block & inline to any element */
 .block { display: block; }
 .inline { display: inline; }
 
@@ -94,102 +50,22 @@ pre { display: inline; }
 .middle { vertical-align: middle; }
 .bottom { vertical-align: bottom; }
 
+% foreach my $i ( 0 .. 4 ) {
+.gap1<%== $i+1 %> { padding-left: <%= $i * 3 %>px; padding-right: <%= $i * 3 %>px; }
+.gap2<%== $i+1 %> { padding-top: <%= $i * 3 %>px; padding-bottom: <%= $i * 3 %>px; }
+%  }
+
 /* makes sure that no floated elements overlap */
 .clearbefore { clear: both; }
 
-/* form input fields */
-.field { 
- color: <%== $st->{color}->{$palette}->{field_front} %>;
- background-color: <%== $st->{color}->{$palette}->{field_back} %>;
-}
-
-/* spacing */
-
 .bar { padding: <%== $st->{space}->{x} %> <%== $st->{space}->{y} %> <%== $st->{space}->{x} %> <%== $st->{space}->{y} %>; } 
 
-/* headings, general */
-h1,h2 { 
- font-size: <%== $st->{size}->{big} %>;
- display: inline;
- font-family: <%== $st->{font} %>;
- letter-spacing: 0.25em;
- font-weight: 500;
-}
-
-/* special for h1 */ 
-h1 {
- font-size: <%== $st->{size}->{huge} %>;
- line-height: <%== $st->{lineh}->{medium} %>;
-}
-
-h1.giga { font-weight: 700; }
-
-h1.mini { font-size: <%== $st->{size}->{normal} %>; }
-
-/* links */
-a:link, a:visited, a:active {
- color: <%== $st->{color}->{$palette}->{high} %>;
- font-weight: 700; 
- text-decoration: none;
-} 
-
-a:hover {
- text-decoration: underline;   
-}
-
-/* photo thumbnails */
 .thumb {
  border: 0;
  border-style: none;
- margin: 0;
- padding: 0;
  vertical-align: top;
- text-align: left;
 }
+
+.zerofont { font-size: 0px; }
 
 .megaspace { margin-top: 5em; }
-
-.thumbi {
- border: 0;
-  margin: 0;
- padding: 0;
- border-style: none;
- vertical-align: top;
- text-align: left;
-}
-
-
-.ig {
- border: 0;
- border-style: none; 
- vertical-align: middle;
-}
-
-.middler { /* google plus button hacks part 1/2 */
- vertical-align: middle;
-}
-
-.middler > div { /* google plus button hacks part 2/2 */
- vertical-align: middle !important;
- position: relative !important;
- top: -3px !important;
-}
-
-.cca { float: right; margin: 2px; }
-
-.cc {
- border: 0;
- border-style: none;
- overflow: hidden;
- vertical-align: middle;
-}
-
-.viz { float: right; margin: 7px; }
-
-.vizl { float: left; margin: 7px; }
-
-.box {
- border-style: solid;
- border-width: 2px;
- border-color: <%== $st->{color}->{$palette}->{xtra} %>;  
-}

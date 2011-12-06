@@ -5,7 +5,7 @@
 %# --------------------
 %#
 <html lang="<%== $lang %>"><head>
-<title><%= $t->{WIDGET_TITLE} %> - <%= $t->{SITE} %></title>
+<title><%= $t->{WID_EMBED_TITLE} %> - <%= $t->{SITE} %></title>
 %#
 %# --------------------
 %#
@@ -40,11 +40,11 @@
 %# --------------------
 %#
 <br>
-<div class="bar megaspace">
-<%= $t->{WIDGET_EMBED_INFO} %> <a href="<%== $t->{URL_CATZA} %>"><%= $t->{SITE} %></a>.
+<div class="bar megaspace clearbefore">
+<%= $t->{WID_EMBED_INFO} %> <a href="<%== $t->{URL_CATZA} %>"><%= $t->{SITE} %></a>.
 </div>
 %== include 'block/analytics';
-</body></html>
+</div></body></html>
 %#
 %# --------------------
 %#

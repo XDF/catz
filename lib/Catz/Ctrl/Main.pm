@@ -178,8 +178,8 @@ sub sample {
 
  my $self = shift; my $s = $self->{stash}; my $base = undef;
  
- # samples available only without setup
- length $s->{langa} > 2 and return $self->fail ( 'setup set so stopped' );
+ # samples are available also with setup in order to generate
+ # correct links to viewall pages
  
  $s->{width} < 200 and return $self->fail ( 'width too small' );
  
@@ -188,8 +188,9 @@ sub sample {
  ( $s->{width} % 10 == 0 ) or return $self->fail ( 'width not tenths' );
 
  my $samp = $self->fetch ( 'all#array_rand_n', 100 );
-  
- my $th = $self->fetch ( 'photo#thumb', @{ $samp } );
+ 
+ # get thumbnails in random order 
+ my $th = $self->fetch ( 'photo#thumb', 'random()', @{ $samp } );
 
  $s->{thumbs} = $th->[0];
 

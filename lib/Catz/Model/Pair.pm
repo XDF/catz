@@ -40,7 +40,7 @@ sub _bits {
  # language dependent
 
  my ( $self, $pri, $sec ) = @_; my $lang = $self->{lang};
- 
+  
  my $res = $self->dbcol ( qq {
   select x from _sid_x where sid in ( 
    select sid from sec_$lang where pid = ( 

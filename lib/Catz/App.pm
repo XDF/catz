@@ -324,9 +324,7 @@ sub before {
  $s->{time_start} = time();
 
  $s->{env} = conf ( 'env' ); # copy production enviroment id to stash
-  
- $s->{now} = dtlang ( $s->{lang} );
- 
+   
  $s->{url} = $self->req->url->to_string;  # let the url be in the stash also
 
  $s->{path} = $self->req->url->path->to_string;  # and also the path part
@@ -497,10 +495,10 @@ sub before {
    return $self->render_not_found; 
     
  }
-
-
                 
  # let some definitions to be globally available to all controllers
+
+ $s->{now} = dtlang ( $s->{lang} );
  
  $s->{matrix} = list_matrix;
  

@@ -99,13 +99,13 @@ sub multi {
  scalar @{ $s->{xs} } == 0 and 
   return $self->fail ( 'no photos for this page' ); 
   
- # fetch the thumbs and their included earliest - latest metadata
+ # fetch the thumbs in the order of x and also
+ # fetch their included earliest - latest metadata
  ( $s->{thumbs}, $s->{earliest}, $s->{latest} ) = 
-  @{ $self->fetch( 'photo#thumb', @{ $s->{xs} } ) };
+  @{ $self->fetch( 'photo#thumb', 'x', @{ $s->{xs} } ) };
   
   # prepare stuff for visualizations
   $self->f_vizinit or return $self->fail ( 'f_vizinit exit' );
-
 
  # generate converage counts and urls for coverage information displays
    
@@ -163,14 +163,14 @@ sub multi {
   
   when ( 'search' ) {
 
-   $s->{urlembed} = $self->fuseq ( $s->{langa}, 'build' ) . 
+   $s->{urlbuild} = $self->fuseq ( $s->{langa}, 'build' ) . 
     '?q=' . $self->enurl ( $s->{what} );  
   
   }
   
   default {
   
-   $s->{urlembed} = $self->fuse (  $s->{langa}, 'build' ); 
+   $s->{urlbuild} = $self->fuse (  $s->{langa}, 'build' ); 
   
   }
  

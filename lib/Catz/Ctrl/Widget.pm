@@ -182,7 +182,7 @@ sub do { # the common entry point for buidler and renderer
  
  # better check and process the widget configuration now
  
- ( $s->{widcons} = widget_conf ( $s->{widcon} ) )
+ ( $s->{widcons} = widget_verify ( $s->{widcon} ) )
   or $self->fail ( 'widget setup verfication failed' );
  
  $s->{total} = $self->fetch ( "$s->{runmode}#count", @{ $s->{args_array} } );
@@ -192,12 +192,15 @@ sub do { # the common entry point for buidler and renderer
  $s->{func} eq 'build' and do {
  
   $self->urlothers or $self->fail ( 'urlothers exit' );
+  
+  # widget confuration is needed in builder page rendering
+  $s->{wconf} = widget_conf;
  
  };
  
  $s->{func} eq 'embed' and do {
  
-  $self->photos or $self->fail ( 'phtos exit' );
+  $self->photos or $self->fail ( 'photos exit' );
  
  };
  
@@ -212,21 +215,39 @@ sub photos { # the widget renderer
 
  my $self = shift; my $s = $self->{stash};
   
- my $n = 100; # we assume that this number of photos is always enough
+ # we assume that this number of photos is always enough
+ # on whatever settings the stripe is displayed
+ # it is actually smart to use a fixed value so that
+ # all database access and data processing is done only once
+ # for one subject and the served from cache 
+ my $n = 100; 
  
- $s->{xs} = $self->fetch ( 
-  "$s->{runmode}#array_rand_n", @{ $s->{args_array} }, $n 
+ my $add = '_rand'; my $order = 'random()';
+ 
+ # change settings if latest photos requested
+ $s->{widcons}->{o} == 2 and do {
+ 
+  $add = ''; #$order = 's asc,n desc';
+   
+ };
+ 
+ # fetch the photo xs to start the processing with
+ $s->{xs} = $self->fetch ( # latest photos
+  "$s->{runmode}#array$add".'_n', @{ $s->{args_array} }, $n 
  ); 
-          
+         
  scalar @{ $s->{xs} } == 0 and return $self->fail ( 'no photos found' ); 
   
  # fetch the corresponding thumbnails 
  ( $s->{thumbs}, undef, undef ) = 
-  @{ $self->fetch( 'photo#thumb', @{ $s->{xs} } ) };
+  @{ $self->fetch( 'photo#thumb', $order, @{ $s->{xs} } ) };
 
  # fetch photo texts  
  $s->{texts} = $self->fetch ( 'photo#texts', @{ $s->{xs} } );
-   
+ 
+ # we now have thumbs in $s->{thumbs} in browsing (x) order
+ # we do reordering based on what was the image strip needs
+    
 }
 
 sub contact {
