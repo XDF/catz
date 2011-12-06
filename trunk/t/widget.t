@@ -76,5 +76,115 @@ $t->get_ok("/en211211/widget/contact/contrib/neutral/")
 
 $t->get_ok("/fi171212/widget/contact/missing/bright/")
   ->status_is(404);
+  
+#
+# builder (build) and renderer (embed)
+#  
+
+@oksetups = qw ( en fi en394211 fi211111 en264311 fi365312 );
+
+my @okwsetups = qw (  
+ t1c1a2f3l700s140g8 t1c2a1f2l2000s190g2 t1c2a2f1l1100s200g4 t1c1a2f3l1500s50g0
+); 
+
+my @badwsetups = qw (  
+ t1c1f3l700s140g8 t1c2a1f2l2000x190g2 t1c2a2f1l3100s200g4 t2c7a2f3l1500s50g90
+); 
+  
+my $setup;
+
+foreach my $action ( qw ( build embed ) ) {
+
+ $setup = $oksetups [ rand @oksetups ];
+   
+ # all mode, no ending slash
+ $t->get_ok( "/$setup/$action")->status_is(301);
  
+ # pair mode, no ending slash
+ $t->get_ok( "/$setup/$action/nick/Mikke")->status_is(301); 
+
+ if ( $action eq 'build' ) { # only build without wsetup
+ 
+  # all mode
+  $t->get_ok( "/$setup/$action/" )
+    ->status_is(200)
+    ->content_type_like(qr/text\/html/)
+    ->content_like(qr/div id=\"page\"/);
+
+  # pair mode
+  $t->get_ok( "/$setup/$action/breed/OSH/")
+    ->status_is(200)
+    ->content_type_like(qr/text\/html/)
+    ->content_like(qr/div id=\"page\"/);
+   
+  $action eq 'embed' and do {
+
+   $t->get_ok( "/$setup/$action/flen/78_mm/")
+     ->status_is(200)
+     ->content_like(qr/\_LR\.JPG/);
+  
+  };
+
+  # search mode
+  $t->get_ok( "/$setup/$action?q=%2Bbreeder%3DMi*%20date%3D2011*%20date%3D2010*%20date%3D2001*")
+    ->status_is(200)
+    ->content_type_like(qr/text\/html/)
+    ->content_like(qr/div id\=\"page\"/);
+    
+ } else { # no embed without wsetup
+ 
+   # all mode
+  $t->get_ok( "/$setup/$action/" )
+    ->status_is(404);
+
+  # pair mode
+  $t->get_ok( "/$setup/$action/breed/OSH/")
+    ->status_is(404);
+ 
+ }
+ 
+ foreach my $wsetup ( @okwsetups ) {
+ 
+  $setup = $oksetups [ rand @oksetups ]; 
+
+  # all mode, no ending slash
+  $t->get_ok( "/$setup/$action/$wsetup" )->status_is(301); 
+  
+  # pair mode, no ending slash 
+  $t->get_ok( "/$setup/$action/nick/Mikke/$wsetup" )->status_is(301); 
+ 
+  $t->get_ok( "/$setup/$action/$wsetup/")
+    ->status_is(200)
+    ->content_type_like(qr/text\/html/)
+    ->content_like(qr/div id\=\"page\"/);
+
+  $t->get_ok( "/$setup/$action/cat/Peku/$wsetup/")
+    ->status_is(200)
+    ->content_type_like(qr/text\/html/)
+    ->content_like(qr/div id\=\"page\"/);
+
+  $t->get_ok( "/$setup/$action/$wsetup?q=%2Blens%3Dsigma*%20%2Borg%3Dsurok%20%2Bbreed%3Drus")
+    ->status_is(200)
+    ->content_type_like(qr/text\/html/)
+    ->content_like(qr/div id\=\"page\"/);
+  
+ }
+ 
+ foreach my $wsetup ( @badwsetups ) {
+
+  $setup = $oksetups [ rand @oksetups ]; 
+
+   $t->get_ok( "/$setup/$action/$wsetup/")
+    ->status_is(404);
+
+  $t->get_ok( "/$setup/$action/cat/Peku/$wsetup/")
+    ->status_is(404);
+
+  $t->get_ok( "/$setup/$action/$wsetup?q=%2Blens%3Dsigma*%20%2Borg%3Dsurok%20%2Bbreed%3Drus")
+    ->status_is(404);
+        
+ } 
+
+}
+
 done_testing;

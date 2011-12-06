@@ -268,7 +268,7 @@ sub startup {
  )->to ( "widget#do" );
  
  $w->route ( 
-  '/:widcon', widcon => qr/[a-z0-9]{1,500}/
+  '/:wspec', wspec => qr/[a-z0-9]{1,500}/
  )->to ( "widget#do" );
 
  $w->route ( '/' )->to ( "widget#do" );

@@ -5,7 +5,7 @@
 %# --------------------
 %# 
 <% content 'ptitleadd' => begin %>
- <%== $t->{WID_BUILDER_TITLE} %> 
+<%== $t->{WID_BUILDER_TITLE} %> 
 <% end %>
 %#
 %# --------------------
@@ -17,17 +17,13 @@
 %# --------------------
 %#
 <% content 'btitle' => begin %>
-% if ( $runmode eq 'pair' ) {
-<h1><%= $t->{WID_HEAD} . ' ' . $t->{WID_TAIL_PAIR} . ' ' . limit ( $sec, 30 ) %></h1>
-% } else {
-<h1><%= $t->{WID_HEAD} . ' ' . $t->{'WID_TAIL_'.uc($runmode)} %></h1>
-% }
+<h1><%== $t->{'WID_TITLE_'.$runmode} %></h1>
 <% end %>
 %#
 %# --------------------
 %#
 <% content 'pathadd' => begin %>
-<%== include 'elem/path' %> <%== include 'elem/back', intent => 'path' %> <%= $pathsep %>
+<%== include 'elem/path' %> <a href="<%== $urlback %>"><%== include 'elem/titlea', intent => 'build' %></a> <%= $pathsep %>
 <% end %>
 %#
 %# --------------------
@@ -39,7 +35,7 @@
 %#
 % my $i = 1;
 % foreach my $ckey ( grep { $_ ne 'type' } @{ $wconf->{longs} } ) {
-<%= $i++ > 1 ? $sep : '' %> <%== include 'elem/wsetup', wkey => $ckey %>
+<%== include 'elem/wsetup', wkey => $ckey %>
 % }
 %#
 %# --------------------
@@ -53,10 +49,9 @@
 % $t1 =~ s/\'/\\\'/g;
 % my $t2 = $txt;
 % $t2 =~ s/\'/\\\'/g;
-<h2><%= $t->{WID_CODE} %></h2>
-</div><div class="bar">
+<h2><%= $t->{WID_CODE} %></h2> <a class="aero" href="JavaScript:catzCopyCode('<%= $t1 %>','<%= $t2 %>');"><%= $t->{WID_COPY} %></a>
+</div><div class="bar limit">
 <%= $txt %>
-<a class="aero" href="JavaScript:catzCopyCode('<%= $t1 %>','<%= $t2 %>');"><%= $t->{WID_COPY} %></a>
 </div><div class="bar"><h2><%= $t->{WID_VIEW} %></h2></div><div class="bar">
 %== include 'block/embed', intent => 'include', wurl => $urlembed, wheight => $wh, wwidth => $ww; 
 </div>
@@ -64,7 +59,7 @@
 %# --------------------
 %#
 <div class="bar"><h2><%= $t->{WID_ABOUT} %></h2></div>
-<div class="bar"><%== include 'content/build' %></div>
+<div class="bar"><%== '' %></div>
 %#
 %# --------------------
 %#

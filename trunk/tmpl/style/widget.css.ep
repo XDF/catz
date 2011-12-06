@@ -67,5 +67,3 @@ body {
 }
 
 .zerofont { font-size: 0px; }
-
-.megaspace { margin-top: 5em; }

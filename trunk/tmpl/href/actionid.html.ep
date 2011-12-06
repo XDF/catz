@@ -1,12 +1,22 @@
 %# Create link to different action & id but with same parameters
 % $toaction eq 'auto' and do {
-%  given ( $action ) {
-%   when ( 'browseall' ) { $toaction = 'viewall' }
-%   when ( 'viewall' ) { $toaction = 'browseall' }
-%   when ( 'browse' ) { $toaction = 'view' }
-%   when ( 'view' ) { $toaction = 'browse' }
-%   when ( 'search' ) { $toaction = 'display' }
-%   when ( 'display' ) { $toaction = 'search' }
+%  given ( $action )     {
+%   # primary mode: use action to determine the target action
+%   when ( 'browseall' ) { $toaction = 'viewall'   }
+%   when ( 'viewall'   ) { $toaction = 'browseall' }
+%   when ( 'browse'    ) { $toaction = 'view'      }
+%   when ( 'view'      ) { $toaction = 'browse'    }
+%   when ( 'search'    ) { $toaction = 'display'   }
+%   when ( 'display'   ) { $toaction = 'search'    } 
+%   default {
+%    # secondary mode: action is not recognized, then
+%    # revert to runmode - widget rendering uses this mode
+%    given ( $runmode ) {
+%     when ( 'all'    ) { $toaction = 'viewall' }
+%     when ( 'pair'   ) { $toaction = 'view'    }
+%     when ( 'search' ) { $toaction = 'display' }    
+%    }
+%   }
 %  }
 % };
 % if ( $toid eq 'this' ) {
