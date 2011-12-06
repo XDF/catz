@@ -5,7 +5,7 @@
 <% content 'main' => begin %>
 % my $justif = 'left';
 % my $bonus = 0;
-% given ( $widcons->{j} ) {
+% given ( $wrun->{float} ) {
 %  when ( 2 ) {  
 %   $justif = 'center'
 %  }
@@ -19,7 +19,7 @@
 % foreach my $th ( @{ $thumbs } ) {
 %  my $toid = fullnum33 ( $th->[1], $th->[2] );
 %  my $width; my $height;
-%  if ( $widcons->{d} == 1 ) {
+%  if ( $wrun->{align} == 1 ) {
 %   $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
 %   $height = $thumbsize;
 %   $agg += $width + $bonus; 
@@ -28,13 +28,13 @@
 %   $width = $thumbsize;
 %   $agg += $height + $bonus;
 %  }
-%  $agg > $widcons->{l} and $supress = 1;
+%  $agg > $wrun->{limit} and $supress = 1;
 %  not $supress and do {   
 %   my $date = dtexpand ( dtdate ( $th->[3] ), $lang ); # get date from folder name
 %   my $titl = $t->{SITE}; 
 %   defined $texts->{ $th->[0] } and $titl .= " $sep " . $texts->{ $th->[0] };
 %   $titl .= " $sep $date $sep $t->{PHOTO} $toid";
-<a title="<%= $titl %>" target="_blank" class="thumb" href="<%== include 'href/actionid', toaction => 'view', langh => $langa, toid => $toid %>"><img class="thumb gap<%== <%== $widcons->{d}.$widcons->{g} %>" alt="<%= $titl %>" src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $height  %>"></a>
+<a title="<%= $titl %>" target="_blank" class="thumb" href="<%== include 'href/actionid', toaction => 'view', langh => $langa, toid => $toid %>"><img class="thumb gap<%== <%== $wrun->{align}.$wrun->{gap} %>" alt="<%= $titl %>" src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $height  %>"></a>
 %  };
 % }
 </div>

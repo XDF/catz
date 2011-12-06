@@ -33,41 +33,32 @@
 %# --------------------
 %#
 <% content 'main' => begin %>
-<div class="bar">
-<h2><%= $t->{WID_SETUP} %></h2><ul class="roomy">
+<div class="bar"><h2><%= $t->{WID_SETUP} %></h2></div><div class="bar">
 %#
 %# --------------------
 %#
-% foreach my $cu ( grep { $_ ne 't' } @{ $wconf->{keys} } ) {
-<li><span class="sparse enlarge shade"><%= $t->{'WID_CONF_'.uc($cu)} %></span><span class="aero">
 % my $i = 1;
-%  foreach my $val ( @{ $wconf->{values}->{$cu} } ) {
-% $i++ > 1 and do {
-<%= $sep %>
-% };
-%   $widcons->{$cu} ne $val and do {
-<a href="<%== $urlconfa %><%== join '', map { $_ eq $cu ? "$_$val" : $_.$widcons->{$_} } @{ $wconf->{keys} } %><%== $urlconfb %>">
-%   };
-<%= $t->{uc('WID_CONF_'.$cu.'_'.$val)} // $val %><%== $widcons->{$cu} eq $val ? '' : '</a>' %>
-%  }
-</span></li>
+% foreach my $ckey ( grep { $_ ne 'type' } @{ $wconf->{longs} } ) {
+<%= $i++ > 1 ? $sep : '' %> <%== include 'elem/wsetup', wkey => $ckey %>
 % }
 %#
 %# --------------------
 %#
-</ul></div><div class="bar">
-% my $wh = $widcons->{d} eq 1 ? $widcons->{s} : $widcons->{l};
-% my $ww = $widcons->{d} eq 1 ? $widcons->{l} : $widcons->{s};
+</div><div class="bar">
+% my $wh = $wrun->{align} eq 1 ? $wrun->{size} : $wrun->{limit};
+% my $ww = $wrun->{align} eq 1 ? $wrun->{limit} : $wrun->{size};
 % my $txt = $self->render ( 'block/embed', partial => 1, intent => 'render', wurl => $urlembed, wheight => $wh, wwidth => $ww );
 % $txt =~ s|\&|\&amp;|g;
 % my $t1 = $t->{WID_COPYCODE};
 % $t1 =~ s/\'/\\\'/g;
 % my $t2 = $txt;
 % $t2 =~ s/\'/\\\'/g;
-<h2><%= $t->{WID_CODE} %></h2> <a class="aero" href="JavaScript:catzCopyCode('<%= $t1 %>','<%= $t2 %>');"><%= $t->{WID_COPY} %></a> 
-<div class="bar lean"><%= $txt %></div>
-</div><div class="bar"><h2><%= $t->{WID_VIEW} %></h2><div class="bar">
-%== include 'block/embed', intent => 'include', wurl => $urlembed, wheight => $wh, wwidth => $ww;
+<h2><%= $t->{WID_CODE} %></h2>
+</div><div class="bar">
+<%= $txt %>
+<a class="aero" href="JavaScript:catzCopyCode('<%= $t1 %>','<%= $t2 %>');"><%= $t->{WID_COPY} %></a>
+</div><div class="bar"><h2><%= $t->{WID_VIEW} %></h2></div><div class="bar">
+%== include 'block/embed', intent => 'include', wurl => $urlembed, wheight => $wh, wwidth => $ww; 
 </div>
 %#
 %# --------------------
