@@ -1,14 +1,23 @@
+%# 
+%# "Small form" title generator
+%#
+%# setting intent to 'builder' makes the form even smaller
+%#
 % if ( $runmode eq 'pair' ) {
 %  if ( $pri eq 'folder' ) {
-<%= $t->{ALBUM} %> <%= $mapview->{$pri}->{$sec}->[1] %>
+<%= $intent eq 'build' ? '' : $t->{ALBUM} %> 
+<%= $mapview->{$pri}->{$sec}->[1] %>
 %  } elsif ( $pri eq 'date' ) {
-<%= $t->{DATE} %> <%= dtexpand ( $sec, $lang ) %>
+<%= $intent eq 'build' ? '' : $t->{DATE} %> 
+<%= dtexpand ( $sec, $lang ) %>
 %  } else {
-<%= $t->{uc($pri)} %> <%= $sec %> 
+<%= $intent eq 'build' ? '' : $t->{uc($pri)} %>
+<%= $sec %> 
 %  }
 % } elsif ( $runmode eq 'search' ) {
-<%= $t->{SEARCH_RESULT} %> <%= limit ( $what, 100 ) %>
-% } else { # default to runmode 'all'
+<%= $intent eq 'build' ? '' : $t->{SEARCH_RESULT} %> 
+<%= limit ( $what, $intent eq 'build' ? 50 : 100 ) %>
+% } else { # default to runmode 'all' 
 <%= $t->{ALL} %> <%= $t->{PHOTOS} %>
 % }
 %#

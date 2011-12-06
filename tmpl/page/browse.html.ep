@@ -77,7 +77,7 @@ if ( $runmode eq 'pair' ) {
 %# --------------------
 %#
 <% content 'ptitleadd' => begin %>
-%== include 'elem/titlea';
+%== include 'elem/titlea', intent => 'browse';
 (<%= $t->{PAGE} %> <%= $page %>/<%= $pages %>)
 <% end %>
 %#
@@ -178,20 +178,17 @@ if ( $runmode eq 'pair' ) {
 %# --------------------
 %#
 <div class="bar">
-<%== include 'elem/titlea' %> <%= $sep %> 
+<%== include 'elem/titlea', intent => 'browse' %> <%= $sep %> 
 <%= $total %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> <%= $sep %>
 <%= dtexpand ( $ancient, $lang ) %>
 % if ( $fresh ne $ancient ) {
 - <%= dtexpand ( $fresh, $lang ) %>
 % }
 % if ( $total > 9 ) {
-<%= $sep %> <a href="<%== $urlbuild %>"><%= $t->{WID_HEAD} . ' ' . $t->{'WID_TAIL_'.uc($runmode)} %></a></span>
+<%= $sep %> <a href="<%== $urlbuild %>"><%= $t->{'WID_TITLE_'.$runmode} %></a></span>
 % } 
 % if ( stash ('dist_count_partial') and stash ('dist_count_partial') > 0 ) {
 <%= $sep %> <a href="<%== stash ('dist_url_partial')  %>"><%= stash ('dist_count_partial') %> <%= $t->{'HASPARTIAL'.( stash ('dist_count_partial') == 1 ? '' : 'A' )} %></a>
-% }
-% if ( $total > 9 and 1 == 0 ) {
-<%= $sep %> <span id="entry"><a href="<%== $urlbuild %>"><%= $t->{WID_HEAD} . ' ' . $t->{'WID_TAIL_'.uc($runmode)} %></a></span>
 % }
 % if ( $runmode eq 'search' ) {
 <%= $sep %> <%== include 'block/explain' %>

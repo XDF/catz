@@ -3,41 +3,16 @@
 %# --------------------
 %# 
 <% content 'main' => begin %>
-% my $justif = 'left';
-% my $bonus = 0;
-% given ( $wrun->{float} ) {
-%  when ( 2 ) {  
-%   $justif = 'center'
-%  }
-%  when ( 3 ) {  
-%   $justif = 'right'
-%  }
-% }
-<div class="<%== $justif %> zerofont">
-% my $supress = 0;
-% my $agg = 0;
-% foreach my $th ( @{ $thumbs } ) {
-%  my $toid = fullnum33 ( $th->[1], $th->[2] );
-%  my $width; my $height;
-%  if ( $wrun->{align} == 1 ) {
-%   $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
-%   $height = $thumbsize;
-%   $agg += $width + $bonus; 
-%  } else {
-%   $height = int ( ( $thumbsize / $th->[5] ) * $th->[6] );
-%   $width = $thumbsize;
-%   $agg += $height + $bonus;
-%  }
-%  $agg > $wrun->{limit} and $supress = 1;
-%  not $supress and do {   
-%   my $date = dtexpand ( dtdate ( $th->[3] ), $lang ); # get date from folder name
-%   my $titl = $t->{SITE}; 
-%   defined $texts->{ $th->[0] } and $titl .= " $sep " . $texts->{ $th->[0] };
-%   $titl .= " $sep $date $sep $t->{PHOTO} $toid";
-<a title="<%= $titl %>" target="_blank" class="thumb" href="<%== include 'href/actionid', toaction => 'view', langh => $langa, toid => $toid %>"><img class="thumb gap<%== <%== $wrun->{align}.$wrun->{gap} %>" alt="<%= $titl %>" src="<%== $photobase %>/<%== $th->[3] %>/<%== $th->[4] %>" width="<%== $width %>" height="<%== $height  %>"></a>
-%  };
-% }
-</div>
+%#
+%# we run a subtemplate call and remove newlines from it
+%# this is required to make image strip gapless in Safari
+%# all other solutions have not worked so this is the last effort
+%#
+%#
+% my $txt = $self->render ( 'block/strip', partial => 1 );
+% $txt =~ s|\r||g;
+% $txt =~ s|\n||g;
+%== $txt; 
 <% end %>
 %#
 %# --------------------

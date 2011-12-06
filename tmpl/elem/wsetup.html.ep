@@ -1,4 +1,4 @@
-<select id="wsetup_<%= $wkey %>" onChange="location.href=$('#wsetup_<%== $wkey %>').val()">
+<select class="shade" id="wsetup_<%= $wkey %>" onChange="location.href=$('#wsetup_<%== $wkey %>').val()">
 % my $short =  $wconf->{trans}->{ $wkey };
 % foreach my $wval ( @{ $wconf->{values}->{ $wkey } } ) {
 %  my $selected = ' ';

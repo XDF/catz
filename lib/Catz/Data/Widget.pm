@@ -66,7 +66,8 @@ my $wconf = {
  longs => $wlongs,
  trans => $wtrans,
  
- defaults => { t => 1, c => 2, a => 1, f => 1, l => 800, s => 80, g => 0},
+ defaults => 
+  { t => 1, c => 2, a => 1, f => 1, l => 1000, s => 100, g => 0},
  
  values => {
   type => [ 1 ],

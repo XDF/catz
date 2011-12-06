@@ -45,6 +45,9 @@ sub urlothers {
   when ( 'pair' )  {
   
    my $enc = $self->encode ( $s->{sec} );
+   
+   $s->{urlback} =
+    $self->fuse ( $s->{langa}, 'browse', $s->{pri}, $enc );
   
    $s->{urlconfa} = 
     $self->fuse ( $s->{langa}, $s->{func}, $s->{pri}, $enc );
@@ -52,24 +55,29 @@ sub urlothers {
    $s->{urlconfb} = '/';
   
    $s->{urlembed} = $self->fuse ( 
-    $s->{lang}, 'embed', $s->{pri}, $enc, $s->{wspec} 
+    $s->{langa}, 'embed', $s->{pri}, $enc, $s->{wspec} 
    );
 
-   $s->{trans} = $self->fetch ( 'map#trans', $s->{pri}, $enc );
+   $s->{trans} = $self->fetch ( 'map#trans', $s->{pri}, $s->{sec} );
       
    $s->{urlother} = $self->fuse ( 
-    $s->{langaother}, $s->{func}, $s->{pri}, $s->{trans}, $s->{wspec} 
+    $s->{langaother}, $s->{func}, $s->{pri}, 
+    $self->encode( $s->{trans} ), $s->{wspec} 
    );
   
   }
   
   when ( 'search' ) {
 
+   $s->{urlback} =
+    $self->fuseq ( $s->{langa}, 'search' ) .
+     '?q=' . $self->enurl ( $s->{what} );
+
    $s->{urlconfa} = $self->fuse ( $s->{langa}, $s->{func} );   
-   $s->{urlconfb} =  '?q=' . $self->enurl ( $s->{what} );
+   $s->{urlconfb} = '?q=' . $self->enurl ( $s->{what} );
 
    $s->{urlembed} = $self->fuseq ( 
-    $s->{lang}, 'embed', $s->{wspec} 
+    $s->{langa}, 'embed', $s->{wspec} 
    ) . '?q=' . $self->enurl ( $s->{what} );
   
    $s->{urlother} = $self->fuseq ( 
@@ -79,12 +87,14 @@ sub urlothers {
   }
   
   default { # default to runmode all
+  
+   $s->{urlback} = $self->fuse ( $s->{langa}, 'browseall' );
 
    $s->{urlconfa} = $self->fuse ( $s->{langa}, $s->{func} );   
    $s->{urlconfb} = '/';
 
    $s->{urlembed} = $self->fuse ( 
-    $s->{lang}, 'embed', $s->{wspec} 
+    $s->{langa}, 'embed', $s->{wspec} 
    );
 
    $s->{urlother} = $self->fuse ( 
@@ -133,9 +143,7 @@ sub start  {
   #
  
   when ( 'embed' ) {
-  
-   length $s->{langa} > 2 and return $self->fail ( 'setup set so stopping' );
-   
+     
    defined $s->{wspec} or # can't render without config 
     return $self->fail ( 'widget configuration missing' );
     
@@ -188,14 +196,14 @@ sub do { # the common entry point for buidler and renderer
  # better check and process the widget configuration now
  
  ( $s->{wrun} = widget_verify ( $s->{wspec} ) )
-  or $self->fail ( 'widget setup verfication failed' );
+  or return $self->fail ( 'widget setup verfication failed' );
  
  $s->{total} = $self->fetch ( "$s->{runmode}#count", @{ $s->{args_array} } );
  
  $s->{total} > 0 or return $self->fail ( 'no photos' );
  
  $s->{total} > 9 or 
-  return $self->fail ( 'builder and widget requires at least 10 photos' );
+  return $self->fail ( 'building and rendering requires at least 10 photos' );
 
  $s->{func} eq 'build' and do {
  
@@ -233,11 +241,11 @@ sub photos { # the widget renderer
  my $n = 100; 
  
  my $add = '_rand'; my $order = 'random()';
- 
+  
  # change settings if latest photos requested
  $s->{wrun}->{choose} == 2 and do {
  
-  $add = ''; $order = 's asc,n desc';
+  $add = ''; #$order = 's asc,n desc';
    
  };
  
