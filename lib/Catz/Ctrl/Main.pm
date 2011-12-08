@@ -190,7 +190,7 @@ sub sample {
  my $samp = $self->fetch ( 'all#array_rand_n', 100 );
  
  # get thumbnails in random order 
- my $th = $self->fetch ( 'photo#thumb', 'random()', @{ $samp } );
+ my $th = $self->fetch ( 'photo#thumb', 'rand', @{ $samp } );
 
  $s->{thumbs} = $th->[0];
 

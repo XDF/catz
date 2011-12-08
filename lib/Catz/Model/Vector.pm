@@ -30,7 +30,34 @@ use parent 'Catz::Model::Common';
 
 use Bit::Vector;
 use List::Util qw ( shuffle );
-use POSIX qw( floor ceil );
+use Catz::Util::Number qw( floor ceil );
+
+sub full {
+ 
+ # returns all photos vector = filled bit vector
+
+ # creating an empty bit vector one larger than there are photos
+ # since 0 index in not used 
+ my $vec = Bit::Vector->new( $_[0]->maxx + 1 );
+
+ $vec->Fill;
+ 
+ $vec->Bit_Off(0); # 0th bit is unused as x counting start from 1
+ 
+ return $vec;
+ 
+}
+
+sub empty {
+
+ # returns a base empty vector (all bits 0)
+ 
+ # creating an empty bit vector one larger than there are photos
+ # since 0 index in not used
+       
+ return Bit::Vector->new( $_[0]->maxx  + 1 );
+
+}
 
 sub bsearch {
 
@@ -59,63 +86,155 @@ sub bsearch {
  
   }
   
-   # not found is indicated as -1
+  # not found is indicated as -1
    
-   -1;
+  -1;
   
- }
+}
+
+# we define the SQLs here to make sure that they are literally
+# same to take full advantage on database result set caching
+
+my $sql_general = qq {
+ select x from _sid_x where sid in (
+  select sid from sec where (sec_en like ? or sec_fi like ?)
+ )   
+};
+
+my $sql_id =     
+ 'select x from album natural join photo where fullnum33(s,n) like ?';
+
+my $sql_file = 'select x from photo where file like ?';
  
 sub _base {
  
  my ( $self, $pri, $sec ) = @_;
-  
- my $res;
+ 
+ # handling of secs "id "and "file" added separately 2011-12
+ 
+ # creating an empty bit vector one larger than there are photos
+ # since 0 index in not used      
+ my $vec = Bit::Vector->new( $self->maxx  + 1 );
+ 
+ my $res = [];
  
  # sql statements returning photo x don't use distinct or group by to
- # remove duplicates since it is tested to be faster to just pass them
+ # remove duplicates since it is tested to be faster to just pass them to
  # Bit::Vector Index_List_Store and it doesn't mind the duplicates
-       
- if ( $pri eq 'has' ) { 
  
+ given ( $pri ) {
+ 
+  when ( 'has' ) {
+  
    # get all photos that have a subject of subject class $sec defined
+   
+   if ( $sec eq 'id' or $sec eq 'file' ) {
+   
+    # every photo has 'id' and 'file' so we just return a filled vector
+         
+    # 0th bit is unused as x counting start from 1         
+    $vec->Fill; $vec->Bit_Off(0); return $vec;
+   
+   } else {
+
+    $res = $self->dbcol ( qq { 
+     select x from sec natural join _sid_x 
+     where pid=(select pid from pri where pri=?) 
+    }, $sec );
     
-  $res = $self->dbcol ( qq { 
-   select x from sec natural join _sid_x 
-   where pid=(select pid from pri where pri=?) 
-  }, $sec );
-            
- } else {
- 
+   }
+
+  }
+
   # we execute all searches as like instead of = since this appears to give us
   # the closest behavior of case-insensitivitiness with äÄ and öÖ without
   # being sure why (collate nocase with = doesn't give the same result)
- 
-  if ( $pri eq 'any' ) {
+      
+  when ( 'any' ) {
+  
+   # search all concepts, remember to union the special cases 'id' and 
+   # 'file' - we do it piece by piece to utilize database result set 
+   # caching more efficiently
+   
+   # 1/3: general
+   
+   $res = $self->dbcol ( $sql_general, $sec, $sec );
+   
+   $vec->Index_List_Store ( @$res );
+   
+   # 2/3: id
+   
+   # optimize so that if $sec has any other characters than
+   # digits, _s and %s it can't match an id
+   $sec =~ /^[0-9_\%]*$/ and do {
+   
+    $res = $self->dbcol ( $sql_id, $sec );
+
+    $vec->Index_List_Store ( @$res );
+    
+   };
+   
+   # 3/3: file   
+
+   # remove endings like "_LR.JPG" and ".JPG" if present   
+   $sec =~ s|(\_lr)?\.jpg$||i;   
+
+   # optimize so that if $sec hasn't got digits, _ or % it can't 
+   # match a filename since a filename has always at least 4 digits
+   $sec =~ /[0-9_\%]/ and do {
+
+    $res = $self->dbcol ( $sql_file, $sec );
+   
+    $vec->Index_List_Store ( @$res );
+    
+   };
+   
+   return $vec;
+     
+  }
+  
+  when ( 'id' ) {
+  
+   # special handling for file id searches added 2011-12-06
+   
+   # optimize so that if $sec any other characters than
+   # digits, _s and %s it can't match an id
+   ( $sec =~ /^[0-9_\%]*$/ ) and
+    $res = $self->dbcol ( $sql_id, $sec );
            
-   $res = $self->dbcol ( qq {
-    select x from _sid_x where sid in (
-     select sid from sec where (sec_en like ? or sec_fi like ?)
-    ) }, $sec, $sec );
+  }
+  
+  when ( 'file' ) {
+  
+   # special handling for file name searches added 2011-12-06
    
-  } else {
-   
+   # remove endings like "_LR.JPG" and ".JPG" if present
+   $sec =~ s|(\_lr)?\.jpg$||i;
+
+   # optimize so that if $sec hasn't got digits, _ or % it can't 
+   # match a filename since a filename has always at least 4 digits
+   $sec =~ /[0-9_\%]/ and
+    $res = $self->dbcol ( 'select x from photo where file like ?', $sec );
+    
+  }
+  
+  default {
+  
+   # search a within a single concept
+    
    $res = $self->dbcol ( qq { 
     select x from _sid_x where sid in ( 
      select sid from sec where 
       pid=(select pid from pri where pri=?) and 
       (sec_en like ? or sec_fi like ?)
     ) }, $pri, $sec, $sec );
-   
+      
   }
-    
- }
-  
- # creating an empty bit vector one larger than there are photos
- # since 0 index in not used      
- my $vec = Bit::Vector->new( $self->maxx  + 1 );
    
- $vec->Index_List_Store ( @$res ); # store the x indexes as bits
-  
+ }
+
+ $vec->Index_List_Store ( @$res );
+              
  return $vec;  
   
 } 

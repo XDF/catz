@@ -71,7 +71,7 @@ my $wconf = {
  
  values => {
   type => [ 1 ],
-  choose => [ 1, 2 ],
+  choose => [ 1, 2, 3 ],
   align => [ 1, 2 ],
   float => [ 1, 2, 3 ],
   limit => [ map { 300 + ( $_ * 100 ) } ( 1 .. 17 ) ],

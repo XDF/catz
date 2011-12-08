@@ -82,7 +82,7 @@ sub pattern {
  }
  
  $self->f_search_ok ( 'i', 'init' ) or 
-  return $self->fail ( 'illegal parameter' );
+  return $self->fail ( 'illegal init parameter' );
   
  $s->{what} and do { # if a search is available
 
@@ -95,7 +95,7 @@ sub pattern {
    $s->{args_count} <= 50 and # not more than 25 pairs   
    $s->{args_count} % 2 == 0 # args must appear in pairs  
   ) {
-   $self->f_origin or return $self->fail ( 'ORIGIN' );  
+   $self->f_origin or return $self->fail ( 'illegal search' );  
   } else { $s->{x} = undef; $s->{id} = undef; }
 
  };

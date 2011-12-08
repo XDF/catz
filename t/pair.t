@@ -85,6 +85,9 @@ my @badcombs = qw (
  body/ND-0444020_Digital_Camera/002026
  283904/9812304/23409234
  +="d"/!!$@!!/~~***
+ text/hello/173108
+ id/131058/131058
+ file/CFAF5588-046JPG/131058
 );
 
 my $i = 0; # ok setup pointer  

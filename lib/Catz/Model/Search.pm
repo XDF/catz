@@ -103,8 +103,12 @@ sub verify_args {
    
    my $res = $self->dbone('select 1 from pri where pri=?',$check);
    
-   # should be an existing pri or 'any'
-   ( $res or $check eq 'any' ) or return 0;  
+   # should be an existing pri or 'any', 'id', 'file' 
+    $res or 
+  ( $check eq 'any' ) or 
+  ( $check eq 'id' ) or
+  ( $check eq 'file' ) or
+    return 0;  
     
   } else {
        
