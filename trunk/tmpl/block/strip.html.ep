@@ -17,11 +17,11 @@
 %  if ( $wrun->{align} == 1 ) {
 %   $width = int ( ( $thumbsize / $th->[6] ) * $th->[5] );
 %   $height = $thumbsize;
-%   $agg += $width + $bonus; 
+%   $agg += $width + $bonus*2; 
 %  } else {
 %   $height = int ( ( $thumbsize / $th->[5] ) * $th->[6] );
 %   $width = $thumbsize;
-%   $agg += $height + $bonus;
+%   $agg += $height + $bonus*2;
 %  }
 %  $agg > $wrun->{limit} and $supress = 1;
 %  not $supress and do {   

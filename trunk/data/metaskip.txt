@@ -1,3 +1,5 @@
+subject_approx;breeder;AngelWaves;Angelfalls
+#
 subject_approx;breeder;Ferox;Ferme
 #
 subject_approx;breeder;Preciousice;Precious
@@ -7,4 +9,10 @@ subject_approx;breeder;Usvaniityn;Usvaneidon
 subject_approx;cat;Misu;Miisu
 #
 subject_approx;cat;Pekka;Peku
+#
+subject_approx;cat;SiruCats Bashir;SiruCats Bandhu
+#
+subject_approx;cat;Tähtitassun Bertil;Tähtitassun Vintiö
+#
+subject_approx;cat;Zarin Varinka;Zarin Taika
 #

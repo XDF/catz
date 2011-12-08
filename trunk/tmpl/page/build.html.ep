@@ -5,13 +5,14 @@
 %# --------------------
 %# 
 <% content 'ptitleadd' => begin %>
-<%== $t->{WID_BUILDER_TITLE} %> 
+<%== $t->{WID_BUILDER_PAGE} %> 
 <% end %>
 %#
 %# --------------------
 %#
 <% content 'jsadd' => begin %>
 %== include 'elem/js', jstype => 'site', jsfile => 'copy';
+%== include 'elem/js', jstype => 'site', jsfile => 'info';
 <% end %>
 %#
 %# --------------------
@@ -58,8 +59,7 @@
 %#
 %# --------------------
 %#
-<div class="bar"><h2><%= $t->{WID_ABOUT} %></h2></div>
-<div class="bar"><%== '' %></div>
+%== include 'content/build';
 %#
 %# --------------------
 %#

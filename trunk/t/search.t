@@ -60,9 +60,10 @@ my @oksearches = (
  '+nick=ÖRPPI           ',
  '*""Toykiller""*',
  'cate=4      -cate=1 -cate=2      +cate=3',
+ '+id=1???2? +file=EOS*',
 );
 
-# searches that don't return
+# searches that don't return photos
 my @badsearches = (
  'oipqwpoiwpoeri',
  'Ipekedinn',

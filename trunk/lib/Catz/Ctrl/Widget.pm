@@ -38,7 +38,12 @@ sub urlothers {
 
  my $self = shift; my $s = $self->{stash};
  
- # only for builder, embed has no language change link
+ # only for builder, embed has none of these links
+ 
+ $s->{urlreset} = $s->{url};
+ 
+ # just replace any setup with plain language 
+ $s->{urlreset} =~ s|^/[a-z0-9]+|/$s->{lang}|;
   
  given ( $s->{runmode} ) {
  
@@ -125,7 +130,6 @@ sub start  {
   
    if ( defined $s->{wspec} ) { 
  
-    
     # this is not the builder's entry pages, prevent indexing
     $s->{meta_index} = 0; $s->{meta_follow} = 0;
     
@@ -240,15 +244,20 @@ sub photos { # the widget renderer
  # for one subject and the served from cache 
  my $n = 100; 
  
- my $add = '_rand'; my $order = 'random()';
+ my $add; my $order;
+ 
+ given ( $s->{wrun}->{choose} ) {
+ 
+  when ( 1 ) { $add = ''; $order = 'x' } # latest photos
   
- # change settings if latest photos requested
- $s->{wrun}->{choose} == 2 and do {
+  when ( 2 ) { $add = '_rand'; $order = 'x' } # rand photos weight on latest
+  
+  when ( 3 ) { $add = '_rand'; $order = 'rand' } # totally rand photos
+  
+  default { die "internal error: unknown photo choosing method id '$_'" }
  
-  $add = ''; #$order = 's asc,n desc';
-   
- };
- 
+ }
+  
  # fetch the photo xs to start the processing with
  $s->{xs} = $self->fetch ( # latest photos
   "$s->{runmode}#array$add".'_n', @{ $s->{args_array} }, $n 

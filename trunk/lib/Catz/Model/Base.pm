@@ -33,10 +33,9 @@ use Time::HiRes qw ( time );
 
 use Catz::Data::Cache;
 
-use Catz::Util::Number qw ( round );
+use Catz::Util::Number qw ( fullnum33 round );
 
-my $db = undef;
-my $currver = 0;
+my $db = undef; my $currver = 0;
 
 my $time_model = 0; # turns on timing on all model access
 
@@ -77,6 +76,9 @@ sub fetch {
     'dbi:SQLite:dbname='.$ENV{MOJO_HOME}."/db/$newver.db",
      undef, undef, { AutoCommit => 1, RaiseError => 1, PrintError => 1 }
     ) || die ( $DBI::errstr );
+    
+   # sequence
+   $db->func( 'fullnum33', 2, \&fullnum33, 'create_function' );
      
    # store the new version as current version
    

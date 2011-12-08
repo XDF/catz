@@ -3643,6 +3643,9 @@ FR
 Susanssin
 FI
 #
+Suvikasteen
+FI
+#
 Suvipäivän
 FI
 #
@@ -3705,6 +3708,9 @@ FI
 #
 Talisker
 CA
+#
+Talismanin
+FI
 #
 Tallkottens
 SE
@@ -4054,6 +4060,9 @@ FI
 vum Rousegaard
 LU
 #
+Vuorensinen
+FI
+#
 Wagga Wagga's
 SE
 #
@@ -4194,6 +4203,9 @@ FI
 #
 Yönsvengin
 FI
+#
+z Dworku Bojara
+PL
 #
 z Matrixu
 CZ

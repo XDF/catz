@@ -30,17 +30,27 @@ use 5.12.0; use strict; use warnings;
 
 use parent 'Catz::Model::Common';
 
-my $HR = '.JPG';
-my $LR = '_LR.JPG';
+my $HR = '.JPG';    # the fixed filename ending for hires photos 
+my $LR = '_LR.JPG'; # the fixed filename ending for lores photos
 
 sub _thumb {
 
  my ( $self, $order, @xs ) = @_;
  
- $order =~ /^\d/ and die 'internal error: thumbnails requested without order';
+ given ( $order ) {
+  
+  # random ordering
+  when ( 'rand' ) { $order = 'random()' }
+  
+  # latest gallery first latest photo in a gallery last
+  when ( 'x' ) { $order = 'x' }
+ 
+  default { die "internal error: thumbs requested in unknown order '$_'" }
+  
+ }
  
  my $min = 99999999;
- my $max = 00000000; 
+ my $max = 00000000;
  
  my $thumbs = $self->dball ( qq {
   select x,s,n,folder,file||'$LR',lwidth,lheight 

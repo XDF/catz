@@ -62,6 +62,10 @@ n
 black or seal or ruddy
 musta tai ruskea tai riista
 #
+non
+unrecognized
+hyväksymätön
+#
 o
 cinnamon or sorrel
 kaneli tai punainen
