@@ -39,17 +39,19 @@ use Catz::Data::Style;
 my $langs = [ 'en', 'fi' ];
  
 my $i18n = 
- I18N::AcceptLanguage->new( defaultLangauge => 'en', strict => 0 );
+ I18N::AcceptLanguage->new( defaultLanguage => 'en', strict => 0 );
 
 sub detect { # the language detection based on the request headers 
  
  my $self = shift;
-
- # it was noted with some wget tests that the target appeared to be unset
- # so we now set 'en' if undef is returned 
+ 
  my $target = $i18n->accepts ( 
   $self->req->headers->accept_language, $langs 
- ) // 'en';
+ );
+ 
+ # messing the default language and you get an empty string
+ # so we double-check now that the language is ok
+ $target eq 'en' or $target eq 'fi' or $target = 'en';
  
  $self->visitat ( "/$target/" );
 
