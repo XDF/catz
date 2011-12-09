@@ -52,9 +52,7 @@ On the server side cache gets rendered pages, Model responses and SQL statement 
 
 Nginx servers photos and some other static assets. They get 7 days of client side cache lifetime and after that if-modified-since should come into play.
 
-Other resources are server my Hypnotoad/Mojolicious. I have found it easiest to set a fixed one hour lifetime for all content server by the backend. Both expires and max-age headers are set by this rule.
-
-The application sends the database version number as last-modified header making it possible for the clients to verify the cached content by sending if-modified-since. 
+Other resources are served by Hypnotoad/Mojolicious. I have found it easiest to set a fixed one hour lifetime for all content served by the backend. Both expires and max-age headers are set according to this rule. The application sends the database version number (YYYYMMHHDDHH24MISS) formatted to last-modified header making it possible for the clients to verify the cached content by sending if-modified-since.
  
 = Testing =
 
