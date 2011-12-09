@@ -2,17 +2,17 @@
 # Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
 # Licensed under The MIT License
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,7 +22,9 @@
 # THE SOFTWARE.
 #
 
-use 5.12.0; use strict; use warnings;
+use 5.12.0;
+use strict;
+use warnings;
 
 use lib '../lib';
 
@@ -52,32 +54,36 @@ if ( not defined $dtold ) {
 
  # no old db, just make a key file
  filewrite ( "$path/$dtnew.txt", "Catz database key file" );
- 
- say "rolled initially to '$dtnew'"; $rolled++;
-  
-} else {
 
- if ( $dtold eq $dtnew ) { 
+ say "rolled initially to '$dtnew'";
+ $rolled++;
+
+}
+else {
+
+ if ( $dtold eq $dtnew ) {
 
   say "already at the latest dt '$dtold', no need to roll";
-  
- } else {
- 
+
+ }
+ else {
+
   filewrite ( "$path/$dtnew.txt", "Catz database key file" );
 
   # remove the old key file
   fileremove ( $keyold );
 
-  say "rolled from '$dtold' to '$dtnew'"; $rolled++; 
- 
+  say "rolled from '$dtold' to '$dtnew'";
+  $rolled++;
+
  }
- 
+
 }
 
 if ( $rolled and conf ( 'lin' ) ) {
- 
+
  chmod ( 0444, $dbnew ) || die $!;
-  
+
  say "set read only '$dbnew'";
-    
+
 }

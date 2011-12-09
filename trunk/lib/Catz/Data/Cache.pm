@@ -9,10 +9,10 @@
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-#          
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,7 +20,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-#  
+#
 
 package Catz::Data::Cache;
 
@@ -33,7 +33,9 @@ package Catz::Data::Cache;
 # * database result sets
 #
 
-use 5.12.0; use strict; use warnings;
+use 5.12.0;
+use strict;
+use warnings;
 
 use parent 'Exporter';
 
@@ -45,15 +47,15 @@ use Digest::MD5 qw( md5_hex );
 
 # we "use Storable" just to set it's static variables to
 # allow storage of CODE references - this appears to be
-# required for Mojo response caching after ugrading to 
+# required for Mojo response caching after ugrading to
 # Mojolicious 2.32
 use Storable;
 $Storable::Deparse = 1;
-$Storable::Eval = 1; 
+$Storable::Eval    = 1;
 
 use Catz::Data::Conf;
 
-use Catz::Util::String qw ( enurl );  
+use Catz::Util::String qw ( enurl );
 
 # for debugging or other needs all caching can be
 # set to NOP setting this to false
@@ -64,12 +66,12 @@ my $cache_trace = 0;
 
 # we create a static cache object at compile time and this works just fine
 # also the hard-coded values are practically fine for all the environments
-my $cache = new Cache::Memcached::Fast { 
- servers => [ '127.0.0.1:11211' ], 
- connect_timeout => 0.1, 
- max_failures => 2, # let connect fail 2 times ...
- failure_timeout => 15, # ... and then rest for 15 seconds
- compress_threshold => 15_000, # ... over 15 kb and compress
+my $cache = new Cache::Memcached::Fast {
+ servers         => [ '127.0.0.1:11211' ],
+ connect_timeout => 0.1,
+ max_failures    => 2,                      # let connect fail 2 times ...
+ failure_timeout => 15,                     # ... and then rest for 15 seconds
+ compress_threshold => 15_000,              # ... over 15 kb and compress
  nowait => 1 # should speed up set by not waiting for confirmation for success
 };
 
@@ -77,82 +79,84 @@ my $cache = new Cache::Memcached::Fast {
 # since we use URL encoding with cache keys this
 # should be an URL safe character and the encoding of it
 # doesn't add unnecessary length to the cache keys
-my $sep = '~'; 
+my $sep = '~';
 
 # force the cache key to be 250 characters or less (Memcached limit)
 # all characters after 218 are hashed to md5 hash in hex encoding
 # so the final key is 218 + 32 = 250 characters
-sub shrink { substr ( $_[0], 0 , 218 ) . md5_hex ( substr ( $_[0], 218 ) ) }
+sub shrink {
+ substr ( $_[ 0 ], 0, 218 ) . md5_hex ( substr ( $_[ 0 ], 218 ) );
+}
 
 # preparing of the cache key by joining the parts
 sub keyer {
 
  my $key = enurl join $sep, map { $_ // 'undef' } @_;
-   
+
  length $key > 250 and return shrink $key;
- 
+
  return $key;
-      
+
 }
 
 sub cache_set {
 
- $cacheon or return; # immediate NOP if not caching
- 
+ $cacheon or return;    # immediate NOP if not caching
+
  my @args = @_;
 
- # we expect val to be the last param 
+ # we expect val to be the last param
  my $val = pop @args;
- 
+
  my $key = keyer ( @args );
- 
+
  $cache_trace and warn "CACHE SET  $key";
-  
+
  {
- 
+
   # the value to be cached may well be undef since it might
   # come from an url that points to no real photos and so
   # database access returns undef photo x or similar so
   # we allow undef to go to cache without a warning
-   
+
   no warnings qw( uninitialized );
- 
+
   #
   # we use no expirity -> infinite caching
   #
   # Memcached automatically discards LRU items
-  # and when app or data changes, version id 
+  # and when app or data changes, version id
   # changes and so all keys change rendering
   # old cache entries unused and to LRU
 
-  $cache->set( $key, $val );   
-  
+  $cache->set ( $key, $val );
+
  }
- 
-}
+
+} ## end sub cache_set
 
 sub cache_get {
 
- $cacheon or return; # immediate NOP if not caching
- 
+ $cacheon or return;    # immediate NOP if not caching
+
  my @args = @_;
- 
+
  my $key = keyer @args;
 
- my $ret = $cache->get( $key );
- 
+ my $ret = $cache->get ( $key );
+
  $cache_trace and do {
- 
- if ( defined $ret ) { warn "CACHE HIT  $key" }
-  else { warn "CACHE MISS $key" }
- 
+
+  if   ( defined $ret ) { warn "CACHE HIT  $key" }
+  else                  { warn "CACHE MISS $key" }
+
  };
- 
- return $ret; 
+
+ return $ret;
 
 }
 
-my @chars = ('a'..'z','A'..'Z','0'..'9' );
+my @chars = ( 'a' .. 'z', 'A' .. 'Z', '0' .. '9' );
 
 sub cache_isup {
 
@@ -161,24 +165,24 @@ sub cache_isup {
  # generate a random key and value, the idea is from
  # http://th.atguy.com/mycode/generate_random_string/
 
+ my $ckey;
+ my $ival;
 
- my $ckey; my $ival;
+ foreach ( 1 .. 200 ) {
 
- foreach (  1 .. 200 ) { 
-
-  $ckey .= $chars [ rand @chars ];
-  $ival .= $chars [ rand @chars ];
+  $ckey .= $chars[ rand @chars ];
+  $ival .= $chars[ rand @chars ];
 
  }
- 
+
  $ckey .= 'Catz::Core::Cache::cache_isup::';
 
  cache_set ( $ckey, $ival );
 
  my $oval = cache_get ( $ckey ) // '0';
 
- return $ival eq $oval ? 1 : 0; 
+ return $ival eq $oval ? 1 : 0;
 
-}
+} ## end sub cache_isup
 
-1; 
+1;
