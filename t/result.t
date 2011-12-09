@@ -2,17 +2,17 @@
 # Catz - the world's most advanced cat show photo engine
 # Copyright (c) 2010-2011 Heikki Siltala
 # Licensed under The MIT License
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,14 +20,18 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-# 
+#
 
-use 5.12.0; use strict; use warnings;
+use 5.12.0;
+use strict;
+use warnings;
 
 # unbuffered outputs
 # from http://perldoc.perl.org/functions/open.html
-select STDERR; $| = 1; 
-select STDOUT; $| = 1; 
+select STDERR;
+$| = 1;
+select STDOUT;
+$| = 1;
 
 use Test::More;
 use Test::Mojo;
@@ -35,14 +39,14 @@ use Test::Mojo;
 use Catz::Data::Conf;
 use Catz::Data::Text;
 
-my $t = Test::Mojo->new( conf ( 'app' ) );
+my $t = Test::Mojo->new ( conf ( 'app' ) );
 
 use constant RESULT_NA => '<!-- N/A -->';
 
 # some working keys
 
 my @ok = qw (
- CATZ-KNQWY5DFMRPV6E5XV5DPSEXHL54MK6LVC3XRGN22ZKJAF2JYLQASEZQ2BCTMUY2XOWA6W3DLMW66VPFAFAMDFNT5J2WK6NRVETOAMHY-433AE89FE61846F29F6BB6E7211E114C 
+ CATZ-KNQWY5DFMRPV6E5XV5DPSEXHL54MK6LVC3XRGN22ZKJAF2JYLQASEZQ2BCTMUY2XOWA6W3DLMW66VPFAFAMDFNT5J2WK6NRVETOAMHY-433AE89FE61846F29F6BB6E7211E114C
  CATZ-KNQWY5DFMRPV6BIEYZCPK62UNZYDJN4PZDPRCDUQWTHJF6HYXIVH6UVQMZOMJUX3VIMEF5XKXLP2QK3XHRH76ZJ3WM-68599A93057342F613E17FD12E072834
  CATZ-KNQWY5DFMRPV6XC6EXEFFN7QHBSH2DLFUITYCUTWPV2TEA23K5W7TFWYH7N5AI3ADB3KIL2QRTP2RVSIOIAU3CMMBA3AKDCRNNW375I-C3785C8DBDAB2684CAF22D79217002BA
  CATZ-KNQWY5DFMRPV6KQTC5REO335CKLKBVFO6QDXS3Y5ZUU4THCSA5ZW4X73VAHFJ7VB7W44VFYNTDFZPGQHGNBAVPINZA-B69A694C280269304CA795FAB9616418
@@ -80,56 +84,50 @@ my @mal = qw (
  m3kj3k3jlk3jlk3KJLKWJALKJAWKKLJWLW
 );
 
-my @chars = ( 'a'..'z','A'..'Z','0'..'9',qw (å ä ö Å Ä Ö ? - * @ !));
+my @chars =
+ ( 'a' .. 'z', 'A' .. 'Z', '0' .. '9', qw (å ä ö Å Ä Ö ? - * @ !) );
 
 my @huges = ();
 
 foreach ( 1 .. 20 ) {
 
- my $key = join '', 
+ my $key = join '',
   map { $chars[ rand @chars ] } ( 1 .. ( 50 + int ( rand ( 950 ) ) ) );
 
  push @huges, $key;
- 
+
 }
 
 # with setup should fail
-$t->get_ok("/en122111/result?x=".$ok[1])->status_is(404);
- 
+$t->get_ok ( "/en122111/result?x=" . $ok[ 1 ] )->status_is ( 404 );
+
 foreach my $lang ( qw ( en fi ) ) {
 
  my $txt = text ( $lang );
 
  # no key / 1
- $t->get_ok("/$lang/result/")
-  ->status_is(200)
-  ->content_type_like(qr/text\/html/)
-  ->content_is(RESULT_NA);
+ $t->get_ok ( "/$lang/result/" )->status_is ( 200 )
+  ->content_type_like ( qr/text\/html/ )->content_is ( RESULT_NA );
 
  # empty key
- $t->get_ok("/$lang/result?x=")
-  ->status_is(200)
-  ->content_type_like(qr/text\/html/)
-  ->content_is(RESULT_NA);
- 
+ $t->get_ok ( "/$lang/result?x=" )->status_is ( 200 )
+  ->content_type_like ( qr/text\/html/ )->content_is ( RESULT_NA );
+
  foreach my $key ( @ok ) {
- 
-  $t->get_ok("/$lang/result?x=$key")
-    ->status_is(200)
-    ->content_type_like(qr/text\/html/)
-    ->content_like(qr/$txt->{RESULT_CREDIT_URL}/);
+
+  $t->get_ok ( "/$lang/result?x=$key" )->status_is ( 200 )
+   ->content_type_like ( qr/text\/html/ )
+   ->content_like ( qr/$txt->{RESULT_CREDIT_URL}/ );
 
  }
- 
+
  foreach my $key ( @bad, @mal, @huges ) {
- 
-  $t->get_ok("/$lang/result?x=$key")
-    ->status_is(200)
-    ->content_type_like(qr/text\/html/)
-    ->content_is(RESULT_NA);
- 
+
+  $t->get_ok ( "/$lang/result?x=$key" )->status_is ( 200 )
+   ->content_type_like ( qr/text\/html/ )->content_is ( RESULT_NA );
+
  }
 
-}
+} ## end foreach my $lang ( qw ( en fi ))
 
 done_testing;

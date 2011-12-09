@@ -9,10 +9,10 @@
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,11 +20,13 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-#  
+#
 
 package Catz::Data::Dist;
 
-use 5.12.0; use strict; use warnings;
+use 5.12.0;
+use strict;
+use warnings;
 
 use parent 'Exporter';
 
@@ -33,27 +35,24 @@ our @EXPORT = qw ( dist_conf dist_url );
 my $cnf = {
 
  blocks => {
- 
-  full => [ qw ( +has breed +has cat ) ],
+
+  full    => [ qw ( +has breed +has cat ) ],
   partial => [ qw ( +has breed -has cat ) ],
-  breed => [ qw ( +has breed -breed xc? -has cat ) ],  
-  cate => [ qw ( +has breed +breed xc? -has cat ) ],
-  none => [ qw ( -has text ) ],
-  tailer => [ qw ( -has cat ) ], 
+  breed   => [ qw ( +has breed -breed xc? -has cat ) ],
+  cate    => [ qw ( +has breed +breed xc? -has cat ) ],
+  none    => [ qw ( -has text ) ],
+  tailer  => [ qw ( -has cat ) ],
  },
- 
- keysall => [ qw ( full partial breed cate none ) ],
+
+ keysall     => [ qw ( full partial breed cate none ) ],
  keyscontrib => [ qw ( none cate breed full ) ],
- keyspie => [ qw ( full breed cate none ) ],
- keyslink => [ qw ( partial ) ], 
+ keyspie     => [ qw ( full breed cate none ) ],
+ keyslink    => [ qw ( partial ) ],
 
 };
 
 sub dist_conf { $cnf }
 
 sub dist_url {
-
-
-
 
 }
