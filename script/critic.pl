@@ -28,44 +28,31 @@ use warnings;
 
 use lib '../lib';
 
-use Perl::Tidy;
+use Perl::Critic;
 
-use Catz::Util::File qw ( filecopy findfilesrec fileremove );
+use Catz::Util::File qw ( findfilesrec );
 
-#
-# WARNING: overwrites silently existing source code files
-# with tidy output versions so assuming strongly that all code
-# files are under version control system. In case of an error
-# it can happen that ALL SOURCE CODE FILES GET SPOILED
-#
+my $rc     = './criticrc.txt';
 
-my $rc    = './tidyrc.txt';
-my $log   = '../log/tidylog.log';
-my $error = '../log/tidyerr.log';
-my $temp  = '../temp/tidytemp.txt';
+my $cr = Perl::Critic->new();
 
 my @files = findfilesrec ( '../lib', '../script', '../t' );
 
-foreach my $file ( grep { $_ =~ /\.(p[ml]|t)$/ } @files ) {
+my @msgs = ();
+
+my $conf = {
+ -profile => $rc, 
+ -severity => 1, 
+};
+
+foreach my $file ( reverse grep { $_ =~ /\.(p[ml]|t)$/ } @files ) {
 
  say $file;
+ 
+ my @out = $cr->critique ( $conf, $file );
 
- # create tidy output to temp file
+ push @msgs, @out;
 
- Perl::Tidy::perltidy (
-  source      => $file,
-  destination => $temp,
-  perltidyrc  => $rc,
-  logfile     => $log,
-  errorfile   => $error
- );
+}
 
- # copy temp file over the source file
-
- filecopy $temp, $file;
-
- # remove the temp file
-
- fileremove $temp;
-
-} ## end foreach my $file ( grep { $_...})
+print @msgs;
