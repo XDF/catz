@@ -3,9 +3,15 @@
 % foreach my $wval ( @{ $wconf->{values}->{ $wkey } } ) {
 %  my $selected = ' ';
 %  $wval eq $wrun->{ $wkey } and $selected = ' selected ';
-%  my $out = join '', map { 
-%   $wconf->{trans}->{$_} eq $wkey ? "$short$wval" : $_.$wrun->{$wconf->{trans}->{$_}} 
-%  } @{ $wconf->{shorts} } ; 
+%  my $out = '';
+%  foreach my $long (  @{ $wconf->{longs} } ) {
+%   my $sshort = $wconf->{trans}->{$long};
+%   if ( $long eq $wkey ) {
+%    $wconf->{defaults}->{$sshort} eq $wval or $out .= "$sshort$wval";
+%   } else {
+%    $wconf->{defaults}->{$sshort} eq $wrun->{$long} or $out .= "$sshort$wrun->{$long}"; 
+%   } 
+%  } 
 <option<%== $selected %>value="<%== $urlconfa %><%== $out %><%== $urlconfb %>"><%= $t->{'WID_'.$wkey.'_'.$wval} %></option>
 % }
 </select>

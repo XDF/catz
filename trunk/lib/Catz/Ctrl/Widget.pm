@@ -52,6 +52,9 @@ sub urlothers {
   when ( 'pair' ) {
 
    my $enc = $self->encode ( $s->{ sec } );
+   
+   $s->{ urldefault } = 
+    $self->fuse ( $s->{ langa }, 'build', $s->{ pri }, $enc );
 
    $s->{ urlback } =
     $self->fuse ( $s->{ langa }, 'browse', $s->{ pri }, $enc );
@@ -78,6 +81,10 @@ sub urlothers {
 
   when ( 'search' ) {
 
+   $s->{ urldefault } = 
+      $self->fuseq ( $s->{ langa }, 'build' ) . '?q='
+    . $self->enurl ( $s->{ what } );
+    
    $s->{ urlback } =
       $self->fuseq ( $s->{ langa }, 'search' ) . '?q='
     . $self->enurl ( $s->{ what } );
@@ -97,13 +104,11 @@ sub urlothers {
 
   default {    # default to runmode all
 
-   $s->{ urlback } = $self->fuse ( $s->{ langa }, 'browseall' );
-
-   $s->{ urlconfa } = $self->fuse ( $s->{ langa }, $s->{ func } );
-   $s->{ urlconfb } = '/';
-
+   $s->{ urldefault } = $self->fuse ( $s->{ langa }, 'build' );   
+   $s->{ urlback }    = $self->fuse ( $s->{ langa }, 'browseall' );
+   $s->{ urlconfa }   = $self->fuse ( $s->{ langa }, $s->{ func } );
+   $s->{ urlconfb }   = '/';
    $s->{ urlembed } = $self->fuse ( $s->{ langa }, 'embed', $s->{ wspec } );
-
    $s->{ urlother } =
     $self->fuse ( $s->{ langaother }, $s->{ func }, $s->{ wspec } );
 

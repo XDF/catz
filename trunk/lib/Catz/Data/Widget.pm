@@ -43,7 +43,7 @@ use Catz::Util::String qw ( enurl );
 use Catz::Util::Time qw ( dtlang );
 
 # widget short and long keys as pairs in a single array
-my $wpairs = [ qw ( t type c choose a align f float l limit s size g gap ) ];
+my $wpairs = [ qw ( c choose a align f float l limit s size g gap ) ];
 
 # extract short and long keys and
 # create short -> long and long -> short translations
@@ -70,16 +70,15 @@ my $wconf = {
  longs  => $wlongs,
  trans  => $wtrans,
 
- defaults => { t => 1, c => 2, a => 1, f => 1, l => 1000, s => 100, g => 0 },
+ defaults => { c => 2, a => 1, f => 1, l => 1000, s => 100, g => 0 },
 
  values => {
-  type   => [ 1 ],
   choose => [ 1, 2, 3 ],
-  align => [ 1, 2 ],
-  float => [ 1, 2, 3 ],
-  limit => [ map { 300 + ( $_ * 100 ) } ( 1 .. 17 ) ],
-  size => [ map { $_ * 10 } ( 5 .. 20 ) ],
-  gap => [ 0, 2, 4, 6, 8, 10 ],
+  align  => [ 1, 2 ],
+  float  => [ 1, 2, 3 ],
+  limit  => [ map { 300 + ( $_ * 100 ) } ( 1 .. 17 ) ],
+  size   => [ map { $_ * 10 } ( 5 .. 20 ) ],
+  gap    => [ 0, 2, 4, 6, 8, 10 ],
  },
 
 };
@@ -121,8 +120,14 @@ sub widget_verify {
 
  }
 
- do { exists $wrun->{ $_ } or return undef }
-  foreach @{ $wconf->{ longs } };
+ # set default values for those not presented
+ 
+ do { 
+ 
+  exists $wrun->{ $_ } or 
+   $wrun->{ $_ } = $wconf->{ defaults }->{ $wconf->{ trans }->{ $_ } }
+   
+ } foreach @{ $wconf->{ longs } };
 
  return $wrun;
 
