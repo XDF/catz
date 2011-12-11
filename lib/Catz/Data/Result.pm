@@ -32,6 +32,7 @@ use parent 'Exporter';
 
 our @EXPORT = qw ( result_prepare result_pack result_unpack result_process );
 
+use Const::Fast;
 use Crypt::Blowfish;
 use Crypt::CBC;
 
@@ -45,7 +46,7 @@ my $eng = Crypt::CBC->new (
  -cipher => 'Blowfish'
 );
 
-my $results = {
+const my $RESULTS => {
  map { $_ => 1 }
   qw (
   BIS BIV BOB BOX CAC CACE CACIB CACS CAGCIB CAGPIB CAP CAPE CAPIB
@@ -136,7 +137,7 @@ sub result_process {
    split /\t/, $line;
 
   defined $result and push @items,
-   grep { $results->{ $_ } } split /\s+/, trim ( $result );
+   grep { exists $RESULTS->{ $_ } } split /\s+/, trim ( $result );
 
   $class =~ /(\d+)/;
 

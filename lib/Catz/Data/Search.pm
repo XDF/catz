@@ -33,12 +33,13 @@ use parent 'Exporter';
 
 our @EXPORT = qw ( search2args args2search );
 
+use Const::Fast;
 use Text::ParseWords;
 
 use Catz::Util::String qw ( enurl trim clean );
 
 # the default pri key used if none is given in the query
-use constant DEFAULT => 'any';
+const my $DEFAULT => 'any';
 
 sub search2args {    # covert a search parameter to argument list
 
@@ -55,7 +56,7 @@ sub search2args {    # covert a search parameter to argument list
  foreach my $arg ( @args ) {
 
   my $oper = '';
-  my $key  = DEFAULT;
+  my $key  = $DEFAULT;
   my $val  = undef;
 
   if ( $arg =~ /^([+-])(.*)$/ ) { $oper = $1; $arg = $2 }
@@ -101,8 +102,8 @@ sub args2search {    # convert argument list to a search parameter
  # if not the first param then put a space to separate from the previous param
   $c > 0 and $str = $str . ' ';
 
-  if   ( $key eq DEFAULT ) { $str = $str . $val }
-  else                     { $str = $str . $key . '=' . $val }
+  if   ( $key eq $DEFAULT ) { $str = $str . $val }
+  else                      { $str = $str . $key . '=' . $val }
 
   $c++;
 

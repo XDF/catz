@@ -42,8 +42,6 @@ sub index {    # the list of all news articles
  my $self = shift;
  my $s    = $self->{ stash };
 
- $s->{ fanpage } = conf ( 'url_fanpage' );
-
  $s->{ urlother } = '/' . $s->{ langaother } . '/news/';
 
  $s->{ news } = $self->fetch ( 'news#titles' );

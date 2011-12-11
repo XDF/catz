@@ -28,24 +28,26 @@ use warnings;
 
 use lib '../lib';
 
+use Const::Fast;
+
 use Catz::Data::Conf;
 
 use Catz::Util::File qw ( fileread filewrite fileremove findlatest pathcut );
 
-my $rolled = 0;
+const my $PATH => '../db';
 
-my $path = '../db';
+my $rolled = 0;
 
 # rolls to the latest database by updating the key file
 
 # latest key file
-my $keyold = findlatest ( $path, 'txt' );
+my $keyold = findlatest ( $PATH, 'txt' );
 
 # current dt
 my $dtold = defined $keyold ? substr ( pathcut ( $keyold ), 0, 14 ) : undef;
 
 # latest database file
-my $dbnew = findlatest ( $path, 'db' );
+my $dbnew = findlatest ( $PATH, 'db' );
 
 # new dt
 my $dtnew = defined $dbnew ? substr ( pathcut ( $dbnew ), 0, 14 ) : undef;
@@ -53,7 +55,7 @@ my $dtnew = defined $dbnew ? substr ( pathcut ( $dbnew ), 0, 14 ) : undef;
 if ( not defined $dtold ) {
 
  # no old db, just make a key file
- filewrite ( "$path/$dtnew.txt", "Catz database key file" );
+ filewrite ( "$PATH/$dtnew.txt", "Catz database key file" );
 
  say "rolled initially to '$dtnew'";
  $rolled++;
@@ -68,7 +70,7 @@ else {
  }
  else {
 
-  filewrite ( "$path/$dtnew.txt", "Catz database key file" );
+  filewrite ( "$PATH/$dtnew.txt", "Catz database key file" );
 
   # remove the old key file
   fileremove ( $keyold );

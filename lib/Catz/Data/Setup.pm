@@ -33,12 +33,14 @@ use parent 'Exporter';
 # The external interface is prodecural method calls
 our @EXPORT = qw ( setup_init setup_keys setup_values setup_default );
 
+use Const::Fast;
+
 #
 # the base system setup array that should be
 # edited only very seldom and with a MAXIMUM care
 #
 
-my $conf = [
+const my $CONF => [
  { name => 'palette',   values => [ qw ( dark neutral bright ) ] },
  { name => 'perpage',   values => [ qw( 10 15 20 25 30 35 40 45 50 ) ] },
  { name => 'thumbsize', values => [ qw ( 100 125 150 175 200 ) ] },
@@ -47,28 +49,28 @@ my $conf = [
  { name => 'peek',      values => [ qw ( off on ) ] }
 ];
 
-# use Devel::Size qw ( total_size); say total_size $conf;
+# use Devel::Size qw ( total_size); say total_size $CONF;
 # 2010-10-25: 2302 bytes
 
 # the default setup
 
-my $DEFAULT = '123321';
+const my $DEFAULT => '123321';
 
 # the names of the setup keys in correct order
 
-my $SETKEYS = [ map { $_->{ name } } @$conf ];
+const my $SETKEYS => [ map { $_->{ name } } @$CONF ];
 
 # generate all valid setups beforehand at compile time
 # easy to test setups and to process them to stash
 
 my $init = {};
 
-foreach my $a ( 0 .. $#{ $conf->[ 0 ]->{ values } } ) {
- foreach my $b ( 0 .. $#{ $conf->[ 1 ]->{ values } } ) {
-  foreach my $c ( 0 .. $#{ $conf->[ 2 ]->{ values } } ) {
-   foreach my $d ( 0 .. $#{ $conf->[ 3 ]->{ values } } ) {
-    foreach my $e ( 0 .. $#{ $conf->[ 4 ]->{ values } } ) {
-     foreach my $f ( 0 .. $#{ $conf->[ 5 ]->{ values } } ) {
+foreach my $a ( 0 .. $#{ $CONF->[ 0 ]->{ values } } ) {
+ foreach my $b ( 0 .. $#{ $CONF->[ 1 ]->{ values } } ) {
+  foreach my $c ( 0 .. $#{ $CONF->[ 2 ]->{ values } } ) {
+   foreach my $d ( 0 .. $#{ $CONF->[ 3 ]->{ values } } ) {
+    foreach my $e ( 0 .. $#{ $CONF->[ 4 ]->{ values } } ) {
+     foreach my $f ( 0 .. $#{ $CONF->[ 5 ]->{ values } } ) {
       $init->{ $a + 1 . $b + 1 . $c + 1 . $d + 1 . $e + 1 . $f + 1 } = 1;
      }
     }
@@ -89,35 +91,35 @@ foreach my $a ( 0 .. $#{ $conf->[ 0 ]->{ values } } ) {
 
 my $list = {};
 
-foreach my $i ( 0 .. $#{ $conf } ) {
+foreach my $i ( 0 .. $#{ $CONF } ) {
 
- foreach my $j ( 0 .. $#{ $conf->[ $i ]->{ values } } ) {
+ foreach my $j ( 0 .. $#{ $CONF->[ $i ]->{ values } } ) {
 
   foreach my $old ( keys %{ $init } ) {
 
    my $new = '';
 
-   foreach my $x ( 0 .. $#{ $conf } ) {
+   foreach my $x ( 0 .. $#{ $CONF } ) {
 
     if   ( $i == $x ) { $new .= ( $j + 1 ) }               # change
     else              { $new .= substr ( $old, $x, 1 ) }
 
    }
 
-   defined $list->{ $old . $conf->[ $i ]->{ name } }
-    or $list->{ $old . $conf->[ $i ]->{ name } } = [];     # initialize
+   defined $list->{ $old . $CONF->[ $i ]->{ name } }
+    or $list->{ $old . $CONF->[ $i ]->{ name } } = [];     # initialize
 
-   push @{ $list->{ $old . $conf->[ $i ]->{ name } } },
-    $conf->[ $i ]->{ values }->[ $j ];
+   push @{ $list->{ $old . $CONF->[ $i ]->{ name } } },
+    $CONF->[ $i ]->{ values }->[ $j ];
 
-   push @{ $list->{ $old . $conf->[ $i ]->{ name } } },
+   push @{ $list->{ $old . $CONF->[ $i ]->{ name } } },
     $new ne $DEFAULT ? $new : '';
 
   } ## end foreach my $old ( keys %{ $init...})
 
- } ## end foreach my $j ( 0 .. $#{ $conf...})
+ } ## end foreach my $j ( 0 .. $#{ $CONF...})
 
-} ## end foreach my $i ( 0 .. $#{ $conf...})
+} ## end foreach my $i ( 0 .. $#{ $CONF...})
 
 # use Devel::Size qw ( total_size); say total_size $list;
 # 2010-10-28 4295412 bytes
@@ -131,10 +133,10 @@ sub setup_init {
 
  $init->{ $config } or return 0;
 
- foreach my $i ( 0 .. $#{ $conf } ) {
+ foreach my $i ( 0 .. $#{ $CONF } ) {
 
-  $app->{ stash }->{ $conf->[ $i ]->{ name } } =
-   $conf->[ $i ]->{ values }->[ int ( substr ( $config, $i, 1 ) ) - 1 ];
+  $app->{ stash }->{ $CONF->[ $i ]->{ name } } =
+   $CONF->[ $i ]->{ values }->[ int ( substr ( $config, $i, 1 ) ) - 1 ];
 
  }
  1;

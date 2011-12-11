@@ -35,6 +35,7 @@ our @EXPORT_OK = qw(
  plaincat textchoose textremove toalbums umb
 );
 
+use Const::Fast;
 use Memoize;
 
 use Catz::Data::Conf;
@@ -138,7 +139,7 @@ sub exptext {
 
 } ## end sub exptext
 
-my $macro = {
+const my $MACRO => {
  front  => "\"(front)|(edessä)\"",
  back   => "\"(back)|(takana)\"",
  bottom => "\"(bottom)|(alimpana)\"",
@@ -214,9 +215,9 @@ sub macro {
 
   when ( [ qw ( P X ) ] ) {    # position, general
 
-   $macro->{ $key } or die "unknow macro key '$key'";
+   $MACRO->{ $key } or die "unknow macro key '$key'";
 
-   return $macro->{ $key };
+   return $MACRO->{ $key };
 
   }
 
@@ -266,7 +267,7 @@ sub plaincat {
 }
 
 # lenses' internal techical names and the corresponding visible names
-my $lensname = {
+const my $LENSNAME => {
  'lbc'           => 'Lensbaby Composer',
  'lbc_dg'        => 'Lensbaby Composer & Double Glass Optic',
  'lbc_sg'        => 'Lensbaby Composer & Single Glass Optic',
@@ -374,7 +375,7 @@ sub body {
 
 }
 
-my $lensflen = {
+const my $LENSFLEN => {
  'lbc'           => '50 mm',
  'lbc_dg'        => '50 mm',
  'lbc_sg'        => '50 mm',
@@ -390,11 +391,13 @@ my $lensflen = {
  'canon28'       => '28 mm',
  'canon50ii+2x'  => '100 mm',
  'canon85usm+2x' => '170 mm',
+ 'samyang8'      => '8 mm',
  'sigma28'       => '28 mm',
  'sigma30'       => '30 mm',
  'sigma10'       => '10 mm',
  'sigma50'       => '50 mm',
  'sigma85'       => '85 mm',
+ 'canon100l'     => '100 mm',
  'canon135l'     => '135 mm',
  'canon200l'     => '200 mm'
 };
@@ -473,12 +476,12 @@ sub exid {
 
  } ## end foreach my $part ( @parts )
 
- $lens and $lensflen->{ $lens } and do {
-  $o->{ flen } = $lensflen->{ $lens };
+ $lens and $LENSFLEN->{ $lens } and do {
+  $o->{ flen } = $LENSFLEN->{ $lens };
  };
 
- if ( $lens and $lensname->{ $lens } ) {
-  $o->{ lens } = $lensname->{ $lens };
+ if ( $lens and $LENSNAME->{ $lens } ) {
+  $o->{ lens } = $LENSNAME->{ $lens };
  }
  else {
   die "lens '$lens' is giving trouble at line '$_[0]'";
@@ -553,12 +556,12 @@ sub exif {
 
    $o->{ lens } = lens ( $album, $o->{ flen }, $o->{ fnum } );
 
-   $o->{ lens } and $lensflen->{ $o->{ lens } } and do {
-    $o->{ flen } = $lensflen->{ $o->{ lens } };
+   $o->{ lens } and $LENSFLEN->{ $o->{ lens } } and do {
+    $o->{ flen } = $LENSFLEN->{ $o->{ lens } };
    };
 
-   if ( $o->{ lens } and $lensname->{ $o->{ lens } } ) {
-    $o->{ lens } = $lensname->{ $o->{ lens } };
+   if ( $o->{ lens } and $LENSNAME->{ $o->{ lens } } ) {
+    $o->{ lens } = $LENSNAME->{ $o->{ lens } };
    }
    else {
     die "lens '" . $o->{ lens } . "' is giving trouble at file '$file'";
@@ -611,7 +614,7 @@ sub fixgap {
 
 } ## end sub fixgap
 
-my $locs = {
+const my $LOCS => {
  myrskyla    => 'myrskylä',
  hyvinkaa    => 'hyvinkää',
  jamsa       => 'jämsä',
@@ -631,7 +634,7 @@ sub loc {
 
  my $loc = shift;
 
- $locs->{ $loc } and $loc = $locs->{ $loc };
+ $LOCS->{ $loc } and $loc = $LOCS->{ $loc };
 
  return ucclcc ( $loc ), ucclcc ( $loc );
 

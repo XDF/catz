@@ -13,7 +13,7 @@
 %     $j++ > 1 and do {
 <%== $sep %>
 %     };
-%     if ( $matrix->{$pri}->{jump}->{$set->[0]} or scalar @{ $set->[1] } == 1 ) {
+%     if ( exists $matrix->{$pri}->{jump}->{$set->[0]} or scalar @{ $set->[1] } == 1 ) {
 <a href="/<%== $langa %>/browse/<%== $set->[0] %>/<%== encode $item %>/">
 %     } else { 
 <a href="/<%== $langa %>/search?q=<%== enurl ( args2search ( "+$pri", $sec, "+$set->[0]", $item ) ) %>">

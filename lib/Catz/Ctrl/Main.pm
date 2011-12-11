@@ -30,6 +30,7 @@ use warnings;
 
 use parent 'Catz::Ctrl::Base';
 
+use Const::Fast;
 use I18N::AcceptLanguage;
 
 use Catz::Data::Conf;
@@ -38,19 +39,13 @@ use Catz::Data::Search;
 use Catz::Data::Setup;
 use Catz::Data::Style;
 
-my $langs = [ 'en', 'fi' ];
-
-my $i18n = I18N::AcceptLanguage->new ( defaultLanguage => 'en', strict => 0 );
+use Catz::Util::String qw ( acceptlang );
 
 sub detect {    # the language detection based on the request headers
 
  my $self = shift;
 
- my $target = $i18n->accepts ( $self->req->headers->accept_language, $langs );
-
- # messing the default language and you get an empty string
- # so we double-check now that the language is ok
- $target eq 'en' or $target eq 'fi' or $target = 'en';
+ my $target = acceptlang ( $self->req->headers->accept_language );
 
  $self->visitat ( "/$target/" );
 
@@ -98,7 +93,7 @@ sub base {
 
 }
 
-use constant RESULT_NA => '<!-- N/A -->';
+const my $RESULT_NA => '<!-- N/A -->';
 
 sub result {
 
@@ -113,13 +108,13 @@ sub result {
  (     defined $key
    and length $key < 2000
    and $key =~ /^CATZ\-([A-Z2-7]+)\-([0-9A-F]{32,32})$/ )
-  or $self->render ( text => RESULT_NA )
+  or $self->render ( text => $RESULT_NA )
   and return;
 
  my @keys = result_unpack ( $key );
 
  scalar @keys == 3
-  or $self->render ( text => RESULT_NA )
+  or $self->render ( text => $RESULT_NA )
   and return;
 
  # this is a pseudo parameter passed to the model that contains the
@@ -131,7 +126,7 @@ sub result {
   // 0;
 
  $count == 0
-  and $self->render ( text => RESULT_NA )
+  and $self->render ( text => $RESULT_NA )
   and return;
 
  my $res = $self->fetch ( 'net#data', @keys, $pseudo );
@@ -145,18 +140,18 @@ sub result {
 
  };
 
- $self->render ( text => RESULT_NA );
+ $self->render ( text => $RESULT_NA );
 
 } ## end sub result
 
-my $cset = [
+const my @CSET => (
  (
   ( 0 .. 9 ),
   ( 'a' .. 'z' ),
   ( 'Z' .. 'Z' ),
   qw ( ! @ $ % & ? . ; : - _ ), ' '
  )
-];
+);
 
 sub info {
 
@@ -172,11 +167,11 @@ sub info {
  else { return $self->fail ( 'unsupported mode requested' ) }
 
  # the 0th element
- my $out = $cset->[ rand @{ $cset } ];
+ my $out = $CSET[ rand @CSET ];
 
  foreach my $key ( split //, $base ) {
 
-  do { $out .= $cset->[ rand @{ $cset } ] }
+  do { $out .= $CSET[ rand @CSET ] }
    foreach ( 1 .. 6 );
 
   $out .= $key;

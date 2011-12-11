@@ -30,9 +30,11 @@ use warnings;
 
 use parent 'Catz::Model::Base';
 
-my $ROOT = 'ROOT';
+use Const::Fast;
 
-my @duals = qw ( breed cate feat title nat );
+const my $ROOT => 'ROOT';
+
+const my @DUALS => qw ( breed cate feat title nat );
 
 sub _link {
 
@@ -110,7 +112,7 @@ sub _dual {
 
  my $sql = '';
 
- foreach my $tag ( @duals ) {
+ foreach my $tag ( @DUALS ) {
 
   length ( $sql ) > 0 and $sql .= ' union all ';
 

@@ -30,6 +30,7 @@ use warnings;
 
 use lib '../lib';
 
+use Const::Fast;
 use File::Find;
 
 use Catz::Util::Number qw ( minnum );
@@ -40,7 +41,7 @@ use Catz::Util::File qw ( fileread filewrite );
 # for one-time use
 #
 
-my $output = '../data/metaexif.txt';
+const my $OUTPUT => '../data/metaexif.txt';
 
 my $out = '';
 
@@ -132,4 +133,4 @@ sub wanted {
 
 } ## end sub wanted
 
-filewrite ( $output, $out );
+filewrite ( $OUTPUT, $out );

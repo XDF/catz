@@ -150,7 +150,9 @@ sub search {
   $self->multi or return $self->fail ( 'multi exit' );
 
  }
- else {    # no results, the fallback is to show the search page
+ else {    
+ 
+  # no results, the fallback is to show the search page
 
   $self->guide or return $self->fail ( 'guide exit' );
 
@@ -170,11 +172,7 @@ sub display {
   $self->single or return $self->fail ( 'single exit' );
 
  }
- else {
-
-  return $self->fail ( 'no data' );
-
- }
+ else { return $self->fail ( 'no data' ) }
 
 }
 

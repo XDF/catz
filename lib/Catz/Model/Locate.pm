@@ -35,21 +35,21 @@ use warnings;
 
 use parent 'Catz::Model::Common';
 
-use List::MoreUtils qw ( any );
+use Const::Fast;
 
 use Catz::Data::List;
 
 use Catz::Util::String qw ( lcc );
 use Catz::Util::Time qw ( dt dtexpand );
 
-my $matrix = list_matrix;
+const my $MATRIX => list_matrix;
 
 sub _full {
 
  my ( $self, $pri, $mode ) = @_;
  my $lang = $self->{ lang };
 
- exists $matrix->{ $pri } or return [ 0, undef, undef ];
+ exists $MATRIX->{ $pri } or return [ 0, undef, undef ];
 
  my $cols = "pri,sec,cntdate,cntphoto,first,last,null";
 

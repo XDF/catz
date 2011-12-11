@@ -32,11 +32,11 @@ use parent 'Exporter';
 
 our @EXPORT = qw ( check_begin check_any check_end );
 
-use Catz::Util::Log qw ( logadd logclose logopen logit logdone );
-
+use Const::Fast;
 use DBI;
 use Text::LevenshteinXS qw( distance );
 
+use Catz::Util::Log qw ( logadd logclose logopen logit logdone );
 use Catz::Util::Number qw ( ceil floor );
 use Catz::Util::String qw ( lcc digesthex );
 
@@ -74,7 +74,7 @@ sub check_begin {
 
 } ## end sub check_begin
 
-my $joiner = ';';
+const my $JOINER => ';';
 
 sub item {
 
@@ -88,12 +88,12 @@ sub item {
 
  my $key1 =
   defined $sec2
-  ? join $joiner, ( $class, $pri, $sec1, $sec2 )
-  : join $joiner, ( $class, $pri, $sec1 );
+  ? join $JOINER, ( $class, $pri, $sec1, $sec2 )
+  : join $JOINER, ( $class, $pri, $sec1 );
 
  my $key2 =    # secs in reversed order to catch reversed skip keys
   defined $sec2
-  ? join $joiner, ( $class, $pri, $sec2, $sec1 )
+  ? join $JOINER, ( $class, $pri, $sec2, $sec1 )
   : undef;
 
  my $sql = 'select count(*) from mskip where skipkey=?';

@@ -30,6 +30,7 @@ use 5.12.0;
 use strict;
 use warnings;
 
+use Const::Fast;
 use DBI;
 use Time::HiRes qw ( time );
 
@@ -40,9 +41,9 @@ use Catz::Util::Number qw ( fullnum33 round );
 my $db      = undef;
 my $currver = 0;
 
-my $time_model = 0;    # turns on timing on all model access
+const my $TIME_MODEL => 0;    # turns on timing on all model access
 
-my $time_db = 0;       # turns on timing on all database access
+const my $TIME_DB => 0;       # turns on timing on all database access
 
 sub new {
 
@@ -109,7 +110,7 @@ sub AUTOLOAD {
  my $start;
  my $end;
 
- $time_model and $start = time ();
+ $TIME_MODEL and $start = time ();
 
  my $res =
   cache_get ( $currver, $nspace, $self->{ lang }, $self->{ name }, $sub,
@@ -117,9 +118,9 @@ sub AUTOLOAD {
 
  $res and do {
 
-  $time_model and $end = time ();
+  $TIME_MODEL and $end = time ();
 
-  $time_model
+  $TIME_MODEL
    and warn "MODEL $self->{name} $sub -> "
    . round ( ( ( $end - $start ) * 1000 ), 0 )
    . ' ms (cached)';
@@ -132,9 +133,9 @@ sub AUTOLOAD {
 
  { no strict 'refs'; $res = $self->$target ( @args ) }
 
- $time_model and $end = time ();
+ $TIME_MODEL and $end = time ();
 
- $time_model
+ $TIME_MODEL
   and warn "MODEL $self->{name} $sub -> "
   . round ( ( ( $end - $start ) * 1000 ), 0 )
   . ' ms (real)';
@@ -155,15 +156,15 @@ sub db_run {
  my $start;
  my $end;
 
- $time_db and $start = time ();
+ $TIME_DB and $start = time ();
 
  my $res = cache_get ( $currver, $nspace, $comm, $sql, @args );
 
  $res and do {
 
-  $time_db and $end = time ();
+  $TIME_DB and $end = time ();
 
-  $time_db
+  $TIME_DB
    and warn "DB $comm $sql -> "
    . round ( ( ( $end - $start ) * 1000 ), 0 )
    . ' ms (cached)';
@@ -214,9 +215,9 @@ sub db_run {
 
  } ## end given
 
- $time_db and $end = time ();
+ $TIME_DB and $end = time ();
 
- $time_db
+ $TIME_DB
   and warn "DB $comm $sql -> "
   . round ( ( ( $end - $start ) * 1000 ), 0 )
   . ' ms (real)';

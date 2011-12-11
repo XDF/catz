@@ -28,6 +28,7 @@ use warnings;
 
 use lib '../lib';
 
+use Const::Fast;
 use Perl::Tidy;
 
 use Catz::Util::File qw ( filecopy findfilesrec fileremove );
@@ -39,12 +40,13 @@ use Catz::Util::File qw ( filecopy findfilesrec fileremove );
 # it can happen that ALL SOURCE CODE FILES GET SPOILED
 #
 
-my $rc    = './tidyrc.txt';
-my $log   = '../log/tidylog.log';
-my $error = '../log/tidyerr.log';
-my $temp  = '../temp/tidytemp.txt';
+const my $RC    => './tidyrc.txt';
+const my $LOG   => '../log/tidylog.log';
+const my $ERROR => '../log/tidyerr.log';
+const my $TEMP  => '../temp/tidytemp.txt';
+const my @DIRS  => qw ( ../lib ../script ../t );
 
-my @files = findfilesrec ( '../lib', '../script', '../t' );
+my @files = findfilesrec @DIRS;
 
 foreach my $file ( grep { $_ =~ /\.(p[ml]|t)$/ } @files ) {
 
@@ -54,18 +56,18 @@ foreach my $file ( grep { $_ =~ /\.(p[ml]|t)$/ } @files ) {
 
  Perl::Tidy::perltidy (
   source      => $file,
-  destination => $temp,
-  perltidyrc  => $rc,
-  logfile     => $log,
-  errorfile   => $error
+  destination => $TEMP,
+  perltidyrc  => $RC,
+  logfile     => $LOG,
+  errorfile   => $ERROR
  );
 
  # copy temp file over the source file
 
- filecopy $temp, $file;
+ filecopy $TEMP, $file;
 
  # remove the temp file
 
- fileremove $temp;
+ fileremove $TEMP;
 
 } ## end foreach my $file ( grep { $_...})

@@ -38,6 +38,8 @@ use warnings;
 # all controllers are of course also Mojolicious controllers
 use parent 'Mojolicious::Controller';
 
+use Const::Fast;
+
 use Catz::Data::Conf;
 use Catz::Data::Dist;
 use Catz::Data::Search;
@@ -57,24 +59,24 @@ my $models = {};    # model instances are kept here
 
 # define models to be skipped, like
 # abstract models that are not to be instantiated
-my $noload = { Base => 1, Common => 1, Vector => 1 };
+const my $NOLOAD => { Base => 1, Common => 1, Vector => 1 };
 
 # if $noload is not up to date, the warnings like
 # Subroutine db_run redefined at ...
 # are printed when the system starts
 
 # disk path to models
-my $mpath = '../lib/Catz/Model';
+const my $MPATH => '../lib/Catz/Model';
 
 # we seek the model directory
-foreach my $mfile ( findfiles ( $mpath ) ) {
+foreach my $mfile ( findfiles ( $MPATH ) ) {
 
  # process the filename to a plain class name
  my $class = $mfile;
- $class =~ s|$mpath/||;
+ $class =~ s|$MPATH/||;
  $class =~ s|\.pm$||;
 
- $noload->{ $class } or do {
+ exists $NOLOAD->{ $class } or do {
 
   require $mfile;    # load
 

@@ -126,49 +126,20 @@ sub start {
 
  my $self = shift;
  my $s    = $self->{ stash };
+ 
+ $s->{ func } eq 'build' or $s->{ func } eq 'embed' or
+  return $self->fail ( 'unknown widget function' );
 
- given ( $s->{ func } ) {
+ # the default for builder and embed is not to index
+ $s->{ meta_index }  = 0;
+ $s->{ meta_follow } = 0;
 
-  #
-  # build = widget builder
-  #
-
-  when ( 'build' ) {
-
-   if ( defined $s->{ wspec } ) {
-
-    # this is not the builder's entry pages, prevent indexing
-    $s->{ meta_index }  = 0;
-    $s->{ meta_follow } = 0;
-
-   }
-   else {
-
-    # no config, load the default
-    $s->{ wspec } = widget_default;
-
-   }
-
-  }
-
-  #
-  # embed = widget rendering
-  #
-
-  when ( 'embed' ) {
-
-   defined $s->{ wspec } or    # can't render without config
-    return $self->fail ( 'widget configuration missing' );
-
-   # widget "pages" shouldn't be indexed
-   $s->{ meta_index }  = 0;
-   $s->{ meta_follow } = 0;
-
-  }
-
-  default { return $self->fail ( 'unknown widget function' ) }
-
- } ## end given
+ exists $s->{ wspec } or do { 
+  
+  $s->{ wspec_loaded } = 1;
+  $s->{ wspec } = widget_default;
+  
+ };
 
  # calling general initialization routines on base controller
 
@@ -194,6 +165,11 @@ sub start {
   else {
 
    $s->{ runmode } = 'all';
+   
+   # restore indexing for all mode builder without wspec in URL
+   
+   $s->{ func } eq 'builder' and $s->{ wspec_loaded } and 
+    $s->{ meta_index } = 1;
 
   }
 

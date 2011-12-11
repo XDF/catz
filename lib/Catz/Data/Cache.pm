@@ -43,6 +43,7 @@ use parent 'Exporter';
 our @EXPORT = qw ( cache_set cache_get cache_isup );
 
 use Cache::Memcached::Fast;
+use Const::Fast;
 use Digest::MD5 qw( md5_hex );
 
 # we "use Storable" just to set it's static variables to
@@ -59,10 +60,10 @@ use Catz::Util::String qw ( enurl );
 
 # for debugging or other needs all caching can be
 # set to NOP setting this to false
-my $cacheon = 1;
+const my $CACHEON => 1;
 
 # set on/off cache tracing as warnings
-my $cache_trace = 0;
+const my $CACHETRC => 0;
 
 # we create a static cache object at compile time and this works just fine
 # also the hard-coded values are practically fine for all the environments
@@ -101,7 +102,7 @@ sub keyer {
 
 sub cache_set {
 
- $cacheon or return;    # immediate NOP if not caching
+ $CACHEON or return;    # immediate NOP if not caching
 
  my @args = @_;
 
@@ -110,7 +111,7 @@ sub cache_set {
 
  my $key = keyer ( @args );
 
- $cache_trace and warn "CACHE SET  $key";
+ $CACHETRC and warn "CACHE SET  $key";
 
  {
 
@@ -137,7 +138,7 @@ sub cache_set {
 
 sub cache_get {
 
- $cacheon or return;    # immediate NOP if not caching
+ $CACHEON or return;    # immediate NOP if not caching
 
  my @args = @_;
 
@@ -145,7 +146,7 @@ sub cache_get {
 
  my $ret = $cache->get ( $key );
 
- $cache_trace and do {
+ $CACHETRC and do {
 
   if   ( defined $ret ) { warn "CACHE HIT  $key" }
   else                  { warn "CACHE MISS $key" }
@@ -156,7 +157,7 @@ sub cache_get {
 
 }
 
-my @chars = ( 'a' .. 'z', 'A' .. 'Z', '0' .. '9' );
+const my @CHARS => ( 'a' .. 'z', 'A' .. 'Z', '0' .. '9' );
 
 sub cache_isup {
 
@@ -170,8 +171,8 @@ sub cache_isup {
 
  foreach ( 1 .. 200 ) {
 
-  $ckey .= $chars[ rand @chars ];
-  $ival .= $chars[ rand @chars ];
+  $ckey .= $CHARS[ rand @CHARS ];
+  $ival .= $CHARS[ rand @CHARS ];
 
  }
 

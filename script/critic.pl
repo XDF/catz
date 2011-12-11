@@ -28,28 +28,29 @@ use warnings;
 
 use lib '../lib';
 
+use Const::Fast;
 use Perl::Critic;
 
 use Catz::Util::File qw ( findfilesrec );
 
-my $rc     = './criticrc.txt';
-
-my $cr = Perl::Critic->new();
-
-my @files = findfilesrec ( '../lib', '../script', '../t' );
-
-my @msgs = ();
-
-my $conf = {
+const my $RC    => './criticrc.txt';
+const my @DIRS  => qw ( ../lib ../script ../t ); 
+const my $CONF  => {
  -profile => $rc, 
  -severity => 1, 
 };
+
+my $cr = Perl::Critic->new();
+
+my @msgs = ();
+
+my @files = findfilesrec @DIRS;
 
 foreach my $file ( reverse grep { $_ =~ /\.(p[ml]|t)$/ } @files ) {
 
  say $file;
  
- my @out = $cr->critique ( $conf, $file );
+ my @out = $cr->critique ( $CONF, $file );
 
  push @msgs, @out;
 

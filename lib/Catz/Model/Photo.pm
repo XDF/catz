@@ -32,8 +32,10 @@ use warnings;
 
 use parent 'Catz::Model::Common';
 
-my $HR = '.JPG';       # the fixed filename ending for hires photos
-my $LR = '_LR.JPG';    # the fixed filename ending for lores photos
+use Const::Fast;
+
+const my $HR => '.JPG';       # the fixed filename ending for hires photos
+const my $LR => '_LR.JPG';    # the fixed filename ending for lores photos
 
 sub _thumb {
 
