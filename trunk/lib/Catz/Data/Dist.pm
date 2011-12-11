@@ -30,9 +30,11 @@ use warnings;
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( dist_conf dist_url );
+our @EXPORT = qw ( dist_conf );
 
-my $cnf = {
+use Const::Fast;
+
+const my $CONF => {
 
  blocks => {
 
@@ -51,8 +53,6 @@ my $cnf = {
 
 };
 
-sub dist_conf { $cnf }
+sub dist_conf { $CONF }
 
-sub dist_url {
-
-}
+1;

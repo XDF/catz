@@ -34,18 +34,14 @@ use warnings;
 
 use parent 'Catz::Ctrl::Base';
 
-use I18N::AcceptLanguage;
+use Const::Fast;
 
 use Catz::Data::Text;
 
 use Catz::Util::Number qw ( fullnum33 );
-use Catz::Util::String qw ( enurl deurl decode encode );
+use Catz::Util::String qw ( acceptlang enurl deurl decode encode );
 
-my $langs = [ 'en', 'fi' ];
-
-my $i18n = I18N::AcceptLanguage->new ( defaultLangauge => 'en', strict => 0 );
-
-my %classic = map { $_ => 1 } qw (
+const my %CLASSIC => map { $_ => 1 } qw (
  2004_wwe_raw_helsinki agility_200910 arokatin_e around_finland
  cesmes_a cesmes_b cesmes_c culture_trip_lake_tuusula hel_sto_hel
  keimola_oldies myllypuro nytech_nd4020_era photoart1 suviyon_a the_farm
@@ -121,8 +117,7 @@ sub reroute {    # does the job
  my $self = shift;
  my $p = $self->{ stash }->{ src } // '/';
 
- my $lang = $i18n->accepts ( $self->req->headers->accept_language, $langs )
-  // 'en';
+ my $lang = acceptlang ( $self->req->headers->accept_language ); 
 
  my $t = text ( $lang );
 
@@ -142,7 +137,10 @@ sub reroute {    # does the job
 
   when (
    [
-    qw ( breeders breeders/ breeders/index.htm breeders/index.html ems/breeders.htm ems/breeders.html )
+    qw ( 
+     breeders breeders/ breeders/index.htm breeders/index.html 
+     ems/breeders.htm ems/breeders.html 
+    )
    ]
    )
   {
@@ -184,7 +182,7 @@ sub reroute {    # does the job
 
    if ( $self->fetch ( "reroute#isbreed", $br ) ) {
 
-    return $self->moveto ( "/$lang/browse/breed/$br/" );
+    return $self->moveto ( qq{$lang/browse/breed/$br/} );
 
    }
    else {
@@ -216,7 +214,7 @@ sub reroute {    # does the job
 
    $tgt = enurl $tgt;
 
-   return $self->moveto ( "/$lang/search?q=$tgt" );
+   return $self->moveto ( qq{/$lang/search?q=$tgt} );
 
   }
 
@@ -244,7 +242,9 @@ sub reroute {    # does the job
 
    }
 
-   if ( $classic{ $folder } ) {    # this is an classic folder still in .com
+   if ( exists $CLASSIC{ $folder } ) {    
+   
+    # this is an classic folder still in .com
 
     return $self->moveto ( "$t->{URL_AUTHOR}photos/$folder/$tail/" );
 
@@ -294,7 +294,7 @@ sub reroute {    # does the job
     }
     else { return $self->fail ( 'folder mapping error' ) }
 
-   } ## end elsif ( my $s = $self->fetch... [ if ( $classic{ $folder...})])
+   } ## end elsif ( my $s = $self->fetch... [ if ( $CLASSIC{ $folder...})])
 
    return $self->fail ( 'old url leftover' );
 

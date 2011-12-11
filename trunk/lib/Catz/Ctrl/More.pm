@@ -30,8 +30,6 @@ use warnings;
 
 use parent 'Catz::Ctrl::Base';
 
-use I18N::AcceptLanguage;
-
 use Catz::Data::Conf;
 use Catz::Data::Search;
 use Catz::Data::Style;

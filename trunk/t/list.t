@@ -60,7 +60,7 @@ my @oklists = qw (
 
 # non-working combinations
 my @badlists = qw (
- date/first umb/cron etime/cate folder/first unexistent/a2z
+ date/first umb/cron etime/cate folder/first nonexistent/a2z
 );
 
 # non-working paths

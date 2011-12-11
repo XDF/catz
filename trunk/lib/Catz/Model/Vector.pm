@@ -30,6 +30,7 @@ use warnings;
 
 use parent 'Catz::Model::Common';
 
+use Const::Fast;
 use Bit::Vector;
 use List::Util qw ( shuffle );
 use Catz::Util::Number qw( floor ceil );
@@ -97,16 +98,16 @@ sub bsearch {
 # we define the SQLs here to make sure that they are literally
 # same to take full advantage on database result set caching
 
-my $sql_general = qq {
+const my $SQL_GENERAL => qq {
  select x from _sid_x where sid in (
   select sid from sec where (sec_en like ? or sec_fi like ?)
  )   
 };
 
-my $sql_id =
+const my $SQL_ID =>
  'select x from album natural join photo where fullnum33(s,n) like ?';
 
-my $sql_file = 'select x from photo where file like ?';
+const my $SQL_FILE => 'select x from photo where file like ?';
 
 sub _base {
 
@@ -165,7 +166,7 @@ sub _base {
 
    # 1/3: general
 
-   $res = $self->dbcol ( $sql_general, $sec, $sec );
+   $res = $self->dbcol ( $SQL_GENERAL, $sec, $sec );
 
    $vec->Index_List_Store ( @$res );
 
@@ -175,7 +176,7 @@ sub _base {
    # digits, _s and %s it can't match an id
    $sec =~ /^[0-9_\%]*$/ and do {
 
-    $res = $self->dbcol ( $sql_id, $sec );
+    $res = $self->dbcol ( $SQL_ID, $sec );
 
     $vec->Index_List_Store ( @$res );
 
@@ -190,7 +191,7 @@ sub _base {
    # match a filename since a filename has always at least 4 digits
    $sec =~ /[0-9_\%]/ and do {
 
-    $res = $self->dbcol ( $sql_file, $sec );
+    $res = $self->dbcol ( $SQL_FILE, $sec );
 
     $vec->Index_List_Store ( @$res );
 
@@ -207,7 +208,7 @@ sub _base {
    # optimize so that if $sec any other characters than
    # digits, _s and %s it can't match an id
    ( $sec =~ /^[0-9_\%]*$/ )
-    and $res = $self->dbcol ( $sql_id, $sec );
+    and $res = $self->dbcol ( $SQL_ID, $sec );
 
   }
 
@@ -368,9 +369,9 @@ sub _pointer {
 
  push @pin,
   $self->x2id (
-  $svec->[ $idx < ( $total - 1 ) ? $idx + 1 : ( $total - 1 ) ] );    # prev
+  $svec->[ $idx < ( $total - 1 ) ? $idx + 1 : ( $total - 1 ) ] );  # prev
 
- push @pin, $self->x2id ( $svec->[ $total - 1 ] );                   # last
+ push @pin, $self->x2id ( $svec->[ $total - 1 ] );                 # last
 
  return [ ( $total, $idx + 1, \@pin ) ];
 

@@ -28,8 +28,9 @@ use warnings;
 
 use lib '../lib';
 
-use Catz::Data::Conf;
+use Const::Fast;
 
+use Catz::Data::Conf;
 use Catz::Load::Check;
 use Catz::Load::Loader;
 use Catz::Load::Parse;
@@ -57,15 +58,15 @@ my $changes = 0;    # flag that should be turned on if something has changed
 
 my $loaded = {};    # to store names of loaded folders and albums
 
-my $olddb = findlatest ( '../db', 'db' );
+const my $OLDDB => findlatest ( '../db', 'db' );
 
-defined $olddb or die "old database lookup failed";
+defined $OLDDB or die "old database lookup failed";
 
-my $db = "../db/$dt.db";
+const my $DB => "../db/$dt.db";
 
-logit ( "copying database '$olddb' to '$db'" );
+logit ( "copying database '$OLDDB' to '$DB'" );
 
-filecopy ( $olddb, $db );
+filecopy ( $OLDDB, $DB );
 
 my %guide = ();     # contains the features requested
 
@@ -79,7 +80,7 @@ scalar @ARGV == 0 and do { $guide{ $_ } = 1 }
 ( $guide{ 'folder' } or $guide{ 'meta' } or $guide{ 'post' } )
  or goto NO_LOAD;
 
-load_begin ( $dt, $db );
+load_begin ( $dt, $DB );
 
 # phase 1: load folders
 
@@ -199,7 +200,7 @@ NO_LOAD:
 
 $guide{ 'check' } or goto SKIP_CHECK;
 
-$dt = check_begin ( $db );
+$dt = check_begin ( $DB );
 
 logit "running data checks";
 

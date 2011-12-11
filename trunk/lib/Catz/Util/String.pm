@@ -31,15 +31,35 @@ use warnings;
 use base 'Exporter';
 
 our @EXPORT_OK = qw (
- base32decode base32encode clean decode deurl digesthex
+ acceptlang base32decode base32encode clean decode deurl digesthex
  dna encode enurl lcc limit label nobreak noxss trim ucc
  ucclcc urirest fuse fuseq topiles topilex tolines
 );
 
-use MIME::Base32 qw ( RFC );
+use Const::Fast;
 use Digest::HMAC_MD5 qw( hmac_md5_hex );
 use Digest::MD5 qw ( md5_base64 );
+use I18N::AcceptLanguage;
+use MIME::Base32 qw ( RFC );
 use URI::Escape::XS qw ( uri_escape uri_unescape );
+
+const my $LANGS => [ 'en', 'fi' ];
+
+my $i18n = 
+ I18N::AcceptLanguage->new ( defaultLanguage => 'en', strict => 0 );
+
+sub acceptlang {
+
+ my $lang = $i18n->accepts ( shift, $LANGS ) // 'en';
+ 
+ # messing the default language and you get an empty string
+ # so we double-check now that the language is ok
+ 
+ $lang eq 'en' or $lang eq 'fi' or $lang = 'en';
+
+ return $lang;
+ 
+}
 
 sub base32decode { MIME::Base32::decode $_[ 0 ] }
 

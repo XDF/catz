@@ -32,6 +32,7 @@ use warnings;
 
 use parent 'Mojolicious';
 
+use Const::Fast;
 use Mojo::Util qw ( html_escape );
 use Time::HiRes qw ( time );
 
@@ -52,7 +53,7 @@ use Catz::Util::String qw (
 );
 
 # controls emitting timing information as warnings
-my $time_page = 0;
+const my $TIME_PAGE => 0;
 
 sub startup {
 
@@ -63,7 +64,7 @@ sub startup {
 
  # initialize the key for cookie signing
  # we use no cookies so this is just to prevent warnings
- $self->secret ( conf ( 'cookie_key' ) );
+ $self->secret ( conf ( 'key_cookie' ) );
 
  # map utility subs from different modules to Mojolicious helpers
  # we use dynamically generated subs as bridges
@@ -344,7 +345,7 @@ sub before {
   $self->req->query_params->to_string;    # and also the query params
 
  # all static resources served must be pre-defined
- $static->{ $s->{ path } } and $s->{ isstatic } = 1;
+ exists $static->{ $s->{ path } } and $s->{ isstatic } = 1;
 
  # mark reroutings to stash -> easy to use later
  $s->{ isrerouted } = ( $s->{ path } =~ m|^/reroute| ? 1 : 0 );
@@ -638,7 +639,7 @@ sub after {
 
  $self->res->headers->header ( 'X-Catz-Took' => $timing );
 
- $time_page and warn "PAGE $s->{url} -> $timing";
+ $TIME_PAGE and warn "PAGE $s->{url} -> $timing";
 
 } ## end sub after
 

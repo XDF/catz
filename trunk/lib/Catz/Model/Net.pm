@@ -30,6 +30,7 @@ use warnings;
 
 use parent 'Catz::Model::Base';
 
+use Const::Fast;
 use LWP::UserAgent;
 
 use Catz::Data::Conf;
@@ -38,18 +39,17 @@ use Catz::Data::Result;
 
 use Catz::Util::String qw ( enurl );
 
-my $url_count = conf ( 'result_url_count' );
-my $url_data  = conf ( 'result_url_data' );
+const my $URL_COUNT => conf ( 'result_url_count' );
+const my $URL_DATA  => conf ( 'result_url_data' );
+const my $KEY_DATE  => conf ( 'result_param_date' );
+const my $KEY_LOC   => conf ( 'result_param_loc' );
+const my $KEY_NAME  => conf ( 'result_param_name' );
 
-my $key_date = conf ( 'result_param_date' );
-my $key_loc  = conf ( 'result_param_loc' );
-my $key_name = conf ( 'result_param_name' );
-
-my $agent =
+const my $AGENT =>
  text ( 'en' )->{ SITE } . ' ' . __PACKAGE__ . ' LWP::UserAgent Perl5';
 
 my $ua = LWP::UserAgent->new (
- agent        => $agent,
+ agent        => $AGENT,
  timeout      => 10,
  max_redirect => 5
 );
@@ -71,9 +71,9 @@ sub urlc {
  my ( $head, $date, $loc ) = @_;
 
  $head . '?'
-  . $key_date . '='
+  . $KEY_DATE . '='
   . enurl ( $date ) . '&'
-  . $key_loc . '='
+  . $KEY_LOC . '='
   . enurl ( $loc );
 }
 
@@ -82,21 +82,21 @@ sub urld {
  my ( $head, $date, $loc, $name ) = @_;
 
  $head . '?'
-  . $key_date . '='
+  . $KEY_DATE . '='
   . enurl ( $date ) . '&'
-  . $key_loc . '='
+  . $KEY_LOC . '='
   . enurl ( $loc ) . '&'
-  . $key_name . '='
+  . $KEY_NAME . '='
   . enurl ( $name );
 
 }
 
 sub _data {
 
- my ( $self, $date, $loc, $name, $pseudo ) =
-  @_;    # pseudo parameter is not used
+ # pseudo parameter is not used
+ my ( $self, $date, $loc, $name, $pseudo ) = @_;    
 
- my $url = urld ( $url_data, $date, $loc, $name );
+ my $url = urld ( $URL_DATA, $date, $loc, $name );
 
  my $res = $self->body ( $url );
 
@@ -110,9 +110,10 @@ sub _data {
 
 sub _count {
 
- my ( $self, $date, $loc, $pseudo ) = @_;    # pseudo parameter is not used
+ # pseudo parameter is not used
+ my ( $self, $date, $loc, $pseudo ) = @_;
 
- my $url = urlc ( $url_count, $date, $loc );
+ my $url = urlc ( $URL_COUNT, $date, $loc );
 
  my $res = $self->body ( $url );
 

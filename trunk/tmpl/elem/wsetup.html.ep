@@ -4,12 +4,12 @@
 %  my $selected = ' ';
 %  $wval eq $wrun->{ $wkey } and $selected = ' selected ';
 %  my $out = '';
-%  foreach my $long (  @{ $wconf->{longs} } ) {
-%   my $sshort = $wconf->{trans}->{$long};
+%  foreach my $long ( @{ $wconf->{longs} } ) {
+%   my $sshort = $wconf->{trans}->{$long};   
 %   if ( $long eq $wkey ) {
-%    $wconf->{defaults}->{$sshort} eq $wval or $out .= "$sshort$wval";
-%   } else {
-%    $wconf->{defaults}->{$sshort} eq $wrun->{$long} or $out .= "$sshort$wrun->{$long}"; 
+%    $out .= "$sshort$wval";
+%   } else {     
+%    $out .= "$sshort$wrun->{$long}"; 
 %   } 
 %  } 
 <option<%== $selected %>value="<%== $urlconfa %><%== $out %><%== $urlconfb %>"><%= $t->{'WID_'.$wkey.'_'.$wval} %></option>

@@ -30,6 +30,7 @@ use warnings;
 
 use parent 'Catz::Ctrl::Base';
 
+use Const::Fast;
 use List::MoreUtils qw ( any );
 
 use Catz::Data::Conf;
@@ -69,7 +70,7 @@ sub list {
  $s->{ matrix } = list_matrix;
 
  # verify that the subject is known
- $s->{ matrix }->{ $s->{ subject } }
+ exists $s->{ matrix }->{ $s->{ subject } }
   or return $self->fail ( 'subject not in matrix' );
 
  # verify that the mode is known for this subject
@@ -111,7 +112,7 @@ sub lists {
 
 }
 
-my $smaps = [ qw ( core news list pair photo ) ];
+const my $SMAPS => [ qw ( core news list pair photo ) ];
 
 sub mapidx {
 
@@ -120,7 +121,7 @@ sub mapidx {
 
  $s->{ version_w3c } = dt2w3c $s->{ version };
 
- $s->{ smaps } = $smaps;
+ $s->{ smaps } = $SMAPS;
 
  return $self->render ( 'map/idx', format => 'xml' );
 

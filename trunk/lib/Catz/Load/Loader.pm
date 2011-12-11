@@ -35,6 +35,7 @@ our @EXPORT = qw (
  load_simple load_exif load_complex load_post load_secondary
 );
 
+use Const::Fast;
 use Data::Dumper;
 use DBI;
 
@@ -48,7 +49,7 @@ use Catz::Util::Log qw ( logit logadd logdone );
 use Catz::Util::Number qw ( fullnum33 round );
 use Catz::Util::String qw ( tolines topiles trim );
 
-my $sql = {
+const my $SQL => {
 
  # this hash ref has all SQL statements used by the loader
  # _ins = insert statement
@@ -115,7 +116,7 @@ my $sql = {
 
 };
 
-my $secsql = [
+const my $SECSQL => [
 
  # creating and populcating pri statistics table
  qq{drop table if exists _prim},
@@ -192,10 +193,10 @@ sub load_begin {
  $dbc->func ( 'fsort',    1, \&fsort,    'create_function' );
  $dbc->func ( 'dtexpand', 2, \&dtexpand, 'create_function' );
 
- logit ( 'preparing ' . scalar ( keys %{ $sql } ) . ' SQL statements' );
+ logit ( 'preparing ' . scalar ( keys %{ $SQL } ) . ' SQL statements' );
 
  do { $stm->{ $_ } = $dbc->prepare ( $sql->{ $_ } ) }
-  foreach ( keys %{ $sql } );
+  foreach ( keys %{ $SQL } );
 
  logit ( "storing run dt '$dt'" );
 
@@ -281,7 +282,7 @@ sub load_exec {
 
 } ## end sub load_exec
 
-sub load_do { my $sql = shift; $dbc->do ( $sql, undef, @_ ) }
+sub load_do { my $SQL = shift; $dbc->do ( $sql, undef, @_ ) }
 
 sub load_nomatch {
 
@@ -925,9 +926,9 @@ sub load_post {
 
   foreach my $target ( @{ $matrix->{ $source }->{ refines } } ) {
 
-   my $sql = relate ( $source, $target );
+   my $sqlc = relate ( $source, $target );
 
-   load_do ( "insert into _relate $sql" );
+   load_do ( "insert into _relate $sqlc" );
 
    $i++;
    logadd ( '.' );
@@ -939,7 +940,7 @@ sub load_post {
  load_do ( 'create index _relate1 on _relate(source)' );
  load_do ( 'create index _relate2 on _relate(target)' );
 
- foreach my $do ( @$secsql ) { load_do ( $do ); $i++; logadd ( '.' ) }
+ foreach my $do ( @$SECSQL ) { load_do ( $do ); $i++; logadd ( '.' ) }
 
  logdone;
 

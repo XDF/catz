@@ -43,14 +43,15 @@ use parent 'Exporter';
 
 our @EXPORT = qw ( list_matrix list_node );
 
-my $matrix = {
+use Const::Fast;
+
+const my $MATRIX => {
 
  album => {
   modes    => [ qw ( cron a2z top ) ],
   dividers => 1,
-
-  # no refines since this subject is never accessed directly
-  # no jump since no refines
+  refines  => { },
+  jump     => { },
  },
 
  date => {
@@ -64,8 +65,7 @@ my $matrix = {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
   refines  => [ qw ( org umb ) ],
-
-  # no jump
+  jump     => { },
  },
 
  org => {
@@ -83,11 +83,10 @@ my $matrix = {
  },
 
  folder => {
-
-  # no modes since this subject is never accessed directly
-  # no dividers since no modes
-  refines => [ qw ( loc org umb breed breeder lens body ) ],
-  jump    => { loc => 1, org => 1, umb => 1 },
+  modes    => [ ],
+  dividers => 0,
+  refines  => [ qw ( loc org umb breed breeder lens body ) ],
+  jump     => { loc => 1, org => 1, umb => 1 },
  },
 
  cat => {
@@ -171,52 +170,48 @@ my $matrix = {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
   refines  => [ qw ( body flen fnum ) ],
-
-  # no jump
+  jump     => { },
  },
 
  body => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
   refines  => [ qw ( lens iso ) ],
-
-  # no jump
+  jump     => { },  
  },
 
  fnum => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
   refines  => [ qw ( lens body ) ],
-
-  # no jump
+  jump     => { }, 
  },
 
  etime => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
   refines  => [ qw ( lens body ) ],
-
-  # no jump
+  jump     => { },
  },
 
  iso => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
   refines  => [ qw ( body ) ],
-
-  # no jump
+  jump     => { },
  },
 
  flen => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
   refines  => [ qw ( lens etime ) ],
-
-  # no jump
+  jump     => { },
  },
 
 };
 
-sub list_matrix { $matrix }
+sub list_matrix { $MATRIX }
 
-sub list_node { exists $matrix->{ $_[ 0 ] } ? $matrix->{ $_[ 0 ] } : undef }
+sub list_node { exists $MATRIX->{ $_[ 0 ] } ? $MATRIX->{ $_[ 0 ] } : undef }
+
+1;

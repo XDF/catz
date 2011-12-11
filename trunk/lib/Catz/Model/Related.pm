@@ -30,12 +30,14 @@ use warnings;
 
 use parent 'Catz::Model::Common';
 
+use Const::Fast;
+
 use Catz::Data::List;
 use Catz::Data::Search;
 
 use Catz::Util::Number qw ( round );
 
-my $matrix = list_matrix;
+const my $MATRIX => list_matrix;
 
 sub _all2date {
 
@@ -119,9 +121,8 @@ sub _refine {
 
  my ( $self, $pri, $sec, $target ) = @_;
  my $lang = $self->{ lang };
-
- # maximum number of items in a set, use 15 if not specific
- my $n = $matrix->{ $pri }->{ limit }->{ $target } // 15;
+ 
+ const my $N => 15; # maximum number of items in a set
 
  my $me = $self->dbone (
   qq {

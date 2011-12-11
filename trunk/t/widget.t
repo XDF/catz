@@ -81,8 +81,11 @@ $t->get_ok ( "/fi171212/widget/contact/missing/bright/" )->status_is ( 404 );
 
 @oksetups = qw ( en fi en394211 fi211111 en264311 fi365312 );
 
+
+
 my @okwsetups = qw (
- t1c1a2f3l700s140g8 t1c2a1f2l2000s190g2 t1c2a2f1l1100s200g4 t1c1a2f3l1500s50g0
+ c1a2f3l700s140g8 c2a1f2l2000s190g2 c2a2f1l1100s200g4 c3a2f3l1500s50g0
+ c1a2f3s140g8 a1f2l2000s190g2 c3 c3a2f3l1500
 );
 
 my @badwsetups = qw (
@@ -101,41 +104,28 @@ foreach my $action ( qw ( build embed ) ) {
  # pair mode, no ending slash
  $t->get_ok ( "/$setup/$action/nick/Mikke" )->status_is ( 301 );
 
- if ( $action eq 'build' ) {    # only build without wsetup
-
-  # all mode
-  $t->get_ok ( "/$setup/$action/" )->status_is ( 200 )
+ # all mode
+ $t->get_ok ( "/$setup/$action/" )->status_is ( 200 )
    ->content_type_like ( qr/text\/html/ )
    ->content_like ( qr/div id=\"page\"/ );
 
-  # pair mode
-  $t->get_ok ( "/$setup/$action/breed/OSH/" )->status_is ( 200 )
+ # pair mode
+ $t->get_ok ( "/$setup/$action/breed/OSH/" )->status_is ( 200 )
    ->content_type_like ( qr/text\/html/ )
    ->content_like ( qr/div id=\"page\"/ );
 
-  $action eq 'embed' and do {
+ $action eq 'embed' and do {
 
-   $t->get_ok ( "/$setup/$action/flen/78_mm/" )->status_is ( 200 )
+  $t->get_ok ( "/$setup/$action/flen/78_mm/" )->status_is ( 200 )
     ->content_like ( qr/\_LR\.JPG/ );
 
-  };
+ };
 
-  # search mode
-  $t->get_ok (
+ # search mode
+ $t->get_ok (
    "/$setup/$action?q=%2Bbreeder%3DMi*%20date%3D2011*%20date%3D2010*%20date%3D2001*"
    )->status_is ( 200 )->content_type_like ( qr/text\/html/ )
    ->content_like ( qr/div id\=\"page\"/ );
-
- } ## end if ( $action eq 'build')
- else {    # no embed without wsetup
-
-  # all mode
-  $t->get_ok ( "/$setup/$action/" )->status_is ( 404 );
-
-  # pair mode
-  $t->get_ok ( "/$setup/$action/breed/OSH/" )->status_is ( 404 );
-
- }
 
  foreach my $wsetup ( @okwsetups ) {
 

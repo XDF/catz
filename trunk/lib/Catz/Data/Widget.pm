@@ -32,6 +32,7 @@ use parent 'Exporter';
 
 our @EXPORT = qw ( widget_conf widget_default widget_verify widget_plate );
 
+use Const::Fast;
 use GD;
 use List::MoreUtils qw ( any );
 
@@ -43,7 +44,8 @@ use Catz::Util::String qw ( enurl );
 use Catz::Util::Time qw ( dtlang );
 
 # widget short and long keys as pairs in a single array
-my $wpairs = [ qw ( c choose a align f float l limit s size g gap ) ];
+const my $WPAIRS => 
+ [ qw ( c choose a align f float l limit s size g gap ) ];
 
 # extract short and long keys and
 # create short -> long and long -> short translations
@@ -52,19 +54,19 @@ my $wshorts = [];
 my $wlongs  = [];
 my $wtrans  = {};
 
-foreach ( my $i = 0; $i < scalar @{ $wpairs }; $i += 2 ) {
+foreach ( my $i = 0; $i < scalar @{ $WPAIRS }; $i += 2 ) {
 
- push @{ $wshorts }, $wpairs->[ $i ];
- push @{ $wlongs },  $wpairs->[ $i + 1 ];
+ push @{ $wshorts }, $WPAIRS->[ $i ];
+ push @{ $wlongs },  $WPAIRS->[ $i + 1 ];
 
- $wtrans->{ $wpairs->[ $i ] } = $wpairs->[ $i + 1 ];
- $wtrans->{ $wpairs->[ $i + 1 ] } = $wpairs->[ $i ];
+ $wtrans->{ $WPAIRS->[ $i ] } = $WPAIRS->[ $i + 1 ];
+ $wtrans->{ $WPAIRS->[ $i + 1 ] } = $WPAIRS->[ $i ];
 
 }
 
 # widget setup configuration as a single hashref
 
-my $wconf = {
+const my $WCONF => {
 
  shorts => $wshorts,
  longs  => $wlongs,
@@ -85,10 +87,10 @@ my $wconf = {
 
 # prepare the default setup string
 
-my $wdefault = join '',
- map { $_ . $wconf->{ defaults }->{ $_ } } @{ $wconf->{ shorts } };
+const my $WDEFAULT => join '',
+ map { $_ . $WCONF->{ defaults }->{ $_ } } @{ $WCONF->{ shorts } };
 
-sub widget_conf { $wconf }
+sub widget_conf { $WCONF }
 
 sub widget_verify {
 
@@ -110,10 +112,12 @@ sub widget_verify {
 
   defined $wc[ $i ] or return undef;
   defined $wc[ $i + 1 ] or return undef;
+  
+  my $key =
+   exists $WCONF->{ trans }->{ $wc[ $i ] } ?
+    $WCONF->{ trans }->{ $wc[ $i ] } : return undef;
 
-  ( my $key = $wconf->{ trans }->{ $wc[ $i ] } // undef ) or return undef;
-
-  ( any { $_ eq $wc[ $i + 1 ] } @{ $wconf->{ values }->{ $key } } )
+  ( any { $_ eq $wc[ $i + 1 ] } @{ $WCONF->{ values }->{ $key } } )
    or return undef;
 
   $wrun->{ $key } = $wc[ $i + 1 ];
@@ -125,17 +129,17 @@ sub widget_verify {
  do { 
  
   exists $wrun->{ $_ } or 
-   $wrun->{ $_ } = $wconf->{ defaults }->{ $wconf->{ trans }->{ $_ } }
+   $wrun->{ $_ } = $WCONF->{ defaults }->{ $WCONF->{ trans }->{ $_ } }
    
- } foreach @{ $wconf->{ longs } };
+ } foreach @{ $WCONF->{ longs } };
 
  return $wrun;
 
 } ## end sub widget_verify
 
-sub widget_default { $wdefault }
+sub widget_default { $WDEFAULT }
 
-my $plate = {
+const my $WPLATE => {
 
  width_contrib => 129,
  width_margin  => 115,
@@ -173,8 +177,10 @@ sub widget_plate {
   : style_html2dec $style->{ color }->{ $palette }->{ back };
 
  my $im =
-  new GD::Image ( $plate->{ 'width_' . $intent },
-  $plate->{ 'height_' . $intent } );
+  new GD::Image ( 
+   $WPLATE->{ 'width_' . $intent },
+   $WPLATE->{ 'height_' . $intent } 
+  );
 
  my $c_front = $im->colorAllocate ( @front );
 
@@ -182,14 +188,14 @@ sub widget_plate {
 
  $im->filledRectangle (
   0, 0,
-  $plate->{ 'width_' . $intent },
-  $plate->{ 'height_' . $intent }, $c_back
+  $WPLATE->{ 'width_' . $intent },
+  $WPLATE->{ 'height_' . $intent }, $c_back
  );
 
  $im->string (
-  $plate->{ 'font_' . $intent },
-  $plate->{ 'x_' . $intent },
-  $plate->{ 'y_' . $intent },
+  $WPLATE->{ 'font_' . $intent },
+  $WPLATE->{ 'x_' . $intent },
+  $WPLATE->{ 'y_' . $intent },
   $text, $c_front
  );
 

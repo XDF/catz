@@ -28,22 +28,24 @@ use warnings;
 
 use lib '../lib';
 
+use Const::Fast;
+
 use Catz::Util::File qw ( fileread filewrite fileremove findlatest pathcut );
 
-my $path = '../db';
+const my $PATH => '../db';
 
 # removes the latest database if nay after the one of the key file
 # so reverts effects of latest database loading after the last roll
 
 # latest key file in database dir
-my $keyf = findlatest ( $path, 'txt' );
+my $keyf = findlatest ( $PATH, 'txt' );
 
 # get dt from the key file
 my $dtold = defined $keyf ? substr ( pathcut ( $keyf ), 0, 14 ) : undef;
 
 if ( $dtold ) {
 
- my $dbnew = findlatest ( $path, 'db' );
+ my $dbnew = findlatest ( $PATH, 'db' );
  my $dtnew = defined $dbnew ? substr ( pathcut ( $dbnew ), 0, 14 ) : undef;
 
  if ( $dtnew ) {

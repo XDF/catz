@@ -30,101 +30,94 @@ use warnings;
 
 use parent 'Exporter';
 
+use Const::Fast;
+
 use Catz::Util::Number qw ( round );
 
 our @EXPORT = qw ( style_get style_html2dec );
 
-my $style = {};    # style config
+const my $SIZE_BASE => 91;
+const my $LINE_BASE => 139;
 
-$style->{ font } = 'Verdana, Arial, sans-serif';
+const my $STYLE => {
 
-$style->{ roundness } = '8px';
-
-$style->{ size }->{ normal } = 91;
-
-$style->{ size }->{ tiny }  = round ( $style->{ size }->{ normal } * 0.70 );
-$style->{ size }->{ small } = round ( $style->{ size }->{ normal } * 0.86 );
-$style->{ size }->{ big }   = round ( $style->{ size }->{ normal } * 1.35 );
-$style->{ size }->{ huge }  = round ( $style->{ size }->{ normal } * 1.60 );
-
-do {
- $style->{ size }->{ $_ } = $style->{ size }->{ $_ } . '%';
- }
- foreach ( keys %{ $style->{ size } } );
-
-$style->{ space }->{ x } = '0.5em';
-$style->{ space }->{ y } = '0.8em';
-
-$style->{ lineh }->{ normal } = 145;
-$style->{ lineh }->{ medium } =
- round ( $style->{ lineh }->{ normal } * 1.04 );
-$style->{ lineh }->{ large } = round ( $style->{ lineh }->{ normal } * 1.15 );
-
-do {
- $style->{ lineh }->{ $_ } = $style->{ lineh }->{ $_ } . '%';
- }
- foreach ( keys %{ $style->{ lineh } } );
-
-$style->{ color } = {
-
- #
- # The grayscale palettes of the system developed by Heikki Siltala
- #
- # back = the background of the screen
- # area1 = area separated from the background by color
- # area2 = area separated from the background by color
- # dim = to dim out a text, dimmer than regular text
- # text = color of the regular text
- # high = color of the highlighted text
- # xtra = the special color
- #
-
- dark => {
-  back        => '#000000',
-  shade       => '#454545',
-  dim         => '#a3a3a3',
-  text        => '#cbcbcb',
-  high        => '#ffffff',
-  xtra        => '#ff3333',
-  field_front => '#000000',
-  field_back  => '#FFFFFF',
-
+ font => 'Verdana, Arial, sans-serif',
+ 
+ roundness => '8px',
+ 
+ size => {
+  normal => $SIZE_BASE . '%',
+  tiny => round ( $SIZE_BASE * 0.70 )  . '%',
+  small => round ($SIZE_BASE * 0.86 ) . '%',
+  big => round ( $SIZE_BASE * 1.35 ) . '%',
+  huge => round ( $SIZE_BASE * 1.60 ) . '%',  
  },
-
- neutral => {
-  back        => '#c7c7c7',
-  shade       => '#a2a2a2',
-  dim         => '#666666',
-  text        => '#1C1C1C',
-  high        => '#000000',
-  xtra        => '#cc1515',
-  field_front => '#000000',
-  field_back  => '#FFFFFF',
+ 
+ space => { x => '0.5em', y => '0.8em' },
+ 
+ lineh => { 
+  normal => $LINE_BASE . '%',
+  medium => round ( $LINE_BASE * 1.04 ) . '%',
+  large => round ( $LINE_BASE * 1.15 ) . '%', 
  },
+ 
+ color => {
+ 
+  #
+  # The grayscale palettes design by Heikki Siltala
+  #
+  # back = the background of the screen
+  # area1 = area separated from the background by color
+  # area2 = area separated from the background by color
+  # dim = to dim out a text, dimmer than regular text
+  # text = color of the regular text
+  # high = color of the highlighted text
+  # xtra = the special color
+  #
 
- bright => {
-  back        => '#ffffff',
-  shade       => '#d3d3d3',
-  dim         => '#585858',
-  text        => '#1E1E1E',
-  high        => '#000000',
-  xtra        => '#bb0909',
-  field_front => '#000000',
-  field_back  => '#FFFFFF',
+  dark => {
+   back        => '#000000',
+   shade       => '#454545',
+   dim         => '#a3a3a3',
+   text        => '#cbcbcb',
+   high        => '#ffffff',
+   xtra        => '#ff3333',
+   field_front => '#000000',
+   field_back  => '#FFFFFF',
+  },
+
+  neutral => {
+   back        => '#c7c7c7',
+   shade       => '#a2a2a2',
+   dim         => '#666666',
+   text        => '#1C1C1C',
+   high        => '#000000',
+   xtra        => '#cc1515',
+   field_front => '#000000',
+   field_back  => '#FFFFFF',
+  },
+
+  bright => {
+   back        => '#ffffff',
+   shade       => '#d3d3d3',
+   dim         => '#585858',
+   text        => '#1E1E1E',
+   high        => '#000000',
+   xtra        => '#bb0909',
+   field_front => '#000000',
+   field_back  => '#FFFFFF',
   }
+
+ },
+ viz => {
+  dist => { width => 190, height => 240 },
+  globe => { width => 300, height => 170 },
+  rank => { width => 200, height => 200 },
+ }
 
 };
 
-$style->{ viz }->{ dist }->{ width }  = 190;
-$style->{ viz }->{ dist }->{ height } = 240;
-
-$style->{ viz }->{ globe }->{ width }  = 300;
-$style->{ viz }->{ globe }->{ height } = 170;
-
-$style->{ viz }->{ rank }->{ width }  = 200;
-$style->{ viz }->{ rank }->{ height } = 200;
-
-sub style_get { $style }
+sub style_get { $STYLE }
 
 sub style_html2dec {
 
