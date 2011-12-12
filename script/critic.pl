@@ -31,29 +31,30 @@ use lib '../lib';
 use Const::Fast;
 use Perl::Critic;
 
-use Catz::Util::File qw ( findfilesrec );
+use Catz::Util::File qw ( fileread findfilesrec );
 
-const my $RC    => './criticrc.txt';
-const my @DIRS  => qw ( ../lib ../script ../t ); 
-const my $CONF  => {
- -profile => $rc, 
- -severity => 1, 
-};
+const my $RC   => './criticrc.txt';
+const my @DIRS => qw ( ../lib ../script );
+const my $CONF => { -profile => $RC };
 
-my $cr = Perl::Critic->new();
+my $cr = Perl::Critic->new ();
 
 my @msgs = ();
 
 my @files = findfilesrec @DIRS;
 
-foreach my $file ( reverse grep { $_ =~ /\.(p[ml]|t)$/ } @files ) {
+foreach my $file ( reverse sort grep { $_ =~ /\.(p[ml])$/ } @files ) {
 
  say $file;
- 
- my @out = $cr->critique ( $CONF, $file );
 
- push @msgs, @out;
+ my $code = fileread $file;
+
+ my @out = $cr->critique ( \$code );
+
+ push @msgs, map { qq{$file: $_} } @out;
 
 }
 
 print @msgs;
+
+say '--- total ' . scalar @msgs . ' messages';

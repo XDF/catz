@@ -150,15 +150,15 @@ sub search {
   $self->multi or return $self->fail ( 'multi exit' );
 
  }
- else {    
- 
+ else {
+
   # no results, the fallback is to show the search page
 
   $self->guide or return $self->fail ( 'guide exit' );
 
  }
 
-}
+} ## end sub search
 
 sub display {
 

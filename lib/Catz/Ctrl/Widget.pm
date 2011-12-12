@@ -52,8 +52,8 @@ sub urlothers {
   when ( 'pair' ) {
 
    my $enc = $self->encode ( $s->{ sec } );
-   
-   $s->{ urldefault } = 
+
+   $s->{ urldefault } =
     $self->fuse ( $s->{ langa }, 'build', $s->{ pri }, $enc );
 
    $s->{ urlback } =
@@ -81,10 +81,10 @@ sub urlothers {
 
   when ( 'search' ) {
 
-   $s->{ urldefault } = 
+   $s->{ urldefault } =
       $self->fuseq ( $s->{ langa }, 'build' ) . '?q='
     . $self->enurl ( $s->{ what } );
-    
+
    $s->{ urlback } =
       $self->fuseq ( $s->{ langa }, 'search' ) . '?q='
     . $self->enurl ( $s->{ what } );
@@ -100,15 +100,15 @@ sub urlothers {
       $self->fuseq ( $s->{ langaother }, $s->{ func }, $s->{ wspec } ) . '?q='
     . $self->enurl ( $s->{ what } );
 
-  }
+  } ## end when ( 'search' )
 
   default {    # default to runmode all
 
-   $s->{ urldefault } = $self->fuse ( $s->{ langa }, 'build' );   
+   $s->{ urldefault } = $self->fuse ( $s->{ langa }, 'build' );
    $s->{ urlback }    = $self->fuse ( $s->{ langa }, 'browseall' );
    $s->{ urlconfa }   = $self->fuse ( $s->{ langa }, $s->{ func } );
    $s->{ urlconfb }   = '/';
-   $s->{ urlembed } = $self->fuse ( $s->{ langa }, 'embed', $s->{ wspec } );
+   $s->{ urlembed }   = $self->fuse ( $s->{ langa }, 'embed', $s->{ wspec } );
    $s->{ urlother } =
     $self->fuse ( $s->{ langaother }, $s->{ func }, $s->{ wspec } );
 
@@ -126,19 +126,20 @@ sub start {
 
  my $self = shift;
  my $s    = $self->{ stash };
- 
- $s->{ func } eq 'build' or $s->{ func } eq 'embed' or
-  return $self->fail ( 'unknown widget function' );
+
+ $s->{ func } eq 'build'
+  or $s->{ func } eq 'embed'
+  or return $self->fail ( 'unknown widget function' );
 
  # the default for builder and embed is not to index
  $s->{ meta_index }  = 0;
  $s->{ meta_follow } = 0;
 
- exists $s->{ wspec } or do { 
-  
+ exists $s->{ wspec } or do {
+
   $s->{ wspec_loaded } = 1;
-  $s->{ wspec } = widget_default;
-  
+  $s->{ wspec }        = widget_default;
+
  };
 
  # calling general initialization routines on base controller
@@ -165,15 +166,16 @@ sub start {
   else {
 
    $s->{ runmode } = 'all';
-   
+
    # restore indexing for all mode builder without wspec in URL
-   
-   $s->{ func } eq 'builder' and $s->{ wspec_loaded } and 
-    $s->{ meta_index } = 1;
+
+   $s->{ func } eq 'builder'
+    and $s->{ wspec_loaded }
+    and $s->{ meta_index } = 1;
 
   }
 
- }
+ } ## end else [ if ( $s->{ pri } and $s...)]
 
  return $self->done;
 

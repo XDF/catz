@@ -77,7 +77,7 @@ sub startup {
 
   # we do shift to ditch self that comes in first in helper calls
   # the actual pass-thru call with rest of the arguments
-  $self->helper ( $sub => eval qq{ sub { shift; $sub \@\_; } } );
+  $self->helper ( $sub => eval qq{ sub { shift; $sub \@\_; } } ); ## no critic
 
  }
 

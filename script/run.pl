@@ -11,7 +11,7 @@ use lib join '/', File::Spec->splitdir ( dirname ( __FILE__ ) ), '..', 'lib';
 
 use Catz::Data::Conf;
 
-eval 'use Mojolicious::Commands';
+eval { use Mojolicious::Commands };
 
 die <<EOF if $@;
 It looks like you don't have the Mojolicious Framework installed.

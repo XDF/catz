@@ -53,9 +53,11 @@ sub xdf2search {    # converts old search to new search
 
  my @parts = split / +/, $xdf;
 
- scalar @parts > 30 and return undef;
+ scalar @parts > 30 and return undef;    ## no critic
 
- do { length ( $_ ) > 30 and return undef; }
+ do {
+  length ( $_ ) > 30 and return undef;    ## no critic
+  }
   foreach @parts;
 
  my @out = ();
@@ -117,7 +119,7 @@ sub reroute {    # does the job
  my $self = shift;
  my $p = $self->{ stash }->{ src } // '/';
 
- my $lang = acceptlang ( $self->req->headers->accept_language ); 
+ my $lang = acceptlang ( $self->req->headers->accept_language );
 
  my $t = text ( $lang );
 
@@ -137,10 +139,10 @@ sub reroute {    # does the job
 
   when (
    [
-    qw ( 
-     breeders breeders/ breeders/index.htm breeders/index.html 
-     ems/breeders.htm ems/breeders.html 
-    )
+    qw (
+     breeders breeders/ breeders/index.htm breeders/index.html
+     ems/breeders.htm ems/breeders.html
+     )
    ]
    )
   {
@@ -210,7 +212,7 @@ sub reroute {    # does the job
    my $tgt = xdf2search ( $1 );
 
    # not found if conversion failed
-   $tgt or return $self->fail ( 'search conversion error' );
+   defined $tgt or return $self->fail ( 'search conversion error' );
 
    $tgt = enurl $tgt;
 
@@ -242,15 +244,15 @@ sub reroute {    # does the job
 
    }
 
-   if ( exists $CLASSIC{ $folder } ) {    
-   
+   if ( exists $CLASSIC{ $folder } ) {
+
     # this is an classic folder still in .com
 
     return $self->moveto ( "$t->{URL_AUTHOR}photos/$folder/$tail/" );
 
    }
    elsif ( my $s = $self->fetch ( "reroute#folder2s", $folder ) )
-   {                               # current folder
+   {    # current folder
 
     if ( $tail eq '' or $tail eq 'index.htm' or $tail eq 'index.html' ) {
 
@@ -294,7 +296,7 @@ sub reroute {    # does the job
     }
     else { return $self->fail ( 'folder mapping error' ) }
 
-   } ## end elsif ( my $s = $self->fetch... [ if ( $CLASSIC{ $folder...})])
+   } ## end elsif ( my $s = $self->fetch... [ if ( exists $CLASSIC{ ...})])
 
    return $self->fail ( 'old url leftover' );
 

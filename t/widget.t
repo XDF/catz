@@ -81,8 +81,6 @@ $t->get_ok ( "/fi171212/widget/contact/missing/bright/" )->status_is ( 404 );
 
 @oksetups = qw ( en fi en394211 fi211111 en264311 fi365312 );
 
-
-
 my @okwsetups = qw (
  c1a2f3l700s140g8 c2a1f2l2000s190g2 c2a2f1l1100s200g4 c3a2f3l1500s50g0
  c1a2f3s140g8 a1f2l2000s190g2 c3 c3a2f3l1500
@@ -106,26 +104,26 @@ foreach my $action ( qw ( build embed ) ) {
 
  # all mode
  $t->get_ok ( "/$setup/$action/" )->status_is ( 200 )
-   ->content_type_like ( qr/text\/html/ )
-   ->content_like ( qr/div id=\"page\"/ );
+  ->content_type_like ( qr/text\/html/ )
+  ->content_like ( qr/div id=\"page\"/ );
 
  # pair mode
  $t->get_ok ( "/$setup/$action/breed/OSH/" )->status_is ( 200 )
-   ->content_type_like ( qr/text\/html/ )
-   ->content_like ( qr/div id=\"page\"/ );
+  ->content_type_like ( qr/text\/html/ )
+  ->content_like ( qr/div id=\"page\"/ );
 
  $action eq 'embed' and do {
 
   $t->get_ok ( "/$setup/$action/flen/78_mm/" )->status_is ( 200 )
-    ->content_like ( qr/\_LR\.JPG/ );
+   ->content_like ( qr/\_LR\.JPG/ );
 
  };
 
  # search mode
  $t->get_ok (
-   "/$setup/$action?q=%2Bbreeder%3DMi*%20date%3D2011*%20date%3D2010*%20date%3D2001*"
-   )->status_is ( 200 )->content_type_like ( qr/text\/html/ )
-   ->content_like ( qr/div id\=\"page\"/ );
+  "/$setup/$action?q=%2Bbreeder%3DMi*%20date%3D2011*%20date%3D2010*%20date%3D2001*"
+  )->status_is ( 200 )->content_type_like ( qr/text\/html/ )
+  ->content_like ( qr/div id\=\"page\"/ );
 
  foreach my $wsetup ( @okwsetups ) {
 

@@ -90,7 +90,7 @@ sub fetch {
 
  }
 
- { no strict 'refs'; return $self->$sub ( @args ) }
+ { no strict 'refs'; return $self->$sub ( @args ) }    ## no critic
 
 } ## end sub fetch
 
@@ -131,7 +131,7 @@ sub AUTOLOAD {
 
  my $target = '_' . $sub;
 
- { no strict 'refs'; $res = $self->$target ( @args ) }
+ { no strict 'refs'; $res = $self->$target ( @args ) }    ## no critic
 
  $TIME_MODEL and $end = time ();
 

@@ -133,13 +133,15 @@ sub cat {
 
   push @titles, map {
 
-   trim $_;
+   my $x = $_;
 
-   s/^(CFA|FIFE|TICA)\s+//;    # remove umbrellas from titles
+   trim $x;
 
-   s/\d\d\d\d//;               # remove years from WW, SW etc.
+   $x =~ s/^(CFA|FIFE|TICA)\s+//;    # remove umbrellas from titles
 
-   $_;
+   $x =~ s/\d\d\d\d//;               # remove years from WW, SW etc.
+
+   $x;
 
   } split /,/, $1;
 

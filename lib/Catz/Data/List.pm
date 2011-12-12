@@ -50,8 +50,8 @@ const my $MATRIX => {
  album => {
   modes    => [ qw ( cron a2z top ) ],
   dividers => 1,
-  refines  => { },
-  jump     => { },
+  refines  => {},
+  jump     => {},
  },
 
  date => {
@@ -65,7 +65,7 @@ const my $MATRIX => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
   refines  => [ qw ( org umb ) ],
-  jump     => { },
+  jump     => {},
  },
 
  org => {
@@ -83,7 +83,7 @@ const my $MATRIX => {
  },
 
  folder => {
-  modes    => [ ],
+  modes    => [],
   dividers => 0,
   refines  => [ qw ( loc org umb breed breeder lens body ) ],
   jump     => { loc => 1, org => 1, umb => 1 },
@@ -170,42 +170,42 @@ const my $MATRIX => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
   refines  => [ qw ( body flen fnum ) ],
-  jump     => { },
+  jump     => {},
  },
 
  body => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
   refines  => [ qw ( lens iso ) ],
-  jump     => { },  
+  jump     => {},
  },
 
  fnum => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
   refines  => [ qw ( lens body ) ],
-  jump     => { }, 
+  jump     => {},
  },
 
  etime => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
   refines  => [ qw ( lens body ) ],
-  jump     => { },
+  jump     => {},
  },
 
  iso => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
   refines  => [ qw ( body ) ],
-  jump     => { },
+  jump     => {},
  },
 
  flen => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
   refines  => [ qw ( lens etime ) ],
-  jump     => { },
+  jump     => {},
  },
 
 };

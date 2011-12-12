@@ -42,27 +42,27 @@ const my $LINE_BASE => 139;
 const my $STYLE => {
 
  font => 'Verdana, Arial, sans-serif',
- 
+
  roundness => '8px',
- 
+
  size => {
   normal => $SIZE_BASE . '%',
-  tiny => round ( $SIZE_BASE * 0.70 )  . '%',
-  small => round ($SIZE_BASE * 0.86 ) . '%',
-  big => round ( $SIZE_BASE * 1.35 ) . '%',
-  huge => round ( $SIZE_BASE * 1.60 ) . '%',  
+  tiny   => round ( $SIZE_BASE * 0.70 ) . '%',
+  small  => round ( $SIZE_BASE * 0.86 ) . '%',
+  big    => round ( $SIZE_BASE * 1.35 ) . '%',
+  huge   => round ( $SIZE_BASE * 1.60 ) . '%',
  },
- 
+
  space => { x => '0.5em', y => '0.8em' },
- 
- lineh => { 
+
+ lineh => {
   normal => $LINE_BASE . '%',
   medium => round ( $LINE_BASE * 1.04 ) . '%',
-  large => round ( $LINE_BASE * 1.15 ) . '%', 
+  large  => round ( $LINE_BASE * 1.15 ) . '%',
  },
- 
+
  color => {
- 
+
   #
   # The grayscale palettes design by Heikki Siltala
   #
@@ -106,14 +106,14 @@ const my $STYLE => {
    xtra        => '#bb0909',
    field_front => '#000000',
    field_back  => '#FFFFFF',
-  }
+   }
 
  },
  viz => {
-  dist => { width => 190, height => 240 },
+  dist  => { width => 190, height => 240 },
   globe => { width => 300, height => 170 },
-  rank => { width => 200, height => 200 },
- }
+  rank  => { width => 200, height => 200 },
+  }
 
 };
 

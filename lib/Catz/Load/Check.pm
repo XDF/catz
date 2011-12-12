@@ -337,7 +337,7 @@ sub check_any {
  $skip = 0;
  $fail = 0;
 
- { no strict 'refs'; $sub->() }
+ { no strict 'refs'; $sub->() }    ## no critic
 
  $dbc->do ( 'insert into cclass values (?,?,?,?)',
   undef, $class, $phase++, $fail, $skip );

@@ -32,30 +32,32 @@ use parent 'Exporter';
 
 our @EXPORT_OK = qw ( logclose logit logadd logdone logopen );
 
+my $log = undef;
+
 sub logit {
 
- say LOG $_[ 0 ];
+ say $log $_[ 0 ];
  say $_[ 0 ];    # also print it out
 
 }
 
 sub logadd {
 
- print LOG $_[ 0 ];
+ print $log $_[ 0 ];
  print $_[ 0 ];    # also print it out
 
 }
 
 sub logdone {
 
- print LOG "\n";
+ print $log "\n";
  print "\n";       # also print it out
 
 }
 
 sub logclose {
 
- close LOG;
+ close $log;
 
 }
 
@@ -63,6 +65,7 @@ sub logopen {
 
  my $logfile = shift;
 
- open LOG, ">$logfile" or die "unable to open logfile '$logfile' for writing";
+ open my $log, '>', $logfile
+  or die "unable to open logfile '$logfile' for writing";
 
 }

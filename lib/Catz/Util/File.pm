@@ -107,10 +107,11 @@ sub fileread {
 
  local $/ = undef;
 
- open FILE, $_[ 0 ] or die "unable to open file '$_[0]' for reading";
+ open my $file, '<', $_[ 0 ]
+  or die "unable to open file '$_[0]' for reading";
 
- my $data = <FILE>;
- close FILE;
+ my $data = <$file>;
+ close $file;
  return $data;
 
 }
@@ -136,10 +137,11 @@ sub filethumb {
 #
 sub filewrite {
 
- open WFILE, ">$_[0]" or die "unable to open file '$_[0]' for writing";
+ open my $wfile, '>', $_[ 0 ]
+  or die "unable to open file '$_[0]' for writing";
 
- print WFILE $_[ 1 ];
- close WFILE;
+ print $wfile $_[ 1 ];
+ close $wfile;
 
 }
 

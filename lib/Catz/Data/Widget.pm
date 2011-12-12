@@ -44,8 +44,7 @@ use Catz::Util::String qw ( enurl );
 use Catz::Util::Time qw ( dtlang );
 
 # widget short and long keys as pairs in a single array
-const my $WPAIRS => 
- [ qw ( c choose a align f float l limit s size g gap ) ];
+const my $WPAIRS => [ qw ( c choose a align f float l limit s size g gap ) ];
 
 # extract short and long keys and
 # create short -> long and long -> short translations
@@ -78,9 +77,9 @@ const my $WCONF => {
   choose => [ 1, 2, 3 ],
   align  => [ 1, 2 ],
   float  => [ 1, 2, 3 ],
-  limit  => [ map { 300 + ( $_ * 100 ) } ( 1 .. 17 ) ],
-  size   => [ map { $_ * 10 } ( 5 .. 20 ) ],
-  gap    => [ 0, 2, 4, 6, 8, 10 ],
+  limit => [ map { 300 + ( $_ * 100 ) } ( 1 .. 17 ) ],
+  size => [ map { $_ * 10 } ( 5 .. 20 ) ],
+  gap => [ 0, 2, 4, 6, 8, 10 ],
  },
 
 };
@@ -98,7 +97,7 @@ sub widget_verify {
 
  my $wrun = {};    # target
 
- length $wspec > 500 and return undef;
+ length $wspec > 500 and return undef;    ## no critic
 
  my @wc = split /([a-z])/, $wspec;
 
@@ -106,32 +105,35 @@ sub widget_verify {
  shift @wc;
 
  # must be key-value pairs
- ( scalar @wc % 2 ) == 0 or return undef;
+ ( scalar @wc % 2 ) == 0 or return undef;    ## no critic
 
  for ( my $i = 0; $i < scalar @wc; $i += 2 ) {
 
-  defined $wc[ $i ] or return undef;
-  defined $wc[ $i + 1 ] or return undef;
-  
+  defined $wc[ $i ] or return undef;         ## no critic
+  defined $wc[ $i + 1 ] or return undef;     ## no critic
+
   my $key =
-   exists $WCONF->{ trans }->{ $wc[ $i ] } ?
-    $WCONF->{ trans }->{ $wc[ $i ] } : return undef;
+   exists $WCONF->{ trans }->{ $wc[ $i ] }
+   ? $WCONF->{ trans }->{ $wc[ $i ] }
+   : return undef;                           ## no critic
 
   ( any { $_ eq $wc[ $i + 1 ] } @{ $WCONF->{ values }->{ $key } } )
-   or return undef;
+   or return undef;                          ## no critic
 
   $wrun->{ $key } = $wc[ $i + 1 ];
 
  }
 
  # set default values for those not presented
- 
- do { 
- 
-  exists $wrun->{ $_ } or 
-   $wrun->{ $_ } = $WCONF->{ defaults }->{ $WCONF->{ trans }->{ $_ } }
-   
- } foreach @{ $WCONF->{ longs } };
+
+ do {
+
+  exists $wrun->{ $_ }
+   or $wrun->{ $_ } =
+   $WCONF->{ defaults }->{ $WCONF->{ trans }->{ $_ } }
+
+  }
+  foreach @{ $WCONF->{ longs } };
 
  return $wrun;
 
@@ -177,10 +179,8 @@ sub widget_plate {
   : style_html2dec $style->{ color }->{ $palette }->{ back };
 
  my $im =
-  new GD::Image ( 
-   $WPLATE->{ 'width_' . $intent },
-   $WPLATE->{ 'height_' . $intent } 
-  );
+  new GD::Image ( $WPLATE->{ 'width_' . $intent },
+  $WPLATE->{ 'height_' . $intent } );
 
  my $c_front = $im->colorAllocate ( @front );
 

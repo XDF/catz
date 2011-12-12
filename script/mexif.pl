@@ -22,8 +22,6 @@
 # THE SOFTWARE.
 #
 
-die "This script is typically not run!";
-
 use 5.12.0;
 use strict;
 use warnings;
@@ -50,6 +48,9 @@ find ( \&wanted, '/www/galleries' );
 my $i = 0;
 
 my %seen = ();
+
+# prevent accidental starts and ovewrite of $OUTPUT file
+die "This script is typically not run!";
 
 sub wanted {
 

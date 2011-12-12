@@ -59,7 +59,7 @@ sub _x2id {
   and defined $res->[ 1 ]
   and return ( fullnum33 ( $res->[ 0 ], $res->[ 1 ] ) );
 
- return undef;
+ return undef;    ## no critic
 
 }
 

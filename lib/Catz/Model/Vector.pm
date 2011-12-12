@@ -369,9 +369,9 @@ sub _pointer {
 
  push @pin,
   $self->x2id (
-  $svec->[ $idx < ( $total - 1 ) ? $idx + 1 : ( $total - 1 ) ] );  # prev
+  $svec->[ $idx < ( $total - 1 ) ? $idx + 1 : ( $total - 1 ) ] );    # prev
 
- push @pin, $self->x2id ( $svec->[ $total - 1 ] );                 # last
+ push @pin, $self->x2id ( $svec->[ $total - 1 ] );                   # last
 
  return [ ( $total, $idx + 1, \@pin ) ];
 
