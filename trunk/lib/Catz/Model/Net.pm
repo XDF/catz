@@ -45,8 +45,9 @@ const my $KEY_DATE  => conf ( 'result_param_date' );
 const my $KEY_LOC   => conf ( 'result_param_loc' );
 const my $KEY_NAME  => conf ( 'result_param_name' );
 
-const my $AGENT =>
- text ( 'en' )->{ SITE } . ' ' . __PACKAGE__ . ' LWP::UserAgent Perl5';
+const my $AGENT => text ( 'en' )->{ SITE } . ' '
+ . __PACKAGE__
+ . ' LWP::UserAgent Perl5';
 
 my $ua = LWP::UserAgent->new (
  agent        => $AGENT,
@@ -62,7 +63,7 @@ sub body {
 
  $res->is_success and return $res->content;
 
- return undef;
+ return undef;    ## no critic
 
 }
 
@@ -94,7 +95,7 @@ sub urld {
 sub _data {
 
  # pseudo parameter is not used
- my ( $self, $date, $loc, $name, $pseudo ) = @_;    
+ my ( $self, $date, $loc, $name, $pseudo ) = @_;
 
  my $url = urld ( $URL_DATA, $date, $loc, $name );
 
@@ -104,7 +105,7 @@ sub _data {
   and ( length ( $res ) > 3 )
   and return ( result_process ( $res ) );
 
- return undef;
+ return undef;    ## no critic
 
 }
 
@@ -119,7 +120,7 @@ sub _count {
 
  $res and length ( $res ) > 0 and return int ( $res );
 
- return undef;
+ return undef;    ## no critic
 
 }
 

@@ -70,7 +70,7 @@ sub exifsort {
 
    defined $1 or die "malformed exif '$key' '$val'";
 
-   my $res = eval ( $1 );
+   my $res = eval ( $1 );    ## no critic
 
    # works up to 999 seconds of exposure time due to
    # 1) padding length
@@ -307,12 +307,12 @@ sub lens {
 
  my ( $album, $flen, $fnum ) = @_;
 
- ( $flen and $fnum ) or return undef;
+ ( $flen and $fnum ) or return undef;    ## no critic
 
- my $date = substr ( $album, 0, 8 );    # use only date part
+ my $date = substr ( $album, 0, 8 );     # use only date part
 
- $flen =~ s/ mm$//g;                    # remove ' mm'
- $fnum =~ s/f\///;                      # remove 'f/'
+ $flen =~ s/ mm$//g;                     # remove ' mm'
+ $fnum =~ s/f\///;                       # remove 'f/'
 
  my $lens;
 
@@ -371,7 +371,7 @@ sub body {
 
  m|DMC-LX3| and return 'Panasonic Lumix DMC-LX3';
 
- return undef;
+ return undef;    ## no critic
 
 }
 
@@ -705,7 +705,7 @@ sub org {
 
   when ( /VANGORA/ ) { return 'VANGORA', 'VANGORA' }
 
-  default { return undef, undef }
+  default { return undef, undef }    ## no critic
 
  } ## end given
 

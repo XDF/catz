@@ -121,8 +121,8 @@ sub _refine {
 
  my ( $self, $pri, $sec, $target ) = @_;
  my $lang = $self->{ lang };
- 
- const my $N => 15; # maximum number of items in a set
+
+ const my $N => 15;    # maximum number of items in a set
 
  my $me = $self->dbone (
   qq {

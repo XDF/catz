@@ -45,20 +45,19 @@ use URI::Escape::XS qw ( uri_escape uri_unescape );
 
 const my $LANGS => [ 'en', 'fi' ];
 
-my $i18n = 
- I18N::AcceptLanguage->new ( defaultLanguage => 'en', strict => 0 );
+my $i18n = I18N::AcceptLanguage->new ( defaultLanguage => 'en', strict => 0 );
 
 sub acceptlang {
 
  my $lang = $i18n->accepts ( shift, $LANGS ) // 'en';
- 
+
  # messing the default language and you get an empty string
  # so we double-check now that the language is ok
- 
+
  $lang eq 'en' or $lang eq 'fi' or $lang = 'en';
 
  return $lang;
- 
+
 }
 
 sub base32decode { MIME::Base32::decode $_[ 0 ] }
