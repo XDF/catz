@@ -26,13 +26,28 @@ package Catz::Util::Log;
 
 use strict;
 use warnings;
-use 5.10.0;
+use 5.12.0;
 
 use parent 'Exporter';
 
 our @EXPORT_OK = qw ( logclose logit logadd logdone logopen );
 
-my $log = undef;
+my $log;
+
+sub logopen {
+
+ my $logfile = shift;
+
+ open $log, '>', $logfile
+  or die "unable to open logfile '$logfile' for writing";
+
+}
+
+sub logclose {
+
+ close $log;
+
+}
 
 sub logit {
 
@@ -55,17 +70,5 @@ sub logdone {
 
 }
 
-sub logclose {
 
- close $log;
-
-}
-
-sub logopen {
-
- my $logfile = shift;
-
- open my $log, '>', $logfile
-  or die "unable to open logfile '$logfile' for writing";
-
-}
+1;

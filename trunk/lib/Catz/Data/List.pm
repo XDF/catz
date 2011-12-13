@@ -50,7 +50,7 @@ const my $MATRIX => {
  album => {
   modes    => [ qw ( cron a2z top ) ],
   dividers => 1,
-  refines  => {},
+  refines  => [],
   jump     => {},
  },
 
