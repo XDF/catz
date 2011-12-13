@@ -634,7 +634,7 @@ sub loc {
 
  my $loc = shift;
 
- $LOCS->{ $loc } and $loc = $LOCS->{ $loc };
+ exists $LOCS->{ $loc } and $loc = $LOCS->{ $loc };
 
  return ucclcc ( $loc ), ucclcc ( $loc );
 

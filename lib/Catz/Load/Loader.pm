@@ -49,7 +49,7 @@ use Catz::Util::Log qw ( logit logadd logdone );
 use Catz::Util::Number qw ( fullnum33 round );
 use Catz::Util::String qw ( tolines topiles trim );
 
-const my $SQL => {
+const my $SQLS => {
 
  # this hash ref has all SQL statements used by the loader
  # _ins = insert statement
@@ -193,10 +193,10 @@ sub load_begin {
  $dbc->func ( 'fsort',    1, \&fsort,    'create_function' );
  $dbc->func ( 'dtexpand', 2, \&dtexpand, 'create_function' );
 
- logit ( 'preparing ' . scalar ( keys %{ $SQL } ) . ' SQL statements' );
+ logit ( 'preparing ' . scalar ( keys %{ $SQLS } ) . ' SQL statements' );
 
- do { $stm->{ $_ } = $dbc->prepare ( $sql->{ $_ } ) }
-  foreach ( keys %{ $SQL } );
+ do { $stm->{ $_ } = $dbc->prepare ( $SQLS->{ $_ } ) }
+  foreach ( keys %{ $SQLS } );
 
  logit ( "storing run dt '$dt'" );
 
@@ -282,7 +282,7 @@ sub load_exec {
 
 } ## end sub load_exec
 
-sub load_do { my $SQL = shift; $dbc->do ( $sql, undef, @_ ) }
+sub load_do { my $sql = shift; $dbc->do ( $sql, undef, @_ ) }
 
 sub load_nomatch {
 
