@@ -1,7 +1,7 @@
 >>> 20111210vantaa
 >>> 187
->>> Incomplete URK cat show Vantaa 2011-12-10
->>> Keskeneräinen URKin kissanäyttely Vantaalla 10.12.2011
+>>> URK cat show Vantaa 2011-12-10
+>>> URKin kissanäyttely Vantaalla 10.12.2011
 L36: samyang8
 P36: %Xview
 P37: [CRX]
