@@ -265,6 +265,8 @@ sub startup {
  ### the widget builder and renderer
  ###
 
+( 1 == 0 ) and do { # disabled 2011-12-15 from production
+
  my $w = $l->route ( '/:func', func => qr/build|embed/ );
 
  $w->route (
@@ -283,6 +285,8 @@ sub startup {
  $w->route ( '/:wspec', wspec => qr/[a-z0-9]{1,500}/ )->to ( "widget#do" );
 
  $w->route ( '/' )->to ( "widget#do" );
+ 
+ };
 
  ###
  ### AJAX interface(s)

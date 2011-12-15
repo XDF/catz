@@ -184,7 +184,7 @@ if ( $runmode eq 'pair' ) {
 % if ( $fresh ne $ancient ) {
 - <%= dtexpand ( $fresh, $lang ) %>
 % }
-% if ( $total > 9 ) {
+% if ( 1 == 0 and $total > 9 ) { # disabled 2011-12-15 from production
 <%= $sep %> <a href="<%== $urlbuild %>"><%= $t->{'WID_TITLE_'.$runmode} %></a></span>
 % } 
 % if ( stash ('dist_count_partial') and stash ('dist_count_partial') > 0 ) {
