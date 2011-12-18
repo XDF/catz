@@ -30,8 +30,6 @@ use warnings;
 
 use parent 'Catz::Ctrl::Base';
 
-use List::Util qw ( sum );
-
 use Catz::Data::Conf;
 use Catz::Data::Dist;
 use Catz::Data::Style;
@@ -88,31 +86,8 @@ sub dist {
  my $s    = $self->{ stash };
 
  $s->{ dist } = dist_conf;
-
- $s->{ total } = sum map { $s->{ $_ } } @{ $s->{ dist }->{ sets }->{ pie } };
-
- $s->{ maxx } = $self->fetch ( 'all#maxx' );
-
- # the total number of photos must be less or equal to all photos
- $s->{ total } <= $s->{ maxx }
-  or return $self->fail ( 'illegal distribution of values' );
  
- foreach my $key ( @{ $s->{ dist }->{ sets }->{ pie } } ) {
-
-  $s->{ $key . '_perc' } =
-   $self->round ( ( ( $s->{ $key } / $s->{ total } ) * 100 ), 1 );
-
-  my $tx =
-     $s->{ t }->{ 'VIZ_DIST_' . uc ( $key ) } . ' '
-   . $self->fmt ( $s->{ $key . '_perc' }, $s->{ lang } ) . ' %';
-
-  utf8::encode $tx;
-
-  $s->{ $key . '_label' } = $self->enurl ( $tx );
-  
-  warn $s->{ $key . '_label' };
-
- }
+ dist_prep $s;
 
  return $self->do;
 

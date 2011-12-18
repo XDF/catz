@@ -42,12 +42,23 @@ sub all {
  $self->f_map or return $self->fail ( 'f_map exit' );
 
  $self->f_origin or return $self->fail ( 'f_origin exit' );
+ 
+ if ( s->{ origin } eq 'id' ) {
 
- $s->{ urlother } = $self->fuse (
-  $s->{ langaother },
-  $s->{ action },
-  ( $s->{ origin } eq 'id' ? $s->{ id } : '' )
- );
+  $s->{ urlother } = $self->fuse (
+   $s->{ langaother },
+   $s->{ action },
+   $s->{ id }
+  ); 
+ 
+ } else {
+
+  $s->{ urlother } = $self->fuse (
+   $s->{ langaother },
+   $s->{ action } 
+  );
+ 
+ }
 
  return $self->done;
 

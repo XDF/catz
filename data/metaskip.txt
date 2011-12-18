@@ -2,9 +2,13 @@ subject_approx;breeder;AngelWaves;Angelfalls
 #
 subject_approx;breeder;Ferox;Ferme
 #
+subject_approx;breeder;Operacoon's;Operadoll's
+#
 subject_approx;breeder;Preciousice;Precious
 #
 subject_approx;breeder;Usvaniityn;Usvaneidon
+#
+subject_approx;cat;Miiru;Miisu
 #
 subject_approx;cat;Misu;Miisu
 #
@@ -12,7 +16,17 @@ subject_approx;cat;Pekka;Peku
 #
 subject_approx;cat;SiruCats Bashir;SiruCats Bandhu
 #
+subject_approx;cat;Trollin Hanno;Trollin Sampo
+#
 subject_approx;cat;Tähtitassun Bertil;Tähtitassun Vintiö
+#
+subject_approx;cat;Udun Silver Apricot Njinyi;Udun Silver Apricot Jewel
+#
+subject_approx;cat;Udun Silver Apricot Mitra;Udun Silver Apricot Njinyi
+#
+subject_approx;cat;Udun Silver Apricot Kherpi;Udun Silver Apricot Njinyi
+#
+subject_approx;cat;Udun Silver Apricot Ishtar;Udun Silver Apricot Njinyi
 #
 subject_approx;cat;Zarin Varinka;Zarin Taika
 #

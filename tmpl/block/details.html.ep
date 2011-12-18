@@ -25,7 +25,7 @@
 %   }  
 %  }
 %  if ( $i == 0 ) { # no comments
-<%== include 'elem/mark' %> <span class="shrink"><%= $t->{NO_COMMENT_A} %> <%== $id %> <%= $t->{NO_COMMENT_B} %> <%== include 'elem/infox' %>
+<%== include 'elem/mark' %> <span class="shrink"><%= $t->{NO_COMMENT_A} %> <%== $id %> <%= $t->{NO_COMMENT_B} %> <%== include 'elem/infox' %></span>
 %  }
 %#
 %# --------------------
@@ -34,21 +34,23 @@
 %   my $prev = 'THIS_NEVER_OCCURS_IN_DATA';
 <span class="shrink">
 %   for ( my $i = 0; $i < @$detail; $i++ ) {
-%   if ( $display eq 'full' or not exists $basicskip->{ $detail->[$i]->[0] } ) {
+%    my $lpri = $detail->[$i]->[0];
+%    my $lsec = $detail->[$i]->[1];
+%    if ( $display eq 'full' or not exists $basicskip->{ $lpri } ) {
 <%= $sep %>  
 %#
 %# --------------------
 %#
-%     ( $display eq 'full' or not exists $basichide->{ $detail->[$i]->[0] } ) and do {
-% if ( $prev ne $detail->[$i]->[0] ) {
-<%== include 'elem/pri', a => $detail->[$i]->[0] %>
-% $prev = $detail->[$i]->[0];
-% }
+%     ( $display eq 'full' or not exists $basichide->{ $lpri } ) and do {
+%       if ( $prev ne $lpri ) {
+<%== include 'elem/pri', a => $lpri %>
+%       $prev = $lpri;
+%      }
 %     };
-%     $detail->[$i]->[0] ne 'time' and do {
-<a href="<%== include 'href/actionpair', langh => $langa, topri => $maplink->{$detail->[$i]->[0]}->{ROOT} ? $maplink->{$detail->[$i]->[0]}->{$detail->[$i]->[1]}->[0] : $detail->[$i]->[0], tosec => $maplink->{$detail->[$i]->[0]}->{ROOT} ? $maplink->{$detail->[$i]->[0]}->{$detail->[$i]->[1]}->[1] : $detail->[$i]->[1] %>">
+%     $lpri ne 'time' and do {
+<a href="<%== include 'href/actionpair', langh => $langa, topri => $maplink->{$lpri}->{ROOT} ? $maplink->{$lpri}->{$lsec}->[0] : $lpri, tosec => $maplink->{$lpri}->{ROOT} ? $maplink->{$lpri}->{$lsec}->[1] : $lsec %>">
 %     };
-<%== include 'elem/sec', a => $detail->[$i]->[0], b => $detail->[$i]->[1] %><%== $detail->[$i]->[0] ne 'time' ? '</a>' : '' %>
+<%== include 'elem/sec', a => $lpri, b => $lsec =%><%== $lpri ne 'time' ? '</a>' : '' %>
 %#
 %# --------------------
 %#
