@@ -131,9 +131,9 @@ sub cat {
 
   $data = $3;
 
-  push @titles, map {
+  ## no critic
 
-   ## no critic
+  push @titles, map {
 
    trim $_;
 
@@ -141,13 +141,13 @@ sub cat {
 
    s/\d\d\d\d//;               # remove years from WW, SW etc.
 
-   ## use critic
-
-   $_;   
+   $_;
 
   } split /,/, $1;
 
- }
+  ## use critic
+
+ } ## end if ( $data =~ /^(([A-Z0-9 ]|,| )+) (.*)$/)
 
  # collect post-title codes and remove them from data
  while ( $data =~ /^(.+), (([A-Z0-9 ])+?)$/ ) {

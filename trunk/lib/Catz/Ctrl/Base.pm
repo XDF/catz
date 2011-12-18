@@ -341,17 +341,16 @@ sub f_dist {
    [ @{ $s->{ args_array } }, @{ $s->{ dist }->{ slices }->{ $key } } ];
 
   # fetch counts
-  $s->{ 'dist_count_' . $key } = $self->fetch ( 
-   "search#count", @{ $s->{ 'drillargs_' . $key } } 
-  );
-  
+  $s->{ 'dist_count_' . $key } =
+   $self->fetch ( "search#count", @{ $s->{ 'drillargs_' . $key } } );
+
  }
- 
- dist_prep $s; # do the rest of preparations
+
+ dist_prep $s;    # do the rest of preparations
 
  return $self->done;
 
-}
+} ## end sub f_dist
 
 sub f_pair_start {
 

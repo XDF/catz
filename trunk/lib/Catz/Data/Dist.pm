@@ -42,8 +42,8 @@ use Catz::Util::String qw ( enurl fuse fuseq );
 
 const my $CONF => {
 
- # definitions for cat data qualifications and 
- # cat data distribution visualizations  
+ # definitions for cat data qualifications and
+ # cat data distribution visualizations
 
  slices => {
 
@@ -51,15 +51,15 @@ const my $CONF => {
   # as advanded search search term sets
 
   # photos that are regarded to have complete data
-  # and no more data is required from the community 
+  # and no more data is required from the community
   full => [ qw ( +has breed +has cat ) ],
-  
+
   # photos that have breed or category but no cat name
   partial => [ qw ( +has breed -has cat ) ],
-    
+
   # photos that have cat breed but no cat name
   breed => [ qw ( +has breed -breed xc? -has cat ) ],
-  
+
   # photos that have category but no cat name
   cate => [ qw ( +has breed +breed xc? -has cat ) ],
 
@@ -69,29 +69,29 @@ const my $CONF => {
 
   # photos that have no cat name
   nocat => [ qw ( -has cat ) ],
-  
+
   # photos that are regarded to have no data
   none => [ qw ( -has text ) ],
-    
+
  },
 
  sets => {
- 
-  # sets are pre-defined ordered sets of slices used in 
+
+  # sets are pre-defined ordered sets of slices used in
   # displaying the data qualifications and visualizations
-  
+
   # the list of keys to be processed
   process => [ qw ( full partial plain none ) ],
- 
+
   # the keys required to get fetched from data
   required => [ qw ( full partial plain none ) ],
 
   # the presentation of the pie graphs
   pie => [ qw ( full partial none plain ) ],
-  
+
   # the presentation of the links on the photo browsing page
   link => [ qw ( partial none ) ],
-  
+
  },
 
 };
@@ -102,71 +102,75 @@ sub dist_prep {
 
  # prepares distribution data to stash
 
- my $s = shift; # Mojolicious stash
- 
- $s->{ controller } eq 'visualize' and 
-  $s->{ dist_count_all } = 
-   sum map { $s->{ $_ } } @{ $CONF->{ sets }->{ pie } };
- 
- foreach my $key ( @{ $CONF->{sets}->{process} } ) {
+ my $s = shift;    # Mojolicious stash
 
-  $s->{ controller } eq 'visualize' and 
-   $s->{ 'dist_count_' . $key } = $s->{ $key };
+ $s->{ controller } eq 'visualize'
+  and $s->{ dist_count_all } =
+  sum map { $s->{ $_ } } @{ $CONF->{ sets }->{ pie } };
+
+ foreach my $key ( @{ $CONF->{ sets }->{ process } } ) {
+
+  $s->{ controller } eq 'visualize'
+   and $s->{ 'dist_count_' . $key } = $s->{ $key };
 
   # calculcate percentage
- 
-   $s->{ 'dist_perc_' . $key } = 
-    round ( 
-     ( ( $s->{ 'dist_count_' . $key } / $s->{ dist_count_all } ) * 100 ), 
-     1 
-   );
-  
+
+  $s->{ 'dist_perc_' . $key } = round (
+   ( ( $s->{ 'dist_count_' . $key } / $s->{ dist_count_all } ) * 100 ), 1 );
+
   if ( $s->{ controller } eq 'visualize' ) {
 
    my $tx =
-     $s->{ t }->{ 'VIZ_DIST_' . uc ( $key ) } . ' '
-     . fmt ( $s->{ 'dist_perc_' . $key }, $s->{ lang } ) . ' %';
+    $s->{ t }->{ 'VIZ_DIST_' . uc ( $key ) } . ' '
+    . fmt ( $s->{ 'dist_perc_' . $key }, $s->{ lang } ) . ' %';
 
    utf8::encode $tx;
 
-   $s->{ 'dist_label_' . $key } = enurl $tx;  
-     
-  } else {
-  
+   $s->{ 'dist_label_' . $key } = enurl $tx;
+
+  }
+  else {
+
    # preparing for browse / contribute
 
    # prepare drill url
 
-   exists $s->{ 'drillargs_' . $key } or 
-    $s->{ 'drillargs_' . $key } = 
-     [ @{ $s->{ args_array } }, @{ $CONF->{ slices }->{ $key } } ];  
+   exists $s->{ 'drillargs_' . $key }
+    or $s->{ 'drillargs_' . $key } =
+    [ @{ $s->{ args_array } }, @{ $CONF->{ slices }->{ $key } } ];
 
-   $s->{ 'dist_url_' . $key } = 
-    fuseq ( $s->{ langa }, ( 
-     'search?q=' . enurl ( args2search ( @{ $s->{ 'drillargs_' . $key } } ) ) 
-    ) );
+   $s->{ 'dist_url_' . $key } = fuseq (
+    $s->{ langa },
+    (
+     'search?q=' . enurl ( args2search ( @{ $s->{ 'drillargs_' . $key } } ) )
+    )
+   );
 
-  # prepare text
+   # prepare text
 
-  $s->{ 'dist_text_' . $key } =
-   $s->{ t }->{ 'HAS' . uc ( $key ) . ( 
-    $s->{ 'dist_count_' . $key } == 1 ? '' : 'A' 
-   ) };
-  
-  
-  }
-  
- }
- 
+   $s->{ 'dist_text_' . $key } =
+    $s->{ t }->{ 'HAS'
+     . uc ( $key )
+     . ( $s->{ 'dist_count_' . $key } == 1 ? '' : 'A' ) };
+
+  } ## end else [ if ( $s->{ controller ...})]
+
+ } ## end foreach my $key ( @{ $CONF->...})
+
  # prepare distribution pie url
- 
- $s->{ controller } ne 'visualize' and 
-  $s->{url_viz_dist} = fuse ( 
-   $s->{ langa }, 'viz', 'dist', $s->{ dist_count_full }, 
-   $s->{ dist_count_partial }, $s->{ dist_count_none }, 
-   $s->{ dist_count_plain }, $s->{ version }
-  );  
-  
-}
+
+ $s->{ controller } ne 'visualize'
+  and $s->{ url_viz_dist } = fuse (
+  $s->{ langa },
+  'viz',
+  'dist',
+  $s->{ dist_count_full },
+  $s->{ dist_count_partial },
+  $s->{ dist_count_none },
+  $s->{ dist_count_plain },
+  $s->{ version }
+  );
+
+} ## end sub dist_prep
 
 1;
