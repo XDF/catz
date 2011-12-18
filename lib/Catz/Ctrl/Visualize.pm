@@ -86,12 +86,12 @@ sub dist {
  my $s    = $self->{ stash };
 
  $s->{ dist } = dist_conf;
- 
+
  dist_prep $s;
 
  return $self->do;
 
-} ## end sub dist
+}
 
 sub globe {
 

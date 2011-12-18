@@ -1,9 +1,9 @@
 % if ( $mapview->{$a} ) {
-<%= $mapview->{$a}->{$b}->[1] %>
+<%= $mapview->{$a}->{$b}->[1] =%>
 % } elsif ( $a eq 'date' or $a eq 'time' ) {
-<%= dtexpand ( $b, $lang ) %>
+<%= dtexpand ( $b, $lang ) =%>
 % } else {
-<%= $b %>
+<%= $b =%>
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine

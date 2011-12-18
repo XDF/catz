@@ -265,27 +265,27 @@ sub startup {
  ### the widget builder and renderer
  ###
 
-( 1 == 0 ) and do { # disabled 2011-12-15 from production
+ ( 1 == 0 ) and do {    # disabled 2011-12-15 from production
 
- my $w = $l->route ( '/:func', func => qr/build|embed/ );
+  my $w = $l->route ( '/:func', func => qr/build|embed/ );
 
- $w->route (
-  '/:pri/:sec/:wspec',
-  pri   => qr/[a-z]{1,25}/,
-  sec   => qr/[A-Za-z0-9_-]{1,500}/,
-  wspec => qr/[a-z0-9]{1,500}/
- )->to ( "widget#do" );
+  $w->route (
+   '/:pri/:sec/:wspec',
+   pri   => qr/[a-z]{1,25}/,
+   sec   => qr/[A-Za-z0-9_-]{1,500}/,
+   wspec => qr/[a-z0-9]{1,500}/
+  )->to ( "widget#do" );
 
- $w->route (
-  '/:pri/:sec',
-  pri => qr/[a-z]{1,25}/,
-  sec => qr/[A-Za-z0-9_-]{1,500}/
- )->to ( "widget#do" );
+  $w->route (
+   '/:pri/:sec',
+   pri => qr/[a-z]{1,25}/,
+   sec => qr/[A-Za-z0-9_-]{1,500}/
+  )->to ( "widget#do" );
 
- $w->route ( '/:wspec', wspec => qr/[a-z0-9]{1,500}/ )->to ( "widget#do" );
+  $w->route ( '/:wspec', wspec => qr/[a-z0-9]{1,500}/ )->to ( "widget#do" );
 
- $w->route ( '/' )->to ( "widget#do" );
- 
+  $w->route ( '/' )->to ( "widget#do" );
+
  };
 
  ###
