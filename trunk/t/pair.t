@@ -44,8 +44,8 @@ use Catz::Util::String qw ( encode );
 
 my $t = Test::Mojo->new ( conf ( 'app' ) );
 
-# all ok setups must show all photo details
-my @oksetups = qw ( en fi en264312 fi384322 );
+# all ok setups must show all or basic photo detals
+my @oksetups = qw ( en fi en264412 fi384422 );
 
 my $setup;
 my $txt;
@@ -135,17 +135,21 @@ foreach my $mode ( qw ( browse view ) ) {
   else {                                               # view
 
    # ok view with no photo id
-   $t->get_ok ( "/$setup/$mode/$elem[0]/$elem[1]/" )->status_is ( 200 )
-    ->content_type_like ( qr/text\/html/ )->content_like ( qr/$txt->{LOC}/ )
+   $t->get_ok ( "/$setup/$mode/$elem[0]/$elem[1]/" )
+    ->status_is ( 200 )
+    ->content_type_like ( qr/text\/html/ )
+    ->content_like ( qr/$txt->{LENS}/ )
     ->content_like ( qr/$txt->{ALBUM}/ )
-    ->content_like ( qr/$txt->{PHOTO_ID}/ )->content_like ( qr/\/.{8}\.JPG/ );
+    ->content_like ( qr/$txt->{PHOTO_ID}/ )
+    ->content_like ( qr/\/.{8}\.JPG/ );
 
    # ok view with photo id
    $t->get_ok ( "/$setup/$mode/$elem[0]/$elem[1]/$elem[2]/" )
-    ->status_is    ( 200 )->content_type_like             ( qr/text\/html/ )
-    ->content_like ( qr/$txt->{LOC}/ )->content_like      ( qr/$txt->{DATE}/ )
-    ->content_like ( qr/$txt->{PHOTO_ID}/ )->content_like ( qr/\/.{8}\.JPG/ );
-
+    ->status_is ( 200 )
+    ->content_type_like ( qr/text\/html/ )
+    ->content_like ( qr/$txt->{ALBUM}/ )
+    ->content_like ( qr/$txt->{PHOTO_ID}/ )
+    ->content_like ( qr/\/.{8}\.JPG/ );
   }
 
   # no ending slash -> 301

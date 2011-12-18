@@ -230,7 +230,7 @@ sub _clusters {
  
  my $keys = [];
 
- do {
+ while ( $i < scalar @$res ) {
  
    if ( exists $seen->{ $res->[$i]->[0] } ) {
    
@@ -246,7 +246,7 @@ sub _clusters {
 
   $i++;  
  
- } while ( $i < scalar @$res );
+ }
 
  return [ map { [ $seen->{ $_ }, $_ ] } @$keys ];
 

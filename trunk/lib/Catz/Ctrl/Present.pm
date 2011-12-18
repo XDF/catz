@@ -42,11 +42,13 @@ use Catz::Data::Widget;
 
 # defined concepts that are skipped in basic viewing mode 
 my %basicskip = 
- map { $_ => 1 } qw ( body code loc org umb date cate nat app feat nick title );
+ map { $_ => 1 } 
+  qw ( body code loc org umb date cate app feat nick title );
  
 # defined concepts that are displayed without title in basic viewing mode 
 my %basichide = 
- map { $_ => 1 } qw ( loc org umb fnum flen etime iso time );
+ map { $_ => 1 } 
+  qw ( loc org umb nat fnum flen etime iso time );
 
 sub single {
 

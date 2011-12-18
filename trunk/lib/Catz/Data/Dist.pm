@@ -33,10 +33,11 @@ use parent 'Exporter';
 our @EXPORT = qw ( dist_conf dist_prep );
 
 use Const::Fast;
+use List::Util qw ( sum );
 
 use Catz::Data::Search;
 
-use Catz::Util::Number qw ( round );
+use Catz::Util::Number qw ( fmt round );
 use Catz::Util::String qw ( enurl fuse fuseq );
 
 const my $CONF => {
@@ -52,18 +53,19 @@ const my $CONF => {
   # photos that are regarded to have complete data
   # and no more data is required from the community 
   full => [ qw ( +has breed +has cat ) ],
-
+  
   # photos that have breed or category but no cat name
   partial => [ qw ( +has breed -has cat ) ],
     
   # photos that have cat breed but no cat name
-  breed => [ qw ( +has breed -breed XC? -has cat ) ],
+  breed => [ qw ( +has breed -breed xc? -has cat ) ],
   
   # photos that have category but no cat name
-  cate => [ qw ( +has breed +breed XC? -has cat ) ],
+  cate => [ qw ( +has breed +breed xc? -has cat ) ],
 
   # photos that have plain text
-  plain => [ qw ( +has text -has breed -has cat ) ],
+  # not a cat photo at all, some other photo
+  plain => [ qw ( +has text -has cat -has breed ) ],
 
   # photos that have no cat name
   nocat => [ qw ( -has cat ) ],
@@ -78,17 +80,17 @@ const my $CONF => {
   # sets are pre-defined ordered sets of slices used in 
   # displaying the data qualifications and visualizations
   
-  # all keys
-  all => [ qw ( complete full partial breed cate plain none ) ],
+  # the list of keys to be processed
+  process => [ qw ( full partial plain none ) ],
  
-  # the keys required to do all calculations
-  required => [ qw ( full breed cate plain none ) ],
-    
+  # the keys required to get fetched from data
+  required => [ qw ( full partial plain none ) ],
+
   # the presentation of the pie graphs
-  pie => [ qw ( complete breed cate none ) ],
+  pie => [ qw ( full partial none plain ) ],
   
   # the presentation of the links on the photo browsing page
-  link => [ qw ( none partial ) ],
+  link => [ qw ( partial none ) ],
   
  },
 
@@ -102,28 +104,39 @@ sub dist_prep {
 
  my $s = shift; # Mojolicious stash
  
- # calculate more counts
+ $s->{ controller } eq 'visualize' and 
+  $s->{ dist_count_all } = 
+   sum map { $s->{ $_ } } @{ $CONF->{ sets }->{ pie } };
  
- $s->{dist_count_partial} =
-  $s->{dist_count_breed} + $s->{dist_count_cate}; 
+ foreach my $key ( @{ $CONF->{sets}->{process} } ) {
 
- $s->{dist_count_complete} =
-  $s->{dist_count_full} + $s->{dist_count_plain};
-  
- foreach my $key ( @{ $CONF->{sets}->{all} } ) {
-    
-   # calculcate percentage
+  $s->{ controller } eq 'visualize' and 
+   $s->{ 'dist_count_' . $key } = $s->{ $key };
+
+  # calculcate percentage
  
    $s->{ 'dist_perc_' . $key } = 
     round ( 
      ( ( $s->{ 'dist_count_' . $key } / $s->{ dist_count_all } ) * 100 ), 
      1 
    );
- 
-  # prepare drill url
   
-  $key ne 'complete' and do { 
+  if ( $s->{ controller } eq 'visualize' ) {
+
+   my $tx =
+     $s->{ t }->{ 'VIZ_DIST_' . uc ( $key ) } . ' '
+     . fmt ( $s->{ 'dist_perc_' . $key }, $s->{ lang } ) . ' %';
+
+   utf8::encode $tx;
+
+   $s->{ 'dist_label_' . $key } = enurl $tx;  
+     
+  } else {
   
+   # preparing for browse / contribute
+
+   # prepare drill url
+
    exists $s->{ 'drillargs_' . $key } or 
     $s->{ 'drillargs_' . $key } = 
      [ @{ $s->{ args_array } }, @{ $CONF->{ slices }->{ $key } } ];  
@@ -132,8 +145,6 @@ sub dist_prep {
     fuseq ( $s->{ langa }, ( 
      'search?q=' . enurl ( args2search ( @{ $s->{ 'drillargs_' . $key } } ) ) 
     ) );
-    
-  };
 
   # prepare text
 
@@ -141,17 +152,20 @@ sub dist_prep {
    $s->{ t }->{ 'HAS' . uc ( $key ) . ( 
     $s->{ 'dist_count_' . $key } == 1 ? '' : 'A' 
    ) };
- 
+  
+  
+  }
+  
  }
- 
  
  # prepare distribution pie url
  
- $s->{url_viz_dist} = fuse ( 
-  $s->{ langa }, 'viz', 'dist', $s->{ dist_count_complete }, 
-  $s->{ dist_count_breed }, $s->{ dist_count_cate }, 
-  $s->{ dist_count_none }, $s->{ version }
- );  
+ $s->{ controller } ne 'visualize' and 
+  $s->{url_viz_dist} = fuse ( 
+   $s->{ langa }, 'viz', 'dist', $s->{ dist_count_full }, 
+   $s->{ dist_count_partial }, $s->{ dist_count_none }, 
+   $s->{ dist_count_plain }, $s->{ version }
+  );  
   
 }
 
