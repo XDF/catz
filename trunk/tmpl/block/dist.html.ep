@@ -2,7 +2,7 @@
 % my $hmax = $style->{viz}->{dist}->{height};
 <img id="viz_dist" usemap="#map_dist" alt="<%= $t->{VIZ_DIST_NAME} %>" title="<%= $t->{VIZ_DIST_NAME} %>" class="viz<%== $intent eq 'contrib' ? 'l' : '' %>" width="<%== $wmax %>" height="<%== $hmax %>" src="<%== $url_viz_dist %>">
 <map name="map_dist" id="map_dist">
-<area id="map_dist_default" shape="rect" coords="0,0,<%== $wmax %>,<%== $hmax %>" href="<%== $dist_url_partial %>" title="<%== fmt ( $dist_count_partial, $lang ) %> <%= $dist_text_partial %>">
+<area id="map_dist_default" shape="rect" coords="0,0,<%== $wmax %>,<%== $hmax %>" href="<%== $dist_url_none %>" title="<%== fmt ( $dist_count_none, $lang ) %> <%= $dist_text_none %>">
 % my $pos = 0;
 % foreach my $key ( @{ $dist->{sets}->{pie} } ) {
 <area id="map_dist_legend<%= $pos %>" shape="rect" coords="<%== $wmax %>,<%== $hmax %>,<%== $wmax %>,<%== $hmax %>" href="<%== stash ( 'dist_url_' . $key ) %>" title="<%== fmt ( ( stash ( 'dist_count_' . $key ) ), $lang ) %> <%= stash ( 'dist_text_' . $key ) %>">

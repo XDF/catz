@@ -334,7 +334,7 @@ sub f_dist {
 
  $s->{ dist_count_all } = $s->{ maxx };    # copy total count
 
- foreach my $key ( @{ $s->{ dist }->{ sets }->{ required } } ) {
+ foreach my $key ( @{ $s->{ dist }->{ sets }->{ pie } } ) {
 
   # merge real request arguments with distribution arguments
   $s->{ 'drillargs_' . $key } =

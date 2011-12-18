@@ -67,8 +67,11 @@
 <%= $p %>
 </div>
 % }
-% if ( $new1->[3] ) {
-<div class="bar outer"><a href="<%== $new1->[3] %>"><%= $new1->[3] %></a></div>
+% if ( $new1->[3] ) { # url if any
+%  my $uu = $new1->[3];
+%  $uu =~ s|^http\://catza.net||;
+%  $uu =~ s|^/[ef][ni]/|/$langa/|;
+<div class="bar outer"><a href="<%== $uu %>"><%= $new1->[3] %></a></div>
 % } 
 <div class="bar outer">
 <span class="lean"><%=  dtexpand ( $new1->[0], $lang ) %></span>

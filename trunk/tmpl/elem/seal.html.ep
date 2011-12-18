@@ -9,6 +9,6 @@
   '%3Cimg src="' + sealServer + '" alt="<%= $t->{SEAL_INFO} %>" '+
   'title="' + sealOwner + hostName + sealCopy + 
   '" oncontextmenu="alert(\'<%== $t->{SEAL_COPYRIGHT} %>\'); return false;" ' + 
-  'class="thumb"%3E%3C/a%3E'
+  'class="thumb cca"%3E%3C/a%3E'
  ) );
 </script>

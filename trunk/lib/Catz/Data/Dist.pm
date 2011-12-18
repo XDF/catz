@@ -55,23 +55,17 @@ const my $CONF => {
   full => [ qw ( +has breed +has cat ) ],
 
   # photos that have breed or category but no cat name
-  partial => [ qw ( +has breed -has cat ) ],
-
-  # photos that have cat breed but no cat name
-  breed => [ qw ( +has breed -breed xc? -has cat ) ],
-
-  # photos that have category but no cat name
-  cate => [ qw ( +has breed +breed xc? -has cat ) ],
+  breed => [ qw ( +has breed -has cat ) ],
 
   # photos that have plain text
   # not a cat photo at all, some other photo
   plain => [ qw ( +has text -has cat -has breed ) ],
 
-  # photos that have no cat name
-  nocat => [ qw ( -has cat ) ],
-
   # photos that are regarded to have no data
   none => [ qw ( -has text ) ],
+  
+  # photos that have no cat name
+  nocat => [ qw ( -has cat ) ],
 
  },
 
@@ -80,17 +74,11 @@ const my $CONF => {
   # sets are pre-defined ordered sets of slices used in
   # displaying the data qualifications and visualizations
 
-  # the list of keys to be processed
-  process => [ qw ( full partial plain none ) ],
-
-  # the keys required to get fetched from data
-  required => [ qw ( full partial plain none ) ],
-
   # the presentation of the pie graphs
-  pie => [ qw ( full partial none plain ) ],
+  pie => [ qw ( full breed none plain ) ],
 
   # the presentation of the links on the photo browsing page
-  link => [ qw ( partial none ) ],
+  link => [ qw ( breed none ) ],
 
  },
 
@@ -104,11 +92,11 @@ sub dist_prep {
 
  my $s = shift;    # Mojolicious stash
 
- $s->{ controller } eq 'visualize'
-  and $s->{ dist_count_all } =
-  sum map { $s->{ $_ } } @{ $CONF->{ sets }->{ pie } };
+ $s->{ controller } eq 'visualize' and 
+  $s->{ dist_count_all } =
+   sum map { $s->{ $_ } } @{ $CONF->{ sets }->{ pie } };
 
- foreach my $key ( @{ $CONF->{ sets }->{ process } } ) {
+ foreach my $key ( @{ $CONF->{ sets }->{ pie } } ) {
 
   $s->{ controller } eq 'visualize'
    and $s->{ 'dist_count_' . $key } = $s->{ $key };
@@ -165,7 +153,7 @@ sub dist_prep {
   'viz',
   'dist',
   $s->{ dist_count_full },
-  $s->{ dist_count_partial },
+  $s->{ dist_count_breed },
   $s->{ dist_count_none },
   $s->{ dist_count_plain },
   $s->{ version }
