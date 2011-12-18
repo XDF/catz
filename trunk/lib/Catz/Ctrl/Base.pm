@@ -334,32 +334,24 @@ sub f_dist {
 
  $s->{ dist_count_all } = $s->{ maxx };    # copy total count
 
- foreach my $key ( @{ $s->{ dist }->{ keysall } } ) {
+ foreach my $key ( @{ $s->{ dist }->{ sets }->{ required } } ) {
 
   # merge real request arguments with distribution arguments
-  my @sargs =
-   ( @{ $s->{ args_array } }, @{ $s->{ dist }->{ blocks }->{ $key } } );
+  $s->{ 'drillargs_' . $key } =
+   [ @{ $s->{ args_array } }, @{ $s->{ dist }->{ slices }->{ $key } } ];
 
-  # prepare coverage counts
-  $s->{ 'dist_count_' . $key } = $self->fetch ( "search#count", @sargs );
-
-  $s->{ 'dist_perc_' . $key } = $self->round (
-   ( ( $s->{ 'dist_count_' . $key } / $s->{ dist_count_all } ) * 100 ), 1 );
-
-  # prepare coverage drill parameters to make urls
-  $s->{ 'dist_url_' . $key } = $self->fuseq ( $s->{ langa },
-   ( 'search?q=' . $self->enurl ( args2search ( @sargs ) ) ) );
-
-  $s->{ 'dist_text_' . $key } =
-   $s->{ t }->{ 'HAS'
-    . uc ( $key )
-    . ( $s->{ 'dist_count_' . $key } == 1 ? '' : 'A' ) };
-
- } ## end foreach my $key ( @{ $s->{ ...}})
+  # fetch counts
+  $s->{ 'dist_count_' . $key } = $self->fetch ( 
+   "search#count", @{ $s->{ 'drillargs_' . $key } } 
+  );
+  
+ }
+ 
+ dist_prep $s; # do the rest of preparations
 
  return $self->done;
 
-} ## end sub f_dist
+}
 
 sub f_pair_start {
 

@@ -1,13 +1,12 @@
 % my $wmax = $style->{viz}->{dist}->{width};
 % my $hmax = $style->{viz}->{dist}->{height};
-<img id="viz_dist" usemap="#map_dist" alt="<%= $t->{VIZ_DIST_NAME} %>" title="<%= $t->{VIZ_DIST_NAME} %>" class="viz<%== $intent eq 'contrib' ? 'l' : '' %>" width="<%== $wmax %>" height="<%== $hmax %>" src="<%== fuse ( $langa, 'viz', 'dist', $dist_count_full, $dist_count_breed, $dist_count_cate, $dist_count_none, $version ) %>">
+<img id="viz_dist" usemap="#map_dist" alt="<%= $t->{VIZ_DIST_NAME} %>" title="<%= $t->{VIZ_DIST_NAME} %>" class="viz<%== $intent eq 'contrib' ? 'l' : '' %>" width="<%== $wmax %>" height="<%== $hmax %>" src="<%== $url_viz_dist %>">
 <map name="map_dist" id="map_dist">
-% my $key = 'partial';
-<area id="map_dist_default" shape="rect" coords="0,0,<%== $wmax %>,<%== $hmax %>" href="<%== stash ( 'dist_url_' . $key ) // undef %>" title="<%== fmt ( ( stash ( 'dist_count_' . $key ) // undef ), $lang ) %> <%= stash ( 'dist_text_' . $key ) // undef %>">
+<area id="map_dist_default" shape="rect" coords="0,0,<%== $wmax %>,<%== $hmax %>" href="<%== $dist_url_partial %>" title="<%== fmt ( $dist_count_partial, $lang ) %> <%= $dist_text_partial %>">
 % my $pos = 0;
-% foreach $key ( @{ $dist->{keyspie} } ) {
-<area id="map_dist_legend<%= $pos %>" shape="rect" coords="<%== $wmax %>,<%== $hmax %>,<%== $wmax %>,<%== $hmax %>" href="<%== stash ( 'dist_url_' . $key ) // undef %>" title="<%== fmt ( ( stash ( 'dist_count_' . $key ) // undef ), $lang ) %> <%= stash ( 'dist_text_' . $key ) // undef %>">
-<area id="map_dist_data0_<%= $pos %>" shape="poly" coords="<%== $wmax %>,<%== $hmax %>,<%== $wmax %>,<%== $hmax %>" href="<%== stash ( 'dist_url_' . $key ) // undef %>" title="<%== fmt ( ( stash ( 'dist_count_' . $key ) // undef ), $lang ) %> <%= stash ( 'dist_text_' . $key ) // undef %>">
+% foreach my $key ( @{ $dist->{sets}->{pie} } ) {
+<area id="map_dist_legend<%= $pos %>" shape="rect" coords="<%== $wmax %>,<%== $hmax %>,<%== $wmax %>,<%== $hmax %>" href="<%== stash ( 'dist_url_' . $key ) %>" title="<%== fmt ( ( stash ( 'dist_count_' . $key ) ), $lang ) %> <%= stash ( 'dist_text_' . $key ) %>">
+<area id="map_dist_data0_<%= $pos %>" shape="poly" coords="<%== $wmax %>,<%== $hmax %>,<%== $wmax %>,<%== $hmax %>" href="<%== stash ( 'dist_url_' . $key ) %>" title="<%== fmt ( ( stash ( 'dist_count_' . $key ) ), $lang ) %> <%= stash ( 'dist_text_' . $key ) %>">
 %  $pos++;
 % }
 </map>

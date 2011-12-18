@@ -174,21 +174,24 @@ sub _text {
 
 sub _texts {
 
+ # get a set of photo texts based on xs
+ # hashref x -> text returns
+ 
  my ( $self, @xs ) = @_;
  my $lang = $self->{ lang };
-
- my $res = $self->dball (
-  qq { 
-  select x,sec 
-  from photo natural join pri natural join sec_$lang natural join inpos 
-  where pri='text' and x in (} . ( join ',', @xs ) . ') order by x,p'
- );
+ 
+ my $res = $self->dball ( qq { 
+  select x,sec from 
+  photo natural join pri natural join sec_$lang natural join inpos 
+  where pri='text' and x in (} . ( join ',', @xs ) . ') order by x,p' );
 
  my $texts = {};
 
  do {
 
   if ( exists $texts->{ $_->[ 0 ] } ) {
+  
+   # merge multiple texts per photo into one visible text
 
    $texts->{ $_->[ 0 ] } .= ' & ' . $_->[ 1 ];
 
@@ -205,6 +208,49 @@ sub _texts {
  return $texts
 
 } ## end sub _texts
+
+sub _clusters {
+
+ # get a set of photo texts based on xs
+ # array ref [ [ photos ], text, [ photos ], text, ... ] returns
+
+ my ( $self, @xs ) = @_;
+ my $lang = $self->{ lang };
+ 
+ my $res = $self->dball ( qq { 
+  select sec,fullnum33(s,n) from 
+  album natural join photo natural join pri natural join sec_$lang 
+  natural join inpos where pri='text' and x in (} . ( join ',', @xs ) . 
+  ') order by x,p'
+ );
+ 
+ my $i = 0;
+
+ my $seen = {};
+ 
+ my $keys = [];
+
+ do {
+ 
+   if ( exists $seen->{ $res->[$i]->[0] } ) {
+   
+    push @{ $seen->{ $res->[$i]->[0] } }, $res->[$i]->[1];  
+   
+   } else {
+   
+    push @{ $keys }, $res->[$i]->[0];
+    
+    $seen->{ $res->[$i]->[0] } = [ $res->[$i]->[1] ];  
+   
+   }
+
+  $i++;  
+ 
+ } while ( $i < scalar @$res );
+
+ return [ map { [ $seen->{ $_ }, $_ ] } @$keys ];
+
+}
 
 sub _image {
 
