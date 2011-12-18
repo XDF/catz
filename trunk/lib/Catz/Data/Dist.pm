@@ -64,6 +64,9 @@ const my $CONF => {
 
   # photos that have plain text
   plain => [ qw ( +has text -has breed -has cat ) ],
+
+  # photos that have no cat name
+  nocat => [ qw ( -has cat ) ],
   
   # photos that are regarded to have no data
   none => [ qw ( -has text ) ],

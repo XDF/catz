@@ -56,7 +56,7 @@ sub contrib {
    (
     'search?q='
      . $self->enurl (
-     args2search ( @{ $s->{ dist }->{ blocks }->{ tailer } }, '+breed',
+     args2search ( @{ $s->{ dist }->{ slices }->{ nocat } }, '+breed',
       $breed )
      )
    )
@@ -73,7 +73,7 @@ sub contrib {
    (
     'search?q='
      . $self->enurl (
-     args2search ( @{ $s->{ dist }->{ blocks }->{ tailer } }, '+cate',
+     args2search ( @{ $s->{ dist }->{ slices }->{ nocat } }, '+cate',
       $cate->[ 0 ] )
      )
    )

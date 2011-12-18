@@ -44,7 +44,7 @@ const my $CONF => [
  { name => 'palette',   values => [ qw ( dark neutral bright ) ] },
  { name => 'perpage',   values => [ qw( 10 15 20 25 30 35 40 45 50 ) ] },
  { name => 'thumbsize', values => [ qw ( 100 125 150 175 200 ) ] },
- { name => 'display',   values => [ qw ( none brief full ) ] },
+ { name => 'display',   values => [ qw ( none text basic full ) ] },
  { name => 'photosize', values => [ qw ( original fit ) ] },
  { name => 'peek',      values => [ qw ( off on ) ] }
 ];

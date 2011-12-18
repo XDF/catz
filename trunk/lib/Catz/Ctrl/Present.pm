@@ -40,6 +40,14 @@ use Catz::Data::Search;
 use Catz::Data::Style;
 use Catz::Data::Widget;
 
+# defined concepts that are skipped in basic viewing mode 
+my %basicskip = 
+ map { $_ => 1 } qw ( body code loc org umb date cate nat app feat nick title );
+ 
+# defined concepts that are displayed without title in basic viewing mode 
+my %basichide = 
+ map { $_ => 1 } qw ( loc org umb fnum flen etime iso time );
+
 sub single {
 
  # prepare a single large photo to stash for viewing
@@ -67,6 +75,10 @@ sub single {
  my $keys = $self->fetch ( 'photo#resultkey', $s->{ x } );
 
  result_prepare ( $self, $keys );
+ 
+ $s->{ basicskip } = \%basicskip;
+ 
+ $s->{ basichide } = \%basichide;
 
  $self->output ( 'page/view' );
 
@@ -133,8 +145,6 @@ sub multi {
  # fetch photo texts
  $s->{ texts }    = $self->fetch ( 'photo#texts',    @{ $s->{ xs } } );
  $s->{ clusters } = $self->fetch ( 'photo#clusters', @{ $s->{ xs } } );
- 
- use Data::Dumper; say Dumper $s->{ clusters };
  
  # generate date jumps
 
