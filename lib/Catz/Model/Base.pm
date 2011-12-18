@@ -42,8 +42,7 @@ my $db      = undef;
 my $currver = 0;
 
 const my $TIME_MODEL => 0;    # turns on timing on all model access
-
-const my $TIME_DB => 0;       # turns on timing on all database access
+const my $TIME_DB    => 0;    # turns on timing on all database access
 
 sub new {
 
