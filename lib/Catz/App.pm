@@ -233,12 +233,12 @@ sub startup {
  # vkey is required to make request version unique but is not used later
 
  $l->route (
-  '/viz/dist/:full/:partial/:none/:plain/:vkey',
-  full    => qr/\d{1,5}/,
-  partial => qr/\d{1,5}/,
-  none    => qr/\d{1,5}/,
-  plain   => qr/\d{1,5}/,
-  vkey    => qr/\d{14}/
+  '/viz/dist/:full/:breed/:none/:plain/:vkey',
+  full  => qr/\d{1,5}/,
+  breed => qr/\d{1,5}/,
+  none  => qr/\d{1,5}/,
+  plain => qr/\d{1,5}/,
+  vkey  => qr/\d{14}/
  )->to ( 'visualize#dist' );
 
  $l->route (

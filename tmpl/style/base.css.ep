@@ -209,7 +209,7 @@ a:hover {
  top: -3px !important;
 }
 
-.cca { float: right; margin: 2px; }
+.cca { float: right; padding: 2px; }
 
 .cc {
  border: 0;

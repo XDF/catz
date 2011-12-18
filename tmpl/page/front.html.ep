@@ -60,12 +60,7 @@
 %#
 %# --------------------
 %#
-<table class="viz center">
-<tr><td class="center"><a href="/<%== $langa %>/list/nat/a2z/"><img alt="<%= $t->{VIZ_GLOBE_NAME} %>" title="<%= $t->{VIZ_GLOBE_NAME} %>" width="<%== $style->{viz}->{globe}->{width} %>" height="<%== $style->{viz}->{globe}->{height} %>" src="/<%== $langa %>/viz/globe/<%== $version %>/"></a></td></tr>
-% $lang eq 'en' and do {
-<tr><td class="center"><%== include 'elem/seal' %></td></tr>
-% };
-</table>
+<a class="viz" href="/<%== $langa %>/list/nat/a2z/"><img class="viz" alt="<%= $t->{VIZ_GLOBE_NAME} %>" title="<%= $t->{VIZ_GLOBE_NAME} %>" width="<%== $style->{viz}->{globe}->{width} %>" height="<%== $style->{viz}->{globe}->{height} %>" src="/<%== $langa %>/viz/globe/<%== $version %>/"></a>
 %#
 %# --------------------
 %#
