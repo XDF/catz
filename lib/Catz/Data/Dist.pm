@@ -30,29 +30,126 @@ use warnings;
 
 use parent 'Exporter';
 
-our @EXPORT = qw ( dist_conf );
+our @EXPORT = qw ( dist_conf dist_prep );
 
 use Const::Fast;
 
+use Catz::Data::Search;
+
+use Catz::Util::Number qw ( round );
+use Catz::Util::String qw ( enurl fuse fuseq );
+
 const my $CONF => {
 
- blocks => {
+ # definitions for cat data qualifications and 
+ # cat data distribution visualizations  
 
-  full    => [ qw ( +has breed +has cat ) ],
+ slices => {
+
+  # slices different levels of data represented
+  # as advanded search search term sets
+
+  # photos that are regarded to have complete data
+  # and no more data is required from the community 
+  full => [ qw ( +has breed +has cat ) ],
+
+  # photos that have breed or category but no cat name
   partial => [ qw ( +has breed -has cat ) ],
-  breed   => [ qw ( +has breed -breed xc? -has cat ) ],
-  cate    => [ qw ( +has breed +breed xc? -has cat ) ],
-  none    => [ qw ( -has text ) ],
-  tailer  => [ qw ( -has cat ) ],
+    
+  # photos that have cat breed but no cat name
+  breed => [ qw ( +has breed -breed XC? -has cat ) ],
+  
+  # photos that have category but no cat name
+  cate => [ qw ( +has breed +breed XC? -has cat ) ],
+
+  # photos that have plain text
+  plain => [ qw ( +has text -has breed -has cat ) ],
+  
+  # photos that are regarded to have no data
+  none => [ qw ( -has text ) ],
+    
  },
 
- keysall     => [ qw ( full partial breed cate none ) ],
- keyscontrib => [ qw ( none cate breed full ) ],
- keyspie     => [ qw ( full breed cate none ) ],
- keyslink    => [ qw ( partial ) ],
+ sets => {
+ 
+  # sets are pre-defined ordered sets of slices used in 
+  # displaying the data qualifications and visualizations
+  
+  # all keys
+  all => [ qw ( complete full partial breed cate plain none ) ],
+ 
+  # the keys required to do all calculations
+  required => [ qw ( full breed cate plain none ) ],
+    
+  # the presentation of the pie graphs
+  pie => [ qw ( complete breed cate none ) ],
+  
+  # the presentation of the links on the photo browsing page
+  link => [ qw ( none partial ) ],
+  
+ },
 
 };
 
 sub dist_conf { $CONF }
+
+sub dist_prep {
+
+ # prepares distribution data to stash
+
+ my $s = shift; # Mojolicious stash
+ 
+ # calculate more counts
+ 
+ $s->{dist_count_partial} =
+  $s->{dist_count_breed} + $s->{dist_count_cate}; 
+
+ $s->{dist_count_complete} =
+  $s->{dist_count_full} + $s->{dist_count_plain};
+  
+ foreach my $key ( @{ $CONF->{sets}->{all} } ) {
+    
+   # calculcate percentage
+ 
+   $s->{ 'dist_perc_' . $key } = 
+    round ( 
+     ( ( $s->{ 'dist_count_' . $key } / $s->{ dist_count_all } ) * 100 ), 
+     1 
+   );
+ 
+  # prepare drill url
+  
+  $key ne 'complete' and do { 
+  
+   exists $s->{ 'drillargs_' . $key } or 
+    $s->{ 'drillargs_' . $key } = 
+     [ @{ $s->{ args_array } }, @{ $CONF->{ slices }->{ $key } } ];  
+
+   $s->{ 'dist_url_' . $key } = 
+    fuseq ( $s->{ langa }, ( 
+     'search?q=' . enurl ( args2search ( @{ $s->{ 'drillargs_' . $key } } ) ) 
+    ) );
+    
+  };
+
+  # prepare text
+
+  $s->{ 'dist_text_' . $key } =
+   $s->{ t }->{ 'HAS' . uc ( $key ) . ( 
+    $s->{ 'dist_count_' . $key } == 1 ? '' : 'A' 
+   ) };
+ 
+ }
+ 
+ 
+ # prepare distribution pie url
+ 
+ $s->{url_viz_dist} = fuse ( 
+  $s->{ langa }, 'viz', 'dist', $s->{ dist_count_complete }, 
+  $s->{ dist_count_breed }, $s->{ dist_count_cate }, 
+  $s->{ dist_count_none }, $s->{ version }
+ );  
+  
+}
 
 1;

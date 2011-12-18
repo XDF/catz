@@ -131,8 +131,11 @@ sub multi {
  }
 
  # fetch photo texts
- $s->{ texts } = $self->fetch ( 'photo#texts', @{ $s->{ xs } } );
-
+ $s->{ texts }    = $self->fetch ( 'photo#texts',    @{ $s->{ xs } } );
+ $s->{ clusters } = $self->fetch ( 'photo#clusters', @{ $s->{ xs } } );
+ 
+ use Data::Dumper; say Dumper $s->{ clusters };
+ 
  # generate date jumps
 
  if ( $s->{ runmode } eq 'all' ) {

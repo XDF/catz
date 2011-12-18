@@ -1,0 +1,55 @@
+% if ( $display ne 'none' ) { # comments displayed on full and brief
+<div class="aeroplus bar<%== $display eq 'brief' ? ' center' : '' %>">
+% my $i = 0;
+% my $j = 1;
+% if ( scalar ( @$comment ) > 0 ) {
+%  foreach my $comm ( @{ $comment } ) {
+%   $j++ > 1 and do {
+<%= $sep %>
+% };
+% if ( $comm =~ m|^\[[A-Z]{3}| ) { # breed code
+<%= $comm %> <%== include 'elem/mark' %>
+<span class="shrink"><%= $t->{NO_CAT_A} %> <%== $id %> <%= $t->{NO_CAT_B} %> <%== include 'elem/infox' %></span>
+% } elsif ( $comm =~ m|^\[XC[1-9]| ) { # category code
+<%= $comm %> <%== include 'elem/mark' %>
+<span class="shrink"><%= $t->{NO_BREED_A} %> <%== $id %> <%= $t->{NO_BREED_B} %> <%== include 'elem/infox' %></span>
+% } else { # not just a code, has more data
+<%= $comm %>
+% }  
+%   if ( defined $resultkey->[$i] ) {
+<span class="result lean shrink" id="<%== $resultkey->[$i] %>"></span>
+%   $i++; 
+%   }
+%  }
+% } else { # no comments
+<%== include 'elem/mark' %> <span class="shrink"><%= $t->{NO_COMMENT_A} %> <%== $id %> <%= $t->{NO_COMMENT_B} %> <%== include 'elem/infox' %></span>
+% }
+% }
+% if ( $display eq 'full' ) { # detailed info only when full display
+<%= $sep %>
+<span class="shrink">
+% my $pdet = '93lioI+d=))(/l8rflOLW3wr';
+% my $i = 1;
+% my $j = 1;
+% foreach my $detail ( @$detail ) { 
+% if ( $detail->[0] ne $pdet ) {
+% $j = 1;
+<%= $i++ == 1 ? '' : $sep %> <%== include 'elem/pri', a => $detail->[0] %>
+% }
+<%= $j++ == 1 ? '' : $sep %>
+% $pdet =  $detail->[0];
+% $detail->[0] ne 'time' and do {
+<a href="<%== include 'href/actionpair', langh => $langa, topri => $maplink->{$detail->[0]}->{ROOT} ? $maplink->{$detail->[0]}->{$detail->[1]}->[0] : $detail->[0], tosec => $maplink->{$detail->[0]}->{ROOT} ? $maplink->{$detail->[0]}->{$detail->[1]}->[1] : $detail->[1] %>">
+% };
+%== include 'elem/sec', a => $detail->[0], b => $detail->[1]; 
+% $detail->[0] ne 'time' and do {
+</a>
+% };
+% }
+<%= $sep %> <%= $t->{PHOTO_ID} %> <%== fullnum33 ( $image->[0], $image->[1] ) %>
+% }
+% if ( $display ne 'none' ) {
+%== include 'elem/ig', igurl => stash ( 'cn' ), igtext => stash ( 'desc' );
+</span> 
+</div>
+% }
