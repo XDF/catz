@@ -119,7 +119,7 @@
 %#
 %# --------------------
 %#
-<div class="bar"><%== include 'content/policy' %></div>
+<div class="bar"><%== include 'content/policy', intent => 'view' %></div>
 %#
 %# --------------------
 %#
