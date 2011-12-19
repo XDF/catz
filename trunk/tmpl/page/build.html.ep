@@ -24,7 +24,7 @@
 %# --------------------
 %#
 <% content 'pathadd' => begin %>
-<%== include 'elem/path' %> <a href="<%== $urlback %>"><%== include 'elem/titlea', intent => 'build' %></a> <%= $pathsep %>
+<%== include 'elem/path' %> <a href="<%== $urlback %>"><%== include 'elem/titlea', intent => 'build' =%></a> <%= $pathsep %>
 <% end %>
 %#
 %# --------------------
@@ -38,7 +38,9 @@
 % foreach my $ckey ( grep { $_ ne 'type' } @{ $wconf->{longs} } ) {
 <%== include 'elem/wsetup', wkey => $ckey %>
 % }
+% $wspec ne $wdefault and do {
 <a class="shrink aero" href="<%== $urldefault %>"><%= $t->{WID_RESET} %></a>
+% };
 %#
 %# --------------------
 %#

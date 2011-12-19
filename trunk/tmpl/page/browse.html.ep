@@ -184,7 +184,7 @@ if ( $runmode eq 'pair' ) {
 % if ( $fresh ne $ancient ) {
 - <%= dtexpand ( $fresh, $lang ) %>
 % }
-% if ( 1 == 0 and $total > 9 ) { # disabled 2011-12-15 from production
+% if ( $total > $widgetnon ) {
 <%= $sep %> <a href="<%== $urlbuild %>"><%= $t->{'WID_TITLE_'.$runmode} %></a></span>
 % }
 % foreach my $key ( @{ $dist->{sets}->{link} } ) {
