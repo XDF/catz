@@ -45,6 +45,13 @@
 %# --------------------
 %#
 </div><div class="bar">
+% if ( $lang eq 'fi' ) {
+<h2 class="xtra">*** ALUSTAVA EI-JULKAISTU BETATESTAUSVERSIO ***</h2>
+</div><div class="bar">
+% } else {
+<h2 class="xtra">*** PRELIMINARY PRE-RELEASE BETA TESTING VERSION ***</h2>
+</div><div class="bar">
+% }
 % my $wh = $wrun->{align} eq 1 ? $wrun->{size} : $wrun->{limit};
 % my $ww = $wrun->{align} eq 1 ? $wrun->{limit} : $wrun->{size};
 % my $txt = $self->render ( 'block/embed', partial => 1, intent => 'render', wurl => $urlembed, wheight => $wh, wwidth => $ww );

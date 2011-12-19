@@ -79,10 +79,6 @@ $t->get_ok ( "/fi171212/widget/contact/missing/bright/" )->status_is ( 404 );
 # builder (build) and renderer (embed)
 #
 
-# skip added 2011-15-12
-
-goto SKIPNOW;
-
 @oksetups = qw ( en fi en394211 fi211111 en264311 fi365312 );
 
 my @okwsetups = qw (
@@ -96,9 +92,15 @@ my @badwsetups = qw (
 
 my $setup;
 
+# testing embed with setup, should lead to an error
+$t->get_ok ( "/en394211/embed/c2a2f1l1100s200g4/" )->status_is ( 404 );
+$t->get_ok ( "/en394211/embed/nick/Mikke/" )->status_is ( 404 );
+$t->get_ok ( "/fi365312/embed/c3?q=%2Blens%3Dsigma*%20%2Borg%3Dsurok%20%2Bbreed%3Drus" )->status_is ( 404 );
+
 foreach my $action ( qw ( build embed ) ) {
 
  $setup = $oksetups[ rand @oksetups ];
+ $action eq 'embed' and $setup = substr ( $setup, 0, 2 );
 
  # all mode, no ending slash
  $t->get_ok ( "/$setup/$action" )->status_is ( 301 );
@@ -132,6 +134,7 @@ foreach my $action ( qw ( build embed ) ) {
  foreach my $wsetup ( @okwsetups ) {
 
   $setup = $oksetups[ rand @oksetups ];
+  $action eq 'embed' and $setup = substr ( $setup, 0, 2 );
 
   # all mode, no ending slash
   $t->get_ok ( "/$setup/$action/$wsetup" )->status_is ( 301 );
@@ -157,6 +160,7 @@ foreach my $action ( qw ( build embed ) ) {
  foreach my $wsetup ( @badwsetups ) {
 
   $setup = $oksetups[ rand @oksetups ];
+  $action eq 'embed' and $setup = substr ( $setup, 0, 2 );
 
   $t->get_ok ( "/$setup/$action/$wsetup/" )->status_is ( 404 );
 
@@ -169,7 +173,5 @@ foreach my $action ( qw ( build embed ) ) {
  }
 
 } ## end foreach my $action ( qw ( build embed ))
-
-SKIPNOW:
 
 done_testing;

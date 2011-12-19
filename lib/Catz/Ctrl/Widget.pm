@@ -187,9 +187,8 @@ sub start {
 # for one subject and the served from cache
 const my $N => 100 + int ( rand ( 26 ) ); 
 
-# create a photo picking order that will be used 
+# a photo picking order that will be used 
 # when the photos are presented in a widget
-
 const my $PICKS => [ (
  
  # 0, 3, 6, 9, 12, ...
