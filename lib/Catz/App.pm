@@ -265,8 +265,6 @@ sub startup {
  ### the widget builder and renderer
  ###
 
- ( 1 == 0 ) and do {    # disabled 2011-12-15 from production
-
   my $w = $l->route ( '/:func', func => qr/build|embed/ );
 
   $w->route (
@@ -285,8 +283,6 @@ sub startup {
   $w->route ( '/:wspec', wspec => qr/[a-z0-9]{1,500}/ )->to ( "widget#do" );
 
   $w->route ( '/' )->to ( "widget#do" );
-
- };
 
  ###
  ### AJAX interface(s)
@@ -498,6 +494,10 @@ sub before {
  # by setting to false sets noindex,nofollow respectively
  $s->{ meta_index }  = 1;
  $s->{ meta_follow } = 1;
+ 
+ # set global limit of the number of photos that must be
+ # exceeded to enable widget build and image strip rendering
+ $s->{ widgetnon } = 14;
 
  if ( $s->{ url } =~ /^\/((en|fi)([1-9]{6})?)/ ) {
 

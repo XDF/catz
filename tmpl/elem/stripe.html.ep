@@ -1,1 +1,0 @@
-<img title="catza.net stripe" src="<%== $intent ne 'preview' ? $t->{URL_CATZA} : '/' %><%== $urltarget %>"></img>

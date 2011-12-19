@@ -182,6 +182,10 @@ sub info {
 
 } ## end sub info
 
+
+# the number of photos to get for sampling
+const my $N => 100;
+
 sub sample {
 
  my $self = shift;
@@ -197,10 +201,10 @@ sub sample {
 
  ( $s->{ width } % 10 == 0 ) or return $self->fail ( 'width not tenths' );
 
- my $samp = $self->fetch ( 'all#array_rand_n', 100 );
+ my $samp = $self->fetch ( 'all#array_rand_n', $N );
 
- # get thumbnails in random order
- my $th = $self->fetch ( 'photo#thumb', 'rand', @{ $samp } );
+ # get thumbnails in natural order
+ my $th = $self->fetch ( 'photo#thumb', 'x', @{ $samp } );
 
  $s->{ thumbs } = $th->[ 0 ];
 

@@ -46,10 +46,15 @@ sub _thumb {
   # random ordering
   when ( 'rand' ) { $order = 'random()' }
 
+  # latest photo last based on folder and moment
+  when ( 'latest' ) { $order = 'folder desc,moment desc' }
+
   # latest gallery first latest photo in a gallery last
   when ( 'x' ) { $order = 'x' }
 
-  default { die "internal error: thumbs requested in unknown order '$_'" }
+  default { 
+   die "internal error: thumbs requested in unknown order '$order'" 
+  }
 
  }
 

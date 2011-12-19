@@ -30,6 +30,7 @@ use warnings;
 
 use parent 'Catz::Ctrl::Base';
 
+use Const::Fast;
 use List::Util qw ( shuffle );
 
 use Catz::Data::Widget;
@@ -41,11 +42,6 @@ sub urlothers {
  my $s    = $self->{ stash };
 
  # only for builder, embed has none of these links
-
- $s->{ urlreset } = $s->{ url };
-
- # just replace any setup with plain language
- $s->{ urlreset } =~ s|^/[a-z0-9]+|/$s->{lang}|;
 
  given ( $s->{ runmode } ) {
 
@@ -65,7 +61,7 @@ sub urlothers {
    $s->{ urlconfb } = '/';
 
    $s->{ urlembed } =
-    $self->fuse ( $s->{ langa }, 'embed', $s->{ pri }, $enc, $s->{ wspec } );
+    $self->fuse ( $s->{ lang }, 'embed', $s->{ pri }, $enc, $s->{ wspec } );
 
    $s->{ trans } = $self->fetch ( 'map#trans', $s->{ pri }, $s->{ sec } );
 
@@ -93,7 +89,7 @@ sub urlothers {
    $s->{ urlconfb } = '?q=' . $self->enurl ( $s->{ what } );
 
    $s->{ urlembed } =
-      $self->fuseq ( $s->{ langa }, 'embed', $s->{ wspec } ) . '?q='
+      $self->fuseq ( $s->{ lang }, 'embed', $s->{ wspec } ) . '?q='
     . $self->enurl ( $s->{ what } );
 
    $s->{ urlother } =
@@ -108,7 +104,7 @@ sub urlothers {
    $s->{ urlback }    = $self->fuse ( $s->{ langa }, 'browseall' );
    $s->{ urlconfa }   = $self->fuse ( $s->{ langa }, $s->{ func } );
    $s->{ urlconfb }   = '/';
-   $s->{ urlembed }   = $self->fuse ( $s->{ langa }, 'embed', $s->{ wspec } );
+   $s->{ urlembed }   = $self->fuse ( $s->{ lang }, 'embed', $s->{ wspec } );
    $s->{ urlother } =
     $self->fuse ( $s->{ langaother }, $s->{ func }, $s->{ wspec } );
 
@@ -130,6 +126,9 @@ sub start {
  $s->{ func } eq 'build'
   or $s->{ func } eq 'embed'
   or return $self->fail ( 'unknown widget function' );
+  
+ $s->{ func } eq 'embed' and length ( $s->{ langa } ) > 2 and 
+  return $self->fail ( 'setup set so stopping' );
 
  # the default for builder and embed is not to index
  $s->{ meta_index }  = 0;
@@ -181,6 +180,70 @@ sub start {
 
 } ## end sub start
 
+# we assume that this number of photos is always enough
+# on whatever settings the stripe is displayed
+# it is actually smart to use a fixed value so that
+# all database access and data processing is done only once
+# for one subject and the served from cache
+const my $N => 100 + int ( rand ( 26 ) ); 
+
+# create a photo picking order that will be used 
+# when the photos are presented in a widget
+
+const my $PICKS => [ (
+ 
+ # 0, 3, 6, 9, 12, ...
+ ( grep { $_ % 3 == 0 } ( 0 .. $N - 1 ) ),
+
+ # 1, 4, 7, 10, 13, ...
+ ( grep { $_ % 3 == 1 } ( 0 .. $N - 1  ) ),
+
+ # 2, 5, 8, 11, 14, ...
+ ( grep { $_ % 3 == 2 } ( 0 .. $N - 1 ) ),
+ 
+) ];
+
+sub photos {    # the widget renderer
+
+ my $self = shift;
+ my $s    = $self->{ stash };
+
+ $s->{ thumbspicks } = $PICKS;
+
+ my $add;
+ my $order;
+ 
+ given ( $s->{ wrun }->{ choose } ) {
+
+  when ( 1 ) { $add = ''; $order = 'latest' }    # latest photos
+
+  when ( 2 ) { $add = '_rand'; $order = 'x' }   # rand photos weight on latest
+
+  when ( 3 ) { $add = '_rand'; $order = 'rand' }    # totally rand photos
+
+  default { die "internal error: unknown photo choosing method id '$_'" }
+
+ }
+
+ # fetch the photo xs to start the processing with
+ $s->{ xs } = $self->fetch (                        # latest photos
+  "$s->{runmode}#array$add" . '_n', @{ $s->{ args_array } }, $N
+ );
+
+ scalar @{ $s->{ xs } } == 0 and return $self->fail ( 'no photos found' );
+
+ # fetch the corresponding thumbnails
+ ( $s->{ thumbs }, undef, undef ) =
+  @{ $self->fetch ( 'photo#thumb', $order, @{ $s->{ xs } } ) };
+
+ # fetch photo texts
+ $s->{ texts } = $self->fetch ( 'photo#texts', @{ $s->{ xs } } );
+
+ # we now have thumbs in $s->{thumbs} in browsing (x) order
+ # we do reordering based on what was the image strip needs
+
+} ## end sub photos
+
 sub do {    # the common entry point for buidler and renderer
 
  my $self = shift;
@@ -198,9 +261,10 @@ sub do {    # the common entry point for buidler and renderer
 
  $s->{ total } > 0 or return $self->fail ( 'no photos' );
 
- $s->{ total } > 9
-  or
-  return $self->fail ( 'building and rendering requires at least 10 photos' );
+ $s->{ total } > $s->{ widgetnon } or
+  return $self->fail ( 
+   'building and rendering requires more than $s->{ widgetnon } photos' 
+  );
 
  $s->{ func } eq 'build' and do {
 
@@ -210,6 +274,10 @@ sub do {    # the common entry point for buidler and renderer
 
   # widget confuration is needed in builder page rendering
   $s->{ wconf } = widget_conf;
+  
+  # widget confuration is needed in comparing to wspec
+  # to decide should settings reset be displayed or not
+  $s->{ wdefault } = widget_default;
 
  };
 
@@ -225,52 +293,6 @@ sub do {    # the common entry point for buidler and renderer
  $self->output ( "page/$s->{func}" );
 
 } ## end sub do
-
-sub photos {    # the widget renderer
-
- my $self = shift;
- my $s    = $self->{ stash };
-
- # we assume that this number of photos is always enough
- # on whatever settings the stripe is displayed
- # it is actually smart to use a fixed value so that
- # all database access and data processing is done only once
- # for one subject and the served from cache
- my $n = 100;
-
- my $add;
- my $order;
-
- given ( $s->{ wrun }->{ choose } ) {
-
-  when ( 1 ) { $add = ''; $order = 'x' }    # latest photos
-
-  when ( 2 ) { $add = '_rand'; $order = 'x' }   # rand photos weight on latest
-
-  when ( 3 ) { $add = '_rand'; $order = 'rand' }    # totally rand photos
-
-  default { die "internal error: unknown photo choosing method id '$_'" }
-
- }
-
- # fetch the photo xs to start the processing with
- $s->{ xs } = $self->fetch (                        # latest photos
-  "$s->{runmode}#array$add" . '_n', @{ $s->{ args_array } }, $n
- );
-
- scalar @{ $s->{ xs } } == 0 and return $self->fail ( 'no photos found' );
-
- # fetch the corresponding thumbnails
- ( $s->{ thumbs }, undef, undef ) =
-  @{ $self->fetch ( 'photo#thumb', $order, @{ $s->{ xs } } ) };
-
- # fetch photo texts
- $s->{ texts } = $self->fetch ( 'photo#texts', @{ $s->{ xs } } );
-
- # we now have thumbs in $s->{thumbs} in browsing (x) order
- # we do reordering based on what was the image strip needs
-
-} ## end sub photos
 
 sub contact {
 
