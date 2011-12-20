@@ -124,16 +124,12 @@ sub widget_verify {
 
  }
 
- # set default values for those not presented
+ # check that all values were presented
 
- do {
-
-  exists $wrun->{ $_ }
-   or $wrun->{ $_ } =
-   $WCONF->{ defaults }->{ $WCONF->{ trans }->{ $_ } }
-
-  }
-  foreach @{ $WCONF->{ longs } };
+ do { 
+  exists $wrun->{ $_ } or return undef; ## no critic
+ }
+ foreach @{ $WCONF->{ longs } };
 
  return $wrun;
 
