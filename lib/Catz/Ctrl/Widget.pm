@@ -136,8 +136,11 @@ sub start {
 
  exists $s->{ wspec } or do {
 
-  $s->{ wspec_loaded } = 1;
-  $s->{ wspec }        = widget_default;
+  $s->{ func } eq 'embed' and return
+   $self->fail ( 'widget rendering not possible without parameters' );
+  
+  $s->{ wspec } = widget_default;
+  $s->{ wspec_loaded } = 1; 
 
  };
 
@@ -165,13 +168,13 @@ sub start {
   else {
 
    $s->{ runmode } = 'all';
-
-   # restore indexing for all mode builder without wspec in URL
-
-   $s->{ func } eq 'builder'
-    and $s->{ wspec_loaded }
-    and $s->{ meta_index } = 1;
-
+   
+   # restore indexing of all photos mode default builder
+   
+   $s->{ wspec_loaded } and 
+    length $s->{ langa } == 2 and 
+     $s->{ meta_index } = 1;
+   
   }
 
  } ## end else [ if ( $s->{ pri } and $s...)]

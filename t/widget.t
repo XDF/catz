@@ -82,12 +82,14 @@ $t->get_ok ( "/fi171212/widget/contact/missing/bright/" )->status_is ( 404 );
 @oksetups = qw ( en fi en394211 fi211111 en264311 fi365312 );
 
 my @okwsetups = qw (
- c1a2f3l700s140g8 c2a1f2l2000s190g2 c2a2f1l1100s200g4 c3a2f3l1500s50g0
- c1a2f3s140g8 a1f2l2000s190g2 c3 c3a2f3l1500
+ c1a2f3l1700s200g4 c1a2f3l700s140g8 c2a1f2l2000s190g2 
+ c2a2f1l1100s200g4 c3a2f3l1500s50g0
+ 
 );
 
 my @badwsetups = qw (
- t1c1f3l700s140g8 t1c2a1f2l2000x190g2 t1c2a2f1l3100s200g4 t2c7a2f3l1500s50g90
+ a2f3l1700s200g4 c1a2s140g8 c2a1f2l2000s190
+ c8a2f3l1700s200g4 c1a2f3l2222s140g8 c1a2f3l2222s130g8m4 c2a1f2l2000sepuad  
 );
 
 my $setup;
@@ -97,40 +99,44 @@ $t->get_ok ( "/en394211/embed/c2a2f1l1100s200g4/" )->status_is ( 404 );
 $t->get_ok ( "/en394211/embed/nick/Mikke/" )->status_is ( 404 );
 $t->get_ok ( "/fi365312/embed/c3?q=%2Blens%3Dsigma*%20%2Borg%3Dsurok%20%2Bbreed%3Drus" )->status_is ( 404 );
 
+# testing embed without widget setup, should lead to an error
+$t->get_ok ( "/en/embed/" )->status_is ( 404 );
+$t->get_ok ( "/fi/embed/nick/Mikke/" )->status_is ( 404 );
+$t->get_ok ( "/fi/embed?q=%2Blens%3Dsigma*%20%2Borg%3Dsurok%20%2Bbreed%3Drus" )->status_is ( 404 );
+
 foreach my $action ( qw ( build embed ) ) {
 
  $setup = $oksetups[ rand @oksetups ];
  $action eq 'embed' and $setup = substr ( $setup, 0, 2 );
+ 
+ $action eq 'build' and do { 
+ 
+  # only builder should run without widget setup
 
- # all mode, no ending slash
- $t->get_ok ( "/$setup/$action" )->status_is ( 301 );
+  # all mode, no ending slash
+  $t->get_ok ( "/$setup/$action" )->status_is ( 301 );
 
- # pair mode, no ending slash
- $t->get_ok ( "/$setup/$action/nick/Mikke" )->status_is ( 301 );
+  # pair mode, no ending slash
+  $t->get_ok ( "/$setup/$action/nick/Mikke" )->status_is ( 301 );
 
- # all mode
- $t->get_ok ( "/$setup/$action/" )->status_is ( 200 )
-  ->content_type_like ( qr/text\/html/ )
-  ->content_like ( qr/div id=\"page\"/ );
+  # all mode
+  $t->get_ok ( "/$setup/$action/" )->status_is ( 200 )
+   ->content_type_like ( qr/text\/html/ )
+   ->content_like ( qr/div id=\"page\"/ );
 
- # pair mode
- $t->get_ok ( "/$setup/$action/breed/OSH/" )->status_is ( 200 )
-  ->content_type_like ( qr/text\/html/ )
-  ->content_like ( qr/div id=\"page\"/ );
+  # pair mode
+  $t->get_ok ( "/$setup/$action/breed/OSH/" )->status_is ( 200 )
+   ->content_type_like ( qr/text\/html/ )
+   ->content_like ( qr/div id=\"page\"/ );
 
- $action eq 'embed' and do {
-
-  $t->get_ok ( "/$setup/$action/flen/78_mm/" )->status_is ( 200 )
-   ->content_like ( qr/\_LR\.JPG/ );
+  # search mode
+  $t->get_ok (
+   "/$setup/$action?q=%2Bbreeder%3DMi*%20date%3D2011*%20date%3D2010*%20date%3D2001*"
+   )->status_is ( 200 )->content_type_like ( qr/text\/html/ )
+   ->content_like ( qr/div id\=\"page\"/ );
 
  };
-
- # search mode
- $t->get_ok (
-  "/$setup/$action?q=%2Bbreeder%3DMi*%20date%3D2011*%20date%3D2010*%20date%3D2001*"
-  )->status_is ( 200 )->content_type_like ( qr/text\/html/ )
-  ->content_like ( qr/div id\=\"page\"/ );
-
+ 
  foreach my $wsetup ( @okwsetups ) {
 
   $setup = $oksetups[ rand @oksetups ];
@@ -154,6 +160,13 @@ foreach my $action ( qw ( build embed ) ) {
    "/$setup/$action/$wsetup?q=%2Blens%3Dsigma*%20%2Borg%3Dsurok%20%2Bbreed%3Drus"
    )->status_is ( 200 )->content_type_like ( qr/text\/html/ )
    ->content_like ( qr/div id\=\"page\"/ );
+
+  $action eq 'embed' and do {
+
+   $t->get_ok ( "/$setup/$action/flen/78_mm/$wsetup/" )->status_is ( 200 )
+    ->content_like ( qr/\_LR\.JPG/ );
+
+  };
 
  } ## end foreach my $wsetup ( @okwsetups)
 
