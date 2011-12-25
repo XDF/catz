@@ -106,8 +106,8 @@
 %#
 <div class="bar"><h2><%= $t->{POLICY} %></h2> <%== include 'content/policy', intent => 'front' %></div>
 % 
-<div class="bar"><%== include 'content/privacy' %></div>
 <div class="bar"><%== include 'content/credits' %></div>
+<div class="bar"><%== include 'content/privacy' %></div>
 %#
 %# --------------------
 %#

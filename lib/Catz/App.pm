@@ -227,7 +227,7 @@ sub startup {
  $s->route ( '/' )->to ( controller => 'search', id => undef );
 
  ###
- ### Visualizations
+ ### visualizations
  ###
 
  # vkey is required to make request version unique but is not used later
@@ -252,7 +252,7 @@ sub startup {
   ->to ( 'visualize#globe' );
 
  ###
- ### Widget features = special graphical elements
+ ### widget features = special graphical elements
  ###
 
  $l->route (
@@ -439,8 +439,6 @@ sub before {
 
   # cache hit
 
-  warn "TEST cache hit on $s->{ url }";
-  
   $self->tx->res ( $s->{ cache_obj }->[0] );
   
   $s->{ dna } = ( $s->{ cache_obj }->[1] );
@@ -518,9 +516,8 @@ sub after {
  my $self = shift;
  my $s    = $self->{ stash };
 
- my $age = 60 * 60; # 1 hour lifetime for all content
+ my $age = 60 * 60; # 1 hour initial lifetime for all content
  
-
  $self->res->headers->header ( 'Last-Modified' ) and do {
 
   # static file-based dispatchs
@@ -533,6 +530,8 @@ sub after {
    'Expires' => epoch2http ( ( dt2epoch dt ) + $age ) 
   );
 
+  $self->res->headers->header ( 'X-Catz-Origin' => 'static' );  
+
   return $self->rendered;
 
  };
@@ -544,8 +543,6 @@ sub after {
  my $ct = $self->res->headers->content_type // '';
 
  ( $ct =~ m|^text/html| and not $s->{ cache_obj } ) and do {
-
-  warn "TEST html purify for $s->{ url }";
 
   my $str = $self->res->body;
 
@@ -562,21 +559,15 @@ sub after {
  # dna generation, if not yet in stash (not got from cache)
  
  defined $s->{ dna } or $s->{ dna } = dna ( $self->res->body // 'NONE' );
- 
- warn "TEST dna is $s->{ dna }";
 
  # now we use If-None-Match if present in request
 
- if ( my $dna = $self->req->headers->header ( 'If-None-Match' ) ) {
-
-  warn "TEST got ETag / $dna / $s->{ dna }";
+ if ( my $etag = $self->req->headers->header ( 'If-None-Match' ) ) {
  
-  $dna eq $s->{ dna } and do {
+  $etag eq qq{"$s->{ dna }"} and do {
   
    # no need to send response, the old response is still valid 
 
-   warn "TEST sending 304";
-  
    $self->res->code ( 304 );
    $self->res->body ( '' );
    $self->res->headers->content_length ( 0 );
@@ -585,8 +576,6 @@ sub after {
   };
  
  }
-
- warn "TEST no ETag or ETag mismatch";
 
  my $code = $self->res->code // 0;
 
@@ -604,8 +593,7 @@ sub after {
 
   # we send dna as ETag
 
-  $self->res->headers->header ( 'ETag' => "CATZ:$s->{ dna }" );
-
+  $self->res->headers->header ( 'ETag' => qq{"$s->{ dna }"} );
 
   $self->res->headers->header (
    'Cache-Control' => 'max-age=' . $age . ', public' 
@@ -632,10 +620,10 @@ sub after {
 
  $self->res->headers->header ( 'X-Catz-Version' => $s->{ version } );  
 
- $self->res->headers->header ( 'X-Catz-Environment' => "catz$s->{env}" );
+ $self->res->headers->header ( 'X-Catz-Env' => "catz$s->{env}" );
  
  $self->res->headers->header ( 'X-Catz-Origin' =>  
-  defined $s->{ cache_obj } ? 'cache' : 'backend' 
+  defined $s->{ cache_obj } ? 'cache' : 'dynamic' 
  );
 
  # timing

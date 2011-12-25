@@ -67,8 +67,8 @@ if ( $runmode eq 'pair' ) {
 <link rel="image_src" href="<%== $flagbase.'/'.lc($sec).'.gif' %>">
 <meta name="og:image" content="<%== $flagbase.'/'.lc($sec).'.gif' %>">
 % } else {
-%# using a random thumbnail image as the page's image
-% my $rdt = $thumbs->[ rand @{ $thumbs } ];
+%# using the first thumbnail image as the page's image
+% my $rdt = $thumbs->[ 0 ];
 <link rel="image_src" href="<%== $photobase %>/<%== $rdt->[3] %>/<%== $rdt->[4] %>">
 <meta name="og:image" content="<%== $photobase %>/<%== $rdt->[3] %>/<%== $rdt->[4] %>">
 % }
