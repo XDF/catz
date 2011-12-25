@@ -49,7 +49,7 @@ use Catz::Util::Time qw(
 );
 use Catz::Util::Number qw ( fmt fullnum33 round );
 use Catz::Util::String qw (
- clean enurl decode encode limit trim urirest fuse fuseq
+ clean dna enurl decode encode limit trim urirest fuse fuseq
 );
 
 # controls emitting timing information as warnings
@@ -353,19 +353,6 @@ sub before {
  # mark queries to stash -> easy t o use later
  $s->{ isquery } = length ( $s->{ query } ) > 0 ? 1 : 0;
 
- # preset analytics keys
-
- $s->{ ana_google }  = undef;
- $s->{ ana_godaddy } = undef;
-
- conf ( 'lin' ) and do {
-
-  # set keys only on Linux, prevent Windows dev statistics collection
-  $s->{ ana_google }  = conf ( 'key_ana_google' );
-  $s->{ ana_godaddy } = conf ( 'key_ana_godaddy' );
-
- };
-
  #
  # fetch the latest version key file
  #
@@ -410,19 +397,6 @@ sub before {
 
  }
 
- #
- # getting proxyed protocol from header, defaulting to http
- #
-
- $s->{ protocol } = $self->req->headers->header ( 'X-Protocol' ) // 'http';
-
- # no indexing of https stuff
-
- $s->{ protocol } eq 'https' and do {
-  $s->{ meta_index }  = 0;
-  $s->{ meta_follow } = 0;
- };
-
  # checking path validity: we accept dots in path only for rerouting
  # paths and static paths
 
@@ -458,30 +432,19 @@ sub before {
   ( substr ( $s->{ path }, 0, -1 ) . '?' . $s->{ query } ) );
 
  #
- # we use If-Modified-Since if present in request
- #
-
- my $since = $self->req->headers->header ( 'If-Modified-Since' );
-
- if ( ( dt2epoch $s->{ version } ) == ( $since ? http2epoch $since : 0 ) ) {
-
-  # no need to send response, the old response is still valid
-
-  $self->res->code ( 304 );
-  $self->res->body ( '' );
-  $self->res->headers->content_length ( 0 );
-  return $self->rendered;
-
- }
-
- #
  # attempt to fetch from cache
  #
 
  if ( $s->{ cache_obj } = cache_get ( cachekey ( $self ) ) ) {
 
   # cache hit
-  $self->tx->res ( $s->{ cache_obj } );
+
+  warn "TEST cache hit on $s->{ url }";
+  
+  $self->tx->res ( $s->{ cache_obj }->[0] );
+  
+  $s->{ dna } = ( $s->{ cache_obj }->[1] );
+  
   return $self->rendered;
 
  }
@@ -555,13 +518,34 @@ sub after {
  my $self = shift;
  my $s    = $self->{ stash };
 
- #
- # purify html output
- #
+ my $age = 60 * 60; # 1 hour lifetime for all content
+ 
+
+ $self->res->headers->header ( 'Last-Modified' ) and do {
+
+  # static file-based dispatchs
+  
+  $self->res->headers->header (
+   'Cache-Control' => 'max-age=' . $age . ', public' 
+  );
+
+  $self->res->headers->header (
+   'Expires' => epoch2http ( ( dt2epoch dt ) + $age ) 
+  );
+
+  return $self->rendered;
+
+ };
+
+ # dynamic dispatchs continue
+
+ # purify html output, if not from cache
 
  my $ct = $self->res->headers->content_type // '';
 
- ( $ct =~ m|^text/html| ) and do {
+ ( $ct =~ m|^text/html| and not $s->{ cache_obj } ) and do {
+
+  warn "TEST html purify for $s->{ url }";
 
   my $str = $self->res->body;
 
@@ -574,6 +558,35 @@ sub after {
   { use bytes; $self->res->headers->content_length ( length $str ) }
 
  };
+ 
+ # dna generation, if not yet in stash (not got from cache)
+ 
+ defined $s->{ dna } or $s->{ dna } = dna ( $self->res->body // 'NONE' );
+ 
+ warn "TEST dna is $s->{ dna }";
+
+ # now we use If-None-Match if present in request
+
+ if ( my $dna = $self->req->headers->header ( 'If-None-Match' ) ) {
+
+  warn "TEST got ETag / $dna / $s->{ dna }";
+ 
+  $dna eq $s->{ dna } and do {
+  
+   # no need to send response, the old response is still valid 
+
+   warn "TEST sending 304";
+  
+   $self->res->code ( 304 );
+   $self->res->body ( '' );
+   $self->res->headers->content_length ( 0 );
+   return $self->rendered;
+  
+  };
+ 
+ }
+
+ warn "TEST no ETag or ETag mismatch";
 
  my $code = $self->res->code // 0;
 
@@ -583,39 +596,29 @@ sub after {
 
  ( $code == 200 )
   and ( not defined $s->{ cache_obj } )
-  and cache_set ( cachekey ( $self ), $self->tx->res );
-
- #
- # set response headers
- #
+  and cache_set ( 
+   cachekey ( $self ), [ $self->tx->res, $s->{ dna } ] 
+  );
 
  if ( $code == 200 ) {    # healthy response
 
-  #
-  # we use data version as last modified date
-  #
-  # this means that deployments of the app must always also
-  # deploy an new data version, otherwise caching logic gets broken
-  #
-  # we don't send it on cat show results
-  #
+  # we send dna as ETag
 
-  $s->{ path } =~ m|^/../result|
-   or $self->res->headers->header (
-   'Last-Modified' => epoch2http ( dt2epoch ( $s->{ version } ) ) );
+  $self->res->headers->header ( 'ETag' => "CATZ:$s->{ dna }" );
 
-  my $age = 60 * 60;    # 1 hour default lifetime for all content
 
   $self->res->headers->header (
-   'Cache-Control' => 'max-age=' . $age . ', public' );
+   'Cache-Control' => 'max-age=' . $age . ', public' 
+  );
 
   $self->res->headers->header (
-   'Expires' => epoch2http ( ( dt2epoch dt ) + $age ) );
+   'Expires' => epoch2http ( ( dt2epoch dt ) + $age ) 
+  );
 
  } ## end if ( $code == 200 )
  elsif ( $code > 399 ) {
 
-  # unhealthy response but not for redirect or "not modified"
+  # unhealthy response, not "redirect" or "not modified"
   # expire immediately
 
   $self->res->headers->header (
@@ -627,34 +630,29 @@ sub after {
 
  # custom app headers
 
- $self->res->headers->header ( 'X-Catz-Ver' => $s->{ version } );
+ $self->res->headers->header ( 'X-Catz-Version' => $s->{ version } );  
 
- $self->res->headers->header ( 'X-Catz-Env' => "catz$s->{env}" );
+ $self->res->headers->header ( 'X-Catz-Environment' => "catz$s->{env}" );
+ 
+ $self->res->headers->header ( 'X-Catz-Origin' =>  
+  defined $s->{ cache_obj } ? 'cache' : 'backend' 
+ );
 
  # timing
 
  $s->{ time_end } = time ();
 
- my $timing =
-  round ( ( ( $s->{ time_end } - $s->{ time_start } ) * 1000 ), 0 ) . ' ms';
+ my $ti = round ( ( ( $s->{ time_end } - $s->{ time_start } ) * 1000 ), 0 );
 
- if   ( defined $s->{ cache_obj } ) { $timing = "$timing (cache)" }
- else                               { $timing = "$timing (backend)" }
-
- $self->res->headers->header ( 'X-Catz-Took' => $timing );
-
- $TIME_PAGE and warn "PAGE $s->{url} -> $timing";
+ $self->res->headers->header ( 'X-Catz-Timing' => "$ti ms" );
+ 
+ $TIME_PAGE and warn "PAGE $s->{url} -> $ti";
 
 } ## end sub after
 
-# the key for page caching consists of the data version,
-# namespace 'page' and the url
-
 sub cachekey {
  (
-  $_[ 0 ]->{ stash }->{ version },
-  $_[ 0 ]->{ stash }->{ protocol },
-  $_[ 0 ]->{ stash }->{ url },
+  $_[ 0 ]->{ stash }->{ version }, $_[ 0 ]->{ stash }->{ url }
  );
 }
 

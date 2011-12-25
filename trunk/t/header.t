@@ -49,8 +49,11 @@ my $isup = cache_isup;
 # page caching is tested so that first the resources are just requested
 # then they are re-requested and expected to come from page cache
 
-my @okpaths = qw (
+my @okstatics = qw (
  /favicon.ico /img/catz.png /js_lib/jquery.js /js_site/find.js
+);
+
+my @okpaths = qw (
  /en/ /fi/ /en/list/lens/top/ /en/browse/folder/20110918orimattila/
  /en172211/browse/title/EP/ /fi223211/viewall/122126/ /en/feed/
  /fi123211/news/20111002212228/ /en/find?s=im /fi/find?s=ou
@@ -58,27 +61,66 @@ my @okpaths = qw (
  /en162112/search?q=%2BMCO%20d%20e%20f
 );
 
-foreach my $path ( @okpaths ) {
+my @badpaths = qw ( /xyz/ /this/is/a/test/ );
+
+foreach my $path ( @okstatics ) {
 
  $t->get_ok ( $path )->status_is ( 200 )
   ->header_like ( 'Cache-Control' => qr/max-age/ )
   ->header_like ( 'Last-Modified' => qr/GMT/ )
-  ->header_like ( 'Expires'    => qr/GMT/ )->header_like ( 'Date' => qr/GMT/ )
-  ->header_like ( 'X-Catz-Env' => qr/catz\d/ )
-  ->header_like ( 'X-Catz-Ver' => qr/\d{14}/ )
-  ->header_like ( 'X-Catz-Took' => qr/ms/ );    # general test
+  ->header_like ( 'Expires'       => qr/GMT/ )
+  ->header_like ( 'Date'          => qr/GMT/ );
 
+}
+
+foreach my $path ( @okpaths ) {
+
+ #<<<
+
+ $t->get_ok ( $path )->status_is ( 200 )
+   ->header_like ( 'Cache-Control'      => qr/max-age/ )
+   ->header_like ( 'Expires'            => qr/GMT/ )
+   ->header_like ( 'Date'               => qr/GMT/ )
+   ->header_like ( 'X-Catz-Environment' => qr/^catz\d$/ )
+   ->header_like ( 'X-Catz-Version'     => qr/^\d{14}$/ )
+   ->header_like ( 'X-Catz-Timing'      => qr/^\d+ ms$/ )
+   ->header_like ( 'X-Catz-Origin'      => qr/^[a-z]+$/ )
+   ->header_like ( 'ETag'               => qr/^CATZ\:.{22}$/ );
+
+ #>>>
+ 
  if ( $isup ) {
 
+  # test that the content is served from cache and
+  # also that all the headers are still present
+
+  #<<<
+
   $t->get_ok ( $path )->status_is ( 200 )
-   ->header_like ( 'Cache-Control' => qr/max-age/ )
-   ->header_like ( 'Last-Modified' => qr/GMT/ )
-   ->header_like ( 'Expires' => qr/GMT/ )->header_like ( 'Date' => qr/GMT/ )
-   ->header_like ( 'X-Catz-Env'  => qr/catz\d/ )
-   ->header_like ( 'X-Catz-Ver'  => qr/\d{14}/ )
-   ->header_like ( 'X-Catz-Took' => qr/cache/ );    # from cache test
+    ->header_like ( 'Cache-Control'      => qr/max-age/ )
+    ->header_like ( 'Expires'            => qr/GMT/ )
+    ->header_like ( 'Date'               => qr/GMT/ )
+    ->header_like ( 'X-Catz-Environment' => qr/^catz\d$/ )
+    ->header_like ( 'X-Catz-Version'     => qr/^\d{14}$/ )
+    ->header_like ( 'X-Catz-Timing'      => qr/^\d+ ms$/ )
+    ->header_is   ( 'X-Catz-Origin'      => 'cache' )
+    ->header_like ( 'ETag'               => qr/^CATZ\:.{22}$/ ); 
+
+  #>>>
 
  }
+
+}
+
+foreach my $path ( @badpaths ) {
+
+ #<<<
+
+ $t->get_ok ( $path )->status_is ( 404 )
+   ->header_like ( 'Cache-Control' => qr/max-age/ )
+   ->header_like ( 'Cache-Control' => qr/must-revalidate/ );
+
+ #>>>
 
 } ## end foreach my $path ( @okpaths)
 

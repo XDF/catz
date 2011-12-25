@@ -2,7 +2,6 @@
 <html><head><title><%= content 'ptitle' %></title>
 </head><body>
 <%= content 'main' %>
-%== include 'block/analytics';
 </body></html>
 %#
 %# Catz - the world's most advanced cat show photo engine

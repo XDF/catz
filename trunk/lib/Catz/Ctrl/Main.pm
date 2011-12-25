@@ -58,8 +58,6 @@ sub front {
 
  $s->{ urlother } = "/$s->{langaother}/";
 
- $s->{ seal } = conf ( 'key_seal' );
-
  $self->f_map or return $self->fail ( 'f_map exit' );
 
  # load the latest ...
