@@ -23,9 +23,6 @@
 <meta name="og:site_name" content="<%= $t->{SITE} %>">
 <meta name="robots" content="none">
 <meta name="generator" content="<%= $t->{GENERATOR} %>">
-<meta name="loaded" content="<%= dtexpand ( $version, $lang ) %>">
-<meta name="rendered" content="<%= $now %>">
-<meta name="environment" content="catz<%= $env %>">
 <meta name="credits" content="<%= $t->{CREDITS} %>">
 % if ( $lang eq 'fi' ) {
 <meta name="description" content="Tämä sivu on pienossovelluksen sisältöä ja tarkoitettu upotettavaksi iframe-objektin sisään, ei katsottavaksi erikseen sivuna. Pienoissovelluksen tarjoaa <%= $t->{URL_CATZA} %>.">
@@ -44,7 +41,6 @@
 %#
 %# --------------------
 %#
-%== include 'block/analytics';
 </div></body></html>
 %#
 %# --------------------

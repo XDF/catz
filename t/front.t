@@ -55,38 +55,15 @@ foreach my $setup ( @oksetups ) {
  # front page
 
  $t->get_ok ( "/$setup/" )->status_is ( 200 )
-  ->content_type_like ( qr/text\/html/ )->element_exists ( 'html body h1' )
+  ->content_type_like ( qr/text\/html/ )
+   ->element_exists   ( 'html body h1' )
   ->content_like      ( qr/$txt->{NOSCRIPT}/ )
   ->content_like      ( qr/$txt->{VIZ_GLOBE_NAME}/ )
-  ->content_like ( qr/href=\"\/$setup\/list\/breeder\/a2z\/\"/ );
+  ->content_like      ( qr/href=\"\/$setup\/list\/breeder\/a2z\/\"/ );
 
  # without trailing slash should be 301
  $t->get_ok ( "/$setup" )->status_is ( 301 );
 
 }
-
-# site seal test added 2011-10-18
-# site seal must appear in english front page
-
-my $seal = conf ( 'key_seal' );
-
-$t->get_ok ( "/en/" )->content_like ( qr/$seal/ );
-
-# analytics tests added 2011-10-18
-# analytics must appear on linux platforms
-
-conf ( 'lin' ) and do {
-
- my $ana_godaddy = conf ( 'key_ana_godaddy' );
- my $ana_google  = conf ( 'key_ana_google' );
-
- foreach my $setup ( @oksetups ) {
-
-  $t->get_ok ( "/$setup/" )->content_like ( qr/$ana_godaddy/ );
-  $t->get_ok ( "/$setup/" )->content_like ( qr/$ana_google/ );
-
- }
-
-};
 
 done_testing;

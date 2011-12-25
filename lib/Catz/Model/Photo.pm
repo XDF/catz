@@ -226,10 +226,10 @@ sub _clusters {
 
  my $res = $self->dball (
   qq { 
-  select sec,fullnum33(s,n) from 
+  select sec,fullnum33(album.s,photo.n) from 
   album natural join photo natural join pri natural join sec_$lang 
-  natural join inpos where pri='text' and x in (}
-   . ( join ',', @xs ) . ') order by x,p'
+  natural join inpos where pri='text' and photo.x in (}
+   . ( join ',', @xs ) . ') order by photo.x,p'
  );
 
  my $i = 0;

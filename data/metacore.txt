@@ -56,14 +56,22 @@ P97-98: {Satinante's} Don Perin (Paavo) [RAG n]
 P103: [RAG]
 P104-106: SP,EC,SGCA {Ipekkedinin} Birinci Bebek (Mikke) [TUV d 62]
 P108: {Canth's} Taika [SBI c 21] 
-P110: [HCS]
+P110: Pikku-Lilla [HCS] %F
 P111: Ukko [HCS] %M
 P115: [HCL]
+P116: Pikku-Lilla [HCS] %F
+P119: Pikku-Musta [HCS] %F
 P120: {Telltail's} Ingerith [CRX n 03]
 P121-122: {Tiikerililjan} Idoliina (Lilli) [EUR d 22]
 P123: "the prizes|palkinnot"
 P124: Teppo Taikatohveli [HCL] %M
 P125: Ukko [HCS] %M
+P126: [HCS]
+P127: Pikku-Lilla [HCS] %F "URK Miss Housecat 2011|URK Miss kotikissa 2011"
+P128: [HCS]
+P129: Pikku-Lilla [HCS] %F "URK Miss Housecat 2011|URK Miss kotikissa 2011"
+P130: Pikku-Musta [HCS] %F
+P131-133: Pikku-Lilla [HCS] %F "URK Miss Housecat 2011|URK Miss kotikissa 2011"
 P135: [OSH]
 P137: "the electric candle|sähkökynttilä"
 P138: "Tikkurilan Tiikerit"
@@ -184,7 +192,8 @@ L18-24: lbc_dg,exif_focal_length_real=50 mm,exif_f_number=2.8
 L53-57: lbc_dg,exif_focal_length_real=50 mm,exif_f_number=2.8
 P1: GIC {Hindkjaer's} Gaia, JW (Gaia) [OCI b 24]
 P2: GIC {Guttatus} Final Fling, JW (Täplä) [OCI b 24]
-P3-4: [XC2]
+P3: {Nalle-Puhin} Gil Grissom [NFO a 09 23]
+P4: [XC2]
 P5: [MCO]
 P6: CH {Suvikasteen} Mikki (Eetu) [BRI a]
 P7: [XC3]
@@ -435,7 +444,7 @@ P90-91: {LoveOriental} Elvira, JW [SIA n]
 P92: [XC2]
 P93: [ABY]
 P94: [XC2]
-P95: [XC2]
+P95: {Mithrandilin} Anarrima [SBI c]
 P96-97: {Delamon} Deluxe Griffy (Marsupilami) [OSH d 24]
 P98: [XC4]
 P99: [RAG]
@@ -3232,6 +3241,7 @@ P164: %Xbonus {Suviyön} Ay Aydinligi (Luna) [TUV d 62]
 P1: "The glitter ball|Discopallo"
 P2: "cat balloons|kissa-ilmapalloja"
 P3: "the judge explains the TICA show|tuomari kertoo TICA-näyttelyn kulusta"
+P4: {Cougar's} Alec Trevelyan [NFO ds 09 22]
 P5-9: {Lumouksen} Tähtisade [BAL d 21]
 P12-13: SP,EC {Chamberlain} Front Runner (Sulo-Kuisma) [MCO n 22]
 P14-17: {Orifame} Cream Come True (KermaUnelma) [OSH e 24]
@@ -3271,6 +3281,7 @@ P133: {SiruCats} Bandhu (Haltia) [BEN n 24]
 P134-135: [ABY]
 P136-137: SGCA {Orifame} AurinkoKuningas (Amedei) [OSH b 22]
 P138-139: SP,EC {Chamberlain} Front Runner (Sulo-Kuisma) [MCO n 22]
+P140-141: {Cougar's} Alec Trevelyan [NFO ds 09 22]
 P148: TICA DGCA,FIFE SP,FIFE EC {Ipekkedinin} Birinci Bebek (Mikke) [TUV d 62]
 P149-150: Leyla Anastasya {del Iris} (Lelu) [PEB b 33]
 P153: Apila [HCS fs 03 24]
