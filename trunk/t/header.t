@@ -66,10 +66,11 @@ my @badpaths = qw ( /xyz/ /this/is/a/test/ );
 foreach my $path ( @okstatics ) {
 
  $t->get_ok ( $path )->status_is ( 200 )
-  ->header_like ( 'Cache-Control' => qr/max-age/ )
-  ->header_like ( 'Last-Modified' => qr/GMT/ )
-  ->header_like ( 'Expires'       => qr/GMT/ )
-  ->header_like ( 'Date'          => qr/GMT/ );
+  ->header_is   ( 'X-Catz-Origin'  => 'static' )
+  ->header_like ( 'Cache-Control'  => qr/max-age/ )
+  ->header_like ( 'Last-Modified'  => qr/GMT/ )
+  ->header_like ( 'Expires'        => qr/GMT/ )
+  ->header_like ( 'Date'           => qr/GMT/ );
 
 }
 
@@ -78,14 +79,14 @@ foreach my $path ( @okpaths ) {
  #<<<
 
  $t->get_ok ( $path )->status_is ( 200 )
-   ->header_like ( 'Cache-Control'      => qr/max-age/ )
-   ->header_like ( 'Expires'            => qr/GMT/ )
-   ->header_like ( 'Date'               => qr/GMT/ )
-   ->header_like ( 'X-Catz-Environment' => qr/^catz\d$/ )
-   ->header_like ( 'X-Catz-Version'     => qr/^\d{14}$/ )
-   ->header_like ( 'X-Catz-Timing'      => qr/^\d+ ms$/ )
-   ->header_like ( 'X-Catz-Origin'      => qr/^[a-z]+$/ )
-   ->header_like ( 'ETag'               => qr/^CATZ\:.{22}$/ );
+   ->header_like ( 'Cache-Control'  => qr/max-age/ )
+   ->header_like ( 'Expires'        => qr/GMT/ )
+   ->header_like ( 'Date'           => qr/GMT/ )
+   ->header_like ( 'X-Catz-Env'     => qr/^catz\d$/ )
+   ->header_like ( 'X-Catz-Version' => qr/^\d{14}$/ )
+   ->header_like ( 'X-Catz-Timing'  => qr/^\d+ ms$/ )
+   ->header_like ( 'X-Catz-Origin'  => qr/^[a-z]+$/ )
+   ->header_like ( 'ETag'           => qr/^.{24}$/ );
 
  #>>>
  
@@ -97,14 +98,14 @@ foreach my $path ( @okpaths ) {
   #<<<
 
   $t->get_ok ( $path )->status_is ( 200 )
-    ->header_like ( 'Cache-Control'      => qr/max-age/ )
-    ->header_like ( 'Expires'            => qr/GMT/ )
-    ->header_like ( 'Date'               => qr/GMT/ )
-    ->header_like ( 'X-Catz-Environment' => qr/^catz\d$/ )
-    ->header_like ( 'X-Catz-Version'     => qr/^\d{14}$/ )
-    ->header_like ( 'X-Catz-Timing'      => qr/^\d+ ms$/ )
-    ->header_is   ( 'X-Catz-Origin'      => 'cache' )
-    ->header_like ( 'ETag'               => qr/^CATZ\:.{22}$/ ); 
+    ->header_like ( 'Cache-Control'  => qr/max-age/ )
+    ->header_like ( 'Expires'        => qr/GMT/ )
+    ->header_like ( 'Date'           => qr/GMT/ )
+    ->header_like ( 'X-Catz-Env'     => qr/^catz\d$/ )
+    ->header_like ( 'X-Catz-Version' => qr/^\d{14}$/ )
+    ->header_like ( 'X-Catz-Timing'  => qr/^\d+ ms$/ )
+    ->header_is   ( 'X-Catz-Origin'  => 'cache' )
+    ->header_like ( 'ETag'           => qr/^.{24}$/ ); 
 
   #>>>
 
