@@ -184,7 +184,7 @@ sub reroute {    # does the job
 
    if ( $self->fetch ( "reroute#isbreed", $br ) ) {
 
-    return $self->moveto ( qq{$lang/browse/breed/$br/} );
+    return $self->moveto ( qq{/$lang/browse/breed/$br/} );
 
    }
    else {
