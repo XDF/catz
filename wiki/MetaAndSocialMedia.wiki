@@ -1,8 +1,5 @@
 #summary The page metadata and the social media integation
 
-*This page is updated to describe the target state of the service, 
-not the current state.*
-
 = The page metadata =
 
 The following tables describe the metadata provided on HTML pages. 
@@ -17,15 +14,12 @@ The following tables describe the metadata provided on HTML pages.
 || meta || meta author || ||
 || meta || meta copyright || ||
 || meta || link copyright || ||    
-|| meta || meta robots || are based on stash variables meta_index & meta_follow, before hook sets defaults, controllers are allowed to modify  ||
+|| meta || meta robots || based on stash variables meta_index & meta_follow, before hook sets the default index,follow, controllers are allowed to modify  ||
 || meta || link alternate || links to the page in another language ||    
 || facebook || meta og:site_name || ||
 || facebook || meta fb:admins || ||
 || facebook || link me || links to facebook fan page ||
-|| misc || meta loaded || the language-specific time when the data was loaded ||
-|| misc || meta rendered || the language-specific time when the page was rendered ||
-|| misc || meta environment || indicates the current production environment ||
-|| misc || meta credits || gives credits to some vital technologies that the service is based on || 
+|| misc || meta credits || gives credits to some fundamental technologies that the service is based on || 
        
 == Default provided by base/heavy.html.ep but overloadable ==       
 
@@ -36,17 +30,20 @@ The following tables describe the metadata provided on HTML pages.
 || image || facebook || meta og:image || see previous line ||
 
 == Page type specific metadata ==
+
+=== meta robots ===
  
-|| *type* || *tag* || *front* || *new1* || *news1* || *lists* || *list1* || *browse* || *view* || *search* ||
-|| meta || meta robots || default || default || default || default || default || if q parameter given but no photos found then none, otherwise default || default || if init parameter given then none, otherwise default ||
+|| *type* || *tag* || *front* || *new1* || *news* || *lists* || *list1* || *browse* || *view* || *search* || *more * || *build* ||
+|| meta || meta robots || default || default || default || noindex,follow || default || pair: 1st page all, other pages noindex,follow, all: noindex,follow, search: none  || default || if init parameter given then none, otherwise default ||
 || meta || block canon || default || default || default || default || default || in no id mode links to the same page without setup, in id mode page > 1 links to the same page without setup and by using first thumb's id, in id mode page = 1 links to to the same page no id mode and without setup || links to the same photo without setup, on runmode all with id || default ||    
 || meta || link index || || || links to news index || || links to lists index || || links to thumbnail page || ||
 || meta || link start || || || || || || links to first thumbnail page || links to first photo || ||
 || meta || link prev || || || links to previous article || || || links to previous thumbnail page || link to the previous photo || ||
 || meta || link next || || || links to next article || || || links to next thumbnail page || link to the next photo || ||
 || meta || block image || default || default || default || default || default || use a random thumnail on page, but if in pair mode pri nat use flag || use the photo thumbnail || default ||
-|| meta || meta description || || || || a fixed text || generated from pri and subject || || || a fixed text || 
-|| meta || meta og:description || || || || see previous line || see previous line || || || see previous line ||
+|| meta || meta description || semi-fixed text || || semi-fixed text || a fixed text || generated from pri and subject || || || a fixed text || 
+|| meta || meta og:description || see previous line || || see previous line || see previous line || see previous line || || || see previous line ||
+|| meta || meta keywords || fixed keywords || || fixed keywords ||
 || facebook || meta og:type || website || catz:list || article || catz:list || catz:list || default "catz:thumbnails", in runmode pair on org, umb, breeder: non_profit, on nat: country, on loc: city, on others "catz:" + pri || catz:photo || catz:search ||  
 || facebook || meta og:title || site name & slogan || a fixed title || the date and the news title || a fixed title || the page title || in runmode all a title "n cat show photos", in runmode pair a title constructed from the pri and subject, in runmode search a fixed text + the search || photo id always + photo text if exists || the page title ||  
 || facebook || meta og:locality || || || || || || in runmode pair on loc contains the location name || in runmode pair on loc contains the location name || ||  
@@ -57,7 +54,7 @@ The following tables describe the metadata provided on HTML pages.
 All pages contain share function for Facebook, Google+ and Twitter.
 
 Facebook Share uses
-  * the old-school share API
+  * the old-school share API since the newer API was very unreliable
   * image icon  
   * canonical url as url
   * og:title as text
