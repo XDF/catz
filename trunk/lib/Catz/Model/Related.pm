@@ -122,14 +122,15 @@ sub _refine {
  my ( $self, $pri, $sec, $target ) = @_;
  my $lang = $self->{ lang };
 
- const my $N => 15;    # maximum number of items in a set
-
  my $me = $self->dbone (
   qq {
   select sid from sec_$lang 
   where pid=(select pid from pri where pri=?) and sec=?
  }, $pri, $sec
  );
+
+ ( my $n = $MATRIX->{$target}->{n} )
+  or die "internal error: number of refine items not defined for '$target'";
 
  my $tg = $self->dbone ( "select pid from pri where pri=?", $target );
 
@@ -140,7 +141,7 @@ sub _refine {
     select target
     from _relate inner join sec on (target=sid) natural join pri 
     where source=? and pid=?
-   ) order by cntphoto desc limit 15
+   ) order by cntphoto desc limit $n
   ) order by sort
  };
 
