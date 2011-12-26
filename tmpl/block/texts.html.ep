@@ -1,13 +1,11 @@
 % if ( scalar @$clusters > 0 ) {
-<div class="bar">
-% for ( my $i = 0; $i < @$clusters; $i++ ) {
+%  for ( my $i = 0; $i < @$clusters; $i++ ) {
 <%= $i > 0 ? $sep : '' %> <%= $t->{ scalar @{ $clusters->[$i]->[0] } > 1 ? 'PHOTOS' : 'PHOTO' } %>
-%  foreach my $id ( @{ $clusters->[$i]->[0] } ) {
-<a class="shrink" href="<%== include 'href/actionid', toaction => 'auto', langh => $langa, toid => $id %>"><%== $id %></a>
-%  }
+%   foreach my $id ( @{ $clusters->[$i]->[0] } ) {
+<a href="<%== include 'href/actionid', toaction => 'auto', langh => $langa, toid => $id %>"><%== $id %></a>
+%   }
 <%= $clusters->[$i]->[1] %>
-% }
-</div>
+%  }
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine
