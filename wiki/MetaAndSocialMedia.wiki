@@ -1,33 +1,36 @@
-#summary The page metadata and the social media integation
+#summary The description of page metadata and the social media integation features
 
-= The page metadata =
+= Forced page metadata =
 
-The following tables describe the metadata provided on HTML pages. 
+The base template base/heavy.html.ep forces the following metadata on all pages.
 
-== Forced by base/heavy.html.ep for all pages ==
-
-|| *type* || *tag* || *explanation* ||
-|| core || meta http-equiv content-type || ||
-|| core || meta http-equiv content-language || content langauge also set on html and body so we really are on the safe side ||
-|| core || link "shortcut icon" || standard old-school favicon.ico at the root ||
-|| meta || meta generator || ||
-|| meta || meta author || ||
-|| meta || meta copyright || ||
-|| meta || link copyright || ||    
-|| meta || meta robots || based on stash variables meta_index & meta_follow, before hook sets the default index,follow, controllers are allowed to modify  ||
-|| meta || link alternate || links to the page in another language ||    
-|| facebook || meta og:site_name || ||
-|| facebook || meta fb:admins || ||
-|| facebook || link me || links to facebook fan page ||
-|| misc || meta credits || gives credits to some fundamental technologies that the service is based on || 
+  * meta http-equiv content-type
+  * meta http-equiv content-language (content langauge also set on html and body so we really are on the safe side)
+  * link shortcut icon (standard old-school favicon.ico at site's root)
+  * meta generator
+  * meta author
+  * meta copyright
+  * link copyright
+  * meta robots (controlled by stash variables meta_index & meta_follow, by default both are on, controllers are allowed to change)
+  * meta og:site_name
+  * meta fb:admins
+  * link me (links to facebook fan page)
+  * meta credits (gives credits to some fundamental technologies that the service is based on) 
        
-== Default provided by base/heavy.html.ep but overloadable ==       
+= Overloadable page metadata blocks = 
 
-|| *block* || *type* || *tag* || *explanation* ||
-|| canon || meta || link canonical || links to the same page in the same language with default setup ||
-|| canon || meta || meta og:url || see previous line ||
-|| image || meta || link image_src || links to the site's logo in png format ||
-|| image || facebook || meta og:image || see previous line ||
+The base template base/heavy.html.ep provides the following blocks that
+can be overloaded by page templates if needed.
+
+== canon ==
+
+  * link canonical, links to the same page in the same language with default setup
+  * meta og:url, just as the previous line describes
+
+== image ==
+
+  * meta image, links to the site's logo in png format
+  * meta og:image, just as the previous line describes
 
 == Page type specific metadata ==
 
@@ -49,9 +52,10 @@ The following tables describe the metadata provided on HTML pages.
 || facebook || meta og:locality || || || || || || in runmode pair on loc contains the location name || in runmode pair on loc contains the location name || ||  
 || facebook || meta og:country-name || || || || || || in runmode pair: on loc contains the country name, on nat contains the nation || in runmode pair: on loc contains the country name, on nat contains the nation || ||
    
-= Social media integration =
+= Social media integration features =
 
 All pages contain share function for Facebook, Google+ and Twitter.
+???
 
 Facebook Share uses
   * the old-school share API since the newer API was very unreliable
