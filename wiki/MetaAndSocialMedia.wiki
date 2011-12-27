@@ -15,13 +15,14 @@ The base template base/heavy.html.ep forces the following metadata on all pages.
   * link copyright
   * meta robots
   * meta og:site_name
+  * link alternamte (from English to Finnish and Finnish to English)  
   * meta fb:admins
   * link me (links to facebook fan page)
   * meta credits (gives credits to some fundamental technologies that the service is based on) 
 
 The meta robots are controlled by stash variables meta_index and meta_follow. The
 default is index,follow when with default setup and noindex,nofollow otherwise. 
-Controllers are allowed to change this behavior.
+Controllers are allowed to modify the variables.
        
 = Overloadable page metadata blocks = 
 
@@ -94,6 +95,9 @@ Added metadata
   * og:description
   * link rel index points to lists  
 
+Modified metadata
+  * noindex     
+
 Added features
   * social media buttons
 
@@ -120,8 +124,8 @@ Modified metadata
      * on runmode pair and concept nat set to the flag of the nation
      * on other cases set to the first thumbnail on the page
   * robots
-     * on rumode all only the first page is indexed, all pages are followed
-     * on runmode pair only the first page is indexed and followed, others are not
+     * on runmode all only the first page is indexed, others are not, nothing is followed
+     * on runmode pair only the first page is indexed, others are not, nothing is followed
      * on runmode search nothing is indexed nor followed                        
 
 Added features
@@ -143,7 +147,7 @@ Modified metadata
   * block canon points to the same photo on runmode all and without setup      
   * block image points to the photo's thumbnail version
   * robots
-     * on runmode all use defaults
+     * on runmode all just indexing, no following
      * on runmode pair and search no indexing, no following
        
 Added features
