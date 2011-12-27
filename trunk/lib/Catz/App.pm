@@ -300,6 +300,14 @@ sub startup {
  # front page sample photos
  $l->route ( '/sample/:width', width => qr/\d{3,4}/ )->to ( 'main#sample' );
 
+ # browse refine/jump expand
+ $l->route ( 
+  '/expand/:pri/:sec/:target', 
+  pri => qr/[a-z]{1,25}/,
+  sec => qr/[A-Za-z0-9_-]{1,500}/,
+  target => qr/[a-z]{1,25}/,  
+ )->to ( 'locate#expand' );
+
  # add Mojolicious hooks
  $self->hook ( before_dispatch => \&before );
  $self->hook ( after_dispatch  => \&after );

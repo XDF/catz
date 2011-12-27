@@ -79,6 +79,9 @@ sub single {
  $s->{ basicskip } = \%basicskip;
 
  $s->{ basichide } = \%basichide;
+ 
+ # single photos are only indexed and followed in runmode all
+ $s->{ runmode } eq 'all' or ( $s->{ meta_index } = $s->{ meta_follow } = 0 );
 
  $self->output ( 'page/view' );
 
@@ -189,8 +192,9 @@ sub multi {
    $s->{ urlbuild } =
     $self->fuse ( $s->{ langa }, 'build', $s->{ pri }, $enc );
 
-   # only the 1st page is indexed
-   $s->{ meta_index } = $s->{ page } == 1 ? 1 : 0; 
+   # only the 1st page is indexed and followed
+   $s->{ meta_index } = $s->{ meta_follow } = $s->{ page } == 1 ? 1 : 0;
+       
   }
 
   when ( 'search' ) {
@@ -200,8 +204,7 @@ sub multi {
     . $self->enurl ( $s->{ what } );
 
    # search results are not indexed nor followed
-   $s->{ meta_index } = 0;
-   $s->{ meta_follow } = 0;
+   $s->{ meta_index } = $s->{ meta_follow } = 0;
 
   }
 
@@ -209,8 +212,8 @@ sub multi {
 
    $s->{ urlbuild } = $self->fuse ( $s->{ langa }, 'build' );
 
-   # all photos browsing is not indexed
-   $s->{ meta_index } = 0;
+   # all photos browsing only first page is indexed
+   $s->{ meta_index } = $s->{ page } == 1 ? 1 : 0;
 
   }
 

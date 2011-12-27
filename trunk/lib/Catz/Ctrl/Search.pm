@@ -127,7 +127,7 @@ sub guide {
  $s->{ total } = 0;
 
  # if giving guide but search was made then it's not found -> not for robots
- $s->{ what } and do { $s->{ meta_index } = 0; $s->{ meta_follow } = 0 };
+ $s->{ what } and $s->{ meta_index } = $s->{ meta_follow } = 0;
 
  # no robots if init is given
  $s->{ init } and do { $s->{ meta_index } = 0; $s->{ meta_follow } = 0 };

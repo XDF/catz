@@ -26,87 +26,23 @@ use 5.12.0;
 use strict;
 use warnings;
 
-use lib '../lib';
+# unbuffered outputs
+# from http://perldoc.perl.org/functions/open.html
+select STDERR;
+$| = 1;
+select STDOUT;
+$| = 1;
 
-use WWW::Mechanize;
+use Test::More;
+use Test::Mojo;
 
 use Catz::Data::Conf;
+use Catz::Data::Text;
 
-my @urls = 
- map { "http://localhost:300" . conf ( 'env' ) . $_ } qw( 
-  /en/ /fi/ /en/browseall/ /fi/browseall/ /en/viewall/ /fi/viewall/
-  /en/news/ /fi/news/ /en/lists/ /fi/lists/ 
- );
+use Catz::Util::String qw ( encode enurl );
 
-my $ocache = {}; # cache an object for each URL
+my $t = Test::Mojo->new ( conf ( 'app' ) );
 
-sub getobj {
+my @oksetups = qw ( en fi en211211 fi171212 en394211 fi211111 );
 
- my $url = shift;
-
- my $m;
-
- if ( exists $ocache->{ $url } )  {
-
-  $m = $ocache->{ $url };
-
- } else {
- 
-  $m = WWW::Mechanize->new( autcheck => 1 );
-
-  # at least Wikipedia doesn't like the default
-  $m->agent_alias( 'Linux Konqueror' );
-
-  $m->get( $url );
-
-  $ocache->{ $url } = $m;
- 
- }
-
- return $m;
-
-}
-
-foreach my $url ( @urls ) {
-
- say '';
- say "********************************************";
- say "checking url $url";
- say "********************************************";
- say '';
-
- my $u = getobj ( $url );
-
- lint ( $u ); 
-  
- foreach my $link ( sort $u->links )  {
-
-  my $lin = $link->url_abs();
- 
-  say "checking link $lin";
-
-  my $l = getobj ( $lin );
-
- }
-
- say '';
-
- foreach my $image ( sort $u->images ) {
-
-  my $ima = $image->url_abs();
-
-  # viz redirects take ages, skip them by grep
-  not ( $ima =~ m|/viz/| ) and do { 
- 
-   say "checking image $ima";
-
-   my $i = getobj ( $ima );
-
-  };
-
- }
-
-}
-
-
-
+done_testing;

@@ -1,0 +1,5 @@
+% if ( $lang eq 'fi' ) {
+haku,hakukone,hae
+% } else {
+search,search engine
+% }

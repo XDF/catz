@@ -187,8 +187,8 @@ sub f_init {
 
  foreach my $var (
   qw (
-  runmode origin what refines breedernat viz_rank trans nats maxx total dist
-  cover_full cover_partial cover_cate cover_breed cover_none
+  runmode origin init what refines breedernat viz_rank trans nats maxx 
+  total dist cover_full cover_partial cover_cate cover_breed cover_none
   url_full url_partial url_cate url_breed url_none
   )
   )

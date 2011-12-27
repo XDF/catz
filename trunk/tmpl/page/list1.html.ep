@@ -22,13 +22,7 @@
 %#
 %# --------------------
 %#
-<% content 'bextra' => begin %>
-%== include 'elem/ig', igurl => "/$lang".urirest ( $url ), igtext => $titl;
-<% end %>
-%#
-%# --------------------
-%#
-<% content 'btitle' => begin %><h1><%= $titl %></h1><% end %>
+<% content 'btitle' => begin %><h1><%= $titl %></h1> <%== include 'elem/ig', igurl => "/$lang".urirest ( $url ), igtext => $titl; %><% end %>
 %#
 %# --------------------
 %#

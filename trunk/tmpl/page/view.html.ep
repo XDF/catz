@@ -7,6 +7,8 @@
 %# --------------------
 %#
 <% content 'metaadd' => begin %>
+<meta name="og:type" content="catz:photo">
+<meta name="og:title" content="<%= $ttl %>">
 % if ( $runmode eq 'pair' ) {
 %  if ( $pri eq 'loc' ) {
 <meta name="og:locality" content="<%= $sec %>">
@@ -23,8 +25,6 @@
 % if ( $pos < $total ) {
 <link rel="next" href="<%== include 'href/id', langh => $langa, toid => $pin->[2] =%>">
 % }
-<meta name="og:title" content="<%= $ttl %>">
-<meta name="og:type" content="catz:photo">
 % stash ( 'desc', $ttl );   
 <% end %>
 %#
