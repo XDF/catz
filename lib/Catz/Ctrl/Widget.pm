@@ -130,9 +130,10 @@ sub start {
  $s->{ func } eq 'embed' and length ( $s->{ langa } ) > 2 and 
   return $self->fail ( 'setup set so stopping' );
 
- # the default for builder and embed is not to index
- $s->{ meta_index }  = 0;
- $s->{ meta_follow } = 0;
+ # the default for builder and embed is not to index or follow
+ $s->{ meta_index } = $s->{ meta_follow } = 0;
+ 
+ $s->{ wspec_loaded } = 0;
 
  exists $s->{ wspec } or do {
 
@@ -169,7 +170,7 @@ sub start {
 
    $s->{ runmode } = 'all';
    
-   # restore indexing of all photos mode default builder
+   # restore indexing of all photos default mode builder
    
    $s->{ wspec_loaded } and 
     length $s->{ langa } == 2 and 

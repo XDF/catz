@@ -63,7 +63,7 @@
 %#
 %# --------------------
 %#
-<td class="right"><noscript><span class="shrink xtra"><%= $t->{NOSCRIPT} %></span></noscript>
+<td class="right"><noscript><%= $t->{NOSCRIPT} %></noscript>
 <%= content 'setup' => begin %><%= content 'setupadd' %>
 <%== include 'elem/setup', setupkey => 'palette' %><% end %>
 <a title="<%= $t->{LANGOTHER} %>" href="<%== $urlother %>" hreflang="<%== $langother %>" lang="<%== $langother %>"><%= $t->{LANGOTHER} %></a>

@@ -21,6 +21,9 @@
 %#
 <% content 'btitle' => begin %>
 <h1><%= $t->{ ( uc $topic ) . '_TITLE' } %></h1>
+% $topic eq 'contrib' and do {
+%== include 'elem/ig', igurl => "/$lang".urirest ( $url ), igtext => $t->{ ( uc $topic ) . '_TITLE' };
+% };
 <% end %>
 %#
 %# --------------------
@@ -28,17 +31,16 @@
 <% content 'metaadd' => begin %>
 <meta name="og:type" content="article">
 <meta name="og:title" content="<%= $t->{ ( uc $topic ) . '_TITLE' } %>"> 
+<meta name="description" content="<%== include 'meta/desc_more' %>">
+<meta name="og:description" content="<%== include 'meta/desc_more' %>">
+<meta name="keywords" content="<%== include 'meta/keyw_more' %>">
 <% end %>
 %#
 %# --------------------
 %#
 <% content 'bextra' => begin %>
-% ( $topic eq 'contrib' ) and do {
-<a class="shrink" href="/<%== $langa %>/more/quality/"><%= $t->{QUALITY_TITLE} %></a>
-% };
-% ( $topic eq 'quality' ) and do {
-<a class="shrink" href="/<%== $langa %>/more/contrib/"><%= $t->{CONTRIB_TITLE} %></a>
-% };
+% my $goto = $topic eq 'contrib' ? 'quality' : 'contrib';
+<a class="shrink" href="/<%== $langa %>/more/<%== $goto %>/"><%= $t->{uc($goto).'_TITLE'} %></a>
 <% end %>
 %#
 %# --------------------

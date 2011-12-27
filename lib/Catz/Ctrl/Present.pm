@@ -80,9 +80,11 @@ sub single {
 
  $s->{ basichide } = \%basichide;
  
- # single photos are only indexed and followed in runmode all
- $s->{ runmode } eq 'all' or ( $s->{ meta_index } = $s->{ meta_follow } = 0 );
-
+ # turn of indexing on others than the default viewing in all mode
+ $s->{ runmode } eq 'all' or $s->{ meta_index } = 0;
+ 
+ $s->{ meta_follow } = 0; # photo viewer page is not followed
+ 
  $self->output ( 'page/view' );
 
  return $self->done;
@@ -193,7 +195,7 @@ sub multi {
     $self->fuse ( $s->{ langa }, 'build', $s->{ pri }, $enc );
 
    # only the 1st page is indexed and followed
-   $s->{ meta_index } = $s->{ meta_follow } = $s->{ page } == 1 ? 1 : 0;
+   $s->{ meta_index } =  $s->{ page } == 1 ? $s->{ meta_index } : 0;
        
   }
 
@@ -204,7 +206,7 @@ sub multi {
     . $self->enurl ( $s->{ what } );
 
    # search results are not indexed nor followed
-   $s->{ meta_index } = $s->{ meta_follow } = 0;
+   $s->{ meta_index } = 0;
 
   }
 
@@ -213,11 +215,13 @@ sub multi {
    $s->{ urlbuild } = $self->fuse ( $s->{ langa }, 'build' );
 
    # all photos browsing only first page is indexed
-   $s->{ meta_index } = $s->{ page } == 1 ? 1 : 0;
-
+   $s->{ meta_index } = $s->{ page } == 1 ? $s->{ meta_index } : 0;
+   
   }
 
  } ## end given
+ 
+ $s->{ meta_follow } = 0; # browse pages are not followed
 
  $self->output ( 'page/browse' );
 

@@ -46,6 +46,8 @@ sub index {    # the list of all news articles
 
  $s->{ news } = $self->fetch ( 'news#titles' );
 
+ $s->{ meta_index } = 0; # news index not indexed
+
  $self->render ( template => 'page/news', format => 'html' );
 
 }

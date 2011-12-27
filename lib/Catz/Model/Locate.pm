@@ -367,7 +367,41 @@ sub _photos {
 
  my $self = shift;
 
- return $self->dball ( 'select x,s,n from album natural join photo' );
+ return $self->dball ( qq {
+  select x,s,n,dt 
+  from album natural join photo inner join dna on (folder=item) 
+  where class='album' order by x 
+ } );
+
+}
+
+sub _change {
+
+ my ( $self, $obj ) = @_;
+ 
+ given ( $obj ) {
+ 
+  when ( [ 'album', 'folder', 'meta' ] ) {
+  
+   $obj eq 'meta' and $obj = 'file';
+  
+   return $self->dbone ( 'select max(dt) from dna where class=?', $obj );
+    
+  }
+
+  when ( 'quality' ) {
+
+   return $self->dbone ( 'select max(dt) from crun' ); 
+   
+  }
+    
+  default {
+
+   return $self->dbone ( 'select max(dt) from dna where item=?', $obj ); 
+   
+  }
+ 
+ }
 
 }
 

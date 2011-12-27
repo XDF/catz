@@ -19,12 +19,33 @@
 %#
 <% content 'btitle' => begin %>
 <h1><%== $t->{'WID_TITLE_'.$runmode} %></h1>
+% $runmode eq 'all' and $wspec_loaded and do { 
+%== include 'elem/ig', igurl => "/$lang/build/", igtext => $t->{'WID_TITLE_'.$runmode};
+% };
 <% end %>
 %#
 %# --------------------
 %#
 <% content 'pathadd' => begin %>
 <%== include 'elem/path' %> <a href="<%== $urlback %>"><%== include 'elem/titlea', intent => 'build' =%></a> <%= $pathsep %>
+<% end %>
+%#
+%# --------------------
+%#
+<% content 'metaadd' => begin %>
+<meta name="og:type" content="article">
+<meta name="og:title" content="<%== $t->{'WID_TITLE_'.$runmode} %>"> 
+<meta name="description" content="<%== include 'meta/desc_build' %>">
+<meta name="og:description" content="<%== include 'meta/desc_build' %>">
+<meta name="keywords" content="<%== include 'meta/keyw_build' %>">
+<% end %>
+%#
+%# --------------------
+%#
+<% content 'canon' => begin %>
+% my $cn = "/$lang".urirest ( $urldefault );
+<link rel="canonical" href="<%== $cn %>">
+<meta name="og:url" content="<%== $cn %>">
 <% end %>
 %#
 %# --------------------
@@ -38,7 +59,7 @@
 % foreach my $ckey ( grep { $_ ne 'type' } @{ $wconf->{longs} } ) {
 <%== include 'elem/wsetup', wkey => $ckey %>
 % }
-% $wspec ne $wdefault and do {
+% $wspec_loaded or do {
 <a class="shrink aero" href="<%== $urldefault %>"><%= $t->{WID_RESET} %></a>
 % };
 %#

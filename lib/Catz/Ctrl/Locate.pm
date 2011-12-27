@@ -92,6 +92,8 @@ sub list {
 
  $self->f_map or return $self->fail ( 'f_map exit' );
 
+ $s->{ meta_index } = 0; # lists are not indexed
+
  $self->output ( 'page/list1' );
 
 } ## end sub list
@@ -141,12 +143,16 @@ sub mapsub {
  given ( $s->{ mapsub } ) {
 
   when ( 'photo' ) {
+  
+   my $i = 1;
 
    $s->{ surls } = [
     map {
      [
       $self->fuse ( 'viewall', $self->fullnum33 ( $_->[ 1 ], $_->[ 2 ] ) ),
-      'monthly', 0.3
+      dt2w3c ( $_->[3] ),
+      $i++ < 1000 ? 'weekly' : 'monthly', 
+      0.3
      ]
      } @{ $self->fetch ( 'locate#photos' ) }
    ];
@@ -154,15 +160,19 @@ sub mapsub {
   }
 
   when ( 'core' ) {
+  
+   my $core =    dt2w3c $self->fetch ( 'locate#change', 'metacore' );
+   my $quality = dt2w3c $self->fetch ( 'locate#change', 'quality'  );
+   my $news =    dt2w3c $self->fetch ( 'locate#change', 'metanews' );
 
    $s->{ surls } = [
-    [ '/',              'daily',   1 ],
-    [ '/more/contrib/', 'weekly',  0.9 ],
-    [ '/more/quality/', 'monthly', 0.3 ],
-    [ '/search/',       'monthly', 0.8 ],
-    [ '/news/',         'weekly',  0.4 ],
-    [ '/build/',        'monthly', 0.5 ],
-    [ '/lists/',        'monthly', 0.1 ],
+    [ '/',              $s->{ version_w3c }, 'daily', 1 ],
+    [ '/more/contrib/', $core,               'weekly',  0.9 ],
+    [ '/more/quality/', $quality,            'weekly', 0.2 ],
+    [ '/search/',       $s->{ version_w3c }, 'monthly', 0.8 ],
+    [ '/news/',         $news,               'daily',  0.4 ],
+    [ '/build/',        $core,               'monthly', 0.2 ],
+    [ '/lists/',        $core,               'weekly', 0.1 ],
    ];
 
   }
@@ -170,25 +180,21 @@ sub mapsub {
   when ( 'list' ) {
 
    my $m = list_matrix;
+   
+   my $change = dt2w3c $self->fetch ( 'locate#change', 'metacore' );
 
    my @urls = ();
 
    foreach my $key ( keys %{ $m } ) {
+    
+    scalar @{ $m->{ $key }->{ modes } } > 0 and do {
 
-    my $i = 1;
-
-    foreach my $mode ( @{ $m->{ $key }->{ modes } } ) {
+     my $mode = $m->{ $key }->{ modes }->[ 0 ];    
 
      push @urls,
-      [
-      $self->fuse ( 'list', $key, $mode ),
-      $i == 1 ? 'weekly' : 'monthly',
-      $i == 1 ? 0.2      : 0.1
-      ];
-
-     $i++;
-
-    }
+      [ $self->fuse ( 'list', $key, $mode ), $change, 'weekly', 0.3 ];
+    
+    };
 
    }
 
@@ -199,6 +205,8 @@ sub mapsub {
   when ( 'news' ) {
 
    my $i = 0;
+
+   my $change = dt2w3c $self->fetch ( 'locate#change', 'metanews' );
 
    my $titles = $self->fetch ( 'news#titles' );
 
@@ -215,7 +223,9 @@ sub mapsub {
 
     $p < 0.2 and $cap = 'monthly';
 
-    push @urls, [ $self->fuse ( 'news', $titles->[ $i ]->[ 0 ] ), $cap, $p ];
+    push @urls, [ 
+     $self->fuse ( 'news', $titles->[ $i ]->[ 0 ] ), $change, $cap, $p 
+    ];
 
    }
 
@@ -224,19 +234,21 @@ sub mapsub {
   } ## end when ( 'news' )
 
   when ( 'pair' ) {
+    
+   my $change = dt2w3c $self->fetch ( 'locate#change', 'meta' );
 
    $s->{ surls } = [
     map {
      [
       $self->fuse ( 'browse', $_->[ 0 ], $self->encode ( $_->[ 1 ] ) ),
-      'weekly', 0.5
+      $change, 'weekly', 0.6
      ]
      } @{ $self->fetch ( 'locate#secs' ) }
    ];
 
   }
 
-  default { $self->fail ( 'no such sitemap' ) }
+  default { return $self->fail ( 'no such sitemap' ) }
 
  } ## end given
 

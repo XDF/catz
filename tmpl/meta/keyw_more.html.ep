@@ -1,7 +1,18 @@
-% if ( $lang eq 'fi' ) {
-Tässä on kätsänetin kaikki <%= fmt ( scalar @$news, $lang ) %> uutisotsikkoa uusimmasta vanhimpaan.
- % } else {
-Here are all <%= fmt ( scalar @$news, $lang ) %> catza.net's news titles listed from latest to earliest.
+% given ( $topic ) {
+%  when ( 'contrib' ) {
+%   if ( $lang eq 'fi' ) {
+osallistu,auta,täydennä,apua,kissatieto,ilmoita,lähetä
+%   } else {
+contribute,help,support,inform,cat data,cat name,send
+%   }
+%  }
+%  when ( 'quality' ) {
+%   if ( $lang eq 'fi' ) {
+laatu,laatuprosessi,kissatieto
+%   } else {
+quality,quality process,cat data
+%   }
+%  }
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine

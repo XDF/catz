@@ -1,7 +1,7 @@
 % if ( $lang eq 'fi' ) {
-Tässä on kätsänetin kaikki <%= fmt ( scalar @$news, $lang ) %> uutisotsikkoa uusimmasta vanhimpaan.
- % } else {
-Here are all <%= fmt ( scalar @$news, $lang ) %> catza.net's news titles listed from latest to earliest.
+Kuvanauhapalvelun avulla voit upottaa kätsänetin kuvia webbisivuillesi dynaamisesti. Palvelu on maksuton.
+% } else {
+With the photo strip service you can dynamically embed catza.net photos to your web page. The service available free of charge.
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine

@@ -94,6 +94,7 @@ sub startup {
  ###
  ### rerouting of old site's pages and resources
  ###
+ 
  $r->route ( '/reroute/*src' )->to ( 'reroute#reroute' );
  $r->route ( '/reroute' )->to      ( 'reroute#reroute' );
 
@@ -475,9 +476,8 @@ sub before {
 
   # prevent indexing of pages with non-default setup
   # also disable follow since there is no point
-  $3 and $s->{ meta_index } = $s->{ meta_follow } = 0;
+  $3 and ( $s->{ meta_index } = $s->{ meta_follow } = 0 );
   
-
   $s->{ langother } = $s->{ lang } eq 'fi' ? 'en' : 'fi';
 
   $s->{ langaother } = $s->{ langother } . ( $3 // '' );
