@@ -1,5 +1,7 @@
 #summary The description of page metadata and the social media integation features
 
+<wiki:toc max_depth="2" />
+
 = Forced page metadata =
 
 The base template base/heavy.html.ep forces the following metadata on all pages.
@@ -17,7 +19,7 @@ The base template base/heavy.html.ep forces the following metadata on all pages.
   * link me (links to facebook fan page)
   * meta credits (gives credits to some fundamental technologies that the service is based on) 
 
-The meta robots are controlled by stash variables meta_index & meta_follow. The
+The meta robots are controlled by stash variables meta_index and meta_follow. The
 default is index,follow when with default setup and noindex,nofollow otherwise. 
 Controllers are allowed to change this behavior.
        
@@ -66,15 +68,16 @@ Modified metadata
 Added metadata
   * og:title
   * og:type = article
-  * link rel index = points to news main page
-  * link rel next = point to next news article if any
-  * link rel prev = point to previous news article if any
+  * link rel index points to news main page
+  * link rel next points to next news article if any
+  * link rel prev points to previous news article if any
 
 Added features
   * social media buttons
 
 == lists ==
 
+Added metadata
   * og:type = list
   * description
   * og:description
@@ -84,22 +87,91 @@ Modified metadata
 
 == list1 ==
 
+Added metadata
   * og:type = list
   * og:title
   * description
   * og:description
-  * link rel index = points to lists  
+  * link rel index points to lists  
 
 Added features
   * social media buttons
 
 == browse ==
 
+Added metadata
+  * og:type = catz:thumbnails, but in runmode pair 
+    * catz:concept where concept is the concept of the subject
+    * if concept is org, umb, breeder then og:type = non_profit
+    * if concept is nat then og:type = country            
+    * if concept is loc then og:type = location
+  * og:locality is set to subject if runmode pair and concept is loc
+  * og:country-name is set to Finland if runmode pair and concept is loc, but if concept is nat then set to country in question  
+  * og:title set according to runmode
+  * link rel start points to the first page
+  * link rel next points to next page if any
+  * link rel prev poins to previous page if any
+
+Modified metadata
+  * block canon
+     * 1st page links to the same page but wihtout setup and photo id
+     * on other pages links to the same page but without setup and using the first thumbnail's photo id as photo id      
+  * block image 
+     * on runmode pair and concept nat set to the flag of the nation
+     * on other cases set to the first thumbnail on the page
+  * robots
+     * on rumode all only the first page is indexed, all pages are followed
+     * on runmode pair only the first page is indexed and followed, others are not
+     * on runmode search nothing is indexed nor followed                        
+
+Added features
+  * social media buttons on 1st page of the set
+  
 == view ==
+
+Added metadata
+  * og:type = catz:photo
+  * og:title set according the photo's text
+  * og:locality is set to subject if runmode pair and concept is loc
+  * og:country-name is set to Finland if runmode pair and concept is loc, but if concept is nat then set to country in question
+  * link rel index points to the corresponding browse page  
+  * link rel start points to the first photo of the set
+  * link rel next points to next photo of the set if any
+  * link rel prev poins to previous photo of the set if any
+
+Modified metadata
+  * block canon points to the same photo on runmode all and without setup      
+  * block image points to the photo's thumbnail version
+  * robots
+     * on runmode all use defaults
+     * on runmode pair and search no indexing, no following
+       
+Added features
+  * social media buttons
 
 == search ==
 
+Added metadata
+  * og:type = catz:search
+  * og:title
+  * description
+  * og:description
+  * keywords
+
+Modified metadata
+  * 
+   
+Added features
+  * social media buttons if no i (init) or q (what) parameter
+
 == more ==
+
+Added metadata
+  * og:type = article
+  * og:  
+
+<meta name="og:type" content="article">
+<meta name="og:title" content="<%= $t->{ ( uc $topic ) . '_TITLE' } %>">
 
 == build ==
 
@@ -112,14 +184,11 @@ Added features
 
 == block canon ==
 
-in no id mode links to the same page without setup, in id mode page > 1 links to the same page without setup and by using first thumb's id, in id mode page = 1 links to to the same page no id mode and without setup  
+  
   * view: links to the same photo without setup runmode all with id
  
 || *type* || *tag* || *front* || *new1* || *news* || *lists* || *list1* || *browse* || *view* || *search* || *more * || *build* ||
-|| meta || link index || || || links to news index || || links to lists index || || links to thumbnail page || ||
-|| meta || link start || || || || || || links to first thumbnail page || links to first photo || ||
-|| meta || link prev || || || links to previous article || || || links to previous thumbnail page || link to the previous photo || ||
-|| meta || link next || || || links to next article || || || links to next thumbnail page || link to the next photo || ||
+
 || meta || block image || default || default || default || default || default || use a random thumnail on page, but if in pair mode pri nat use flag || use the photo thumbnail || default ||
 || meta || meta description || semi-fixed text || || semi-fixed text || a fixed text || generated from pri and subject || || || a fixed text || 
 || meta || meta og:description || see previous line || || see previous line || see previous line || see previous line || || || see previous line ||
