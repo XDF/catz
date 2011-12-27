@@ -15,8 +15,10 @@
 %# --------------------
 %#
 <% content 'metaadd' => begin %>
-<meta name="og:title" content="<%= $t->{NEWSING} %>"> 
 <meta name="og:type" content="catz:list"> 
+<meta name="description" content="<%== include 'meta/desc_news' %>">
+<meta name="og:description" content="<%== include 'meta/desc_news' %>">
+<meta name="keywords" content="<%== include 'meta/keyw_news' %>">
 <% end %>
 %#
 %# --------------------

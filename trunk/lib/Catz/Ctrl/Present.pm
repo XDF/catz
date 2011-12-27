@@ -189,6 +189,8 @@ sub multi {
    $s->{ urlbuild } =
     $self->fuse ( $s->{ langa }, 'build', $s->{ pri }, $enc );
 
+   # only the 1st page is indexed
+   $s->{ meta_index } = $s->{ page } == 1 ? 1 : 0; 
   }
 
   when ( 'search' ) {
@@ -197,11 +199,18 @@ sub multi {
       $self->fuseq ( $s->{ langa }, 'build' ) . '?q='
     . $self->enurl ( $s->{ what } );
 
+   # search results are not indexed nor followed
+   $s->{ meta_index } = 0;
+   $s->{ meta_follow } = 0;
+
   }
 
-  default {
+  default { # runmode all
 
    $s->{ urlbuild } = $self->fuse ( $s->{ langa }, 'build' );
+
+   # all photos browsing is not indexed
+   $s->{ meta_index } = 0;
 
   }
 

@@ -49,7 +49,7 @@ use Catz::Util::Time qw(
 );
 use Catz::Util::Number qw ( fmt fullnum33 round );
 use Catz::Util::String qw (
- clean dna enurl decode encode limit trim urirest fuse fuseq
+ clean dna enurl decode encode limit trim urirest fuse fuseq ucc lcc
 );
 
 # controls emitting timing information as warnings
@@ -71,7 +71,7 @@ sub startup {
  foreach my $sub (
   qw ( dt dt2epoch dtdate dttime dtexpand s2dhms fmt clean
   enurl html_escape limit  trim fullnum33 thisyear encode
-  decode round urirest fuse fuseq )
+  decode round urirest fuse fuseq ucc lcc )
   )
  {
 
@@ -451,10 +451,9 @@ sub before {
  $s->{ langa } = 'en';
 
  # default is meta robots "index,follow",
- # controllers may modify these as needed
+ # controllers and later code may modify these as needed
  # by setting to false sets noindex,nofollow respectively
- $s->{ meta_index }  = 1;
- $s->{ meta_follow } = 1;
+ $s->{ meta_index } = $s->{ meta_follow } = 1;
  
  # set global limit of the number of photos that must be
  # exceeded to enable widget build and image strip rendering
@@ -467,7 +466,9 @@ sub before {
   $s->{ setup } = $3 // setup_default;
 
   # prevent indexing of pages with non-default setup
-  $3 and $s->{ meta_index } = 0;
+  # also disable follow since there is no point
+  $3 and $s->{ meta_index } = $s->{ meta_follow } = 0;
+  
 
   $s->{ langother } = $s->{ lang } eq 'fi' ? 'en' : 'fi';
 

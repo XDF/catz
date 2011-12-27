@@ -32,19 +32,7 @@
 <meta name="copyright" content="<%= $t->{COPYRIGHT} %> <%= $t->{AUTHOR} %> <%= $t->{FIRSTYEAR} %>-<%= thisyear %>. <%= $t->{LICENCE} %>.">
 <link rel="copyright" href="<%== $t->{URL_LICENCE} %>"> 
 <meta name="og:site_name" content="<%= $t->{SITE} %>">
-% if ( $meta_index ) {
-%  if ( $meta_follow ) {
-<meta name="robots" content="all">
-%  } else {
-<meta name="robots" content="index,nofollow">
-%  }
-% } else {
-%  if ( $meta_follow ) {
-<meta name="robots" content="noindex,follow">
-%  } else {
-<meta name="robots" content="none">
-%  }
-% }
+<meta name="robots" content="<%== $meta_index ? 'index' : 'noindex' %>,<%== $meta_follow ? 'follow' : 'nofollow' %>">
 <%= content 'canon' => begin %>
 % my $cn = "/$lang".urirest ( $url );
 <link rel="canonical" href="<%== $cn %>">
