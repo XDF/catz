@@ -77,7 +77,9 @@ if ( $runmode eq 'pair' ) {
 %#
 <% content 'ptitleadd' => begin %>
 %== include 'elem/titlea', intent => 'browse';
+% if ( $page > 1 ) { # don't show page position on first page
 (<%= $t->{PAGE} %> <%= $page %>/<%= $pages %>)
+% }
 <% end %>
 %#
 %# --------------------
@@ -88,7 +90,10 @@ if ( $runmode eq 'pair' ) {
 % } elsif ( $breedernat ) {
 <a title="<%= $t->{NAT} %> <%== $breedernat %>" href="/<%== $langa %>/browse/nat/<%== $breedernat %>/"><%== include 'elem/flag', flag => $breedernat %></a>
 % }
-<h1><%== include 'elem/titleb' =%> (<%= $from - $to == 1 ? $t->{PHOTO} : $t->{PHOTOS} %> <%== $from %>-<%== $to %>/<%= $total %>)</h1>
+<h1><%== include 'elem/titleb' =%></h1>
+% if ( $pages > 1 ) { # don't show page position if just one page
+<span class="enlarge sparse"><%= $from - $to == 1 ? $t->{PHOTO} : $t->{PHOTOS} %> <%== $from %>-<%== $to %>/<%= $total %></span>
+% }
 <% end %>
 %#
 %# --------------------

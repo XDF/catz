@@ -54,12 +54,13 @@ foreach my $setup ( @oksetups ) {
 
  # front page
 
- $t->get_ok ( "/$setup/" )->status_is ( 200 )
-  ->content_type_like ( qr/text\/html/ )
-   ->element_exists   ( 'html body h1' )
-  ->content_like      ( qr/$txt->{NOSCRIPT}/ )
-  ->content_like      ( qr/$txt->{VIZ_GLOBE_NAME}/ )
-  ->content_like      ( qr/href=\"\/$setup\/list\/breeder\/a2z\/\"/ );
+ $t->get_ok ( "/$setup/" )
+  ->status_is          ( 200 )
+   ->content_type_like ( qr/text\/html/ )
+   ->element_exists    ( 'html body h1' )
+   ->content_like      ( qr/$txt->{NOSCRIPT}/ )
+   ->content_like      ( qr/$txt->{VIZ_GLOBE_NAME}/ )
+   ->content_like      ( qr/href=\"\/$setup\/list\/breeder\/a2z\/\"/ );
 
  # without trailing slash should be 301
  $t->get_ok ( "/$setup" )->status_is ( 301 );

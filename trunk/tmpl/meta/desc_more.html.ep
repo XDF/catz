@@ -1,7 +1,18 @@
-% if ( $lang eq 'fi' ) {
-Tässä on kätsänetin kaikki <%= fmt ( scalar @$news, $lang ) %> uutisotsikkoa uusimmasta vanhimpaan.
- % } else {
-Here are all <%= fmt ( scalar @$news, $lang ) %> catza.net's news titles listed from latest to earliest.
+% given ( $topic ) {
+%  when ( 'contrib' ) {
+%   if ( $lang eq 'fi' ) {
+Auta meitä tunnistamalla kissoja! Tältä sivulta löydät tarkemmat ohjeet, kuinka osallistua.
+%   } else {
+Help us out by identifying cats! On this page you can find instructions how to contribute.
+%   }
+%  }
+%  when ( 'quality' ) {
+%   if ( $lang eq 'fi' ) {
+Sisäisen laatuprosessimme tarkoistus on jatkuvasti nostaa palvelun kissatietojen laatutasoa.
+%   } else {
+Our internal data quality process is aimed to continuously rise the quality of the cat data in the service.
+%   }
+%  }
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine
