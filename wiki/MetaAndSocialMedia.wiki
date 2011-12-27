@@ -2,46 +2,51 @@
 
 <wiki:toc max_depth="2" />
 
-= Forced page metadata =
+= Mandatory page metadata =
 
 The base template base/heavy.html.ep forces the following metadata on all pages.
 
-  * meta http-equiv content-type
-  * meta http-equiv content-language (content langauge also set on html and body so we really are on the safe side)
-  * link shortcut icon (standard old-school favicon.ico at site's root)
-  * meta generator
-  * meta author
-  * meta copyright
-  * link copyright
-  * meta robots
-  * meta og:site_name
-  * link alternamte (from English to Finnish and Finnish to English)  
-  * meta fb:admins
-  * link me (links to facebook fan page)
-  * meta credits (gives credits to some fundamental technologies that the service is based on) 
+|| *tag* || *explanation* ||
+|| meta http-equiv content-type || ||
+|| meta http-equiv content-language || content langauge is also set on html and body so we really are on the safe side ||
+|| link shortcut icon || standard old-school favicon.ico at site's root ||
+|| meta generator || ||
+|| meta author || ||
+|| meta copyright || ||
+|| link copyright || ||
+|| meta robots || Controlled by stash variables meta_index and meta_follow. The default is index,follow when with default setup and noindex,nofollow otherwise. Controllers are allowed to modify the variables. ||
+|| meta og:site_name || ||
+|| link alternamte || from English to Finnish and Finnish to English ||  
+|| meta fb:admins || ||
+|| link me || points to facebook fan page ||
+|| meta credits || gives credit to some fundamental technologies that the service is based on || 
 
-The meta robots are controlled by stash variables meta_index and meta_follow. The
-default is index,follow when with default setup and noindex,nofollow otherwise. 
-Controllers are allowed to modify the variables.
-       
+= Custom robot settings =
+
+|| *page type* || robot value* ||
+
 = Overloadable page metadata blocks = 
 
 The base template base/heavy.html.ep provides the following blocks that
-can be overloaded by page templates if needed.
+can be overloaded by page templates.
 
-== canon ==
+|| *block* || *tags* || *explanation* ||
+|| canon || link canonical, meta og:url || points to the same page in the same language but with default setup ||
+|| image || meta image, meta og:imate || points to the site's logo in png format || 
 
-  * link canonical, links to the same page in the same language with default setup
-  * meta og:url, just as the previous line describes
+= Additional page specific metadata =
 
-== image ==
+The additional metadata is presented grouped according to page type.
 
-  * meta image, links to the site's logo in png format
-  * meta og:image, just as the previous line describes
-
-= Custom page type specific metadata =
+|| *page type* || *tag(s)* || *description* || 
 
 == front ==
+
+
+= Social media integration =
+
+Social media integration (icons & buttons) are provided on the following pages.
+
 
 Added metadata
   * og:title
@@ -49,6 +54,7 @@ Added metadata
   * description
   * og:description
   * keywords
+
 
 Added features
   * social media buttons
