@@ -11,11 +11,15 @@ The base template base/heavy.html.ep forces the following metadata on all pages.
   * meta author
   * meta copyright
   * link copyright
-  * meta robots (controlled by stash variables meta_index & meta_follow, by default both are on, controllers are allowed to change)
+  * meta robots
   * meta og:site_name
   * meta fb:admins
   * link me (links to facebook fan page)
   * meta credits (gives credits to some fundamental technologies that the service is based on) 
+
+The meta robots are controlled by stash variables meta_index & meta_follow. The
+default is index,follow when with default setup and noindex,nofollow otherwise. 
+Controllers are allowed to change this behavior.
        
 = Overloadable page metadata blocks = 
 
@@ -32,13 +36,86 @@ can be overloaded by page templates if needed.
   * meta image, links to the site's logo in png format
   * meta og:image, just as the previous line describes
 
-== Page type specific metadata ==
+= Custom page type specific metadata =
 
-=== meta robots ===
+== front ==
+
+Added metadata
+  * og:title
+  * og:type = website
+  * description
+  * og:description
+  * keywords
+
+Added features
+  * social media buttons
+    
+== news ==
+
+Added metadata
+  * og:type = catz:list
+  * description
+  * og:description
+  * keywords
+
+Modified metadata
+  * noindex     
+
+== new1 ==
+
+Added metadata
+  * og:title
+  * og:type = article
+  * link rel index = points to news main page
+  * link rel next = point to next news article if any
+  * link rel prev = point to previous news article if any
+
+Added features
+  * social media buttons
+
+== lists ==
+
+  * og:type = list
+  * description
+  * og:description
+
+Modified metadata
+  * noindex     
+
+== list1 ==
+
+  * og:type = list
+  * og:title
+  * description
+  * og:description
+  * link rel index = points to lists  
+
+Added features
+  * social media buttons
+
+== browse ==
+
+== view ==
+
+== search ==
+
+== more ==
+
+== build ==
+
+  * lists: noindex
+  * browse runmode pair: 1st page default, other pages noindex
+  * browse runmode all: noindex
+  * browse runmode search: noindex,nofollow
+  * search: if i parameter is given then none
+  * build: none, but if runmode all, default setup and no widget parameters then index,nofollow
+
+== block canon ==
+
+in no id mode links to the same page without setup, in id mode page > 1 links to the same page without setup and by using first thumb's id, in id mode page = 1 links to to the same page no id mode and without setup  
+  * view: links to the same photo without setup runmode all with id
  
 || *type* || *tag* || *front* || *new1* || *news* || *lists* || *list1* || *browse* || *view* || *search* || *more * || *build* ||
-|| meta || meta robots || default || default || default || noindex,follow || default || pair: 1st page all, other pages noindex,follow, all: noindex,follow, search: none  || default || if init parameter given then none, otherwise default ||
-|| meta || block canon || default || default || default || default || default || in no id mode links to the same page without setup, in id mode page > 1 links to the same page without setup and by using first thumb's id, in id mode page = 1 links to to the same page no id mode and without setup || links to the same photo without setup, on runmode all with id || default ||    
 || meta || link index || || || links to news index || || links to lists index || || links to thumbnail page || ||
 || meta || link start || || || || || || links to first thumbnail page || links to first photo || ||
 || meta || link prev || || || links to previous article || || || links to previous thumbnail page || link to the previous photo || ||
