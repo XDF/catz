@@ -1,4 +1,4 @@
-#summary The description of page metadata and the social media integation features
+#summary The short documentation of WWW and social media integation features
 
 <wiki:toc max_depth="2" />
 
@@ -159,8 +159,10 @@ Added metadata
   * keywords
 
 Modified metadata
-  * 
-   
+  * robots
+     * if called with an earlier search then no indexing   
+     * not followed
+     
 Added features
   * social media buttons if no i (init) or q (what) parameter
 
@@ -168,55 +170,32 @@ Added features
 
 Added metadata
   * og:type = article
-  * og:  
+  * og:title  
+  * description
+  * og:description
+  * keywords
 
-<meta name="og:type" content="article">
-<meta name="og:title" content="<%= $t->{ ( uc $topic ) . '_TITLE' } %>">
+Modified metadata
+  * robots set not to follow    
+
+Added features
+  * social media buttons on contrib
 
 == build ==
 
-  * lists: noindex
-  * browse runmode pair: 1st page default, other pages noindex
-  * browse runmode all: noindex
-  * browse runmode search: noindex,nofollow
-  * search: if i parameter is given then none
-  * build: none, but if runmode all, default setup and no widget parameters then index,nofollow
-
-== block canon ==
-
-  
-  * view: links to the same photo without setup runmode all with id
- 
-|| *type* || *tag* || *front* || *new1* || *news* || *lists* || *list1* || *browse* || *view* || *search* || *more * || *build* ||
-
-|| meta || block image || default || default || default || default || default || use a random thumnail on page, but if in pair mode pri nat use flag || use the photo thumbnail || default ||
-|| meta || meta description || semi-fixed text || || semi-fixed text || a fixed text || generated from pri and subject || || || a fixed text || 
-|| meta || meta og:description || see previous line || || see previous line || see previous line || see previous line || || || see previous line ||
-|| meta || meta keywords || fixed keywords || || fixed keywords ||
-|| facebook || meta og:type || website || catz:list || article || catz:list || catz:list || default "catz:thumbnails", in runmode pair on org, umb, breeder: non_profit, on nat: country, on loc: city, on others "catz:" + pri || catz:photo || catz:search ||  
-|| facebook || meta og:title || site name & slogan || a fixed title || the date and the news title || a fixed title || the page title || in runmode all a title "n cat show photos", in runmode pair a title constructed from the pri and subject, in runmode search a fixed text + the search || photo id always + photo text if exists || the page title ||  
-|| facebook || meta og:locality || || || || || || in runmode pair on loc contains the location name || in runmode pair on loc contains the location name || ||  
-|| facebook || meta og:country-name || || || || || || in runmode pair: on loc contains the country name, on nat contains the nation || in runmode pair: on loc contains the country name, on nat contains the nation || ||
+Added metadata
+  * og:title
+  * og:type = article
+  * description
+  * og:description
+  * keywords
    
-= Social media integration features =
+Modified metadata
+  * block canon
+     * links to the same page with default setup and without widget setup    
+  * robots
+     * noindex, but if runmode all, default setup and unmodified stripe parameters then index   
+     * not followed
 
-All pages contain share function for Facebook, Google+ and Twitter.
-???
-
-Facebook Share uses
-  * the old-school share API since the newer API was very unreliable
-  * image icon  
-  * canonical url as url
-  * og:title as text
-
-Google+ button uses
-  * medium size button with no annotation     
-  
-Twitter Tweet uses
-  * the URL/GET API
-  * image icon
-  * canonical url as url
-  * og:title as text    
-       
- 
-
+Added features
+  * social media buttons if runmode all and unmodified stripe parameters             
