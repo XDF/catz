@@ -108,6 +108,8 @@ sub lists {
  ( $s->{ prims } = $self->fetch ( 'locate#prims' ) )
   or return $self->fail ( 'no lists found' );
 
+ $s->{ meta_index } = 0; # disable indexing, allow follow
+
  $self->output ( 'page/lists' );
 
 }

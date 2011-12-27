@@ -1,0 +1,5 @@
+% if ( $lang eq 'fi' ) {
+Tervetuloa kätsänettiin, kissanäyttelykuvien naukuvaan vallankumoukseen! Meillä on tällä hetkellä <%= fmt ( $maxx, $lang ) %> <%= $t->{PHOTOA_CATSHOW} %>, kaikki käytettävissä <%= $t->{LICENCE} %>llä.
+% } else {
+Welcome to <%= $t->{SITE} %>, <%= $t->{SLOGAN} %>! We currently present <%= fmt ( $maxx, $lang ) %> <%= $t->{PHOTOA_CATSHOW} %> for you under the <%= $t->{LICENCE} %>.
+% }

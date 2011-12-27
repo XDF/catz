@@ -15,6 +15,9 @@
 % my $ogtitle = $t->{SITE}.' - '.$t->{SLOGAN};
 <meta name="og:title" content="<%= $ogtitle %>">
 <meta name="og:type" content="website">
+<meta name="description" content="<%== include 'meta/desc_front' %>">
+<meta name="og:description" content="<%== include 'meta/desc_front' %>">
+<meta name="keywords" content="<%== include 'meta/keyw_front' %>">
 <% end %>
 %#
 %# --------------------
@@ -66,7 +69,7 @@
 %#
 <div class="bar"><h2><%= $t->{SUBJECTS} %></h2>
 %#
-<a href="/<%== $langa %>/browseall/"><%= fmt ( $maxx, $lang )  %> <%== $t->{PHOTOA_CATSHOW} %></a>
+<a href="/<%== $langa %>/browseall/"><%= fmt ( $maxx, $lang ) %> <%= $t->{PHOTOA_CATSHOW} %></a>
 %#
 % foreach my $row ( @$pris ) {
 <%= $sep %> <a href="/<%== $langa %>/list/<%= $row->[0] %>/<%= $matrix->{$row->[0]}->{modes}->[0] %>/">

@@ -1,0 +1,5 @@
+% if ( $lang eq 'fi' ) {
+sivuston uutiset,uutiset,uutisotiskot,kaikki uutiset,uutisluettelo 
+% } else {
+site news,news,news articles,all news,news list
+% }

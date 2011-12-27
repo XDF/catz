@@ -1,0 +1,5 @@
+% if ( $lang eq 'fi' ) {
+kissa,kissat,kissanäyttely,kissakuva,valokuvaus,CFA,FIFe,TICA
+% } else {
+cat,cats,cat show,cat show photos,photography,CFA,FIFe,TICA
+% }

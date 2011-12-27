@@ -18,7 +18,13 @@
 %#
 %# --------------------
 %#
-<% content 'ptitleadd' => begin %><%= $titl %><% end %>
+<% content 'ptitleadd' => begin %><%= $titl %> <% end %>
+%#
+%# --------------------
+%#
+<% content 'bextra' => begin %>
+%== include 'elem/ig', igurl => "/$lang".urirest ( $url ), igtext => $titl;
+<% end %>
 %#
 %# --------------------
 %#
