@@ -24,7 +24,7 @@ if ( $runmode eq 'pair' ) {
 %  }
 % }
 <%
-my $ogtitle = fmt($maxx,$lang).' '.$t->{PHOTOA_CATSHOW}; # default
+my $ogtitle = fmt($maxx,$lang).' '.$t->{PHOTOA_CATSHOW}; # runmode all
 if ( $runmode eq 'pair' ) {
  if ( $pri eq 'folder' ) {
   $ogtitle = $t->{ALBUM}.': '.$mapview->{$pri}->{$sec}->[1];
@@ -68,9 +68,8 @@ if ( $runmode eq 'pair' ) {
 <meta name="og:image" content="<%== $flagbase.'/'.lc($sec).'.gif' %>">
 % } else {
 %# using the first thumbnail image as the page's image
-% my $rdt = $thumbs->[ 0 ];
-<link rel="image_src" href="<%== $photobase %>/<%== $rdt->[3] %>/<%== $rdt->[4] %>">
-<meta name="og:image" content="<%== $photobase %>/<%== $rdt->[3] %>/<%== $rdt->[4] %>">
+<link rel="image_src" href="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
+<meta name="og:image" content="<%== $photobase %>/<%== $thumbs->[0]->[3] %>/<%== $thumbs->[0]->[4] %>">
 % }
 <% end %>
 %#
@@ -178,7 +177,12 @@ if ( $runmode eq 'pair' ) {
 %# --------------------
 %#
 <div class="bar">
-<%== include 'elem/titlea', intent => 'browse' %> <%= $sep %> 
+% my $tl = $self->render ( 'elem/titlea', intent => 'browse', partial => 1 );
+<span class="enlarge"><%== $tl %></span>
+% if ( $page == 1 ) { 
+<%== include 'elem/ig', igurl => $self->render('href/id', langh => $lang, toid => 0, partial => 1 ), igtext => $tl %>
+% }
+<%= $sep %> 
 <%= $total %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> <%= $sep %>
 <%= dtexpand ( $ancient, $lang ) %>
 % if ( $fresh ne $ancient ) {

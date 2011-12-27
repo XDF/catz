@@ -6,9 +6,10 @@
 %#
 <% content 'metaadd' => begin %>
 <meta name="og:title" content="<%= $t->{SEARCH} %>">
+<meta name="og:type" content="catz:search">
 <meta name="description" content="<%= $t->{SEARCHING} %>">
 <meta name="og:description" content="<%= $t->{SEARCHING} %>">
-<meta name="og:type" content="catz:search"> 
+<meta name="keywords" content="<%== include 'meta/keyw_search' %>">
 <% end %>
 %#
 %# --------------------

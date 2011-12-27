@@ -26,8 +26,8 @@
 %# --------------------
 %#
 <% content 'metaadd' => begin %>
-<meta name="og:title" content="<%= $t->{ ( uc $topic ) . '_TITLE' } %>"> 
 <meta name="og:type" content="article">
+<meta name="og:title" content="<%= $t->{ ( uc $topic ) . '_TITLE' } %>"> 
 <% end %>
 %#
 %# --------------------
