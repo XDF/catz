@@ -1,40 +1,8 @@
-% extends 'base/heavy';
-%#
-%# --------------------
-%#
-<% content 'ptitleadd' => begin %>
-<%= $t->{NEWS_ALL} %>
-<% end %>
-%#
-%# --------------------
-%#
-<% content 'btitle' => begin %>
-<h1><%= $t->{NEWS_ALL} %></h1>
-<% end %>
-%#
-%# --------------------
-%#
-<% content 'metaadd' => begin %>
-<meta name="og:type" content="catz:list">
-<meta name="og:title" content="<%= $t->{NEWS_ALL} %>"> 
-<meta name="description" content="<%== include 'meta/desc_news' %>">
-<meta name="og:description" content="<%== include 'meta/desc_news' %>">
-<meta name="keywords" content="<%== include 'meta/keyw_news' %>">
-<% end %>
-%#
-%# --------------------
-%#
-<% content 'bextra' => begin %><%== include 'elem/extra' %><% end %>
-%#
-%# --------------------
-%#
-<%= content 'main' => begin %>
-% foreach my $row ( @$news ) {
-<div class="bar outer"> 
-<h2><%=  dtexpand ( dtdate ( $row->[0] ), $lang ) %></h2> <a href="/<%== $langa %>/news/<%== $row->[0] %>/"><%= $row->[1] %></a>
-</div>
+% if ( $lang eq 'fi' ) {
+Kätsänetin kuva <%= $id %>. Kuvassa aihe on <%= $comment->[0] ? $comment->[0] : 'tuntemoaton' %> ja päiväys on <%= dtexpand ( dtdate ( $image->[2] ), $lang ) %>. 
+% } else {
+Photo <%= $id %> of <%= $t->{SITE} %> service. The photo subject is <%= $comment->[0] ? $comment->[0] : 'unknown' %> and the date is <%= dtexpand ( dtdate ( $image->[2] ), $lang ) %>.
 % }
-<% end %> 
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

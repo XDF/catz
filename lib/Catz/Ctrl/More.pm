@@ -40,8 +40,6 @@ sub contrib {
  my $s    = $self->{ stash };
 
  $s->{ topic } = 'contrib';
- 
- $s->{ meta_follow } = 0; # links not followed
 
  $self->f_init or return $self->fail ( 'f_init exit' );
 
@@ -94,8 +92,6 @@ sub quality {
 
  $s->{ topic } = 'quality';
  
- $s->{ meta_follow } = 0; # links not followed
-
  $self->f_init or return $self->fail ( 'f_init exit' );
 
  foreach my $item ( qw ( dt stat detail ) ) {

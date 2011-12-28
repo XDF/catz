@@ -46,32 +46,24 @@ my @oklangs = qw ( en fi );
 
 my $txt = text ( 'en' );
 
-# index
-
-$t->get_ok ( "/sitemap/index/" )->status_is ( 200 )
- ->content_type_like ( qr/xml/ )->content_like ( qr/$txt->{URL_CATZA}/ );
-
 my $i = 0;
 
-foreach my $map ( qw ( core news list pair photo ) ) {
+foreach my $map ( qw ( index core news list pair photo ) ) {
 
  my $lang = $oklangs[ $i++ % 2 ];
+ $lang = $map eq 'index' ? '' : "/$lang";
 
- $t->get_ok ( "/$lang/sitemap/$map/" )->status_is ( 200 )
+ $t->get_ok ( "$lang/sitemap/$map/" )->status_is ( 200 )
   ->content_type_like ( qr/xml/ )->content_like ( qr/$txt->{URL_CATZA}/ );
 
+ # without trailing slash
+ $t->get_ok ( "$lang/sitemap/$map" )->status_is ( 301 );
+
+ $map ne 'index' and do { 
+  # with setup
+  $t->get_ok ( $lang."394211/sitemap/$map/" )->status_is ( 404 );
+ };
+  
 }
-
-# calling with setup
-
-$t->get_ok ( "/en394211/sitemap/index/" )->status_is ( 404 );
-
-$t->get_ok ( "/fi171212/sitemap/list/" )->status_is ( 404 );
-
-# without trailing slash
-
-$t->get_ok ( "/sitemap/index" )->status_is ( 301 );
-
-$t->get_ok ( "/sitemap/core" )->status_is ( 301 );
 
 done_testing;

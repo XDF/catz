@@ -1,12 +1,17 @@
 % use 5.12.0;
 % extends 'base/heavy';
-% my $ttl = $t->{PHOTO} . " $id"; 
-% $ttl .= @$comment > 0 ? join " $sep ",  ( '', @$comment ) : '';
-% $ttl .= " $sep " . dtexpand ( dtdate ( $image->[2] ), $lang );
+% my $ttl = ''; 
+% $ttl .= @$comment > 0 ? join " $sep ", ( @$comment, '' ) : '';
+% $ttl .= "$t->{PHOTO} $id $sep ".dtexpand ( dtdate ( $image->[2] ), $lang ); 
 %#
 %# --------------------
 %#
 <% content 'metaadd' => begin %>
+% if ( $runmode eq 'all' ) {
+<meta name="description" content="<%== include 'meta/desc_view' %>">
+<meta name="og:description" content="<%== include 'meta/desc_view' %>">
+<meta name="keywords" content="<%== include 'meta/keyw_view' %>">
+% }
 <meta name="og:type" content="catz:photo">
 <meta name="og:title" content="<%= $ttl %>">
 % if ( $runmode eq 'pair' ) {
@@ -55,10 +60,7 @@
 %#
 %# --------------------
 %#
-<% content 'ptitleadd' => begin %>
-%== include 'elem/titlea', intent => 'view';
-(<%= $t->{PHOTO} %> <%== $pos %>/<%== $total %>)
-<% end %>
+<% content 'ptitleadd' => begin %><%= $ttl %><% end %>
 %#
 %# --------------------
 %#
