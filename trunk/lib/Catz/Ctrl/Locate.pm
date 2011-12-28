@@ -37,6 +37,7 @@ use Catz::Data::Conf;
 use Catz::Data::List qw ( list_matrix );
 use Catz::Data::Search;
 
+use Catz::Util::Number qw ( ceil );
 use Catz::Util::Time qw ( dt2w3c );
 
 sub find {
@@ -116,7 +117,7 @@ sub lists {
 
 }
 
-const my $SMAPS => [ qw ( core news list pair photo ) ];
+const my $SMAPS => [ qw ( core news list pair photo browse ) ];
 
 sub mapidx {
 
@@ -173,6 +174,7 @@ sub mapsub {
     [ '/news/',         $news,               'daily',  0.4 ],
     [ '/build/',        $core,               'monthly', 0.2 ],
     [ '/lists/',        $core,               'weekly', 0.1 ],
+    [ '/browseall/',    $core,               'weekly', 0.3 ],
    ];
 
   }
@@ -245,6 +247,30 @@ sub mapsub {
      ]
      } @{ $self->fetch ( 'locate#secs' ) }
    ];
+
+  }
+
+  when ( 'browse' ) {
+
+   my $change = dt2w3c $self->fetch ( 'locate#change', 'metacore' );
+
+   my $xs = $self->fetch( 'all#array' );
+
+   my $pages = ceil ( scalar @$xs / $s->{ perpage } );
+
+   foreach my $page ( 1 .. $pages ) {
+
+    push @{ $s->{ surls } },
+    [
+      $page == 1 ? '/browseall/' :
+       $self->fuse ( 
+        'browseall', 
+        $self->fetch( 'all#x2id', $xs->[ ( $page - 1 ) * $s->{ perpage} ] ) 
+       ),
+      $change, 'weekly', $page == 1 ? 0.3 : 0.2
+    ]; 
+
+   }
 
   }
 

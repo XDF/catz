@@ -2,9 +2,9 @@
 %#
 %# --------------------
 %#
-<% content 'ptitleadd' => begin %>
-<%= dtexpand ( dtdate ( $new1->[0] ), $lang ) %> <%= $new1->[1] %>
-<% end %>
+% my $titl = dtexpand ( dtdate ( $new1->[0] ), $lang ).' '.$new1->[1];
+% stash ( 'ogt', $titl );
+<% content 'ptitleadd' => begin %><%= $titl %><% end %>
 %#
 %# --------------------
 %#
@@ -15,15 +15,13 @@
 %# --------------------
 %#
 <% content 'btitle' => begin %>
-<h1> <%= dtexpand ( dtdate ( $new1->[0] ), $lang ) %> <%= $new1->[1] %></h1>
+<h1><%= $titl %></h1>
 <% end %>
 %#
 %# --------------------
 %#
 <% content 'metaadd' => begin %>
-% my $ogtitle = dtexpand ( dtdate ( $new1->[0] ), $lang ).': '.$new1->[1];
-% stash ( 'ogt', $ogtitle );
-<meta name="og:title" content="<%== $ogtitle %>">
+<meta name="og:title" content="<%== $titl %>">
 <meta name="og:type" content="article">
 <link rel="index" href="/<%== $langa %>/news/">
 % if ( $prev ) {

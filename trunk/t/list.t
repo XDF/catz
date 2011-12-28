@@ -74,7 +74,7 @@ foreach $setup ( @oksetups ) {
 
  $t->get_ok ( "/$setup/lists/" )->status_is ( 200 )
   ->content_type_like ( qr/text\/html/ )
-  ->content_like ( qr/$txt->{LISTINGS}/ );
+  ->content_like ( qr/$txt->{LISTINGS_LONG}/ );
 
  $t->get_ok ( "/$setup/lists" )->status_is ( 301 );
 

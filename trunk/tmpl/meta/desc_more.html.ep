@@ -1,16 +1,16 @@
 % given ( $topic ) {
 %  when ( 'contrib' ) {
 %   if ( $lang eq 'fi' ) {
-Auta meitä tunnistamalla kissoja! Tältä sivulta löydät tarkemmat ohjeet, kuinka osallistua.
+Auta meitä tunnistamalla kissoja! Tässä ohjeet, kuinka osallistua.
 %   } else {
-Help us out by identifying cats! On this page you can find instructions how to contribute.
+Help us out by identifying cats! Here are the instructions how to contribute.
 %   }
 %  }
 %  when ( 'quality' ) {
 %   if ( $lang eq 'fi' ) {
-Sisäisen laatuprosessimme tarkoistus on jatkuvasti nostaa palvelun kissatietojen laatutasoa.
+Sisäisen laatuprosessimme tarkoitus on jatkuvasti nostaa kissatietojen laatutasoa.
 %   } else {
-Our internal data quality process is aimed to continuously rise the quality of the cat data in the service.
+Our internal data quality process is aimed to continuously increase the quality of the cat data.
 %   }
 %  }
 % }

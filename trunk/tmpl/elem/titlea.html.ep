@@ -1,7 +1,7 @@
 %# 
 %# "Small form" title generator
 %#
-%# setting intent to 'builder' makes the form even smaller
+%# setting intent to 'build' makes the form even smaller
 %#
 % if ( $runmode eq 'pair' ) {
 %  if ( $pri eq 'folder' ) {
@@ -16,7 +16,7 @@
 %  }
 % } elsif ( $runmode eq 'search' ) {
 <%= $intent eq 'build' ? '' : $t->{SEARCH_RESULT} %> 
-<%= limit ( $what, $intent eq 'build' ? 50 : 100 ) =%>
+<%= limit ( $what, $intent eq 'build' ? 30 : 50 ) =%>
 % } else { # default to runmode 'all' 
 <%= qq{$t->{ALL} $t->{PHOTOS}} =%>
 % }

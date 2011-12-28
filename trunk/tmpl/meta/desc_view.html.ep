@@ -1,7 +1,7 @@
 % if ( $lang eq 'fi' ) {
-Kätsänetin kuva <%= $id %>. Kuvassa aihe on <%= $comment->[0] ? $comment->[0] : 'tuntemoaton' %> ja päiväys on <%= dtexpand ( dtdate ( $image->[2] ), $lang ) %>. 
+Kätsänetin kuva <%= $id %>. Kuvan aihe on <%= $comment->[0] ? $comment->[0] : 'tuntematon' %>. Kuvan päiväys on <%= dtexpand ( dtdate ( $image->[2] ), $lang ) %>. 
 % } else {
-Photo <%= $id %> of <%= $t->{SITE} %> service. The photo subject is <%= $comment->[0] ? $comment->[0] : 'unknown' %> and the date is <%= dtexpand ( dtdate ( $image->[2] ), $lang ) %>.
+Photo <%= $id %> of <%= $t->{SITE} %> service. The photo subject is <%= $comment->[0] ? $comment->[0] : 'unknown' %>. The photo date is <%= dtexpand ( dtdate ( $image->[2] ), $lang ) %>.
 % }
 %#
 %# Catz - the world's most advanced cat show photo engine

@@ -192,11 +192,11 @@ $t->get_ok ( '/en171212/list/cat/top/' )
 
 $t->get_ok ( '/fi/browseall/' )
   ->status_is ( 200 )
-  ->content_like ( qr/\"index\,nofollow\"/ );
+  ->content_like ( qr/\"index\,follow\"/ );
 
 $t->get_ok ( '/en/browseall/047277/' )
   ->status_is ( 200 )
-  ->content_like ( qr/\"noindex\,nofollow\"/ );
+  ->content_like ( qr/\"noindex\,follow\"/ );
 
 $t->get_ok ( '/fi211111/browseall/' )
   ->status_is ( 200 )

@@ -3,7 +3,7 @@
 %# --------------------
 %#
 <% content 'metaadd' => begin %>
-<meta name="og:title" content="<%= $t->{LISTINGS} %>">
+<meta name="og:title" content="<%= $t->{LISTINGS_LONG} %>">
 <meta name="og:type" content="catz:list">
 <meta name="description" content="<%== include 'meta/desc_lists' %>">
 <meta name="og:description" content="<%== include 'meta/desc_lists' %>">  
@@ -11,11 +11,11 @@
 %#
 %# --------------------
 %#
-<% content 'ptitleadd' => begin %><%= $t->{LISTINGS} %><% end %>
+<% content 'ptitleadd' => begin %><%= $t->{LISTINGS_LONG} %><% end %>
 %#
 %# --------------------
 %#
-<% content 'btitle' => begin %><h1><%= $t->{LISTINGS} %></h1><% end %>
+<% content 'btitle' => begin %><h1><%= $t->{LISTINGS_LONG} %></h1><% end %>
 %#
 %# --------------------
 %#

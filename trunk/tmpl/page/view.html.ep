@@ -1,8 +1,11 @@
 % use 5.12.0;
 % extends 'base/heavy';
-% my $ttl = ''; 
-% $ttl .= @$comment > 0 ? join " $sep ", ( @$comment, '' ) : '';
-% $ttl .= "$t->{PHOTO} $id $sep ".dtexpand ( dtdate ( $image->[2] ), $lang ); 
+%#
+%# --------------------
+%#
+% my $ttl = $comment->[0] ? "$comment->[0], "  : '';
+% $ttl .= "$t->{PHOTO} $id, ";
+% $ttl .= dtexpand ( dtdate ( $image->[2] ), $lang );
 %#
 %# --------------------
 %#
