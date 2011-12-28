@@ -85,7 +85,7 @@ rm -fR *
   * set the database file to read only  
   * run tests
     * all test should pass without warnings
-    * check that the stats are reasonable (Files=21, Tests=84??, ??? wallclock secs)    
+    * check that the stats are reasonable (Files=21, Tests=9439 86 wallclock secs)    
   * fire up the service
 {{{
 hypnotoad run.pl
