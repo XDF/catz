@@ -1,32 +1,37 @@
-#summary Short process descriptions, notes and checklists for catza.net service management and service deployment
+#summary Short process descriptions, notes and checks for Catz management and for version upgrades
 #labels Mojolicious,perlbrew,Perl,Linux
 
-This page is provided as public to show an example how Perl/Mojolicious-based application can be managed and to give me online access to these notes 24/7 around the globe. The notes are not complete nor polished.
+<wiki:toc max_depth="2" />
+
+This page is provided as public to show an example how Perl & Mojolicious 
+-based application can be managed in everyday life. This also gives me online access to the notes 24/7 around the globe.
 
 = Update data (unchanged structures) =
   
-  * run database loader on dev on meta and post (if static content has changed then include folders by not specifying any parameters)
+  * run database loader (choose modes "meta post" or "meta post check" if there is only data changes, choose all modes if new photos are to be loaded first)
 {{{
-perl load.pl meta post
-}}}    
-  * if the load is successfull then roll to the latest version
-{{{
-perl roll.pl
+perl load.pl meta post check
 }}}
-  * fire up the service on dev and check that all looks good
+{{{
+perl load.pl
+}}}    
+  * the current version is automatically rolled to the new version  
+  * fire up the service on dev and check that the service works properly on new data
 {{{
 perl run.pl daemon
 }}}        
-  * detect what is the production environment's path
+  * stop the service on dev
+  * detect what is the production environment's path from HTTP headers or from prod server processes
 {{{
 ps -ef | grep catz
 }}}
   * ship the database file to the production db folder (but NOT the key file)
   * after a succesfull shipping set the database file to read only
-  * ship the database key file matching the database file (and the production switches immediately to use the new data)           
-  * check that the production effectively runs on the new data (from HTML meta enviroment tag)
+  * ship the database key file matching the database file
+  * the production switches immediately to use the new data           
+  * check that the production effectively runs on the new data (visually from the production service's pages or by checking HTTP headers)
   * browse a few pages to make sure the production works properly
-  * run incremental backup or a full backup (full should be run when a gallery is completed)
+  * run incremental backup or full backup (full should be run when a gallery is completed)
 {{{
 nohup backup_incr.sh &
 }}}       
@@ -37,7 +42,8 @@ nohup backup_full.sh &
 = Revert the deployment of the data = 
 
   * check that both the database file and the key file to revert to exists
-  * delete any newer key files (and the production switches immediately)
+  * delete any newer key files
+  * the production switches immediately to use the older data
   * run incremental backup
 {{{
 nohup backup_incr.sh &
@@ -45,31 +51,31 @@ nohup backup_incr.sh &
 
 = Deploy a new static content with a new version of the data =
 
-  * ship the static content
+  * ship the new static content
   * progress using the instructions for update data           
       
 = Deploy a new version of the service =
 
-== on dev ==
+== on development ==
 
-  * make sure that you have made at least one database loading compared to the version in production (data version must have been changed forward), if not then make a pseudo loading (loading just meta is simplest if no changes)
-  * roll to the latest database version 
-  * clean old database versions from /db (leave only the latest and the latest key file)
+  * make sure that you have made at least one database loading compared to the version in production (data version must have been changed forward) 
+  * clean old database versions from /db (leave only the latest db and the latest db key file)
   * clean logs from /log
   * check what is in /temp and clean it if needed     
   * fresh start memcached
   * run tests
     * all test should pass without warnings
-    * check that the stats are reasonable (Files=18, Tests=7244 - 7274, 50 - 100 wallclock secs)    
-  * SVN commit the project if not yet committed  
+    * check that the stats are reasonable (Files=21, Tests=8415, 125 wallclock secs)
+    * ocassionally run the page walker script/walk.pl to find dead links        
+  * SVN commit the project if not yet done  
 
-== on prod ==
+== on production ==
 
-  * detect what is the production environment's path
+  * detect what is the production environment's path from HTTP headers or from prod server processes
 {{{
 ps -ef | grep catz
 }}}
-  * delete all stuff from the non-production environment directory 
+  * delete all stuff from the NON-production environment directory 
 {{{ 
 ...
 rm -fR *
@@ -78,14 +84,14 @@ rm -fR *
     * on slow connection consider gzipping the database before shipping and then ungzipping
   * set the database file to read only  
   * run tests
-    * all should pass without warnings
-    * check that the stats are reasonable (Files=18, Tests=7244 - 7274, 50 - 100 wallclock secs)    
+    * all test should pass without warnings
+    * check that the stats are reasonable (Files=21, Tests=84??, ??? wallclock secs)    
   * fire up the service
 {{{
 hypnotoad run.pl
 }}} 
-  * test the service via ssh tunneled port that it appears to work as expected
-  * edit nginx config (two places) to so that the proxying points to the deployed service
+  * test the service via tunneled port that it appears to work properly
+  * edit nginx config so that the proxying points to the deployed environment
   * test nginx config 
 {{{
 nginx -t
@@ -94,16 +100,16 @@ nginx -t
 {{{
 kill -HUP $( cat /var/run/nginx.pid )
 }}}   
-  * test via the public interface that the service works normally and that it runs on the correct enviroment (from HTML meta)       
+  * test via the public interface that the service works properly and that it runs on the correct enviroment (from pages of from HTTP headers)      
   * change the enviroment in the boot time startup script 
 {{{
 pico /etc/rc.local
 }}}
-  * run the incremental backup
+  * run incremental backup
 {{{
 nohup backup_incr.sh &
 }}}       
-  * shutdown the non-production
+  * shutdown the NON-production environment
 {{{
 cat hypnotoad.pid | xargs kill -TERM
 }}} 
@@ -111,7 +117,7 @@ cat hypnotoad.pid | xargs kill -TERM
 = Update Mojolicious & Hypnotoad on the fly =
 
   * do the Mojolicious update on dev first to find out any issues
-  * update Mojolicious via CPAN
+  * update Mojolicious via CPAN on prod
   * run tests, although this has a limited meaning since if something is broken , the results goes to cache and is served from there thereafter
   * restart Hypnotoad
 {{{    
@@ -153,4 +159,4 @@ kill -USR2 <pid>
   * run the incremental backup
 {{{
 nohup backup_incr.sh &
-}}}             
+}}}
