@@ -105,14 +105,14 @@ Meta tags representing the page navigation is setting according the following ta
 == og:locality ==
 
 Meta tag og:locality is set on following conditions:
-* on browse and view with runmode pair and concept loc set to subject
+   * on browse and view with runmode pair and concept loc set to subject
 
 == og:country-name ==
 
 Meta tag og:locality is set on following conditions:
-* on browse and view with runmode pair and concept loc set to Finland
-* on browse and view with runmode pair and concept nat set to subject
-* 
+   * on browse and view with runmode pair and concept loc set to Finland
+   * on browse and view with runmode pair and concept nat set to subject
+ 
 = Robots settings =
 
 || *page type (and rule)* || *robot value* ||
