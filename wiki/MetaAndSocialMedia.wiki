@@ -21,10 +21,6 @@ The base template base/heavy.html.ep forces the following metadata on all pages.
 || link me || points to facebook fan page ||
 || meta credits || gives credit to some fundamental technologies that the service is based on || 
 
-= Custom robot settings =
-
-|| *page type* || robot value* ||
-
 = Overloadable page metadata blocks = 
 
 The base template base/heavy.html.ep provides the following blocks that
@@ -32,180 +28,123 @@ can be overloaded by page templates.
 
 || *block* || *tags* || *explanation* ||
 || canon || link canonical, meta og:url || points to the same page in the same language but with default setup ||
-|| image || meta image, meta og:imate || points to the site's logo in png format || 
+|| image || meta image, meta og:imate || points to the site's logo in png format ||
+
+The following overloads are in effect on canon block:
+
+  * on browse first page points to the same page but without setup and photo id 
+  * on browse other pages points to the same page but without setup and using the first thumbnail's id as id
+  * on view points to the same photo on runmode all and without setup  
+  * on build points to the same page with default setup and without widget setup
+    
+The following overloads are in effect on image block:
+  * browse on runmode pair and with concept nat sets points to the flag of the nation
+  * browse on other cases points to the first thumnail on the page        
+  * on view points to the photo's thumbnail version             
 
 = Additional page specific metadata =
 
-The additional metadata is presented grouped according to page type.
+== og:type ==
 
-|| *page type* || *tag(s)* || *description* || 
+|| *page type* (and rule) || type set ||
+|| front || website ||
+|| news || catz:list ||
+|| new1 || article ||
+|| lists || catz:list ||
+|| list1 || catz:list ||
+|| browse runmodes all and search || catz:thumbnails ||
+|| browse runmode pair org, umb, breeder || non_profit ||
+|| browse runmode pair nat || country ||
+|| browse runmode pair loc || location ||
+|| browse runmode pair not org, umb, breeder, nat, loc || catz:concept where concept is the concept of the subject ||
+|| view || catz:photo ||
+|| search || catz:search ||
+|| more || article ||
+|| build || article ||
 
-== front ==
+== og:title ==
 
+All pages are expected to set og:title to a suitable value.
+
+== description & og:description ==
+
+The following pages set the description tags. Both tags on same page should have the same value.
+  
+   * front
+   * news
+   * lists
+   * list1
+   * browse first page on runmode pair and all
+   * view on runmode all     
+   * search
+   * more
+   * build                   
+
+== keywords ==
+
+The following pages set the keywords tag.
+  
+   * front
+   * news
+   * browse first page on runmode pair and all
+   * view on runmode all      
+   * search
+   * more
+   * build                   
+
+== navigation ==
+
+Meta tags representing the page navigation is setting according the following table.
+
+|| *page* || *index* || *start* || *prev* || *next* ||
+|| new1 || points to news || || points to previous article if any || points to next article if any ||
+|| list1 || points to lists || || || ||
+|| browse || || points to the first page || points to the previous page if any || points to the next page if any ||
+|| view || points to thummnails || points to the first photo || points to the previous photo if any || points to the next photo if any || 
+
+== og:locality ==
+
+Meta tag og:locality is set on following conditions:
+* on browse and view with runmode pair and concept loc set to subject
+
+== og:country-name ==
+
+Meta tag og:locality is set on following conditions:
+* on browse and view with runmode pair and concept loc set to Finland
+* on browse and view with runmode pair and concept nat set to subject
+* 
+= Robots settings =
+
+|| *page type (and rule)* || *robot value* ||
+|| front || default,default ||
+|| news || noindex,default ||
+|| new1 || default,default ||
+|| lists || noindex,default ||
+|| list1 || noindex,default ||
+|| browse runmode all first page || default,nofollow ||
+|| browse runmode all not first page || noindex,nofollow ||
+|| browse runmode pair first page || default,nofollow ||
+|| browse runmode pair not first page || noindex,nofollow ||
+|| browse runmode search || noindex,nofollow ||
+|| view runmode all || default,nofollow ||
+|| view runmode pair || noindex,nofollow ||
+|| view runmode search || noindex,nofollow ||
+|| search without parameters || default,nofollow ||
+|| search with parameter || noindex,nofollow ||
+|| more || default,default ||
+|| build runmode all without widget setup || default,nofollow ||
+|| build runmode other cases || noindex,nofollow ||
 
 = Social media integration =
 
 Social media integration (icons & buttons) are provided on the following pages.
 
-
-Added metadata
-  * og:title
-  * og:type = website
-  * description
-  * og:description
-  * keywords
-
-
-Added features
-  * social media buttons
-    
-== news ==
-
-Added metadata
-  * og:type = catz:list
-  * description
-  * og:description
-  * keywords
-
-Modified metadata
-  * noindex     
-
-== new1 ==
-
-Added metadata
-  * og:title
-  * og:type = article
-  * link rel index points to news main page
-  * link rel next points to next news article if any
-  * link rel prev points to previous news article if any
-
-Added features
-  * social media buttons
-
-== lists ==
-
-Added metadata
-  * og:type = list
-  * description
-  * og:description
-
-Modified metadata
-  * noindex     
-
-== list1 ==
-
-Added metadata
-  * og:type = list
-  * og:title
-  * description
-  * og:description
-  * link rel index points to lists  
-
-Modified metadata
-  * noindex     
-
-Added features
-  * social media buttons
-
-== browse ==
-
-Added metadata
-  * og:type = catz:thumbnails, but in runmode pair 
-    * catz:concept where concept is the concept of the subject
-    * if concept is org, umb, breeder then og:type = non_profit
-    * if concept is nat then og:type = country            
-    * if concept is loc then og:type = location
-  * og:locality is set to subject if runmode pair and concept is loc
-  * og:country-name is set to Finland if runmode pair and concept is loc, but if concept is nat then set to country in question  
-  * og:title set according to runmode
-  * link rel start points to the first page
-  * link rel next points to next page if any
-  * link rel prev poins to previous page if any
-
-Modified metadata
-  * block canon
-     * 1st page links to the same page but wihtout setup and photo id
-     * on other pages links to the same page but without setup and using the first thumbnail's photo id as photo id      
-  * block image 
-     * on runmode pair and concept nat set to the flag of the nation
-     * on other cases set to the first thumbnail on the page
-  * robots
-     * on runmode all only the first page is indexed, others are not, nothing is followed
-     * on runmode pair only the first page is indexed, others are not, nothing is followed
-     * on runmode search nothing is indexed nor followed                        
-
-Added features
-  * social media buttons on 1st page of the set
-  
-== view ==
-
-Added metadata
-  * og:type = catz:photo
-  * og:title set according the photo's text
-  * og:locality is set to subject if runmode pair and concept is loc
-  * og:country-name is set to Finland if runmode pair and concept is loc, but if concept is nat then set to country in question
-  * link rel index points to the corresponding browse page  
-  * link rel start points to the first photo of the set
-  * link rel next points to next photo of the set if any
-  * link rel prev poins to previous photo of the set if any
-
-Modified metadata
-  * block canon points to the same photo on runmode all and without setup      
-  * block image points to the photo's thumbnail version
-  * robots
-     * on runmode all just indexing, no following
-     * on runmode pair and search no indexing, no following
-       
-Added features
-  * social media buttons
-
-== search ==
-
-Added metadata
-  * og:type = catz:search
-  * og:title
-  * description
-  * og:description
-  * keywords
-
-Modified metadata
-  * robots
-     * if called with an earlier search then no indexing   
-     * not followed
-     
-Added features
-  * social media buttons if no i (init) or q (what) parameter
-
-== more ==
-
-Added metadata
-  * og:type = article
-  * og:title  
-  * description
-  * og:description
-  * keywords
-
-Modified metadata
-  * robots set not to follow    
-
-Added features
-  * social media buttons on contrib
-
-== build ==
-
-Added metadata
-  * og:title
-  * og:type = article
-  * description
-  * og:description
-  * keywords
-   
-Modified metadata
-  * block canon
-     * links to the same page with default setup and without widget setup    
-  * robots
-     * noindex, but if runmode all, default setup and unmodified stripe parameters then index   
-     * not followed
-
-Added features
-  * social media buttons if runmode all and unmodified stripe parameters             
+|| *page type (and rule)* ||
+|| front ||
+|| new1 ||
+|| list1 ||
+|| browse on first page ||
+|| view ||
+|| search if without parameters ||
+|| more contrib ||
+|| build runmode all without widget setup ||
