@@ -48,7 +48,7 @@ my $txt = text ( 'en' );
 
 my $i = 0;
 
-foreach my $map ( qw ( index core news list pair photo ) ) {
+foreach my $map ( qw ( index core news list pair photo browse ) ) {
 
  my $lang = $oklangs[ $i++ % 2 ];
  $lang = $map eq 'index' ? '' : "/$lang";

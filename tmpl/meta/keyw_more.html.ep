@@ -8,9 +8,9 @@ contribute,help,support,inform,cat data,cat name,send
 %  }
 %  when ( 'quality' ) {
 %   if ( $lang eq 'fi' ) {
-laatu,laatuprosessi,kissatieto
+laatu,laatuprosessi,kissatieto,parantaa
 %   } else {
-quality,quality process,cat data
+quality,quality process,cat data,improve
 %   }
 %  }
 % }

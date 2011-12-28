@@ -2,11 +2,15 @@
 %#
 %# --------------------
 %#
+% my $titl = $self->render ( 'elem/titleb', intent => 'browse', partial => 1 );
+% $titl =~ s|\r||g;
+% $titl =~ s|\n| |g;
+% $titl = trim ( $titl );
 <% content 'metaadd' => begin %>
 % if ( $runmode ne 'search' and $page == 1 ) { # first apage on all or pair
-<meta name="description" content="<%== include 'meta/desc_browse' %>">
-<meta name="og:description" content="<%== include 'meta/desc_browse' %>">
-<meta name="keywords" content="<%== include 'meta/keyw_browse' %>">
+<meta name="description" content="<%== include 'meta/desc_browse', titl => $titl %>">
+<meta name="og:description" content="<%== include 'meta/desc_browse', titl => $titl %>">
+<meta name="keywords" content="<%== include 'meta/keyw_browse', titl => $titl %>">
 % }
 <%
 my $ogtype = 'catz:thumbnails'; # default
@@ -28,21 +32,7 @@ if ( $runmode eq 'pair' ) {
 <meta name="og:country-name" content="<%= $nats->{$sec}->{natl} %>">
 %  }
 % }
-<%
-my $ogtitle = fmt($maxx,$lang).' '.$t->{PHOTOA_CATSHOW}; # runmode all
-if ( $runmode eq 'pair' ) {
- if ( $pri eq 'folder' ) {
-  $ogtitle = $t->{ALBUM}.': '.$mapview->{$pri}->{$sec}->[1];
- } elsif ( $pri eq 'date' ) {
-  $ogtitle = $t->{DATE}.': '.dtexpand ( $sec, $lang );
- } else {
-  $ogtitle = $t->{uc($pri)}.': '.$sec; 
- }
-} elsif ( $runmode eq 'search' ) {
- $ogtitle = $t->{SEARCH_RESULT}.' '.$what;  
-} 
-%>
-<meta name="og:title" content="<%= $ogtitle %>"> 
+<meta name="og:title" content="<%= $titl =%>"> 
 <link rel="start" href="<%== include 'href/id', langh => $langa, toid => $pin->[0] %>">
 % if ( $page > 1 ) {
 <link rel="prev" href="<%== include 'href/id', langh => $langa, toid => $pin->[$page-2] %>">
@@ -80,8 +70,7 @@ if ( $runmode eq 'pair' ) {
 %#
 %# --------------------
 %#
-<% content 'ptitleadd' => begin %>
-%== include 'elem/titlea', intent => 'browse';
+<% content 'ptitleadd' => begin %><%= $titl %>
 % if ( $page > 1 ) { # don't show page position on first page
 (<%= $t->{PAGE} %> <%= $page %>/<%= $pages %>)
 % }
@@ -95,7 +84,7 @@ if ( $runmode eq 'pair' ) {
 % } elsif ( $breedernat ) {
 <a title="<%= $t->{NAT} %> <%== $breedernat %>" href="/<%== $langa %>/browse/nat/<%== $breedernat %>/"><%== include 'elem/flag', flag => $breedernat %></a>
 % }
-<h1><%== include 'elem/titleb' =%></h1>
+<h1><%= $titl %></h1>
 % if ( $pages > 1 ) { # don't show page position if just one page
 <span class="enlarge sparse"><%= $from - $to == 1 ? $t->{PHOTO} : $t->{PHOTOS} %> <%== $from %>-<%== $to %>/<%= $total %></span>
 % }
@@ -187,10 +176,9 @@ if ( $runmode eq 'pair' ) {
 %# --------------------
 %#
 <div class="bar">
-% my $tl = $self->render ( 'elem/titlea', intent => 'browse', partial => 1 );
-<span class="enlarge"><%== $tl %></span>
+<span class="enlarge"><%== include 'elem/titlea', intent => 'browse' %></span>
 % if ( $page == 1 ) { 
-<%== include 'elem/ig', igurl => $self->render('href/id', langh => $lang, toid => 0, partial => 1 ), igtext => $tl %>
+<%== include 'elem/ig', igurl => $self->render('href/id', langh => $lang, toid => 0, partial => 1 ), igtext => $titl %>
 % }
 <%= $sep %> 
 <%= fmt($total,$lang) %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> <%= $sep %>
@@ -203,7 +191,7 @@ if ( $runmode eq 'pair' ) {
 % }
 % foreach my $key ( @{ $dist->{sets}->{link} } ) {
 %  if ( stash ('dist_count_' . $key ) > 0 ) {
-<%= $sep %> <a href="<%== stash ('dist_url_' . $key )  %>"><%= stash ('dist_count_' . $key ) %> <%= stash ('dist_text_' . $key ) %></a>
+<%= $sep %> <a href="<%== stash ('dist_url_' . $key )  %>"><%= fmt ( stash ('dist_count_' . $key ), $lang ) %> <%= stash ('dist_text_' . $key ) %></a>
 %  }
 % }
 % if ( $runmode eq 'search' ) {

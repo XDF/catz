@@ -1,5 +1,5 @@
 % if ( $lang eq 'fi' ) {
-Tämä luettelo on luettelo kätsänetin kaikista aiheluetteloista (<%= fmt ( scalar @$prims, $lang ) %> kpl).
+Tämä luettelo on luettelo kätsänetin kaikista aiheluetteloista, joita on <%= fmt ( scalar @$prims, $lang ) %> kpl.
 % } else {
 This list is a list of all <%= qq{catza.net's} %> <%= fmt ( scalar @$prims, $lang ) %> subject lists.
 % }

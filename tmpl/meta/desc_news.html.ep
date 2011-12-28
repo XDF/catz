@@ -1,5 +1,5 @@
 % if ( $lang eq 'fi' ) {
-Tässä on kätsänetin kaikki <%= fmt ( scalar @$news, $lang ) %> uutisotsikkoa uusimmasta vanhimpaan.
+Tässä kätsänetin kaikki <%= fmt ( scalar @$news, $lang ) %> uutisotsikkoa uusimmasta vanhimpaan.
  % } else {
 Here are all <%= fmt ( scalar @$news, $lang ) %> <%= qq{catza.net's} %> news titles listed from latest to earliest.
 % }

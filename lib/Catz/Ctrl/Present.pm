@@ -194,9 +194,9 @@ sub multi {
    $s->{ urlbuild } =
     $self->fuse ( $s->{ langa }, 'build', $s->{ pri }, $enc );
 
-   # only the 1st page is indexed and followed
+   # only the 1st page is indexed, all pages are not followed
    $s->{ meta_index } =  $s->{ page } == 1 ? $s->{ meta_index } : 0;
-       
+   $s->{ meta_follow } = 0;     
   }
 
   when ( 'search' ) {
@@ -206,7 +206,7 @@ sub multi {
     . $self->enurl ( $s->{ what } );
 
    # search results are not indexed nor followed
-   $s->{ meta_index } = 0;
+   $s->{ meta_index } = $s->{ meta_follow } = 0;
 
   }
 
@@ -216,12 +216,14 @@ sub multi {
 
    # all photos browsing only first page is indexed
    $s->{ meta_index } = $s->{ page } == 1 ? $s->{ meta_index } : 0;
+
+   # follow is left to the default
    
   }
 
  } ## end given
  
- $s->{ meta_follow } = 0; # browse pages are not followed
+
 
  $self->output ( 'page/browse' );
 
