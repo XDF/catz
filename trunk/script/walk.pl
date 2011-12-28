@@ -34,8 +34,10 @@ use Catz::Data::Conf;
 
 my @urls = 
  map { "http://localhost:300" . conf ( 'env' ) . $_ } qw( 
-  /en/ /fi/ /en/browseall/ /fi/browseall/ /en/viewall/ /fi/viewall/
-  /en/news/ /fi/news/ /en/lists/ /fi/lists/ 
+  /en/ /fi264311/ /en365312/browseall/ /fi/browseall/ 
+  /en/viewall/ /fi264311/viewall/ /en/news/ /fi/news/ 
+  /en/lists/ /fi/lists/ /fi/list/lens/a2z/
+  /fi264311/search/ /en365312/search?q=Peku /fi/more/contrib/
  );
 
 my $ocache = {}; # cache an object for each URL
@@ -76,9 +78,7 @@ foreach my $url ( @urls ) {
  say '';
 
  my $u = getobj ( $url );
-
- lint ( $u ); 
-  
+ 
  foreach my $link ( sort $u->links )  {
 
   my $lin = $link->url_abs();
@@ -108,5 +108,5 @@ foreach my $url ( @urls ) {
 
 }
 
-
-
+say '';
+say ':-D walk done, no erros';

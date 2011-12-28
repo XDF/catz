@@ -76,8 +76,10 @@ foreach my $page ( @okpages ) {
   ->content_like ( qr/link rel=\"me\"/ )
   ->content_like ( qr/meta name=\"generator\"/ )
   ->content_like ( qr/meta name=\"credits\"/ )
-  ->content_like ( qr/meta name=\"robots\"/ );
-  
+  ->content_like ( qr/meta name=\"robots\"/ )
+  ->content_like ( qr/meta name=\"og:title\" / )
+  ->content_like ( qr/meta name=\"og:type\" / );
+
 }
 
 #
@@ -280,11 +282,11 @@ $t->get_ok ( '/fi/search?q=*XXXXYYYYZZZZKSKSKKS*' )
 
 $t->get_ok ( '/fi/more/contrib/' )
   ->status_is ( 200 )
-  ->content_like ( qr/\"index\,nofollow\"/ );
+  ->content_like ( qr/\"index\,follow\"/ );
 
 $t->get_ok ( '/fi/more/quality/' )
   ->status_is ( 200 )
-  ->content_like ( qr/\"index\,nofollow\"/ );
+  ->content_like ( qr/\"index\,follow\"/ );
 
 $t->get_ok ( '/fi394211/more/quality/' )
   ->status_is ( 200 )
@@ -292,11 +294,11 @@ $t->get_ok ( '/fi394211/more/quality/' )
 
 $t->get_ok ( '/en/more/contrib/' )
   ->status_is ( 200 )
-  ->content_like ( qr/\"index\,nofollow\"/ );
+  ->content_like ( qr/\"index\,follow\"/ );
 
 $t->get_ok ( '/en/more/quality/' )
   ->status_is ( 200 )
-  ->content_like ( qr/\"index\,nofollow\"/ );
+  ->content_like ( qr/\"index\,follow\"/ );
 
 $t->get_ok ( '/en394211/more/quality/' )
   ->status_is ( 200 )
@@ -334,97 +336,88 @@ $t->get_ok ( '/en/build?q=text%3D*panel*' )
 
 $t->get_ok ( '/en394111/' )
   ->status_is ( 200 )
-  ->content_like ( qr/meta name=\"og:title\" / )
-  ->content_like ( qr/meta name=\"og:type\" / )
   ->content_like ( qr/meta name=\"description\" / )
   ->content_like ( qr/meta name=\"og:description\" / )
   ->content_like ( qr/meta name=\"keywords\" / );
 
 $t->get_ok ( '/fi394111/news/' )
   ->status_is ( 200 )
-  ->content_like ( qr/meta name=\"og:type\" / )
   ->content_like ( qr/meta name=\"description\" / )
   ->content_like ( qr/meta name=\"og:description\" / )
   ->content_like ( qr/meta name=\"keywords\" / );
 
 $t->get_ok ( '/en/news/20110707014512/' )
   ->status_is ( 200 )
-  ->content_like ( qr/meta name=\"og:title\" / )
-  ->content_like ( qr/meta name=\"og:type\" / )
   ->content_like ( qr/link rel=\"index\"/ )
   ->content_like ( qr/link rel=\"next\"/ )  
   ->content_like ( qr/link rel=\"prev\"/ );
 
 $t->get_ok ( '/fi/lists/' )
   ->status_is ( 200 )
-  ->content_like ( qr/meta name=\"og:type\" / )
   ->content_like ( qr/meta name=\"description\" / )
   ->content_like ( qr/meta name=\"og:description\" / );
 
 $t->get_ok ( '/en394111/list/breeder/a2z/' )
   ->status_is ( 200 )
-  ->content_like ( qr/meta name=\"og:title\" / )
-  ->content_like ( qr/meta name=\"og:type\" / )
   ->content_like ( qr/meta name=\"description\" / )
   ->content_like ( qr/meta name=\"og:description\" / )
   ->content_like ( qr/link rel=\"index\"/ );
   
 $t->get_ok ( '/en/search/026035?q=%22MCO%20%3F%20%3F%3F%22%20%22NFO%20%3F%20%3F%3F%22' )  
   ->status_is ( 200 )
-  ->content_like ( qr/meta name=\"og:title\" / )
-  ->content_like ( qr/meta name=\"og:type\" / )
   ->content_like ( qr/link rel=\"start\"/ )
   ->content_like ( qr/link rel=\"next\"/ )  
   ->content_like ( qr/link rel=\"prev\"/ );
 
 $t->get_ok ( '/fi394111/browse/loc/Helsinki/' )  
   ->status_is ( 200 )
-  ->content_like ( qr/meta name=\"og:title\" / )
-  ->content_like ( qr/meta name=\"og:type\" / )
   ->content_like ( qr/link rel=\"start\"/ )
   ->content_like ( qr/link rel=\"next\"/ )  
   ->content_like ( qr/meta name=\"og:locality\" / )
-  ->content_like ( qr/meta name=\"og:country-name\" / );
+  ->content_like ( qr/meta name=\"og:country-name\" / )
+  ->content_like ( qr/meta name=\"description\" / )
+  ->content_like ( qr/meta name=\"og:description\" / )
+  ->content_like ( qr/meta name=\"keywords\" / );
+
+$t->get_ok ( '/en394111/viewall/026035/' )  
+  ->status_is ( 200 )
+  ->content_like ( qr/link rel=\"index\"/ )
+  ->content_like ( qr/link rel=\"start\"/ )
+  ->content_like ( qr/link rel=\"next\"/ ) 
+  ->content_like ( qr/link rel=\"prev\"/ )
+  ->content_like ( qr/meta name=\"description\" / )
+  ->content_like ( qr/meta name=\"og:description\" / )
+  ->content_like ( qr/meta name=\"keywords\" / ); 
 
 $t->get_ok ( '/en394111/view/loc/Helsinki/180016/' )  
   ->status_is ( 200 )
-  ->content_like ( qr/meta name=\"og:title\" / )
-  ->content_like ( qr/meta name=\"og:type\" / )
   ->content_like ( qr/meta name=\"og:locality\" / )
   ->content_like ( qr/meta name=\"og:country-name\" / ) 
   ->content_like ( qr/link rel=\"index\"/ )
   ->content_like ( qr/link rel=\"start\"/ )
   ->content_like ( qr/link rel=\"next\"/ ) 
-  ->content_like ( qr/link rel=\"prev\"/ ); 
-
+  ->content_like ( qr/link rel=\"prev\"/ );
+  
 $t->get_ok ( '/en/search/' )  
   ->status_is ( 200 )
-  ->content_like ( qr/meta name=\"og:title\" / )
-  ->content_like ( qr/meta name=\"og:type\" / )
   ->content_like ( qr/meta name=\"description\" / )
   ->content_like ( qr/meta name=\"og:description\" / )
   ->content_like ( qr/meta name=\"keywords\" / );
 
 $t->get_ok ( '/fi/more/contrib/' )  
   ->status_is ( 200 )
-  ->content_like ( qr/meta name=\"og:title\" / )
-  ->content_like ( qr/meta name=\"og:type\" / )
   ->content_like ( qr/meta name=\"description\" / )
   ->content_like ( qr/meta name=\"og:description\" / )
   ->content_like ( qr/meta name=\"keywords\" / );
 
 $t->get_ok ( '/en/more/quality/' )  
   ->status_is ( 200 )
-  ->content_like ( qr/meta name=\"og:title\" / )
-  ->content_like ( qr/meta name=\"og:type\" / )
   ->content_like ( qr/meta name=\"description\" / )
   ->content_like ( qr/meta name=\"og:description\" / )
   ->content_like ( qr/meta name=\"keywords\" / );
 
 $t->get_ok ( '/en111111/build/' )  
   ->status_is ( 200 )
-  ->content_like ( qr/meta name=\"og:title\" / )
-  ->content_like ( qr/meta name=\"og:type\" / )
   ->content_like ( qr/meta name=\"description\" / )
   ->content_like ( qr/meta name=\"og:description\" / )
   ->content_like ( qr/meta name=\"keywords\" / );

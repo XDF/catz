@@ -49,7 +49,8 @@ use Catz::Util::Time qw(
 );
 use Catz::Util::Number qw ( fmt fullnum33 round );
 use Catz::Util::String qw (
- clean dna enurl decode encode limit trim urirest fuse fuseq ucc lcc
+ clean dna enurl decode encode limit trim urirest fuse fuseq 
+ ucc lcc ucclcc 
 );
 
 # controls emitting timing information as warnings
@@ -71,7 +72,7 @@ sub startup {
  foreach my $sub (
   qw ( dt dt2epoch dtdate dttime dtexpand s2dhms fmt clean
   enurl html_escape limit  trim fullnum33 thisyear encode
-  decode round urirest fuse fuseq ucc lcc )
+  decode round urirest fuse fuseq ucc lcc ucclcc )
   )
  {
 
@@ -300,14 +301,6 @@ sub startup {
 
  # front page sample photos
  $l->route ( '/sample/:width', width => qr/\d{3,4}/ )->to ( 'main#sample' );
-
- # browse refine/jump expand
- $l->route ( 
-  '/expand/:pri/:sec/:target', 
-  pri => qr/[a-z]{1,25}/,
-  sec => qr/[A-Za-z0-9_-]{1,500}/,
-  target => qr/[a-z]{1,25}/,  
- )->to ( 'locate#expand' );
 
  # add Mojolicious hooks
  $self->hook ( before_dispatch => \&before );

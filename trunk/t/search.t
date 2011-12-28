@@ -136,7 +136,7 @@ foreach my $mode ( qw ( search display ) ) {
   # browse / view results
   $t->get_ok ( "/$setup/$mode?q=" . enurl ( $search ) )->status_is ( 200 )
    ->content_type_like ( qr/text\/html/ )
-   ->content_like      ( qr/alt=\"\w{4,5} \d{6}/ )    # photo alt text
+   ->content_like      ( qr/alt=\".+\d{6}/ )    # photo alt text
    ->content_like      ( qr/\.JPG/ );
 
   # with ending slash -> redirect

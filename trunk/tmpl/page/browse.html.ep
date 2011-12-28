@@ -3,6 +3,11 @@
 %# --------------------
 %#
 <% content 'metaadd' => begin %>
+% if ( $runmode ne 'search' and $page == 1 ) { # first apage on all or pair
+<meta name="description" content="<%== include 'meta/desc_browse' %>">
+<meta name="og:description" content="<%== include 'meta/desc_browse' %>">
+<meta name="keywords" content="<%== include 'meta/keyw_browse' %>">
+% }
 <%
 my $ogtype = 'catz:thumbnails'; # default
 if ( $runmode eq 'pair' ) {
@@ -188,7 +193,7 @@ if ( $runmode eq 'pair' ) {
 <%== include 'elem/ig', igurl => $self->render('href/id', langh => $lang, toid => 0, partial => 1 ), igtext => $tl %>
 % }
 <%= $sep %> 
-<%= $total %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> <%= $sep %>
+<%= fmt($total,$lang) %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> <%= $sep %>
 <%= dtexpand ( $ancient, $lang ) %>
 % if ( $fresh ne $ancient ) {
 - <%= dtexpand ( $fresh, $lang ) %>

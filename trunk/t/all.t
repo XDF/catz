@@ -63,7 +63,7 @@ foreach my $mode ( @okmodes ) {
 
  $t->get_ok ( "/$setup/$mode/" )->status_is ( 200 )
   ->content_type_like ( qr/text\/html/ )
-  ->content_like      ( qr/alt=\"\w{4,5} \d{6}/ )    # photo alt text
+  ->content_like      ( qr/alt=\".+\d{6}/ )    # photo alt text
   ->content_like      ( qr/\.JPG/ );
 
  $t->get_ok ( "/$setup/$mode" )->status_is ( 301 );
@@ -74,7 +74,7 @@ foreach my $mode ( @okmodes ) {
 
   $t->get_ok ( "/$setup/$mode/$id/" )->status_is ( 200 )
    ->content_type_like ( qr/text\/html/ )
-   ->content_like      ( qr/alt=\"\w{4,5} \d{6}/ )    # photo alt text
+   ->content_like      ( qr/alt=\".+\d{6}/ )    # photo alt text
    ->content_like      ( qr/\.JPG/ );
 
   $t->get_ok ( "/$setup/$mode/$id" )->status_is ( 301 );
