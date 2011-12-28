@@ -28,7 +28,7 @@ can be overloaded by page templates.
 
 || *block* || *tags* || *explanation* ||
 || canon || link canonical, meta og:url || points to the same page in the same language but with default setup ||
-|| image || meta image, meta og:imate || points to the site's logo in png format ||
+|| image || meta image_src, meta og:image || points to the site's logo in png format ||
 
 The following overloads are in effect on canon block:
 
@@ -121,8 +121,8 @@ Meta tag og:locality is set on following conditions:
 || new1 || default,default ||
 || lists || noindex,default ||
 || list1 || noindex,default ||
-|| browse runmode all first page || default,nofollow ||
-|| browse runmode all not first page || noindex,nofollow ||
+|| browse runmode all first page || default,default ||
+|| browse runmode all not first page || noindex,default ||
 || browse runmode pair first page || default,nofollow ||
 || browse runmode pair not first page || noindex,nofollow ||
 || browse runmode search || noindex,nofollow ||
