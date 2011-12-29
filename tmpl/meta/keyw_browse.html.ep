@@ -1,12 +1,12 @@
 % if ( $lang eq 'fi' ) {
 %  if ( $runmode eq 'pair' ) {
-<%= $titl =%>,<%= $sec %>,<%= $t->{uc($pri)} %>,kissakuva,selailu,<%= $t->{SITE} %>
+<%== $titl %>,<%= $t->{uc($pri)} %>,kissakuva,selailu,<%= $t->{SITE} %>
 %  } else { # runmode all
 kissa,kissanäyttely,kissanäyttelykuvat,kissakuva,selailu,selaa,<%= $t->{SITE} %> 
 %  } 
 % } else {
 %  if ( $runmode eq 'pair' ) {
-<%= $titl =%>,<%= $sec %>,<%= $t->{uc($pri)} %>,cat photo,browsing,<%= $t->{SITE} %>
+<%== $titl %>,<%= $t->{uc($pri)} %>,cat photo,browsing,<%= $t->{SITE} %>
 %  } else { # runmode all
 cat,catshow,catshow photos,cat photo,browsing,browse,<%= $t->{SITE} %>
 %  }

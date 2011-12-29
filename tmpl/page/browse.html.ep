@@ -32,7 +32,7 @@ if ( $runmode eq 'pair' ) {
 <meta name="og:country-name" content="<%= $nats->{$sec}->{natl} %>">
 %  }
 % }
-<meta name="og:title" content="<%= $titl =%>"> 
+<meta name="og:title" content="<%== $titl %>"> 
 <link rel="start" href="<%== include 'href/id', langh => $langa, toid => $pin->[0] %>">
 % if ( $page > 1 ) {
 <link rel="prev" href="<%== include 'href/id', langh => $langa, toid => $pin->[$page-2] %>">
@@ -70,7 +70,7 @@ if ( $runmode eq 'pair' ) {
 %#
 %# --------------------
 %#
-<% content 'ptitleadd' => begin %><%= $titl %>
+<% content 'ptitleadd' => begin %><%== $titl %>
 % if ( $page > 1 ) { # don't show page position on first page
 (<%= $t->{PAGE} %> <%= $page %>/<%= $pages %>)
 % }
@@ -84,7 +84,7 @@ if ( $runmode eq 'pair' ) {
 % } elsif ( $breedernat ) {
 <a title="<%= $t->{NAT} %> <%== $breedernat %>" href="/<%== $langa %>/browse/nat/<%== $breedernat %>/"><%== include 'elem/flag', flag => $breedernat %></a>
 % }
-<h1><%= $titl %></h1>
+<h1><%== $titl %></h1>
 % if ( $pages > 1 ) { # don't show page position if just one page
 <span class="enlarge sparse"><%= $from - $to == 1 ? $t->{PHOTO} : $t->{PHOTOS} %> <%== $from %>-<%== $to %>/<%= $total %></span>
 % }
@@ -177,8 +177,15 @@ if ( $runmode eq 'pair' ) {
 %#
 <div class="bar">
 <span class="enlarge"><%== include 'elem/titlea', intent => 'browse' %></span>
-% if ( $page == 1 ) { 
-<%== include 'elem/ig', igurl => $self->render('href/id', langh => $lang, toid => 0, partial => 1 ), igtext => $titl %>
+% if ( $page == 1 ) {
+%  given ( $runmode ) {
+%   when ( 'all' ) {
+%== include 'elem/ig', igurl => $self->render('href/id', langh => $lang, toid => 0, partial => 1 ), igtext => "$t->{ALL} $total $t->{PHOTOA}";
+%   }
+%   when ( 'pair' ) {
+%== include 'elem/ig', igurl => $self->render('href/id', langh => $lang, toid => 0, partial => 1 ), igtext => $t->{uc($pri)} . ' ' . $sec;
+%   }
+%  }
 % }
 <%= $sep %> 
 <%= fmt($total,$lang) %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %> <%= $sep %>
