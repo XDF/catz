@@ -91,8 +91,8 @@ foreach my $page ( @okpages ) {
 my @hassmi = qw (
  /fi/ /en/ /en/news/20111215232708/ /en394211/list/lens/top/
  /fi/browse/app/a_21/ /en394211/browse/app/a_21/
- /fi/browseall/ /en/browseall/ /fi394211/search?q=*mini*
- /en/viewall/ /fi/viewall/084157/ /en394211/view/breed/AMS/
+ /fi/browseall/ /en/browseall/ /en/viewall/ 
+ /fi/viewall/084157/ /en394211/view/breed/AMS/
  /en394211/view/breed/AMS/171106/ /fi/display/126129?q=text%3D*panel*
  /fi/display?q=text%3D*panel* /en/search/ /fi211111/search/
  /en/more/contrib/ /fi171212/more/contrib/ /fi/build/ /en323321/build/
@@ -115,7 +115,7 @@ my @hasnosmi = qw (
  /fi/news/ /fi171212/lists/ /fi/browse/etime/1-047200_s/018175/
  /en/browse/folder/20110417helsinki/171076/
  /fi394211/browseall/007043/ /fi/browseall/068212/
- /fi211111/search/083230?q=*mini*
+ /fi394211/search?q=*mini* /fi211111/search/083230?q=*mini*
  /en/search?i=text%3D*panel* /en/search?q=ZZZZZZZZZ
  /en/more/quality/ /fi171212/more/quality/
  /fi323321/build/c3a1f1l1000s100g0/

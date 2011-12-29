@@ -6,6 +6,7 @@ L36: samyang8,exif_f_number=3.5
 L140-143: samyang8,exif_f_number=5.6
 P1: [SIA]
 P2-3: [SIA]
+P4: {Crimsonette's} Frog Prince (Risto) [OLH n 22]
 P5: [SIA]
 P6: [DRX]
 P7-8: LV*{Nostri Vincent} Than A Feeling [EXO w 62]

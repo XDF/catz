@@ -1,12 +1,12 @@
 % if ( $lang eq 'fi' ) {
 %  if ( $runmode eq 'pair' ) {
-Kuvien selailu, aiheena <%= $titl %>, <%= fmt($total,$lang) %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>, <%= fmt($pages,$lang) %> <%= $pages == 1 ? $t->{PAGE} : $t->{PAGES} %>.
+Kuvien selailu, aiheena <%== $titl %>, <%= fmt($total,$lang) %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>, <%= fmt($pages,$lang) %> <%= $pages == 1 ? $t->{PAGE} : $t->{PAGES} %>.
 %  } else { # runmode all
 Kaikkien kätsänetin kuvien selailu, <%= fmt($total,$lang) %> kuvaa, <%= fmt($pages,$lang) %> sivua. 
 %  } 
 % } else {
 %  if ( $runmode eq 'pair' ) {
-Photo browsing of <%= $titl %>, <%= fmt($total,$lang) %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>, <%= fmt($pages,$lang) %> <%= $pages == 1 ? $t->{PAGE} : $t->{PAGES} %>.
+Photo browsing of <%== $titl %>, <%= fmt($total,$lang) %> <%= $total == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>, <%= fmt($pages,$lang) %> <%= $pages == 1 ? $t->{PAGE} : $t->{PAGES} %>.
 %  } else { # runmode all
 Browsing of all <%= $t->{SITE} %> photos, <%= fmt($total,$lang) %> photos, <%= fmt($pages,$lang) %> pages.
 %  }
