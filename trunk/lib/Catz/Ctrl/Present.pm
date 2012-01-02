@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -58,9 +58,23 @@ sub single {
  ( $s->{ total }, $s->{ pos }, $s->{ pin } ) =
   @{ $self->fetch ( $s->{ runmode } . '#pointer', $s->{ x },
    @{ $s->{ args_array } } ) };
-
- $s->{ total } == 0
-  and return $self->fail ( 'photo not found' );
+ 
+ $s->{ total } == 0 and do {
+ 
+  # more analysis added 2012-01-02
+  
+  if ( $s->{ origin } eq 'id' ) {
+  
+   # id was presented in URL and it was found in the data
+   # now we send a permanent redirect to same photo in all photos viewing
+   
+   return $self->moveto ( $self->fuse( $s->{langa}, 'viewall', $s->{ id } ) );   
+   
+  } 
+  
+  return $self->fail ( 'photo not found' );
+  
+ };  
 
  # fetch the photo metadata
 
@@ -120,8 +134,34 @@ sub multi {
   )
   };
 
- $s->{ total } == 0
-  and return $self->fail ( 'no photos found' );
+ $s->{ total } == 0 and do {
+ 
+  # more analysis added 2012-01-02
+  
+  if ( $s->{ origin } eq 'id' ) {
+  
+   # id was presented in URL and it was found in the data
+   # now we send a permanent redirect to same pair / search but without the id
+   
+   if ( $s->{runmode} eq 'pair' ) {
+   
+    return $self->moveto ( $self->fuse( 
+     $s->{langa}, 'browse', $s->{pri}, $self->encode( $s->{sec} ) 
+    ) );
+   
+   } elsif ( $s->{runmode} eq 'search') {
+   
+    return $self->moveto ( $self->fuseq( 
+     $s->{langa}, 'search', ( '?q=' . $self->enurl( $s->{what} ) ) 
+    ) );
+   
+   }
+   
+  } 
+  
+  return $self->fail ( 'no photos found' );
+  
+ };
 
  scalar @{ $s->{ xs } } == 0
   and return $self->fail ( 'no photos for this page' );

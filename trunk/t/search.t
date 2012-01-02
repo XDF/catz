@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 #
@@ -92,7 +92,6 @@ my @okcombs = (
 # known bad  search / photo id combinations
 my @badcombs = (
  '122001?q=mimosan',
- '123456?q=%2Blens%3Dsigma* %2Borg%3Dsurok %2Bbreed%3Drus',
  '121100?q=%2Btext%3D"* panel*"'
 );
 
@@ -182,7 +181,7 @@ foreach my $mode ( qw ( search display ) ) {
   $setup = $oksetups[ rand @oksetups ];
   $txt = text ( substr ( $setup, 0, 2 ) );
 
-  $t->get_ok ( "/$setup/$mode/$search" )->status_is ( 404 );
+  $t->get_ok ( "/$setup/$mode/$search" )->status_is ( 301 );
 
  }
 
