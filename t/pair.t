@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 #
@@ -71,7 +71,6 @@ my @okcombs = qw (
 my @badids = qw (
  org/TUROK/150161
  org/SUROK/018090
- title/EC/003122
  date/20100404/150008
  app/a/173008
  breeder/Cat-039s-045JM/143100
@@ -166,7 +165,7 @@ foreach my $mode ( qw ( browse view ) ) {
   my @elem = split m|/|, $comp;
 
   $t->get_ok ( "/$setup/$mode/$elem[0]/$elem[1]/$elem[2]/" )
-   ->status_is ( 404 );
+   ->status_is ( 301 );
 
  }
 

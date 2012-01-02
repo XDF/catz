@@ -249,7 +249,7 @@ sub f_origin {
   # fetch the corresponding photo vector pointer x
   $s->{ x } = $self->fetch ( $s->{ runmode } . '#id2x', $s->{ id } );
 
-  $s->{ x } or return $self->fail ( 'no data' );
+  $s->{ x } or return $self->fail ( 'unknown photo id' );
 
  }
  else {
