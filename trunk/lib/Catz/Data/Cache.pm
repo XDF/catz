@@ -65,10 +65,14 @@ const my $CACHEON => 1;
 # set on/off cache tracing as warnings
 const my $CACHETRC => 0;
 
+# set the cache namespace for the Catz application
+const my $NSPACE => 'CATZ';
+
 # we create a static cache object at compile time and this works just fine
 # also the hard-coded values are practically fine for all the environments
 my $cache = new Cache::Memcached::Fast {
  servers         => [ '127.0.0.1:11211' ],
+ namespace       => $NSPACE,
  connect_timeout => 0.1,
  max_failures    => 2,                      # let connect fail 2 times ...
  failure_timeout => 15,                     # ... and then rest for 15 seconds

@@ -30,3 +30,34 @@ subject_approx;cat;Udun Silver Apricot Ishtar;Udun Silver Apricot Njinyi
 #
 subject_approx;cat;Zarin Varinka;Zarin Taika
 #
+subject_approx;breeder;Indiana;Indiabi
+#
+subject_approx;breeder;Onnimannin;Onnikatin
+#
+subject_approx;breeder;IndiaInk;Indiana
+#
+subject_approx;breeder;Purrfurus;Purrur's
+#
+subject_approx;breeder;Ziazan;Zildan
+#
+subject_approx;cat;Lovelylife Biisi Biwa;Lovelylife Biisi Banjo
+#
+subject_approx;cat;Greenville Summer of Laire;Greenville Oberon of Laire
+#
+subject_approx;cat;Aamukasteen Zumba;Aamukasteen Zubr
+#
+subject_approx;cat;Musti;Mustis
+#
+subject_approx;cat;Miina;Miisu
+#
+subject_approx;cat;Valier's Ninian;Valier's Bilgin
+#
+subject_approx;cat;Vongoivan Biret;Vongoivan Erik
+#
+subject_approx;cat;Mistu;Miisu
+#
+subject_approx;cat;Aamukasteen Uma;Aamukasteen Zumba
+#
+subject_approx;cat;Cyrleyn Artemis;Cyrleyn Ares
+#
+subject_approx;cat;Udun Silver Apricot Juvel;Udun Silver Apricot Njinyi

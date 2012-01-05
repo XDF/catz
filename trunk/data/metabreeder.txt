@@ -13,6 +13,9 @@ FI
 aan de Kruidenbeek
 BE
 #
+Aasatar
+FI
+#
 Abeona's
 FI
 #
@@ -1306,6 +1309,9 @@ SE
 FoxyPaw's
 FI
 #
+Framillan
+FI
+#
 Francesca's
 SE
 #
@@ -1524,6 +1530,9 @@ FI
 #
 Hewiras
 SE
+#
+Hiesun
+FI
 #
 Hificat's
 FI
@@ -1936,6 +1945,9 @@ FI
 Kirsikan
 FI
 #
+Kirstejns
+DK
+#
 Kismarsis
 FI
 #
@@ -1993,6 +2005,9 @@ SE
 Kochav Ha-Carmel
 IL
 #
+Koeni's
+DE
+#
 Kolmikulman
 FI
 #
@@ -2017,6 +2032,9 @@ FI
 Koppiekatz
 US
 #
+KorpiCoon's
+FI
+#
 Korpikatin
 FI
 #
@@ -2039,6 +2057,9 @@ Krysos
 FI
 #
 Kujakeikarin
+FI
+#
+Kukkatarhan
 FI
 #
 Kulmakunnan
@@ -2228,6 +2249,9 @@ Lucky Line
 UA
 #
 Lukanpuron
+FI
+#
+Lumihelmen
 FI
 #
 Lumikissan
@@ -2453,6 +2477,9 @@ Mighty Claw's
 SE
 #
 Miirula
+FI
+#
+Miisunpesän
 FI
 #
 Mijara's

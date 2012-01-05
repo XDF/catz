@@ -108,7 +108,7 @@ sub cat {
 
  $data =~ s/(\})\*[A-Z]+/$1/;
 
- # collect breeder and remove breeder marters
+ # collect breeder and remove the breeder markers
 
  ( $data =~ /^(.*)\{(.+?)\}(.*)$/ ) and do {
 
@@ -177,19 +177,17 @@ sub cat {
 
  length ( $data ) > 0 and $d->{ cat } = $data;
 
- # convert $ to " on all cat data
- # remove the null characters ~ from all cat data
- # null characters are used to prevent incorrect title extractions
- # they can at this point appear anywhere but on titles
-
  do {
 
+  # convert $ to " on all cat data
   $d->{ $_ } =~ s/\$/\"/g;
 
+  # remove the null characters ~ from all cat data
+  # null character is used to prevent incorrect title extractions
+  # they can at this point appear anywhere but on titles
   $_ ne 'title' and $d->{ $_ } =~ s/\~//g;
 
-  }
-  foreach ( keys %{ $d } );
+ } foreach ( keys %{ $d } );
 
  return $d;    # return the string output and fragments as hashref
 
