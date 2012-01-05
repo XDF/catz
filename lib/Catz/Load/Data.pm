@@ -476,11 +476,11 @@ sub exid {
 
  } ## end foreach my $part ( @parts )
 
- $lens and $LENSFLEN->{ $lens } and do {
+ $lens and exists $LENSFLEN->{ $lens } and do {
   $o->{ flen } = $LENSFLEN->{ $lens };
  };
 
- if ( $lens and $LENSNAME->{ $lens } ) {
+ if ( $lens and exists $LENSNAME->{ $lens } ) {
   $o->{ lens } = $LENSNAME->{ $lens };
  }
  else {

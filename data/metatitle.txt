@@ -6,6 +6,10 @@ CH
 Champion
 Champion
 #
+CHA
+Champion Alter
+Champion Alter
+#
 DGC
 Double Grand Champion
 Double Grand Champion
