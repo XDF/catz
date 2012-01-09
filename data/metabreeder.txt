@@ -16,6 +16,9 @@ BE
 Aasatar
 FI
 #
+Abayomis
+SE
+#
 Abeona's
 FI
 #
@@ -36,6 +39,9 @@ DK
 #
 Acatcalled
 NL
+#
+Acrobat's
+SE
 #
 Adalbertus
 PL
@@ -111,6 +117,9 @@ FI
 #
 Aloa's
 DK
+#
+Alohacoons
+FI
 #
 Alsoomse
 GB
@@ -193,6 +202,9 @@ IT
 Angelic Whisper
 SE
 #
+Angelicdolls
+SE
+#
 Angelos
 FI
 #
@@ -220,7 +232,7 @@ US
 Anórien's
 FI
 #
-Apelhusets
+Apelhuset's
 SE
 #
 Applecat
@@ -250,6 +262,9 @@ FI
 Aritzia's
 CA
 #
+A-Riverway
+CH
+#
 Arkhitekton
 FI
 #
@@ -277,6 +292,9 @@ SE
 Attack's
 NO
 #
+Auchentoshan
+DE
+#
 Aucuparia's
 SE
 #
@@ -289,6 +307,9 @@ RU
 Aus Abusir
 DE
 #
+Author's
+FI
+#
 av Fjellheia
 CH
 #
@@ -298,11 +319,17 @@ NO
 av Revebo
 NO
 #
+av Skara Brae
+CH
+#
 Avallach's
 FI
 #
 Avariel
 FI
+#
+A Winerau's
+AT
 #
 Ayasse
 SE
@@ -315,6 +342,9 @@ SE
 #
 Azza
 SE
+#
+Azzi's
+NO
 #
 B-Jay
 US
@@ -383,6 +413,9 @@ Beauty's
 FI
 #
 BeautyHill
+FI
+#
+BeautySphynx
 FI
 #
 Beefeaters
@@ -639,6 +672,9 @@ FI
 #
 Cazamari's
 FI
+#
+CD Windhaven
+CH
 #
 Celestial's
 FI
@@ -910,6 +946,9 @@ CH
 de la Vallée des Dieux
 BE
 #
+de Sulena de Tengri'nor
+FR
+#
 del Fiore di Loto
 IT
 #
@@ -938,6 +977,9 @@ des Felins D'Isa
 FR
 #
 des Fusains
+FR
+#
+des Motards en Delire
 FR
 #
 des Petites Bavardes
@@ -1015,6 +1057,9 @@ RU
 Downy-Flower's
 FI
 #
+Draconian
+FI
+#
 Drakborgens
 SE
 #
@@ -1023,6 +1068,9 @@ FI
 #
 Dschadi's
 DE
+#
+du Kleetbos
+BE
 #
 du Monde Perdu
 CH
@@ -1360,6 +1408,9 @@ US
 Fursten's
 SE
 #
+Förtrolighetens
+SE
+#
 Galaksin
 FI
 #
@@ -1654,6 +1705,9 @@ FI
 Ilioschoros
 FI
 #
+Ilovuon
+FI
+#
 Ilsviköra's
 NO
 #
@@ -1704,6 +1758,9 @@ FI
 #
 IxiDixi's
 SE
+#
+iz Fialki
+RU
 #
 J-Spots
 SE
@@ -2027,6 +2084,9 @@ Koontucky
 US
 #
 Kop-Koe's
+FI
+#
+KopKop
 FI
 #
 Koppiekatz
@@ -2530,6 +2590,9 @@ DK
 Misobel's
 FI
 #
+Miss Mikku's
+SE
+#
 Mistymoon's
 FI
 #
@@ -2596,6 +2659,9 @@ FI
 Mumsikoff
 SE
 #
+Munchkinlane
+US
+#
 Murmelin
 FI
 #
@@ -2604,6 +2670,9 @@ FI
 #
 Mustecats
 ES
+#
+MyArt
+FI
 #
 My Fantasy's
 DE
@@ -2779,6 +2848,9 @@ SE
 O'Marmalade
 RU
 #
+of BeugnyCats
+FR
+#
 of Billabong
 DE
 #
@@ -2835,6 +2907,9 @@ FI
 #
 Onon
 FI
+#
+Operacoon's
+SE
 #
 Operadoll's
 FI
@@ -3802,6 +3877,9 @@ SE
 Tidgi
 RU
 #
+Tiikerililjan
+FI
+#
 Tikrun
 FI
 #
@@ -3946,6 +4024,9 @@ FI
 v.'t Rexenhuis
 NL
 #
+v.d. Gehlen Bieke
+DE
+#
 v.d. Gruenstiege
 DE
 #
@@ -4056,6 +4137,9 @@ DE
 #
 von Achor
 CH
+#
+von Alexis
+DE
 #
 von Anderland
 DE
