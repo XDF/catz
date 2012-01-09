@@ -66,13 +66,14 @@ const my $CACHEON => 1;
 const my $CACHETRC => 0;
 
 # set the cache namespace for the Catz application
-const my $NSPACE => 'CATZ';
+# we don't use the cache drivers "native namespace" 
+# feature since appears to disable caching
+const my $SPACE => 'catz';
 
 # we create a static cache object at compile time and this works just fine
 # also the hard-coded values are practically fine for all the environments
 my $cache = new Cache::Memcached::Fast {
  servers         => [ '127.0.0.1:11211' ],
- namespace       => $NSPACE,
  connect_timeout => 0.1,
  max_failures    => 2,                      # let connect fail 2 times ...
  failure_timeout => 15,                     # ... and then rest for 15 seconds
@@ -96,7 +97,7 @@ sub shrink {
 # preparing of the cache key by joining the parts
 sub keyer {
 
- my $key = enurl join $sep, map { $_ // 'undef' } @_;
+ my $key = enurl join $sep, ( $SPACE, map { $_ // 'undef' } @_ );
 
  length $key > 250 and return shrink $key;
 

@@ -31,7 +31,6 @@ use lib '../lib';
 use Const::Fast;
 
 use Catz::Data::Conf;
-
 use Catz::Util::File qw ( fileread filewrite fileremove findlatest pathcut );
 
 const my $PATH => '../db';
