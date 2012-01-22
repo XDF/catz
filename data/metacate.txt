@@ -18,10 +18,6 @@ kategoria IV
 housecats
 kotikissat
 #
-8
-preliminaries
-alustavat
-#
 9
 others
 muut

@@ -355,6 +355,9 @@ NL
 Badina's
 DK
 #
+Baheras
+SE
+#
 Baila-Bailan
 FI
 #
@@ -364,6 +367,9 @@ FI
 Bajimbi
 AU
 #
+BaliDancer's
+FI
+#
 Balladin
 FI
 #
@@ -372,6 +378,9 @@ FI
 #
 Ballymonelies
 FR
+#
+Baltais Tigeris
+LV
 #
 Bamsekattens
 SE
@@ -411,6 +420,9 @@ SE
 #
 Beauty's
 FI
+#
+Beautyburm's
+RU
 #
 BeautyHill
 FI
