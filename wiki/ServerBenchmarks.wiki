@@ -126,7 +126,7 @@ UnixBench 5.1.2
 ========================================================================
    BYTE UNIX Benchmarks (Version 5.1.2)
 
-   System: catzvps: GNU/Linux
+   System: ********: GNU/Linux
    OS: GNU/Linux -- 2.6.32-5-amd64 -- #1 SMP Mon Jan 16 16:22:28 UTC 2012
    Machine: x86_64 (unknown)
    Language: en_US.utf8 (charmap="UTF-8", collate="UTF-8")
