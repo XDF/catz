@@ -107,6 +107,79 @@ Timing buffered disk reads: 224 MB in  3.01 seconds =  74.53 MB/sec
 
 Disclaimer: based on my experience disk performance testing with dd and hdparm are crude methods. The real-life disk load of a web service cannot be emulated with dd or hdparm.
 
+= Hetzner VQ 12 VPS =
+
+  * Hetzner VQ 12 VPS
+  * Single Core
+  * 1 GB RAM
+  * 40 GB HD on some sort of RAID
+  * no backup space
+  * 2 TB traffic/mo
+  * http://www.hetzner.de/
+  * Debian 6.0 64 bit
+  * Tests run 2012-01-31
+
+{{{
+UnixBench 5.1.2
+./Run dhry2reg whetstone-double syscall pipe context1 spawn execl shell1 shell8 shell16
+
+========================================================================
+   BYTE UNIX Benchmarks (Version 5.1.2)
+
+   System: catzvps: GNU/Linux
+   OS: GNU/Linux -- 2.6.32-5-amd64 -- #1 SMP Mon Jan 16 16:22:28 UTC 2012
+   Machine: x86_64 (unknown)
+   Language: en_US.utf8 (charmap="UTF-8", collate="UTF-8")
+   CPU 0: QEMU Virtual CPU version 0.12.3 (6148.8 bogomips)
+          x86-64, MMX, Physical Address Ext, SYSENTER/SYSEXIT, SYSCALL/SYSRET
+   23:33:01 up 12 min,  1 user,  load average: 0.10, 0.03, 0.01; runlevel 2
+
+------------------------------------------------------------------------
+Benchmark Run: Mon Jan 30 2012 23:33:01 - 23:57:04
+1 CPU in system; running 1 parallel copy of tests
+
+Dhrystone 2 using register variables       29946843.0 lps   (10.0 s, 7 samples)
+Double-Precision Whetstone                     3894.4 MWIPS (10.0 s, 7 samples)
+Execl Throughput                               4957.1 lps   (30.0 s, 2 samples)
+Pipe Throughput                             2817011.4 lps   (10.0 s, 7 samples)
+Pipe-based Context Switching                 465003.1 lps   (10.0 s, 7 samples)
+Process Creation                              17985.7 lps   (30.0 s, 2 samples)
+Shell Scripts (1 concurrent)                   8123.4 lpm   (60.0 s, 2 samples)
+Shell Scripts (16 concurrent)                   528.5 lpm   (60.1 s, 2 samples)
+Shell Scripts (8 concurrent)                    967.9 lpm   (60.0 s, 2 samples)
+System Call Overhead                        4939570.4 lps   (10.0 s, 7 samples)
+
+System Benchmarks Partial Index              BASELINE       RESULT    INDEX
+Dhrystone 2 using register variables         116700.0   29946843.0   2566.1
+Double-Precision Whetstone                       55.0       3894.4    708.1
+Execl Throughput                                 43.0       4957.1   1152.8
+Pipe Throughput                               12440.0    2817011.4   2264.5
+Pipe-based Context Switching                   4000.0     465003.1   1162.5
+Process Creation                                126.0      17985.7   1427.4
+Shell Scripts (1 concurrent)                     42.4       8123.4   1915.9
+Shell Scripts (16 concurrent)                     ---        528.5      ---
+Shell Scripts (8 concurrent)                      6.0        967.9   1613.2
+System Call Overhead                          15000.0    4939570.4   3293.0
+                                                                   ========
+System Benchmarks Index Score (Partial Only)                         1627.5
+}}}
+
+the best of three subsequent test runs of
+dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync
+
+{{{
+1073741824 bytes (1.1 GB) copied, 8.39155 s, 128 MB/s
+}}}
+
+the best of three subsequent test runs of
+hdparm -t /dev/sda
+
+{{{
+Timing buffered disk reads: 858 MB in  3.00 seconds = 285.75 MB/sec
+}}}
+
+Disclaimer: based on my experience disk performance testing with dd and hdparm are crude methods. The real-life disk load of a web service cannot be emulated with dd or hdparm.
+
 = Hetzner VQ 19 VPS =
 
   * Hetzner VQ 19 VPS
