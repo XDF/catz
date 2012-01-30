@@ -171,6 +171,8 @@ dd if=/dev/zero of=test bs=64k count=16k conv=fdatasync
 1073741824 bytes (1.1 GB) copied, 8.39155 s, 128 MB/s
 }}}
 
+This must be a some sort of peak , the other two were around 70 MB/s.
+
 the best of three subsequent test runs of
 hdparm -t /dev/sda
 
