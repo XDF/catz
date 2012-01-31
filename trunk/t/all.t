@@ -41,7 +41,7 @@ use Catz::Data::Conf;
 
 my $t = Test::Mojo->new ( conf ( 'app' ) );
 
-$t->max_redirects ( 0 );
+$t->ua->max_redirects ( 0 );
 
 use Catz::Util::String qw ( enurl );
 
