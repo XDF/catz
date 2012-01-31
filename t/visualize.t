@@ -41,7 +41,7 @@ use Catz::Data::Conf;
 
 my $t = Test::Mojo->new ( conf ( 'app' ) );
 
-$t->max_redirects ( 5 );
+$t->ua->max_redirects ( 5 );
 
 # these include all three palettes
 my @oksetups = qw ( en fi en214221 fi372222 );

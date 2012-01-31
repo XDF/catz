@@ -62,8 +62,12 @@ sub do {
 
   # so in case that data loading fails the failed data gets cleared
   # from the cache within a reasonable time
-
-  my $json = $self->fetch ( 'net#get', $vurl, $pseudo );
+  
+  # 2012-01-30
+  # using "$vurl" instead of $vurl to force it to be scalar
+  # fixed Can't use a Mojo::ByteStream object as a URI at ...
+  
+  my $json = $self->fetch ( 'net#get', "$vurl", $pseudo );
 
   length ( $json ) > 15 or return $self->fail ( '3rd party request failed' );
 

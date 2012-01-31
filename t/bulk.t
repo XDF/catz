@@ -45,7 +45,7 @@ use Catz::Util::Time qw ( dtexpand );
 
 my $t = Test::Mojo->new ( conf ( 'app' ) );
 
-$t->max_redirects ( 0 );
+$t->ua->max_redirects ( 0 );
 
 my @oklangs = qw ( en fi );
 

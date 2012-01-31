@@ -42,7 +42,7 @@ use Catz::Data::Text;
 
 my $t = Test::Mojo->new ( conf ( 'app' ) );
 
-$t->max_redirects ( 5 );
+$t->ua->max_redirects ( 5 );
 
 my $txt = text ( 'en' );
 
