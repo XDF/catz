@@ -193,16 +193,21 @@ const my $N => 100 + int ( rand ( 26 ) );
 
 # a photo picking order that will be used 
 # when the photos are presented in a widget
+# created by picking a different sequencing
+# each time the module is compiled to add 
+# more randomness
+
+const my @ORD => shuffle ( 0, 1, 2, 3 );
+
 const my $PICKS => [ (
  
- # 0, 3, 6, 9, 12, ...
- ( grep { $_ % 3 == 0 } ( 0 .. $N - 1 ) ),
+ ( grep { $_ % 4 == $ORD[0] } ( 0 .. $N - 1 ) ),
 
- # 1, 4, 7, 10, 13, ...
- ( grep { $_ % 3 == 1 } ( 0 .. $N - 1  ) ),
+ ( grep { $_ % 4 == $ORD[1] } ( 0 .. $N - 1 ) ),
 
- # 2, 5, 8, 11, 14, ...
- ( grep { $_ % 3 == 2 } ( 0 .. $N - 1 ) ),
+ ( grep { $_ % 4 == $ORD[2] } ( 0 .. $N - 1 ) ),
+
+ ( grep { $_ % 4 == $ORD[3] } ( 0 .. $N - 1 ) ),
  
 ) ];
 

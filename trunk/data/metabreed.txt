@@ -119,7 +119,7 @@ German Rex
 german rex
 #
 JBL
-0
+3
 Japanese Bobtail Longhair
 pitkäkarvainen japanin bobtail
 #
