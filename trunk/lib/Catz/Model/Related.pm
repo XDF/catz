@@ -178,8 +178,10 @@ sub _refines {
  foreach my $target ( @targets ) {
 
   my $data = $self->refine ( $pri, $sec, $full, $target );
-
-  push @res, [ $target, $data->[0], $data->[1] ];
+  
+  $data->[0] > 0 and $data->[1] > 0 and
+   # push only if there is something real to push
+   push @res, [ $target, $data->[0], $data->[1] ];
 
  }
 

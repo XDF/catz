@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -129,8 +129,8 @@ const my $MATRIX => {
  code => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 1,
-  refines  => [ qw ( app feat breeder cat ) ],
-  jump     => { app => 1, feat => 1, cat => 1 },
+  refines  => [ qw ( app feat breed breeder cat ) ],
+  jump     => { app => 1, breed => 1, feat => 1, cat => 1 },
   n        => 5,
  },
 

@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-function catzDoExpand( pri, sec, drill ) {
+function catzExpandUpdate ( pri, sec, drill ) {
 
   // extract langauge and setup from url
   var parts = 
@@ -33,8 +33,14 @@ function catzDoExpand( pri, sec, drill ) {
   $.ajax ({
     url: head + '/expand/' + pri + '/' + sec + '/' + drill + '/',
     success: function( data ){
-      $('#expand_'+drill).html( data ); // update the result to DOM   
+      $('#expand').html( data ); // update the result to DOM   
     }
   });
+
+}
+
+function catzExpandDismiss ( ) {
+
+ $('#expand').html( '' );
 
 }
