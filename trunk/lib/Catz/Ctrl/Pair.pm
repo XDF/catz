@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -61,11 +61,13 @@ sub pair {
  $s->{ pri } eq 'nat' and $s->{ nats } = $self->fetch ( 'map#nats' );
 
  # if refines are defined for this pri then fetch them
- defined $s->{ matrix }->{ $s->{ pri } }->{ refines }
-  and $s->{ refines } = $self->fetch (
+ exists $s->{ matrix }->{ $s->{ pri } } and  
+ exists $s->{ matrix }->{ $s->{ pri } }->{ refines } and 
+  $s->{ refines } = $self->fetch (
   'related#refines',
   $s->{ pri },
   $s->{ sec },
+  0, # 0 = limited mode, not full mode
   @{ $s->{ matrix }->{ $s->{ pri } }->{ refines } }
   );
 

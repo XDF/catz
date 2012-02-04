@@ -68,7 +68,7 @@ const my $MATRIX => {
   dividers => 0,
   refines  => [ qw ( org umb ) ],
   jump     => {},
-  n        => 10,
+  n        => 5,
  },
 
  org => {
@@ -76,7 +76,7 @@ const my $MATRIX => {
   dividers => 0,
   refines  => [ qw ( umb loc ) ],
   jump     => { umb => 1 },
-  n        => 10,
+  n        => 5,
  },
 
  umb => {
@@ -115,7 +115,7 @@ const my $MATRIX => {
   dividers => 1,
   refines  => [ qw ( breed feat app nat cat ) ],
   jump     => { nat => 1, cat => 1 },
-  n        => 10,
+  n        => 5,
  },
 
  nat => {
@@ -123,7 +123,7 @@ const my $MATRIX => {
   dividers => 0,
   refines  => [ qw ( breeder breed cat ) ],
   jump     => { breeder => 1, cat => 1 },
-  n        => 10,
+  n        => 5,
  },
 
  code => {
@@ -147,7 +147,7 @@ const my $MATRIX => {
   dividers => 1,
   refines  => [ qw ( code feat breeder cat ) ],
   jump     => { code => 1, cat => 1 },
-  n        => 15,
+  n        => 5,
  },
 
  cate => {
@@ -163,7 +163,7 @@ const my $MATRIX => {
   dividers => 0,
   refines  => [ qw ( breed app breeder cat ) ],
   jump     => { app => 1, cat => 1 },
-  n        => 10,
+  n        => 5,
  },
 
  nick => {
@@ -179,7 +179,7 @@ const my $MATRIX => {
   dividers => 0,
   refines  => [ qw ( breed breeder cat ) ],
   jump     => { cat => 1 },
-  n        => 10,
+  n        => 5,
  },
 
  lens => {
@@ -203,7 +203,7 @@ const my $MATRIX => {
   dividers => 0,
   refines  => [ qw ( lens body ) ],
   jump     => {},
-  n        => 10,
+  n        => 5,
  },
 
  etime => {
@@ -211,7 +211,7 @@ const my $MATRIX => {
   dividers => 0,
   refines  => [ qw ( lens body ) ],
   jump     => {},
-  n        => 10,
+  n        => 5,
  },
 
  iso => {
@@ -219,7 +219,7 @@ const my $MATRIX => {
   dividers => 0,
   refines  => [ qw ( body ) ],
   jump     => {},
-  n        => 10,
+  n        => 5,
  },
 
  flen => {
@@ -227,7 +227,7 @@ const my $MATRIX => {
   dividers => 0,
   refines  => [ qw ( lens etime ) ],
   jump     => {},
-  n        => 10,
+  n        => 5,
  },
 
 };

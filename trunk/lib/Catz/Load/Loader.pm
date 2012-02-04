@@ -927,11 +927,13 @@ sub load_post {
   foreach my $target ( @{ $matrix->{ $source }->{ refines } } ) {
 
    my $sqlc = relate ( $source, $target );
+   
+   say $sqlc;
 
    load_do ( "insert into _relate $sqlc" );
 
    $i++;
-   logadd ( '.' );
+   #logadd ( '.' );
 
   }
 

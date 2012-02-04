@@ -1,28 +1,39 @@
 % use Catz::Data::Search;
 %  my $i = 1;
 %  foreach my $set ( @$refines ) {
-%   scalar @{ $set->[1] } > 0 and do {
+%   scalar @{ $set->[2] } > 0 and do {
 %    $i++ > 1 and do {
 <%== $sep %>
 %    };
-<%= scalar @{ $set->[1] } > 1 ? $t->{uc($set->[0]).'X'} : $t->{uc($set->[0])} %>
+<span id="expand_<%== $set->[0] %>">
+% if ( $action eq 'expand' ) {
+<%= scalar @{ $set->[2] } > 1 ? $t->{uc($set->[0]).'S'} : $t->{uc($set->[0])} %>
+% } else {
+<%= scalar @{ $set->[2] } > 1 ? $t->{uc($set->[0]).'X'} : $t->{uc($set->[0])} %>
+% }
 %    my $j = 1;
-%    foreach my $item ( @{ $set->[1] } ) {
+%    foreach my $item ( @{ $set->[2] } ) {
 %     $j++ > 1 and do {
 <%== $sep %>
 %     };
-%     if ( exists $matrix->{$pri}->{jump}->{$set->[0]} or scalar @{ $set->[1] } == 1 ) {
+%     if ( exists $matrix->{$pri}->{jump}->{$set->[0]} or scalar @{ $set->[2] } == 1 ) {
 <a href="/<%== $langa %>/browse/<%== $set->[0] %>/<%== encode $item %>/">
 %     } else { 
 <a href="/<%== $langa %>/search?q=<%== enurl ( args2search ( "+$pri", $sec, "+$set->[0]", $item ) ) %>">
 %     }
-<%== $item %></a>
+<%= $item %></a>
+%    }
+%    if ( $action ne 'expand' ) {
+%     if ( $set->[1] > scalar @{ $set->[2] } ) {
+<%= $sep %> <a href="JavaScript:catzDoExpand('<%== $pri %>','<%== encode $sec %>','<%== $set->[0] %>');" class="shrink"><%= $t->{ALL} %> <%= fmt($set->[1],$lang) %> <%= $t->{uc($set->[0]).'A'} %></a> 
+%     }
 %    }
 %   };
+</span>
 %  }
 %#
 %# Catz - the world's most advanced cat show photo engine
-%# Copyright (c) 2010-2011 Heikki Siltala
+%# Copyright (c) 2010-2012 Heikki Siltala
 %# Licensed under The MIT License
 %# 
 %# Permission is hereby granted, free of charge, to any person obtaining a copy

@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -119,7 +119,7 @@ sub _coverage {    # how many photos have the given pri defined
 
 sub _refine {
 
- my ( $self, $pri, $sec, $target ) = @_;
+ my ( $self, $pri, $sec, $full, $target ) = @_;
  my $lang = $self->{ lang };
 
  my $me = $self->dbone (
@@ -128,38 +128,58 @@ sub _refine {
   where pid=(select pid from pri where pri=?) and sec=?
  }, $pri, $sec
  );
+ 
+ my $limit = '';
+ 
+ if ( $full == 0 ) {
+  
+ ( exists $MATRIX->{$target} and
+  exists $MATRIX->{$target}->{ n } ) or
+   die "internal error: number of refine items not defined for '$target'";
 
- ( my $n = $MATRIX->{$target}->{n} )
-  or die "internal error: number of refine items not defined for '$target'";
-
+  $limit = 'limit '.$MATRIX->{$target}->{n};
+ 
+ }
+ 
  my $tg = $self->dbone ( "select pid from pri where pri=?", $target );
-
+ 
  my $sql = qq { 
+  select count(*) from sec_$lang natural join _secm 
+   where sid in (
+    select target
+    from _relate inner join sec on (target=sid) natural join pri 
+    where source=? and pid=?
+   )
+ };
+
+ my $count =  $self->dbone ( $sql, $me, $tg );
+
+ $sql = qq { 
   select sec from ( 
    select sec,sort from sec_$lang natural join _secm 
    where sid in (
     select target
     from _relate inner join sec on (target=sid) natural join pri 
     where source=? and pid=?
-   ) order by cntphoto desc limit $n
+   ) order by cntphoto desc $limit
   ) order by sort
  };
 
- return $self->dbcol ( $sql, $me, $tg );
+ return [ $count, $self->dbcol ( $sql, $me, $tg ) ];
 
 } ## end sub _refine
 
 sub _refines {
 
- my ( $self, $pri, $sec, @targets ) = @_;
+ my ( $self, $pri, $sec, $full, @targets ) = @_;
 
  my @res = ();
 
  foreach my $target ( @targets ) {
 
-  my $data = $self->refine ( $pri, $sec, $target );
+  my $data = $self->refine ( $pri, $sec, $full, $target );
 
-  push @res, [ $target, $data ];
+  push @res, [ $target, $data->[0], $data->[1] ];
 
  }
 

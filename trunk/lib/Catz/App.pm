@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -301,6 +301,17 @@ sub startup {
 
  # front page sample photos
  $l->route ( '/sample/:width', width => qr/\d{3,4}/ )->to ( 'main#sample' );
+
+ # show all related expand feature
+ $l->route ( '/related/:width', width => qr/\d{3,4}/ )->to ( 'main#sample' );
+ 
+ $l->route (
+   '/expand/:pri/:sec/:drill',
+   pri   => qr/[a-z]{1,25}/,
+   sec   => qr/[A-Za-z0-9_-]{1,500}/,
+   drill => qr/[a-z]{1,25}/
+  )->to ( "locate#expand" );
+
 
  # add Mojolicious hooks
  $self->hook ( before_dispatch => \&before );
