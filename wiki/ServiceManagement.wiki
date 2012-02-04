@@ -1,21 +1,27 @@
 #summary Short process descriptions, notes and checks for Catz management and for version upgrades
-#labels Mojolicious,perlbrew,Perl,Linux
+#labels Mojolicious,Hypnotoad,perlbrew,Perl,Linux
 
 <wiki:toc max_depth="2" />
 
 This page is provided as public to show an example how Perl & Mojolicious 
 -based application can be managed in everyday life. This also gives me online access to the notes 24/7 around the globe.
 
+Starting from February 4th 2012 the system has automatic backups so backup
+instructions were removed from this page. 
+
 = Update data (unchanged structures) =
   
-  * run database loader (choose modes "meta post" or "meta post check" if there is only data changes, choose all modes if new photos are to be loaded first)
+  * run database loader (modes "meta post" or "meta post check" if there is only data changes, all modes if new photos are to be loaded first)
+  *   
 {{{
 perl load.pl meta post check
 }}}
+
 {{{
 perl load.pl
-}}}    
-  * the current version is automatically rolled to the new version  
+}}}
+    
+  * the current version is automatically rolled to the just created version  
   * fire up the service on dev and check that the service works properly on new data
 {{{
 perl run.pl daemon
@@ -26,33 +32,22 @@ perl run.pl daemon
 ps -ef | grep catz
 }}}
   * ship the database file to the production db folder (but NOT the key file)
-  * after a succesfull shipping set the database file to read only
+  * after a succesfull shipping of the database file set the file to read only
   * ship the database key file matching the database file
   * the production switches immediately to use the new data           
-  * check that the production effectively runs on the new data (visually from the production service's pages or by checking HTTP headers)
+  * check that the production effectively runs on the new data (visually from the service or by checking HTTP headers)
   * browse a few pages to make sure the production works properly
-  * run incremental backup or full backup (full should be run when a gallery is completed)
-{{{
-nohup backup_incr.sh &
-}}}       
-{{{
-nohup backup_full.sh &
-}}}
 
 = Revert the deployment of the data = 
 
   * check that both the database file and the key file to revert to exists
   * delete any newer key files
-  * the production switches immediately to use the older data
-  * run incremental backup
-{{{
-nohup backup_incr.sh &
-}}}       
+  * the production switches immediately to use the old data
 
-= Deploy a new static content with a new version of the data =
+= Deploy new static content with a new version of the data =
 
   * ship the new static content
-  * progress using the instructions for update data           
+  * skip to the instructions for update data           
       
 = Deploy a new version of the service =
 
@@ -90,8 +85,8 @@ rm -fR *
 {{{
 hypnotoad run.pl
 }}} 
-  * test the service via tunneled port that it appears to work properly
-  * edit nginx config so that the proxying points to the deployed environment
+  * test the service via the tunneled port that it appears to work properly
+  * edit nginx config so that it points to the deployed environment
   * test nginx config 
 {{{
 nginx -t
@@ -100,14 +95,10 @@ nginx -t
 {{{
 kill -HUP $( cat /var/run/nginx.pid )
 }}}   
-  * test via the public interface that the service works properly and that it runs on the correct enviroment (from pages of from HTTP headers)      
-  * change the enviroment in the boot time startup script 
+  * test via the public interface that the service works properly and that it runs on the correct enviroment (visually by looking at the service or from HTTP headers)      
+  * change the enviroment on the boot time startup script 
 {{{
 pico /etc/rc.local
-}}}
-  * run incremental backup
-{{{
-nohup backup_incr.sh &
 }}}       
   * shutdown the NON-production environment
 {{{
@@ -118,7 +109,7 @@ cat hypnotoad.pid | xargs kill -TERM
 
   * do the Mojolicious update on dev first to find out any issues
   * update Mojolicious via CPAN on prod
-  * run tests, although this has a limited meaning since if something is broken , the results goes to cache and is served from there thereafter
+  * run tests, although this has a limited meaning since if something is broken, the results goes to memcache and are served thereafter
   * restart Hypnotoad
 {{{    
 kill -USR2 <pid>
@@ -129,10 +120,6 @@ kill -USR2 <pid>
 }}}
   * hypnotoad.pid should show a fresh pid
   * check that the service appears to work
-  * run the incremental backup
-{{{
-nohup backup_incr.sh &
-}}}       
 
 = Update Perl =
 
@@ -155,8 +142,4 @@ perlbrew switch perl-x.yy.z
   * restart hypnotoad
 {{{
 kill -USR2 <pid>
-}}}
-  * run the incremental backup
-{{{
-nohup backup_incr.sh &
 }}}
