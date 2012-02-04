@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -62,6 +62,29 @@ sub find {
  $self->output ( 'block/find' );
 
 } ## end sub find
+
+sub expand {
+
+ my $self = shift;
+ my $s    = $self->{ stash };
+ 
+ ( exists $s->{ matrix }->{ $s->{ pri } } and
+   exists $s->{ matrix }->{ $s->{ pri } }->{ refines } ) or
+  return $self->fail ( 'pri not in matrix' );
+  
+ ( any { $_ eq $s->{ drill } } 
+  @{ $s->{ matrix }->{ $s->{ pri } }->{ refines } } ) or 
+  return $self->fail ( 'drill target not matrixed for pri' );
+  
+  $s->{ sec } = $self->decode ( $s->{ sec } );
+  
+  $s->{ refines } = $self->fetch (
+   'related#refines', $s->{ pri }, $s->{ sec }, 1, $s->{ drill }
+  ); # 1 = full mode, not limited mode
+  
+ $self->output ( 'block/refines' ); 
+
+}
 
 sub list {
 

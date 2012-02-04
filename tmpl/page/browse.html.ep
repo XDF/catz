@@ -129,6 +129,9 @@ if ( $runmode eq 'pair' ) {
 % ( $vizmode eq 'dist' ) and do {
 %== include 'elem/js', jstype => 'site', jsfile => 'dist';
 % };
+% ( $runmode eq 'pair' ) and do {
+%== include 'elem/js', jstype => 'site', jsfile => 'expand';
+% };
 <% end %>
 %#
 %# --------------------
