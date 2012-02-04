@@ -1,15 +1,22 @@
 % use Catz::Data::Search;
+% if ( $action eq 'expand' ) {
+<div class="bar">
+% }
 %  my $i = 1;
 %  foreach my $set ( @$refines ) {
 %   scalar @{ $set->[2] } > 0 and do {
 %    $i++ > 1 and do {
 <%== $sep %>
 %    };
-<span id="expand_<%== $set->[0] %>">
 % if ( $action eq 'expand' ) {
-<%= scalar @{ $set->[2] } > 1 ? $t->{uc($set->[0]).'S'} : $t->{uc($set->[0])} %>
+<a title="<%= $t->{DISMISS} %>" href="JavaScript:catzExpandDismiss();">X</a>
+<%= $t->{ALL} %> <%= fmt($set->[1],$lang) %> <%= $t->{uc($set->[0]).'A'} %>
 % } else {
+%  if ( $set->[1] > scalar @{ $set->[2] } ) {
 <%= scalar @{ $set->[2] } > 1 ? $t->{uc($set->[0]).'X'} : $t->{uc($set->[0])} %>
+%  } else {
+<%= scalar @{ $set->[2] } > 1 ? $t->{uc($set->[0]).'S'} : $t->{uc($set->[0])} %>
+%  }
 % }
 %    my $j = 1;
 %    foreach my $item ( @{ $set->[2] } ) {
@@ -25,12 +32,14 @@
 %    }
 %    if ( $action ne 'expand' ) {
 %     if ( $set->[1] > scalar @{ $set->[2] } ) {
-<%= $sep %> <a href="JavaScript:catzDoExpand('<%== $pri %>','<%== encode $sec %>','<%== $set->[0] %>');" class="shrink"><%= $t->{ALL} %> <%= fmt($set->[1],$lang) %> <%= $t->{uc($set->[0]).'A'} %></a> 
+<%= $sep %> <a href="JavaScript:catzExpandUpdate('<%== $pri %>','<%== encode $sec %>','<%== $set->[0] %>');" class="shrink"><%= $t->{ALL} %> <%= fmt($set->[1],$lang) %> <%= $t->{uc($set->[0]).'A'} %></a> 
 %     }
 %    }
 %   };
-</span>
 %  }
+% if ( $action eq 'expand' ) {
+</div>
+% }
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2012 Heikki Siltala

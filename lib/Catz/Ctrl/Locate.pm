@@ -81,7 +81,10 @@ sub expand {
   $s->{ refines } = $self->fetch (
    'related#refines', $s->{ pri }, $s->{ sec }, 1, $s->{ drill }
   ); # 1 = full mode, not limited mode
-  
+ 
+ ( not ( $s->{ refines } ) or scalar @{ $s->{ refines } } == 0 ) and
+  return $self->fail ( 'invalid expand combination' ); 
+   
  $self->output ( 'block/refines' ); 
 
 }
