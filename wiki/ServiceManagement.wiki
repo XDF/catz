@@ -12,7 +12,7 @@ instructions were removed from this page.
 = Update data (unchanged structures) =
   
   * run database loader (modes "meta post" or "meta post check" if there is only data changes, all modes if new photos are to be loaded first)
-  *   
+
 {{{
 perl load.pl meta post check
 }}}
