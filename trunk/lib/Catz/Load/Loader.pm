@@ -785,7 +785,7 @@ sub load_post {
   foreach load_exec ( 'photo_col' );
 
  $i++;
- logadd ( '.' );
+ logadd ( "$i." );
 
  #
  # delete orphan albums
@@ -803,7 +803,7 @@ sub load_post {
  );
 
  $i++;
- logadd ( '.' );
+ logadd ( "$i." );
 
  #
  # delete orphan exif rows
@@ -819,7 +819,7 @@ sub load_post {
  );
 
  $i++;
- logadd ( '.' );
+ logadd ( "$i." );
 
  #
  # delete oprhan secondaries
@@ -838,7 +838,7 @@ sub load_post {
  );
 
  $i++;
- logadd ( '.' );
+ logadd ( "$i." );
 
  # delete & insert nat
 
@@ -858,7 +858,7 @@ sub load_post {
  );
 
  $i++;
- logadd ( '.' );
+ logadd ( "$i." );
 
  #
  # delete & insert category / 2011-10-15
@@ -908,7 +908,7 @@ sub load_post {
  );
 
  $i++;
- logadd ( '.' );
+ logadd ( "$i." );
 
  #
  #  adding relations
@@ -931,7 +931,7 @@ sub load_post {
    load_do ( "insert into _relate $sqlc" );
 
    $i++;
-   logadd ( '.' );
+   logadd ( "$i." );
 
   }
 
@@ -940,7 +940,7 @@ sub load_post {
  load_do ( 'create index _relate1 on _relate(source)' );
  load_do ( 'create index _relate2 on _relate(target)' );
 
- foreach my $do ( @$SECSQL ) { load_do ( $do ); $i++; logadd ( '.' ) }
+ foreach my $do ( @$SECSQL ) { load_do ( $do ); $i++; logadd ( "$i." ) }
 
  logdone;
 

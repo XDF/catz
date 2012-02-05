@@ -111,7 +111,7 @@ const my $STYLE => {
  },
  viz => {
   dist  => { width => 190, height => 240 },
-  globe => { width => 300, height => 170 },
+  globe => { width => 270, height => 153 },
   rank  => { width => 200, height => 200 },
   }
 

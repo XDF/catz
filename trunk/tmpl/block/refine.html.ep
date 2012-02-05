@@ -1,20 +1,21 @@
-% extends 'base/light'; 
-<% content 'ptitle' => begin %><%= content 'msg_en' %> - <%= content 'msg_fi' %><% end %>
-<% content 'main' => begin %>
-<h1><%= content 'msg_en' %><br><%= content 'msg_fi' %></h1>
-% if ( stash ( 't' ) ) {
-<div><a href="" onclick="javascript: history.go(-1);"><%= stash ( 't' )->{BACKTOPREV} %></a>
-<a href="<%== stash ( 't' )->{URL_CATZA} %>"><%= stash ( 't' )->{BACKTOFRONT} %></a></div>
+% my $i = 1;
+% foreach my $set ( @$refines ) { # loop all, display those with single hit
+%  if ( $set->[0] !~ /^\+(.+)$/ ) { # one hit with data
+%  $i++ > 1 and do {
+<%== $sep %>
+%  };
+<%= $t->{uc($set->[0])} %> <a href="/<%== $langa %>/browse/<%== $set->[0] %>/<%== encode $set->[1] %>/"><%= $set->[1] %></a>
+%  }
 % }
-% if ( 
-%  defined ( stash ( 'env' ) ) and 
-%  defined ( stash ( 'now' ) ) and 
-%  defined ( stash ( 'version' ) ) 
-% ) {
-<h3>catz<%= join ' ', ( stash ( 'env' ), stash ( 'now' ), stash ( 'version' ) ) %></h3>
+% foreach my $set ( @$refines ) { # loop all, display thos with multi hits
+%  if ( $set->[0] =~ /^\+(.+)$/ ) { # many hits, here comes the count
+%   my $item = $1;
+%   $i++ > 1 and do {
+<%== $sep %>
+%   };
+<a href="JavaScript:catzExpandUpdate('<%== $pri %>','<%== encode $sec %>','<%== $item %>');"><%= fmt($set->[1],$lang) %> <%= $t->{uc($item).'A'} %></a>
+%  }
 % }
-<div><%= content 'hint' %>
-<% end %></div>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2012 Heikki Siltala

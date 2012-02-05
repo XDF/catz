@@ -57,15 +57,21 @@ my @badsets = qw (
  breed/MCO/roska
  date/201114/umb
  catw2/Miisu/breed
+ folder/20110918orimattila/breeder
  nick/Mikkedewe8/cat
  lens/Canon_EF_50mm_f-047-0471-0468_II/cat
  feat/a/lens
  9039394u4h
  asdfasdfasdfasdfuaiouasdofuasodufaosdufaoisudfoasdfasdfklasdkfjaldjkfalkdlka
- jaskdf7awu-203/-202-201-202 
+ jaskdf7awu-203/-202-201-202
 );
 
-$t->get_ok ( "/fi384321/expand/cat/Miisu" )->status_is ( 301 );
+$t->get_ok ( "/fi384321/expand/cat/Miisu/loc" )->status_is ( 301 );
+$t->get_ok ( "/en/expand/cat/Miisu/loc" )->status_is ( 301 );
+
+$t->get_ok ( "/fi/expand/org/Pyh-228_Birman_Kissa_-045yhdistys/loc/")->status_is ( 200 );
+$t->get_ok ( "/if/expand/org/Pyh-228_Birman_Kissa_-045yhdistys/loc/")->status_is ( 404 );
+$t->get_ok ( "/en/expand/org/Pyh-228_Birman_Kissa_-045yhdistys/loc/")->status_is ( 404 );
 
 my $lang;
 

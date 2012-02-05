@@ -345,6 +345,8 @@ sub before {
 
  my $self = shift;
  my $s    = $self->{ stash };
+ 
+ $s->{ analyticscode } = conf ( 'lin' ) ? conf ( 'key_analytics' ) : undef;
 
  $s->{ time_start } = time ();
 

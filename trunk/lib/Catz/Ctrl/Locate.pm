@@ -75,17 +75,23 @@ sub expand {
  ( any { $_ eq $s->{ drill } } 
   @{ $s->{ matrix }->{ $s->{ pri } }->{ refines } } ) or 
   return $self->fail ( 'drill target not matrixed for pri' );
+    
+  $self->f_init or return $self->fail ( 'f_init exit' );
   
+  $self->f_map or return $self->fail ( 'f_map exit' );
+    
+  $s->{ runmode } = 'pair';
+   
   $s->{ sec } = $self->decode ( $s->{ sec } );
   
-  $s->{ refines } = $self->fetch (
-   'related#refines', $s->{ pri }, $s->{ sec }, 1, $s->{ drill }
-  ); # 1 = full mode, not limited mode
+  $s->{ expand } = $self->fetch (
+   'related#refine', $s->{ pri }, $s->{ sec }, 'expand', $s->{ drill }
+  );
  
- ( not ( $s->{ refines } ) or scalar @{ $s->{ refines } } == 0 ) and
-  return $self->fail ( 'invalid expand combination' ); 
+ ( not ( $s->{ expand } ) or scalar @{ $s->{ expand } } == 0 ) and
+  return $self->fail ( 'invalid expand combination or nothing to expand to' ); 
    
- $self->output ( 'block/refines' ); 
+ $self->output ( 'block/expand' ); 
 
 }
 

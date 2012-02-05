@@ -33,7 +33,8 @@ function catzExpandUpdate ( pri, sec, drill ) {
   $.ajax ({
     url: head + '/expand/' + pri + '/' + sec + '/' + drill + '/',
     success: function( data ){
-      $('#expand').html( data ); // update the result to DOM   
+      $('#expand').html( data ); // update the result to DOM 
+        
     }
   });
 
@@ -42,5 +43,5 @@ function catzExpandUpdate ( pri, sec, drill ) {
 function catzExpandDismiss ( ) {
 
  $('#expand').html( '' );
-
+ 
 }

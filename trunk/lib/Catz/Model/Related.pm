@@ -117,71 +117,92 @@ sub _coverage {    # how many photos have the given pri defined
 
 }
 
+# predefining SQL to make sure it remains identical and
+# thus maximizing the effect of caching
+
+my $sqlrel_en = qq {  
+ select sec,sort from sec_en natural join _secm 
+  where sid in (
+   select target
+   from _relate inner join sec on (target=sid) natural join pri 
+   where source=? and pid=?
+ ) order by sort
+};
+
+my $sqlrel_fi = qq {  
+ select sec from sec_fi natural join _secm 
+  where sid in (
+   select target
+   from _relate inner join sec on (target=sid) natural join pri 
+   where source=? and pid=?
+ ) order by sort
+};
+
+my $sqlme_en = qq{
+ select sid from sec_en where pid=(select pid from pri where pri=?) and sec=?
+};
+
+my $sqlme_fi = qq{
+ select sid from sec_fi where pid=(select pid from pri where pri=?) and sec=?
+};
+
+my $sqltg =  "select pid from pri where pri=?";
+
 sub _refine {
 
- my ( $self, $pri, $sec, $full, $target ) = @_;
+ my ( $self, $pri, $sec, $mode, $target ) = @_;
  my $lang = $self->{ lang };
 
- my $me = $self->dbone (
-  qq {
-  select sid from sec_$lang 
-  where pid=(select pid from pri where pri=?) and sec=?
- }, $pri, $sec
+ my $me = $self->dbone ( 
+  $lang eq 'fi' ? $sqlme_fi : $sqlme_en, $pri, $sec
  );
  
- my $limit = '';
- 
- if ( $full == 0 ) {
-  
- ( exists $MATRIX->{$target} and
-  exists $MATRIX->{$target}->{ n } ) or
-   die "internal error: number of refine items not defined for '$target'";
+ my $tg = $self->dbone ( $sqltg, $target );
 
-  $limit = 'limit '.$MATRIX->{$target}->{n};
+ my $set = $self->dbcol ( $lang eq 'fi' ? $sqlrel_fi : $sqlrel_en, $me, $tg );
+ 
+ # no hits, no data
+ defined $set or return undef;
+ 
+ $mode eq 'expand' and return $set;
+ 
+ # other modes like 'refine' continue
+ 
+ if ( scalar @{ $set } == 0 ) {
+ 
+  return undef;
+
+ } elsif ( scalar @{ $set } == 1 ) {
+ 
+  # only one hit
+  # we return the result (first and only row)
+  
+  return [ $target, $set->[0] ];
+ 
+ } else {
+ 
+  # more than one hits
+  # we return the count
+  
+  return [ "+$target",  scalar @{ $set } ]; 
  
  }
- 
- my $tg = $self->dbone ( "select pid from pri where pri=?", $target );
- 
- my $sql = qq { 
-  select count(*) from sec_$lang natural join _secm 
-   where sid in (
-    select target
-    from _relate inner join sec on (target=sid) natural join pri 
-    where source=? and pid=?
-   )
- };
-
- my $count =  $self->dbone ( $sql, $me, $tg );
-
- $sql = qq { 
-  select sec from ( 
-   select sec,sort from sec_$lang natural join _secm 
-   where sid in (
-    select target
-    from _relate inner join sec on (target=sid) natural join pri 
-    where source=? and pid=?
-   ) order by cntphoto desc $limit
-  ) order by sort
- };
-
- return [ $count, $self->dbcol ( $sql, $me, $tg ) ];
 
 } ## end sub _refine
 
 sub _refines {
 
- my ( $self, $pri, $sec, $full, @targets ) = @_;
+ my ( $self, $pri, $sec, @targets ) = @_;
 
  my @res = ();
 
  foreach my $target ( @targets ) {
 
-  my $data = $self->refine ( $pri, $sec, $full, $target );
+  my $data = $self->refine ( $pri, $sec, 'refine', $target );
   
-  $data->[0] > 0 and $data->[1] > 0 and
-   # push only if there is something real to push
-   push @res, [ $target, $data->[0], $data->[1] ];
+  # push only if there is something real to push
+  defined $data and 
+   push @res, $data;
 
  }
 

@@ -207,10 +207,14 @@ if ( $runmode eq 'pair' ) {
 % if ( $runmode eq 'search' ) {
 <%= $sep %> <%== include 'block/explain' %>
 % }
-</div>
 % if ( defined $refines ) {
-<div class="bar"><%== include 'block/refines' %></div>
-<span id="expand"></span>
+<%= $sep %> <%== include 'block/refine' %>
+% }
+</div>
+%# --------------------
+%#
+% if ( defined $refines ) {
+<div id="expand"></div>
 % }
 %#
 %# --------------------

@@ -51,16 +51,14 @@ const my $MATRIX => {
   modes    => [ qw ( cron a2z top ) ],
   dividers => 1,
   refines  => [],
-  jump     => {},
-  n        => 3,
+  jump     => {}
  },
 
  date => {
   modes    => [ qw ( cron top ) ],
   dividers => 1,
   refines  => [ qw ( loc org umb breed breeder lens body ) ],
-  jump     => { loc => 1, org => 1, umb => 1 },
-  n        => 5,
+  jump     => { loc => 1, org => 1, umb => 1 }
  },
 
  loc => {
@@ -68,7 +66,6 @@ const my $MATRIX => {
   dividers => 0,
   refines  => [ qw ( org umb ) ],
   jump     => {},
-  n        => 5,
  },
 
  org => {
@@ -76,7 +73,6 @@ const my $MATRIX => {
   dividers => 0,
   refines  => [ qw ( umb loc ) ],
   jump     => { umb => 1 },
-  n        => 5,
  },
 
  umb => {
@@ -84,38 +80,33 @@ const my $MATRIX => {
   dividers => 0,
   refines  => [ qw ( org loc ) ],
   jump     => { org => 1 },
-  n        => 5,
  },
 
  folder => {
   modes    => [],
   dividers => 0,
-  refines  => [ qw ( loc org umb breed breeder lens body ) ],
+  refines  => [ qw ( loc org umb breed breeder lens body iso fnum ) ],
   jump     => { loc => 1, org => 1, umb => 1 },
-  n        => 5,
  },
 
  cat => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 1,
-  refines  => [ qw ( nick code breed app breeder nat loc ) ],
+  refines  => [ qw ( nick breed code breeder nat loc org umb ) ],
   jump     => {
    nick    => 1,
-   code    => 1,
    breed   => 1,
-   app     => 1,
+   code    => 1,
    breeder => 1,
-   nat     => 1
+   nat     => 1,
   },
-  n        => 5,
  },
 
  breeder => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 1,
-  refines  => [ qw ( breed feat app nat cat ) ],
+  refines  => [ qw ( nat breed cat code app feat org umb ) ],
   jump     => { nat => 1, cat => 1 },
-  n        => 5,
  },
 
  nat => {
@@ -123,31 +114,27 @@ const my $MATRIX => {
   dividers => 0,
   refines  => [ qw ( breeder breed cat ) ],
   jump     => { breeder => 1, cat => 1 },
-  n        => 5,
  },
 
  code => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 1,
-  refines  => [ qw ( app feat breed breeder cat ) ],
+  refines  => [ qw ( breed app feat breeder cat ) ],
   jump     => { app => 1, breed => 1, feat => 1, cat => 1 },
-  n        => 5,
  },
 
  app => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 1,
-  refines  => [ qw ( breed feat breeder cat ) ],
-  jump     => { feat => 1, cat => 1 },
-  n        => 5,
+  refines  => [ qw ( breed feat code breeder cat ) ],
+  jump     => { feat => 1, code => 1, cat => 1 },
  },
 
  breed => {
   modes    => [ qw ( a2z cate top first ) ],
   dividers => 1,
-  refines  => [ qw ( code feat breeder cat ) ],
+  refines  => [ qw ( code breeder cat nat ) ],
   jump     => { code => 1, cat => 1 },
-  n        => 5,
  },
 
  cate => {
@@ -155,15 +142,13 @@ const my $MATRIX => {
   dividers => 0,
   refines  => [ qw ( breed breeder ) ],
   jump     => { breed => 1 },
-  n        => 5,
  },
 
  feat => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
-  refines  => [ qw ( breed app breeder cat ) ],
-  jump     => { app => 1, cat => 1 },
-  n        => 5,
+  refines  => [ qw ( breed app code breeder cat ) ],
+  jump     => { app => 1, code => 1, cat => 1 },
  },
 
  nick => {
@@ -171,7 +156,6 @@ const my $MATRIX => {
   dividers => 1,
   refines  => [ qw ( cat ) ],
   jump     => { cat => 1 },
-  n        => 5,
  },
 
  title => {
@@ -179,47 +163,41 @@ const my $MATRIX => {
   dividers => 0,
   refines  => [ qw ( breed breeder cat ) ],
   jump     => { cat => 1 },
-  n        => 5,
  },
 
  lens => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
-  refines  => [ qw ( body flen fnum ) ],
+  refines  => [ qw ( body flen fnum etime ) ],
   jump     => {},
-  n        => 3,
  },
 
  body => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
-  refines  => [ qw ( lens iso ) ],
+  refines  => [ qw ( lens iso etime ) ],
   jump     => {},
-  n        => 3,
  },
 
  fnum => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
-  refines  => [ qw ( lens body ) ],
+  refines  => [ qw ( lens iso etime ) ],
   jump     => {},
-  n        => 5,
  },
 
  etime => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
-  refines  => [ qw ( lens body ) ],
+  refines  => [ qw ( lens body iso fnum ) ],
   jump     => {},
-  n        => 5,
  },
 
  iso => {
   modes    => [ qw ( a2z top first ) ],
   dividers => 0,
-  refines  => [ qw ( body ) ],
+  refines  => [ qw ( body fnum etime ) ],
   jump     => {},
-  n        => 5,
  },
 
  flen => {
@@ -227,7 +205,6 @@ const my $MATRIX => {
   dividers => 0,
   refines  => [ qw ( lens etime ) ],
   jump     => {},
-  n        => 5,
  },
 
 };
