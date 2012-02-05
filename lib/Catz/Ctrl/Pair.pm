@@ -67,9 +67,8 @@ sub pair {
   'related#refines',
   $s->{ pri },
   $s->{ sec },
-  0, # 0 = limited mode, not full mode
   @{ $s->{ matrix }->{ $s->{ pri } }->{ refines } }
-  );
+ );
 
  # fetch the extra information for breeder
  ( $s->{ pri } eq 'breeder' )

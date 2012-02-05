@@ -228,6 +228,12 @@ a:hover {
  border-color: <%== $st->{color}->{$palette}->{xtra} %>;  
 }
 
+.slice {
+ border-style: solid;
+ border-width: 0 0 0 <%== $st->{space}->{y} %>;
+ border-color: <%== $st->{color}->{$palette}->{xtra} %>;  
+}
+
 .limit {
  max-width: 1000px;
  word-wrap: break-word;
