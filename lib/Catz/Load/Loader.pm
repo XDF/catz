@@ -483,8 +483,11 @@ sub load_simple {
   # immediately convert ? to null
   my @lines = tolines ( $pile );
 
-  given ( $table ) {
+  # typical debug to find non-unique values
+  # say $lines[0];
 
+  given ( $table ) {
+  
    when ( 'mbreed' ) {
 
     $lines[ 0 ] =~ /^[A-Z]{2}[A-Z12347]$/

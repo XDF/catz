@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -33,7 +33,7 @@ use WWW::Mechanize;
 use Catz::Data::Conf;
 
 my @urls = 
- map { "http://localhost:300" . conf ( 'env' ) . $_ } qw( 
+ map { 'http://127.0.0.1:3' . conf ( 'env' ) . '00' . $_ } qw( 
   /en/ /fi264311/ /en365312/browseall/ /fi/browseall/ 
   /en/viewall/ /fi264311/viewall/ /en/news/ /fi/news/ 
   /en/lists/ /fi/lists/ /fi/list/lens/a2z/
