@@ -78,6 +78,10 @@ JP
 Japan
 Japani
 #
+KR
+South Korea
+Etelä-Korea
+#
 LU
 Luxembourg
 Luxemburg

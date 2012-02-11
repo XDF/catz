@@ -39,44 +39,44 @@ dilution modifier
 diluution muokkaaja
 #
 am
-caramel based on blue 
-karamelli perustuu siniseen
+caramel (blue) 
+karamelli (sininen)
 #
 cm
-caramel based on lilac 
-karamelli perustuu lilaan 
+caramel (lilac) 
+karamelli (lila) 
 #
 pm
-caramell based on fawn
-karamelli perustuu beigeen
+caramell (fawn)
+karamelli (beige)
 #
 em
-apricot based on creme
-aprikoosi perustuu cremeen
+apricot (creme)
+aprikoosi (creme)
 #
 x*m
 caramel
 karamelli
 #
 n 
-black or seal or ruddy
-musta tai ruskea tai riista
+black / seal / ruddy
+musta / ruskea / riista
 #
 non
 unrecognized
 hyväksymätön
 #
 o
-cinnamon or sorrel
-kaneli tai punainen
+cinnamon / sorrel
+kaneli / punainen
 #
 p 
 fawn
 beige
 #
 q
-cinnamon tortoiseshell or sorrel tortoiseshell
-kanelikilpikonna tai punakilpikonna
+cinnamon tortoiseshell / sorrel tortoiseshell
+kanelikilpikonna / punakilpikonna
 #
 r
 fawn tortoiseshell
@@ -225,4 +225,68 @@ taaksepäin kaareutuvat korvat
 73
 folded ears
 eteenpäin taipuneet korvat
+#
+bs
+chocolate smoke
+suklaasavu
+#
+hs
+chocolate tortie smoke
+suklaakilpikonnasavu
+#
+as
+blue smoke
+sinisavu
+#
+ay
+blue golden
+sinigolden
+#
+cs
+lilac smoke
+lilasavu
+#
+ds
+red smoke
+punasavu
+#
+es
+cream smoke
+cremesavu
+#
+fs
+tortie smoke
+kilpikonnasavu
+#
+gs
+blue tortie smoke
+sinikilpikonnasavu
+#
+ns
+black smoke
+mustasavu
+#
+ny
+black golden
+mustagolden
+#
+os
+cinnamon smoke / sorrel smoke
+kanelisavu / punasavu
+#
+ps
+fawn smoke
+beigesavu
+#
+var
+variant
+variantti
+#
+xb
+non-recognised chocolate
+hyväksymätön suklaa
+#
+xn
+non-recognised black / seal / ruddy
+hyväksymätön musta / ruskea / riista
 #
