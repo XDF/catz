@@ -33,6 +33,7 @@ use parent 'Catz::Ctrl::Base';
 use Catz::Data::Conf;
 use Catz::Data::Search;
 use Catz::Data::Style;
+use Catz::Util::File qw ( filereadcond );
 
 sub contrib {
 
@@ -40,6 +41,8 @@ sub contrib {
  my $s    = $self->{ stash };
 
  $s->{ topic } = 'contrib';
+ 
+ $s->{ status_failed } = 0;
 
  $self->f_init or return $self->fail ( 'f_init exit' );
 
@@ -92,6 +95,8 @@ sub quality {
 
  $s->{ topic } = 'quality';
  
+ $s->{ status_failed } = 0;
+ 
  $self->f_init or return $self->fail ( 'f_init exit' );
 
  foreach my $item ( qw ( dt stat detail ) ) {
@@ -140,14 +145,85 @@ sub quality {
 
 } ## end sub quality
 
+sub status {
+
+ #
+ # server status display - added 2012-02
+ #
+
+ my $self = shift;
+ my $s    = $self->{ stash };
+ 
+ $s->{ topic } = 'status';
+ 
+ $s->{ status_failed } = 0;
+ 
+ $self->f_init or return $self->fail ( 'f_init exit' );
+ 
+ $s->{ meta_index } = $s->{ meta_follow } = 0;
+ 
+ $s->{ status_data } = undef;
+ 
+ my $data = filereadcond conf ( 'file_status' );
+ 
+ defined $data or $s->{ status_failed } = 1;
+ 
+ defined $data and do {
+ 
+ $s->{ status_data } = [];
+  
+  my @rows = split /\n/, $data;
+  
+  foreach my $row ( @rows ) {
+  
+   $row !~ /^\#/ and do {
+  
+    my ( $key, $value ) = split /=/, $row;
+   
+    defined $key and defined $value and do {
+    
+     my $error = 0;
+    
+     if ( $value =~ /^(.+)\!$/ ) {
+
+      $value = $1;
+           
+      $error = 1;
+  
+      $s->{ status_failed } = 1;
+     
+     } 
+    
+     push @{ $s->{status_data} }, [ $key, $value, $error ];
+    
+    };
+      
+   };
+  
+  }
+ 
+ };
+  
+ $self->common;
+
+}
+
 sub common {
 
  my $self = shift;
  my $s    = $self->{ stash };
 
  $s->{ urlother } = $self->fuse ( $s->{ langaother }, 'more', $s->{ topic } );
+ 
+ if ( $s->{ status_failed } ) {
+ 
+  $self->render ( template => 'page/more', format => 'html', status => 500 ); 
+ 
+ } else {
 
- $self->render ( template => 'page/more', format => 'html' );
+  $self->render ( template => 'page/more', format => 'html' );
+ 
+ }
 
 }
 

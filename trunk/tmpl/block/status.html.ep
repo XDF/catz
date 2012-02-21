@@ -1,20 +1,18 @@
-% extends 'base/light'; 
-<% content 'ptitle' => begin %><%= content 'msg_en' %> - <%= content 'msg_fi' %><% end %>
-<% content 'main' => begin %>
-<h1><%= content 'msg_en' %><br><%= content 'msg_fi' %></h1>
-% if ( defined ( stash ( 't' ) ) ) {
-<div><a href="" onclick="javascript: history.go(-1);"><%= stash ( 't' )->{BACKTOPREV} %></a>
-<a href="<%== stash ( 't' )->{URL_CATZA} %>"><%= stash ( 't' )->{BACKTOFRONT} %></a></div>
+<div class="bar">
+% if ( defined $status_data ) {
+<ul>
+% foreach my $rw ( @{ $status_data } ) {
+%  if ( $rw->[2] ) {
+<li class="xtra"><%= $rw->[0] %> = <%= $rw->[1] %></li>
+%  } else {
+<li><%= $rw->[0] %> = <%= $rw->[1] %></li>
+%  }
 % }
-% if ( 
-%  defined ( stash ( 'env' ) ) and 
-%  defined ( stash ( 'now' ) ) and 
-%  defined ( stash ( 'version' ) ) 
-% ) {
-<h3>catz<%= join ' ', ( stash ( 'env' ), stash ( 'now' ), stash ( 'version' ) ) %></h3>
+<ul>
+% } else { 
+<span class="xtra"><%= $t->{STATUS_MISSING} %></span>
 % }
-<div><%= content 'hint' %></div>
-<% end %>
+</div> 
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2012 Heikki Siltala

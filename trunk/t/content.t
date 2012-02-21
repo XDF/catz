@@ -45,7 +45,7 @@ my $t = Test::Mojo->new ( conf ( 'app' ) );
 
 my @oksetups = qw ( en fi en211211 fi171212 en394211 fi211111 );
 
-my @pages = qw ( contrib quality );
+my @pages = qw ( contrib quality status );
 
 my $buzz = 'more';
 

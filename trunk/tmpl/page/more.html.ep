@@ -39,8 +39,19 @@
 %# --------------------
 %#
 <% content 'bextra' => begin %>
-% my $goto = $topic eq 'contrib' ? 'quality' : 'contrib';
-<a class="shrink" href="/<%== $langa %>/more/<%== $goto %>/"><%= $t->{uc($goto).'_TITLE'} %></a>
+% given ( $topic ) {
+%  when ( 'contrib' ) {
+<a class="shrink" href="/<%== $langa %>/more/quality/"><%= $t->{'QUALITY_TITLE'} %></a>
+%  }
+%  when ( 'quality' ) {
+<a class="shrink" href="/<%== $langa %>/more/contrib/"><%= $t->{'CONTRIB_TITLE'} %></a>
+%  }
+%  when ( 'status' ) {
+<a class="shrink" href="/<%== $langa %>/more/contrib/"><%= $t->{'CONTRIB_TITLE'} %></a>
+<%= $sep %>
+<a class="shrink" href="/<%== $langa %>/more/quality/"><%= $t->{'QUALITY_TITLE'} %></a>
+%  }
+% }
 <% end %>
 %#
 %# --------------------
@@ -54,8 +65,9 @@
 %  when ( 'quality' ) {
 <%== include "block/$topic" %>
 %  }
-%  default {
-%   die "internal error: handling not implemented for topic '$topic'";
+%  when ( 'status' ) {
+<%== include "content/$topic" %>
+<%== include "block/$topic" %>
 %  }
 % }
 </div>
@@ -65,7 +77,7 @@
 %#
 %#
 %# Catz - the world's most advanced cat show photo engine
-%# Copyright (c) 2010-2011 Heikki Siltala
+%# Copyright (c) 2010-2012 Heikki Siltala
 %# Licensed under The MIT License
 %# 
 %# Permission is hereby granted, free of charge, to any person obtaining a copy

@@ -61,7 +61,7 @@ sub startup {
  my $self = shift;
 
  # template directory
- $self->renderer->root ( $ENV{ MOJO_HOME } . '/tmpl' );
+ $self->renderer->paths ( [ $ENV{ MOJO_HOME } . '/tmpl' ] );
 
  # initialize the key for cookie signing
  # we use no cookies so this is just to prevent warnings
@@ -361,7 +361,13 @@ sub before {
 
  # all static resources served must be pre-defined
  exists $static->{ $s->{ path } } and $s->{ isstatic } = 1;
-
+ 
+ # the default is not to let pages go through
+ $s->{ through } = 0;
+ 
+ # let the status page to go through
+ $s->{ path } =~ m|^\/.+?/more/status| and $s->{ through } = 1;
+ 
  # mark reroutings to stash -> easy to use later
  $s->{ isrerouted } = ( $s->{ path } =~ m|^/reroute| ? 1 : 0 );
 
@@ -600,11 +606,12 @@ sub after {
 
  ( $code == 200 )
   and ( not defined $s->{ cache_obj } )
+  and not ( $s->{ through } ) 
   and cache_set ( 
    cachekey ( $self ), [ $self->tx->res, $s->{ dna } ] 
   );
 
- if ( $code == 200 ) {    # healthy response
+ if ( $code == 200 and not ( $s->{ through } ) ) {    # healthy response
 
   # we send dna as ETag
 
@@ -619,7 +626,7 @@ sub after {
   );
 
  } ## end if ( $code == 200 )
- elsif ( $code > 399 ) {
+ elsif ( $code > 399 or $s->{ through } ) {
 
   # unhealthy response, not "redirect" or "not modified"
   # expire immediately
