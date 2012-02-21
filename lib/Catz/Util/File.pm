@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,6 +30,7 @@ use warnings;
 
 use File::Copy;
 use File::Find;
+use File::Slurp;
 use File::stat;
 
 use base 'Exporter';
@@ -37,7 +38,7 @@ use base 'Exporter';
 our @EXPORT_OK = qw (
  dnafolder file2table filecopy filehead fileread fileremove filemove
  filenum filesize filethumb filewrite findfiles findfilesrec finddirs
- findlatest findkey findphotos pathcut
+ findlatest findkey findphotos pathcut filereadcond
 );
 
 use Catz::Util::String qw ( dna );
@@ -105,16 +106,22 @@ sub filenum {
 #
 sub fileread {
 
- local $/ = undef;
+ my $data = read_file $_[0] or die "unable to read file '$_[0]'";
 
- open my $file, '<', $_[ 0 ]
-  or die "unable to open file '$_[0]' for reading";
-
- my $data = <$file>;
- close $file;
  return $data;
 
 }
+
+sub filereadcond {
+
+ # added 2012-02
+ 
+ -f $_[0] or return undef;
+
+ return fileread $_[0];
+
+}
+
 
 sub fileremove { unlink ( $_[ 0 ] ) or die "unable to remove '$_[0]'" }
 
@@ -137,11 +144,7 @@ sub filethumb {
 #
 sub filewrite {
 
- open my $wfile, '>', $_[ 0 ]
-  or die "unable to open file '$_[0]' for writing";
-
- print $wfile $_[ 1 ];
- close $wfile;
+ write_file $_[0], $_[1] or "unable to write file '$_[0]'";
 
 }
 
