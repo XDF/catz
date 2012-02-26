@@ -116,9 +116,9 @@ sub filereadcond {
 
  # added 2012-02
  
- -f $_[0] or return undef;
+ my $data = ( read_file ( $_[0], err_mode => 'quiet' ) ) // undef;
 
- return fileread $_[0];
+ return $data;
 
 }
 
