@@ -59,6 +59,8 @@ const my $TIME_PAGE => 0;
 sub startup {
 
  my $self = shift;
+ 
+ $self->plugin('Config', file => 'script/catz.conf' );
 
  # template directory
  $self->renderer->paths ( [ $ENV{ MOJO_HOME } . '/tmpl' ] );
