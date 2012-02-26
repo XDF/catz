@@ -109,7 +109,7 @@ cat hypnotoad.pid | xargs kill -TERM
   * run tests, although this has a limited meaning since if something is broken, the results goes to memcache and are served thereafter
   * restart Hypnotoad
 {{{    
-kill -USR2 <pid>
+ cat hypnotoad.pid | xargs kill -USR2
 }}}
   * log/production.log should indicate an new start 
 {{{
