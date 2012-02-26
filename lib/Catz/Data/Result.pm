@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,7 +24,7 @@
 
 package Catz::Data::Result;
 
-use 5.12.0;
+use 5.14.2;
 use strict;
 use warnings;
 
@@ -38,7 +38,7 @@ use Crypt::CBC;
 
 use Catz::Data::Conf;
 
-use Catz::Util::String qw ( base32decode base32encode digesthex trim );
+use Catz::Util::String qw ( iddecode idencode digesthex trim );
 use Catz::Util::Time qw ( dtexpand );
 
 my $eng = Crypt::CBC->new (
@@ -81,7 +81,7 @@ sub result_prepare {
 sub result_pack {
 
  # join the data, run it thru encrypter and encode
- my $data = base32encode ( $eng->encrypt ( join '|', @_ ) );
+ my $data = idencode ( $eng->encrypt ( join '|', @_ ) );
 
  # calculate md5 digest using the configured key, output as hex
  my $dig = uc ( digesthex ( $data, conf ( 'key_result' ) ) );
@@ -90,7 +90,7 @@ sub result_pack {
  # * a letter to make it HTML DOM id save
  # * the encoded data
  # * the digest key for data integrity verification
- my $key = "CATZ-$data-$dig";
+ my $key = qq{CATZ\_$data\_$dig};
 
  return $key;
 
@@ -102,7 +102,7 @@ sub result_unpack {
 
  my $key = shift;
 
- if ( $key =~ /^CATZ\-([A-Z2-7]+)\-([0-9A-F]{32,32})$/ ) {
+ if ( $key =~ /^CATZ\_([A-Za-z0-9\-]+)\_([0-9A-F]{32,32})$/ ) {
 
   my $data = $1;
   my $dig  = $2;
@@ -111,7 +111,7 @@ sub result_unpack {
 
   $dig ne $cmp and return ();    # data digest mismatch
 
-  return split /\|/, $eng->decrypt ( base32decode ( $data ) );
+  return split /\|/, $eng->decrypt ( iddecode ( $data ) );
 
  }
  else {

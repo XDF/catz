@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,7 +24,7 @@
 
 package Catz::Ctrl::Main;
 
-use 5.12.0;
+use 5.14.2;
 use strict;
 use warnings;
 
@@ -105,7 +105,7 @@ sub result {
 
  (     defined $key
    and length $key < 2000
-   and $key =~ /^CATZ\-([A-Z2-7]+)\-([0-9A-F]{32,32})$/ )
+   and $key =~ /^CATZ\_([A-Za-z0-9\-]+)\_([0-9A-F]{32,32})$/ )
   or $self->render ( text => $RESULT_NA )
   and return;
 

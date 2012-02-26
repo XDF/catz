@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,15 +24,15 @@
 
 package Catz::Util::String;
 
-use 5.12.0;
+use 5.14.2;
 use strict;
 use warnings;
 
 use base 'Exporter';
 
 our @EXPORT_OK = qw (
- acceptlang base32decode base32encode clean decode deurl digesthex
- dna encode enurl lcc limit label nobreak noxss trim ucc
+ acceptlang base64decode base64encode clean decode deurl digesthex
+ dna encode enurl iddecode idencode lcc limit label nobreak noxss trim ucc
  ucclcc urirest fuse fuseq topiles topilex tolines
 );
 
@@ -40,7 +40,7 @@ use Const::Fast;
 use Digest::HMAC_MD5 qw( hmac_md5_hex );
 use Digest::MD5 qw ( md5_base64 );
 use I18N::AcceptLanguage;
-use MIME::Base32 qw ( RFC );
+use MIME::Base64;
 use URI::Escape::XS qw ( uri_escape uri_unescape );
 
 const my $LANGS => [ 'en', 'fi' ];
@@ -59,10 +59,6 @@ sub acceptlang {
  return $lang;
 
 }
-
-sub base32decode { MIME::Base32::decode $_[ 0 ] }
-
-sub base32encode { MIME::Base32::encode $_[ 0 ] }
 
 # prepare a conversion hash to be used by encode
 # the hash was addded to make encoding run faster
@@ -126,6 +122,14 @@ sub dna { md5_base64 ( $_[ 0 ] ) }
 sub encode {
  join '', map { $cconv{ $_ } } split //, $_[ 0 ] // '';
 }
+
+sub base64decode { decode_base64 $_[ 0 ] }
+
+sub base64encode { encode_base64 $_[ 0 ] }
+
+sub iddecode { base64decode decode shift }
+
+sub idencode { encode base64encode shift } 
 
 #
 # url encodes a string
