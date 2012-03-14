@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 #
@@ -23,7 +23,7 @@
 # THE SOFTWARE.
 #
 
-use 5.12.0;
+use 5.14.2;
 use strict;
 use warnings;
 
@@ -201,6 +201,22 @@ foreach my $static (
   ->content_type_like ( qr/image\/jpeg/ );
 
 }
+
+# old direct image format
+foreach my $static ( (
+ '/20070708kempele/IMG_8880 (CUSTOM).JPG',
+ '/20061112karkkila/IMG_1009 (Custom).JPG',
+ '/20071020vantaa/IMG_1697 (cusTOM).JPG',
+ '/20060107helsinki_misc/IMG_7947 (custom).JPG'
+ )
+ )
+{
+
+ $t->get_ok ( "/reroute$static" )->status_is ( 200 )
+  ->content_type_like ( qr/image\/jpeg/ );
+
+}
+
 
 # a few illegal paths
 
