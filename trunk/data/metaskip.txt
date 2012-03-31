@@ -61,3 +61,5 @@ subject_approx;cat;Aamukasteen Uma;Aamukasteen Zumba
 subject_approx;cat;Cyrleyn Artemis;Cyrleyn Ares
 #
 subject_approx;cat;Udun Silver Apricot Juvel;Udun Silver Apricot Njinyi
+#
+subject_approx;cat;Imladris Indil Hapci;Imladris Indil Freya
