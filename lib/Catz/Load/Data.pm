@@ -556,11 +556,11 @@ sub exif {
 
    $o->{ lens } = lens ( $album, $o->{ flen }, $o->{ fnum } );
 
-   $o->{ lens } and $LENSFLEN->{ $o->{ lens } } and do {
+   $o->{ lens } and ( exists $LENSFLEN->{ $o->{ lens } } ) and do {
     $o->{ flen } = $LENSFLEN->{ $o->{ lens } };
    };
 
-   if ( $o->{ lens } and $LENSNAME->{ $o->{ lens } } ) {
+   if ( $o->{ lens } and ( exists $LENSNAME->{ $o->{ lens } } ) ) {
     $o->{ lens } = $LENSNAME->{ $o->{ lens } };
    }
    else {
