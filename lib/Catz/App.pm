@@ -78,8 +78,8 @@ sub startup {
   )
  {
 
-  # we do shift to ditch self that comes in first in helper calls
-  # the actual pass-thru call with rest of the arguments
+  # we do shift to ditch $self that comes in first in helper calls
+  # the actual pass-thru call is done with rest the of the arguments
   $self->helper ( $sub => eval qq{ sub { shift; $sub \@\_; } } ); ## no critic
 
  }
@@ -364,10 +364,10 @@ sub before {
  # all static resources served must be pre-defined
  exists $static->{ $s->{ path } } and $s->{ isstatic } = 1;
  
- # the default is not to let pages go through
+ # the default is not to let pages go through the caching
  $s->{ through } = 0;
  
- # let the status page to go through
+ # let the status page to go through the caching
  $s->{ path } =~ m|^\/.+?/more/status| and $s->{ through } = 1;
  
  # mark reroutings to stash -> easy to use later
@@ -514,7 +514,7 @@ sub before {
  $s->{ setup_values } = setup_values ( $s->{ setup } );
 
  $s->{ facebookkey } = conf ( 'key_facebook' );
- $s->{ twitterkey }  = conf ( 'key_twitter' );
+ $s->{ twitterkey }  = conf ( 'key_twitter'  );
 
  # the global layout separator characters
  $s->{ sep }     = '.';
@@ -613,7 +613,9 @@ sub after {
    cachekey ( $self ), [ $self->tx->res, $s->{ dna } ] 
   );
 
- if ( $code == 200 and not ( $s->{ through } ) ) {    # healthy response
+ if ( $code == 200 and not ( $s->{ through } ) ) {    
+ 
+  # healthy response and allowed to be cached
 
   # we send dna as ETag
 
@@ -631,6 +633,8 @@ sub after {
  elsif ( $code > 399 or $s->{ through } ) {
 
   # unhealthy response, not "redirect" or "not modified"
+  # not allowed to be cached
+  
   # expire immediately
 
   $self->res->headers->header (

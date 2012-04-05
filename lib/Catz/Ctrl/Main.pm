@@ -103,11 +103,10 @@ sub result {
 
  my $key = $self->param ( 'x' ) // undef;
 
- (     defined $key
+ (    defined $key
    and length $key < 2000
    and $key =~ /^CATZ\_([A-Za-z0-9\-]+)\_([0-9A-F]{32,32})$/ )
-  or $self->render ( text => $RESULT_NA )
-  and return;
+   or return $self->render ( text => $RESULT_NA );
 
  my @keys = result_unpack ( $key );
 

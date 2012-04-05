@@ -184,39 +184,37 @@ sub start {
 
 } ## end sub start
 
-# we assume that this number of photos is always enough
-# on whatever settings the stripe is displayed
-# it is actually smart to use a fixed value so that
-# all database access and data processing is done only once
-# for one subject and the served from cache
-const my $N => 100 + int ( rand ( 26 ) ); 
-
-# a photo picking order that will be used 
-# when the photos are presented in a widget
-# created by picking a different sequencing
-# each time the module is compiled to add 
-# more randomness
-
-const my @ORD => shuffle ( 0, 1, 2, 3 );
-
-const my $PICKS => [ (
- 
- ( grep { $_ % 4 == $ORD[0] } ( 0 .. $N - 1 ) ),
-
- ( grep { $_ % 4 == $ORD[1] } ( 0 .. $N - 1 ) ),
-
- ( grep { $_ % 4 == $ORD[2] } ( 0 .. $N - 1 ) ),
-
- ( grep { $_ % 4 == $ORD[3] } ( 0 .. $N - 1 ) ),
- 
-) ];
-
 sub photos {    # the widget renderer
 
  my $self = shift;
  my $s    = $self->{ stash };
+ 
+ # randomizing on each call
 
- $s->{ thumbspicks } = $PICKS;
+ # we assume that this number of photos is always enough
+ # on whatever settings the stripe is displayed
+ 
+ my $n = 120 + int ( rand ( 10 ) );
+ 
+ # a photo picking order that will be used 
+ # when the photos are presented in a widget
+ 
+ # created by picking a different sequencing
+ # each time to add more randomness
+
+ my @ord = shuffle ( 0, 1, 2, 3 );
+
+ $s->{ thumbspicks } = [ (
+ 
+  ( grep { $_ % 4 == $ord[0] } ( 0 .. $n - 1 ) ),
+
+  ( grep { $_ % 4 == $ord[1] } ( 0 .. $n - 1 ) ),
+
+  ( grep { $_ % 4 == $ord[2] } ( 0 .. $n - 1 ) ),
+
+  ( grep { $_ % 4 == $ord[3] } ( 0 .. $n - 1 ) ),
+ 
+ ) ];
 
  my $add;
  my $order;
@@ -234,21 +232,19 @@ sub photos {    # the widget renderer
  }
 
  # fetch the photo xs to start the processing with
- $s->{ xs } = $self->fetch (                        # latest photos
-  "$s->{runmode}#array$add" . '_n', @{ $s->{ args_array } }, $N
+ $s->{ xs } = $self->fetch (                        
+  "$s->{runmode}#array$add" . '_n', @{ $s->{ args_array } }, $n
  );
 
- scalar @{ $s->{ xs } } == 0 and return $self->fail ( 'no photos found' );
+ scalar @{ $s->{ xs } } == 0 
+  and return $self->fail ( 'no photos found' );
 
  # fetch the corresponding thumbnails
  ( $s->{ thumbs }, undef, undef ) =
   @{ $self->fetch ( 'photo#thumb', $order, @{ $s->{ xs } } ) };
-
+  
  # fetch photo texts
  $s->{ texts } = $self->fetch ( 'photo#texts', @{ $s->{ xs } } );
-
- # we now have thumbs in $s->{thumbs} in browsing (x) order
- # we do reordering based on what was the image strip needs
 
 } ## end sub photos
 
