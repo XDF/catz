@@ -276,9 +276,9 @@ sub do {    # the common entry point for buidler and renderer
 
  $s->{ func } eq 'build' and do {
 
-  $self->f_map or $self->fail ( 'map exit' );
+  $self->f_map or return $self->fail ( 'map exit' );
 
-  $self->urlothers or $self->fail ( 'urlothers exit' );
+  $self->urlothers or return $self->fail ( 'urlothers exit' );
 
   # widget confuration is needed in builder page rendering
   $s->{ wconf } = widget_conf;
@@ -291,7 +291,7 @@ sub do {    # the common entry point for buidler and renderer
 
  $s->{ func } eq 'embed' and do {
 
-  $self->photos or $self->fail ( 'photos exit' );
+  $self->photos or return $self->fail ( 'photos exit' );
 
  };
 

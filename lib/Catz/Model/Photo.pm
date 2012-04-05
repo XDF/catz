@@ -1,9 +1,7 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
-#
-# Copyright (c) 2010-2011 Heikki Siltala
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +24,7 @@
 
 package Catz::Model::Photo;
 
-use 5.12.0;
+use 5.14.2;
 use strict;
 use warnings;
 
@@ -219,7 +217,7 @@ sub _texts {
 sub _clusters {
 
  # get a set of photo texts based on xs
- # array ref [ [ photos ], text, [ photos ], text, ... ] returns
+ # returns array ref [ [ photos ], text, [ photos ], text, ... ] 
 
  my ( $self, @xs ) = @_;
  my $lang = $self->{ lang };
@@ -241,7 +239,7 @@ sub _clusters {
  while ( $i < scalar @$res ) {
 
   if ( exists $seen->{ $res->[ $i ]->[ 0 ] } ) {
-
+  
    push @{ $seen->{ $res->[ $i ]->[ 0 ] } }, $res->[ $i ]->[ 1 ];
 
   }
