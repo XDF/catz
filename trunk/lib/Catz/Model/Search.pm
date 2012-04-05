@@ -54,26 +54,27 @@ sub _bits {    # fetch a bit vector for a set of arguments
 
  for ( my $i = 0; $i <= $#args; $i = $i + 2 ) {
 
-  $args[ $i ] =~ /^(\+|\-)(.*)$/;
+  
+  $args[ $i ] =~ /^(\+|\-)(.*)$/; # extract the operator if any 
 
-  my $oper = $1 // '0';           # the default operand is 0 = or
+  my $oper = $1 // '0';           # the default operator is 0 = zero = or
   my $pri  = $2 // $args[ $i ];
   my $sec  = $args[ $i + 1 ];
 
   $sec =~ s/\?/\_/g;              # user interface ? -> database interface _
   $sec =~ s/\*/\%/g;              # user interface * -> database interface %
 
-  my $bvec = $self->base ( $pri, $sec );    # make one vector by pass-thru
+  my $bvec = $self->base ( $pri, $sec );    # fetch te vector
 
   given ( $oper ) {
 
-   when ( '+' ) { $ands->And ( $ands, $bvec ); }
+   when ( '+' ) { $ands->And ( $ands, $bvec );        }
 
    when ( '0' ) { $hasor++; $ors->Or ( $ors, $bvec ); }
 
-   when ( '-' ) { $ands->AndNot ( $ands, $bvec ); }
+   when ( '-' ) { $ands->AndNot ( $ands, $bvec );     }
 
-   default { die "unknow vector operation '$oper'"; }
+   default { die "unknow vector operator '$oper'"; }
 
   }
 

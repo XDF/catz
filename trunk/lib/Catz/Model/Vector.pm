@@ -33,6 +33,7 @@ use parent 'Catz::Model::Common';
 use Const::Fast;
 use Bit::Vector;
 use List::Util qw ( shuffle );
+
 use Catz::Util::Number qw( floor ceil );
 
 sub full {

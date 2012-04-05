@@ -36,15 +36,19 @@ use parent 'Catz::Model::Vector';
 
 use Bit::Vector;
 
-# in case of all its a fully filled bit vector to represent all photos
+# in case of all photos the bit vector is a fully filled = all bits on
 
 sub _bits {
 
+ # the first bit is unused so we reserve one bit more
  my $vec = Bit::Vector->new ( $_[ 0 ]->maxx + 1 );
 
- # 0th bit is unused as x counting start from 1
  $vec->Fill;
+ 
+ # the first bit is unused as x counting start from 1
+ # so we set it off to make operations not to take it into account
  $vec->Bit_Off ( 0 );
+ 
  return $vec;
 
 }
