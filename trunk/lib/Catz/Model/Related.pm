@@ -24,7 +24,7 @@
 
 package Catz::Model::Related;
 
-use 5.12.0;
+use 5.14.2;
 use strict;
 use warnings;
 
