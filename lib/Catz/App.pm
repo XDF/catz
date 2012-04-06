@@ -348,7 +348,8 @@ sub before {
  my $self = shift;
  my $s    = $self->{ stash };
  
- $s->{ protoc } = 'http'; # the default, can be changed later 
+ $s->{ protoc } = 
+  $self->req->headers->header ( 'X-Origin-Protocol' ) // 'http';
  
  $s->{ analyticscode } = conf ( 'lin' ) ? conf ( 'key_analytics' ) : undef;
 
@@ -509,10 +510,7 @@ sub before {
  }
 
  # let some definitions to be globally available to all controllers
- 
- $s->{ protoc } = 
-  $self->req->headers->header ( 'X-Origin-Protocol' ) // 'http';
-  
+   
  # no indexing for https stuff
  $s->{ protoc } eq 'https' and do {
   $s->{meta_index} = 0; $s->{meta_follow} = 0;
