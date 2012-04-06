@@ -509,7 +509,12 @@ sub before {
  
  $s->{ protocol } = 
   $self->req->headers->header ( 'X-Origin-Protocol' ) // 'http';
-
+  
+ # no indexing for https stuff
+ $s->{protocol} eq 'https' and do {
+  $s->{meta_index} = 0; $s->{meta_follow} = 0;
+ };
+  
  $s->{ now } = dtlang ( $s->{ lang } );
 
  $s->{ matrix } = list_matrix;
@@ -675,7 +680,9 @@ sub after {
 
 sub cachekey {
  (
-  $_[ 0 ]->{ stash }->{ version }, $_[ 0 ]->{ stash }->{ url }
+  $_[ 0 ]->{ stash }->{ version  }, 
+  $_[ 0 ]->{ stash }->{ protocol },
+  $_[ 0 ]->{ stash }->{ url      }
  );
 }
 
