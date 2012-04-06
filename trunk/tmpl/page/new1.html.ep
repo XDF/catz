@@ -73,7 +73,7 @@
 % } 
 <div class="bar outer">
 <span class="lean"><%= dtexpand ( $new1->[0], $lang ) %></span>
-%== include 'elem/ig', igurl => "/$lang".urirest ( $url ), igtext => stash ( 'ogt' );
+%== include 'elem/ig', igurl => "/$lang".urirest ( $zurl ), igtext => stash ( 'ogt' );
 </div>
 <% end %> 
 %#

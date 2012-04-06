@@ -22,7 +22,7 @@
 <% content 'btitle' => begin %>
 <h1><%= $t->{ ( uc $topic ) . '_TITLE' } %></h1>
 % $topic eq 'contrib' and do {
-%== include 'elem/ig', igurl => "/$lang".urirest ( $url ), igtext => $t->{ ( uc $topic ) . '_TITLE' };
+%== include 'elem/ig', igurl => "/$lang".urirest ( $zurl ), igtext => $t->{ ( uc $topic ) . '_TITLE' };
 % };
 <% end %>
 %#
