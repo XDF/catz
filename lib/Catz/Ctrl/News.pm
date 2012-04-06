@@ -84,7 +84,7 @@ sub feed {    # RSS feed of news
  $rss->channel (
   title         => $s->{ t }->{ SITE },
   description   => $s->{ t }->{ SLOGAN },
-  link          => $s->{ t }->{ "URL_CATZA_$s->{ protocol }" },
+  link          => $s->{ t }->{ "URL_CATZA_$s->{ protoc }" },
   language      => $s->{ lang },
   lastBuildDate => epoch2rfc822 dt2epoch dt,
  );
@@ -97,7 +97,7 @@ sub feed {    # RSS feed of news
 
   $rss->add_item (
    title => $item->[ 1 ],
-   link  => $s->{ t }->{ "URL_CATZA_$s->{ protocol }" }
+   link  => $s->{ t }->{ "URL_CATZA_$s->{ protoc }" }
     . $s->{ lang }
     . '/news/'
     . $item->[ 0 ] . '/',

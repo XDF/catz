@@ -294,7 +294,7 @@ sub reroute {    # does the job
      # added 2012-03-14
      $tgt =~ /^(.+)\s\(CUSTOM\)(\.JPG)$/ and $tgt = $1 . '_LR' . $2;
      
-     my $mkey = 'URL_CATZA_' . $self->{ stash }->{ protocol };
+     my $mkey = 'URL_CATZA_' . $self->{ stash }->{ protoc };
 
      return $self->moveto ( $t->{$mkey} . "static/photo/$folder/$tgt" );
 

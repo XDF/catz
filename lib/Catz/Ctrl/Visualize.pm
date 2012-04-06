@@ -41,12 +41,14 @@ sub do {
 
  $s->{ style } = style_get;
 
-# special mode to get json map url instead of the image url
+ # special mode to get json map url instead of the image url
  my $jmap = $self->param ( 'jmap' ) // 0;
-  
+ 
+ # if we make HTTP call on server then we always 
+ # use http instead of https 
  $s->{ charturl } = $jmap ? 
   conf ( "url_chart_http" ) :
-  conf ( "url_chart_$s->{ protocol }" );
+  conf ( "url_chart_$s->{ protoc }" );
 
  my $vurl = $self->render (
   "viz/$s->{action}",

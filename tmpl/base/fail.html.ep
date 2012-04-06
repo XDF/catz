@@ -4,7 +4,7 @@
 <h1><%= content 'msg_en' %><br><%= content 'msg_fi' %></h1>
 % if ( defined ( stash ( 't' ) ) ) {
 <div><a href="" onclick="javascript: history.go(-1);"><%= stash ( 't' )->{BACKTOPREV} %></a>
-<a href="<%== stash ( 't' )->{"URL_CATZA_$protocol"} %>"><%= stash ( 't' )->{BACKTOFRONT} %></a></div>
+<a href="<%== stash ( 't' )->{"URL_CATZA_$protoc"} %>"><%= stash ( 't' )->{BACKTOFRONT} %></a></div>
 % }
 % if ( 
 %  defined ( stash ( 'env' ) ) and 

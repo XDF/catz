@@ -348,35 +348,38 @@ sub before {
  my $self = shift;
  my $s    = $self->{ stash };
  
- $s->{ protocol } = 'http'; # default, can be changed later 
+ $s->{ protoc } = 'http'; # the default, can be changed later 
  
  $s->{ analyticscode } = conf ( 'lin' ) ? conf ( 'key_analytics' ) : undef;
 
  $s->{ time_start } = time ();
 
  $s->{ env } = conf ( 'env' );    # copy production enviroment id to stash
+ 
+ # we start the following stash keys with z to prevent 
+ # crashing with Mojolicious reserved stash names
 
- $s->{ url } = $self->req->url->to_string;  # let the url be in the stash also
+ $s->{ zurl } = $self->req->url->to_string;  # let the url be in the stash also
 
- $s->{ path } = $self->req->url->path->to_string;    # and also the path part
+ $s->{ zpath } = $self->req->url->path->to_string;    # and also the path part
 
- $s->{ query } =
+ $s->{ zquery } =
   $self->req->query_params->to_string;    # and also the query params
 
  # all static resources served must be pre-defined
- exists $static->{ $s->{ path } } and $s->{ isstatic } = 1;
+ exists $static->{ $s->{ zpath } } and $s->{ isstatic } = 1;
  
  # the default is not to let pages go through the caching
  $s->{ through } = 0;
  
  # let the status page to go through the caching
- $s->{ path } =~ m|^\/.+?/more/status| and $s->{ through } = 1;
+ $s->{ zpath } =~ m|^\/.+?/more/status| and $s->{ through } = 1;
  
  # mark reroutings to stash -> easy to use later
- $s->{ isrerouted } = ( $s->{ path } =~ m|^/reroute| ? 1 : 0 );
+ $s->{ isrerouted } = ( $s->{ zpath } =~ m|^/reroute| ? 1 : 0 );
 
  # mark queries to stash -> easy t o use later
- $s->{ isquery } = length ( $s->{ query } ) > 0 ? 1 : 0;
+ $s->{ isquery } = length ( $s->{ zquery } ) > 0 ? 1 : 0;
 
  #
  # fetch the latest version key file
@@ -425,7 +428,7 @@ sub before {
  # checking path validity: we accept dots in path only for rerouting
  # paths and static paths
 
- index ( $s->{ path }, '.' ) > -1 and ( not $s->{ isrerouted } ) and do {
+ index ( $s->{ zpath }, '.' ) > -1 and ( not $s->{ isrerouted } ) and do {
 
   $s->{ isstatic } or return $self->render_not_found;
 
@@ -440,8 +443,8 @@ sub before {
       ( not $s->{ isstatic } )
   and ( not $s->{ isquery } )
   and ( not $s->{ isrerouted } )
-  and ( substr ( $s->{ path }, -1, 1 ) ne '/' )
-  and return bounce ( $self, $s->{ path } . '/' );
+  and ( substr ( $s->{ zpath }, -1, 1 ) ne '/' )
+  and return bounce ( $self, $s->{ zpath } . '/' );
 
  #
  #  we also require paths with query parameters not to end with slash
@@ -452,9 +455,9 @@ sub before {
       ( not $s->{ isstatic } )
   and ( $s->{ isquery } )
   and ( not $s->{ isrerouted } )
-  and ( substr ( $s->{ path }, -1, 1 ) eq '/' )
+  and ( substr ( $s->{ zpath }, -1, 1 ) eq '/' )
   and return bounce ( $self,
-  ( substr ( $s->{ path }, 0, -1 ) . '?' . $s->{ query } ) );
+  ( substr ( $s->{ zpath }, 0, -1 ) . '?' . $s->{ zquery } ) );
 
  #
  # attempt to fetch from cache
@@ -484,7 +487,7 @@ sub before {
  # exceeded to enable widget build and image strip rendering
  $s->{ widgetnon } = 14;
 
- if ( $s->{ url } =~ /^\/((en|fi)([1-9]{6})?)/ ) {
+ if ( $s->{ zurl } =~ /^\/((en|fi)([1-9]{6})?)/ ) {
 
   $s->{ langa } = $1;
   $s->{ lang }  = $2;
@@ -507,11 +510,11 @@ sub before {
 
  # let some definitions to be globally available to all controllers
  
- $s->{ protocol } = 
+ $s->{ protoc } = 
   $self->req->headers->header ( 'X-Origin-Protocol' ) // 'http';
   
  # no indexing for https stuff
- $s->{protocol} eq 'https' and do {
+ $s->{ protoc } eq 'https' and do {
   $s->{meta_index} = 0; $s->{meta_follow} = 0;
  };
   
@@ -531,10 +534,10 @@ sub before {
  $s->{ pathsep } = '>';
 
  # the url where the all photos are
- $s->{ photobase } = conf ( "base_photo_$s->{ protocol }" );
+ $s->{ photobase } = conf ( "base_photo_$s->{ protoc }" );
 
  # the url where the all flag gifs are
- $s->{ flagbase } = conf ( "base_flag_$s->{ protocol }" );
+ $s->{ flagbase } = conf ( "base_flag_$s->{ protoc }" );
   
  # fetch texts for the current language and make them available to all
  # controller and templates as variable t
@@ -665,6 +668,8 @@ sub after {
  $self->res->headers->header ( 'X-Catz-Origin' =>  
   defined $s->{ cache_obj } ? 'cache' : 'dynamic' 
  );
+ 
+ $self->res->headers->header ( 'X-Catz-Protocol' => $s->{ protoc } );
 
  # timing
 
@@ -674,15 +679,15 @@ sub after {
 
  $self->res->headers->header ( 'X-Catz-Timing' => "$ti ms" );
  
- $TIME_PAGE and warn "PAGE $s->{url} -> $ti";
+ $TIME_PAGE and warn "PAGE $s->{zurl} -> $ti";
 
 } ## end sub after
 
 sub cachekey {
  (
   $_[ 0 ]->{ stash }->{ version  }, 
-  $_[ 0 ]->{ stash }->{ protocol },
-  $_[ 0 ]->{ stash }->{ url      }
+  $_[ 0 ]->{ stash }->{ protoc   },
+  $_[ 0 ]->{ stash }->{ zurl     }
  );
 }
 
