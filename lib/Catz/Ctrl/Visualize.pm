@@ -41,8 +41,8 @@ sub do {
 
  $s->{ style } = style_get;
 
- $s->{ charturl } = conf ( 'url_chart' );
-
+ $s->{ charturl } = conf ( "url_chart_$s->{ protocol }" );
+  
  # special mode to get json map url instead of the image url
  my $jmap = $self->param ( 'jmap' ) // 0;
 
