@@ -180,7 +180,6 @@ sub info {
 } ## end sub info
 
 
-# the number of photos to get for sampling
 const my $N => 100;
 
 sub sample {
@@ -200,8 +199,8 @@ sub sample {
 
  my $samp = $self->fetch ( 'all#array_rand_n', $N );
 
- # get thumbnails in natural order
- my $th = $self->fetch ( 'photo#thumb', 'x', @{ $samp } );
+ # get thumbnails in random order
+ my $th = $self->fetch ( 'photo#thumb', 'rand', @{ $samp } );
 
  $s->{ thumbs } = $th->[ 0 ];
 
