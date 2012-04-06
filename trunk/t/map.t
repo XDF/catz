@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 #
@@ -23,7 +23,7 @@
 # THE SOFTWARE.
 #
 
-use 5.10.2;
+use 5.14.2;
 use strict;
 use warnings;
 
@@ -54,7 +54,7 @@ foreach my $map ( qw ( index core news list pair photo browse ) ) {
  $lang = $map eq 'index' ? '' : "/$lang";
 
  $t->get_ok ( "$lang/sitemap/$map/" )->status_is ( 200 )
-  ->content_type_like ( qr/xml/ )->content_like ( qr/$txt->{URL_CATZA}/ );
+  ->content_type_like ( qr/xml/ )->content_like ( qr/$txt->{URL_CATZA_http}/ );
 
  # without trailing slash
  $t->get_ok ( "$lang/sitemap/$map" )->status_is ( 301 );

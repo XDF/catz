@@ -25,9 +25,9 @@
 <meta name="generator" content="<%= $t->{GENERATOR} %>">
 <meta name="credits" content="<%= $t->{CREDITS} %>">
 % if ( $lang eq 'fi' ) {
-<meta name="description" content="Tämä sivu on pienossovelluksen sisältöä ja tarkoitettu upotettavaksi iframe-objektin sisään, ei katsottavaksi erikseen sivuna. Pienoissovelluksen tarjoaa <%= $t->{URL_CATZA} %>.">
+<meta name="description" content="Tämä sivu on pienossovelluksen sisältöä ja tarkoitettu upotettavaksi iframe-objektin sisään, ei katsottavaksi erikseen sivuna. Pienoissovelluksen tarjoaa <%= $t->{"URL_CATZA_$protocol"} %>.">
 % } else {
-<meta name="description" content="This page is widget content intented to be embedded inside an iframe, not to be viewed separately. The widget is provided by <%= $t->{URL_CATZA} %>.">
+<meta name="description" content="This page is widget content intented to be embedded inside an iframe, not to be viewed separately. The widget is provided by <%=  $t->{"URL_CATZA_$protocol"} %>.">
 % }
 %== include 'elem/analytics';
 </head>

@@ -1,1 +1,1 @@
-<iframe src="<%== $intent eq 'render' ? $t->{URL_CATZX} : '' %><%== $wurl %>" scrolling="no" frameborder="0" allowtransparency="true" style="width:<%= $wwidth %>px; height:<%= $wheight %>px; overflow:hidden; border:none;"></iframe>
+<iframe src="<%== $intent eq 'render' ? $t->{"URL_CATZX_$protocol"} : '' %><%== $wurl %>" scrolling="no" frameborder="0" allowtransparency="true" style="width:<%= $wwidth %>px; height:<%= $wheight %>px; overflow:hidden; border:none;"></iframe>

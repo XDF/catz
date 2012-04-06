@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 #
 
-use 5.12.0;
+use 5.14.2;
 use strict;
 use warnings;
 
@@ -155,7 +155,7 @@ foreach my $action ( qw ( build embed ) ) {
   $t->get_ok ( "/$setup/$action/cat/Peku/$wsetup/" )->status_is ( 200 )
    ->content_type_like ( qr/text\/html/ )
    ->content_like ( qr/div id\=\"page\"/ );
-
+   
   $t->get_ok (
    "/$setup/$action/$wsetup?q=%2Blens%3Dsigma*%20%2Borg%3Dsurok%20%2Bbreed%3Drus"
    )->status_is ( 200 )->content_type_like ( qr/text\/html/ )

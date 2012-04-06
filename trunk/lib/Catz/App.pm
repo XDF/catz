@@ -348,6 +348,8 @@ sub before {
  my $self = shift;
  my $s    = $self->{ stash };
  
+ $s->{ protocol } = 'http'; # default, can be changed later 
+ 
  $s->{ analyticscode } = conf ( 'lin' ) ? conf ( 'key_analytics' ) : undef;
 
  $s->{ time_start } = time ();
@@ -504,6 +506,9 @@ sub before {
  }
 
  # let some definitions to be globally available to all controllers
+ 
+ $s->{ protocol } = 
+  $self->req->headers->header ( 'X-Origin-Protocol' ) // 'http';
 
  $s->{ now } = dtlang ( $s->{ lang } );
 
@@ -520,10 +525,12 @@ sub before {
  $s->{ sep }     = '.';
  $s->{ pathsep } = '>';
 
- $s->{ photobase } = conf ( 'base_photo' ); # the url where the all photos are
- $s->{ flagbase } =
-  conf ( 'base_flag' );    # the url where the all flag gifs are
+ # the url where the all photos are
+ $s->{ photobase } = conf ( "base_photo_$s->{ protocol }" );
 
+ # the url where the all flag gifs are
+ $s->{ flagbase } = conf ( "base_flag_$s->{ protocol }" );
+  
  # fetch texts for the current language and make them available to all
  # controller and templates as variable t
 
