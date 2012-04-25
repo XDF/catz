@@ -24,7 +24,7 @@
 
 package Catz::Util::File;
 
-use 5.12.0;
+use 5.14.2;
 use strict;
 use warnings;
 

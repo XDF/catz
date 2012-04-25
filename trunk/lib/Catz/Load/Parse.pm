@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,7 +24,7 @@
 
 package Catz::Load::Parse;
 
-use 5.12.0;
+use 5.14.2;
 use strict;
 use warnings;
 
@@ -45,7 +45,7 @@ sub cat {
  my $data = shift;
 
  my $d = {};    # collect the fragments to a hashref
-
+ 
  # collect emscode and remove it from data
  if ( $data =~ /^(.*)\[(.+?)\](.*)$/ ) {
 
@@ -236,6 +236,9 @@ sub comment {
  $d->[ 1 ] = exptext ( $text, 'fi' );
 
  $text = plaincat ( $text );
+ 
+ $text =~ /\([A-Z][A-Z][A-Z](\s|\))/ and die
+  "possible attempt to use () instead of [] to mark EMS code in '$text'";
 
  length ( $text ) > 0
   and index ( $text, '[' ) > -1
