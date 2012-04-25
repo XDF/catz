@@ -83,7 +83,7 @@ rm -fR *
 hypnotoad run.pl
 }}} 
   * test the service via the tunneled port that it appears to work properly
-  * edit nginx config so that it points to the deployed environment
+  * edit nginx config (in two places) so that it points to the deployed environment
   * test nginx config 
 {{{
 nginx -t

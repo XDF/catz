@@ -1,30 +1,30 @@
 #summary My comparison on Catalyst, Dancer and Mojolicious
 #labels Catalyst,Dancer,Mojolicious,Perl
 
-I've used all the three frameworks during this project. I started with Catalyst and implemented some of the core features and content pages with it. Then I started a side projet to test Dancer. Finally I tested Mojolicious and chose it for the production system. The production system at http://catza.net/ runs on Mojolicious using Nginx at front and Hypnotoad at the back.
+I used all the three Perl MVC frameworks (Catalyst, Dancer and Mojolicious) during this project. I started the project with Catalyst and implemented some of the core features and content pages with it. Then I started a side projet to test Dancer framework. When the project started I found Mojolicious not to be mature enough for this system. But it developed a lot and later I decided to switch from Catalyst to Mojolicious. The production system at http://catza.net/ runs on Mojolicious using [http://wiki.nginx.org/Main nginx web server] at the front and [http://mojolicio.us/perldoc/Mojo/Server/Hypnotoad Hypnotoad] at the back.
 
-I'd say that all the three frameworks are established, mature and stabile enough for production use. All three have online documentation and a user community. Choose any of them and you don't go wrong badly.
+All the three frameworks are developed to a stage that they are ready for production use. They all have nice online documentation and an established user community. Choose any of them and you won't go wrong.
 
 = Catalyst =
 
-Catalyst is the industry standard Perl MVC framework. It is very feature rich and flexible. You can use almost anything with it: various templating systems, Moose, you name it and CPAN hads got a plugin for it. Other strong points are its maturity and documentation. There is even several books available how to build Catalyst applications. And there is a large user community. 
+Catalyst has been the industry standard Perl MVC framework. It is feature rich and flexible. You can use almost anything with it: various templating systems, Moose, you name it and CPAN has got a plugin for it. The other strong points of Catalyst are its maturity and documentation. There are several books available how to build Catalyst applications. 
 
-A succesfull installation of Catalyst can be a pain. First couple of times the installation went smoothly. But at some point I started to hit the trouble. Catalyst didn't work with the latest Moose or something like that, and also some other conflicts between modules arose. It all became very fustrating.
+Making a succesfull installation of Catalyst can be painful. First couple of times the installation went smoothly. But at one point hit the trouble. Catalyst didn't work with the latest Moose or something like that and some other conflicts between the required modules arose. It all became very fustrating.
 
-Easy automated use of Models from Controllers is very nice. In Mojolicious I had to write my own access logic to do that. I also liked keeping $c separated from $self. The thing I don't like is to spread the dispatching rules all over the controllers. I found it more intuitive to have them in one place like Mojolicious router has. I also never really learned how to use Chained actions in my project. I understood them by reading the examples but when the dispatching became more complex I really lost the track. 
+The automated use of Models from Controllers in Catalyst is very nice. In Mojolicious I had to write my own access logic to do that. I also liked the Catalyst way keeping $c separated from $self. The thing I did't like is to spread the dispatching rules all over the controllers and their methods. It is much more intuitive to have them in one place like Mojolicious router has. I also never really learned how to use Catalyst's Chained actions in my project. I understood them by reading the examples but when the dispatching became more complex I really lost the track. 
 
 = Dancer =
 
-While Catalyst is heavy Dancer is much lighter. It sits nicely between the component-based Catalyst and box-like Mojolicious. Its module dependencies also are somewhere between the two. The design and the features of Dancer show that there are smart guys behind the system.
+While Catalyst is heavy Dancer is much lighter. It sits nicely between the component-based Catalyst and box-like Mojolicious. Its 3rd party module dependencies also are somewhere between the two. The design and the features of Dancer show that there must be a bunch of smart guys behind the system.
 
-Developing the first application is very easy closing the easiness of Ruby's Sinatra. Actually with Dancer and Sinatra I have to say that Domain Specific Language is a thing that others like and others don't. I think I prefer pure Perl against a DSL.
+Developing the first Dancer application is very easy closing the easiness of Ruby's Sinatra. Both Dancer and Sinatra use a Domain Specific Language (DSL). Others like it and others don't. I prefer pure Perl against a DSL.
 
 = Mojolicious =
 
-Mojolicious is not an attempt to rewrite Catalyst. It is a new design of how to implement MVC with Perl. It is pure Perl with no Dancer's DSL and Catalyst's Moose, and still easy to start you project with. I think the key points why I chose it for production were
+Mojolicious is not an attempt to rewrite Catalyst. It a new way of implementing a MVC framwork with Perl. It is pure Perl (no Dancer DSL, no Catalyst Moose), and it is easy to start your project with it. I think the key points why I chose it for this project were
   * the expressive dispatcher that keeps routing rules in one place
-  * the fact is a somewhat minimal and lightweight like all the other components that I chose to use
-  * the integrated template engine that fits well to my needs   
-  * the rebellish attitude not to design and implement it like everybody is telling to
+  * it is lightweight like most of the other components that I chose to use (SQLite, Memcached, Bit::Vector)
+  * the integrated template engine is fast and fits very well to my needs   
+  * the attitude not to build it in a way everybody is telling you to
 
-The development of Mojolicious is driven by one main developer. This is both a pro and a con. The integrated Hypnotoad server works very well and has been highly reliable. The hardest time with Mojolicious I've had in implementing my own Model load and access mechanism and how to elegantly pass control between Mojolicioius controllers and their methods. There is no Catalyst visit and detach operations so you have to find the ways to do these by yourself or design your system differently.
+The development of Mojolicious has been driven by one main developer. This is both a pro and a con. The integrated Hypnotoad web server works very well and has been reliable. The hardest time with Mojolicious I've had in implementing my own Model load and access mechanism and the mechanism how to elegantly pass control between Mojolicioius controllers and their methods. There is no Catalyst "visit" and "detach" operations so you have to find the ways to do these by yourself.
