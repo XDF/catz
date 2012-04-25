@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,7 +24,7 @@
 
 package Catz::Load::Data;
 
-use 5.12.0;
+use 5.14.2;
 use strict;
 use warnings;
 
@@ -74,7 +74,7 @@ sub exifsort {
 
    # works up to 999 seconds of exposure time due to
    # 1) padding length
-   # 2)  behavior with sprintf (negative sign appears)
+   # 2) behavior with sprintf (negative sign appears)
    $res > 200 and die "etime processing doesn't support value '$res'";
 
    return sprintf ( "%010d", ( $res * 10_000_000 ) );
@@ -376,27 +376,27 @@ sub body {
 }
 
 const my $LENSFLEN => {
- 'lbc'           => '50 mm',
- 'lbc_dg'        => '50 mm',
- 'lbc_sg'        => '50 mm',
- 'lbc_sf'        => '50 mm',
- 'peleng8'       => '8 mm',
- 'jupiter85'     => '85 mm',
+ 'lbc'           => '50 mm' ,
+ 'lbc_dg'        => '50 mm' ,
+ 'lbc_sg'        => '50 mm' ,
+ 'lbc_sf'        => '50 mm' ,
+ 'peleng8'       => '8 mm'  ,
+ 'jupiter85'     => '85 mm' ,
  'jupiter135'    => '135 mm',
- 'tokina17'      => '17 mm',
- 'canon50ii'     => '50 mm',
- 'canon50usm'    => '50 mm',
- 'canon85usm'    => '85 mm',
+ 'tokina17'      => '17 mm' ,
+ 'canon50ii'     => '50 mm' ,
+ 'canon50usm'    => '50 mm' ,
+ 'canon85usm'    => '85 mm' ,
  'rubinar500'    => '500 mm',
- 'canon28'       => '28 mm',
+ 'canon28'       => '28 mm' ,
  'canon50ii+2x'  => '100 mm',
  'canon85usm+2x' => '170 mm',
- 'samyang8'      => '8 mm',
- 'sigma28'       => '28 mm',
- 'sigma30'       => '30 mm',
- 'sigma10'       => '10 mm',
- 'sigma50'       => '50 mm',
- 'sigma85'       => '85 mm',
+ 'samyang8'      => '8 mm'  ,
+ 'sigma28'       => '28 mm' ,
+ 'sigma30'       => '30 mm' ,
+ 'sigma10'       => '10 mm' ,
+ 'sigma50'       => '50 mm' ,
+ 'sigma85'       => '85 mm' ,
  'canon100l'     => '100 mm',
  'canon135l'     => '135 mm',
  'canon200l'     => '200 mm'
@@ -529,8 +529,28 @@ sub exif {
    when ( 'CreateDate' ) {
 
     $i->{ $key } =~ /(\d\d\d\d).(\d\d).(\d\d) (\d\d).(\d\d).(\d\d)/;
+    
+    ( 
+     defined $1 and 
+     defined $2 and
+     defined $3 and
+     defined $4 and
+     defined $5 and 
+     defined $6 
+    ) or die "unable to deasseble exif CreateDate '$i->{ $key }'";
+    
+    my $fixit = int ( $4 );
+    
+    # fix hack 2012-04-21, add one hour
+    $album eq '20120414kuopio' and $fixit += 1;
+    
+    # make sure it has two digits
+    $fixit < 10 and $fixit = "0$fixit";
 
-    $o->{ dt } = "$1$2$3$4$5$6";
+    $o->{ dt } = "$1$2$3$fixit$5$6";
+    
+    length ( $o->{dt} ) == 14 or die 
+     "something went wrong in exit CreateDate conversion: '$o->{dt}'";
 
    }
 
