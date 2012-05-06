@@ -32,7 +32,6 @@ install HTTP::Date
 install I18N::AcceptLanguage
 install IO::Epoll
 install EV
-install IO::Socket::IP
 install Mojolicious
 install Number::Format
 install URI:Escape::XS
