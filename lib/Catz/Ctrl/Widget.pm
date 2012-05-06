@@ -265,10 +265,14 @@ sub do {    # the common entry point for buidler and renderer
 
  $s->{ total } > 0 or return $self->fail ( 'no photos' );
 
- $s->{ total } > $s->{ widgetnon } or
-  return $self->fail ( 
-   'building and rendering requires more than $s->{ widgetnon } photos' 
-  );
+ if ( $s->{ func } eq 'build' ) {
+ 
+  $s->{ total } > $s->{ widgetnon } or
+   return $self->fail ( 
+    "building requires more than $s->{ widgetnon } photos" 
+   );
+
+ }
 
  $s->{ func } eq 'build' and do {
 
