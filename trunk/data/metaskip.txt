@@ -65,3 +65,6 @@ subject_approx;cat;Udun Silver Apricot Juvel;Udun Silver Apricot Njinyi
 subject_approx;cat;Imladris Indil Hapci;Imladris Indil Freya
 #
 subject_approx;cat;A Winerau's Coral;A Winerau's Louis
+#
+subject_approx;cat;Kultaviiksen Elmore James;Kultaviiksen Etta James
+#

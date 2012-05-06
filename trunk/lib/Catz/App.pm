@@ -485,7 +485,7 @@ sub before {
  $s->{ meta_index } = $s->{ meta_follow } = 1;
  
  # set global limit of the number of photos that must be
- # exceeded to enable widget build and image strip rendering
+ # exceeded to enable widget build
  $s->{ widgetnon } = 14;
 
  if ( $s->{ zurl } =~ /^\/((en|fi)([1-9]{6})?)/ ) {
