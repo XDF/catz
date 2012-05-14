@@ -347,12 +347,7 @@ sub before {
 
  my $self = shift;
  my $s    = $self->{ stash };
- 
- $s->{ protoc } = 
-  $self->req->headers->header ( 'X-Origin-Protocol' ) // 'http';
- 
- $s->{ analyticscode } = conf ( 'lin' ) ? conf ( 'key_analytics' ) : undef;
-
+  
  $s->{ time_start } = time ();
 
  $s->{ env } = conf ( 'env' );    # copy production enviroment id to stash
@@ -510,12 +505,7 @@ sub before {
  }
 
  # let some definitions to be globally available to all controllers
-   
- # no indexing for https stuff
- $s->{ protoc } eq 'https' and do {
-  $s->{meta_index} = 0; $s->{meta_follow} = 0;
- };
-  
+     
  $s->{ now } = dtlang ( $s->{ lang } );
 
  $s->{ matrix } = list_matrix;
@@ -532,10 +522,10 @@ sub before {
  $s->{ pathsep } = '>';
 
  # the url where the all photos are
- $s->{ photobase } = conf ( "base_photo_$s->{ protoc }" );
+ $s->{ photobase } = conf ( "base_photo" );
 
  # the url where the all flag gifs are
- $s->{ flagbase } = conf ( "base_flag_$s->{ protoc }" );
+ $s->{ flagbase } = conf ( "base_flag" );
   
  # fetch texts for the current language and make them available to all
  # controller and templates as variable t
@@ -667,8 +657,6 @@ sub after {
   defined $s->{ cache_obj } ? 'cache' : 'dynamic' 
  );
  
- $self->res->headers->header ( 'X-Catz-Protocol' => $s->{ protoc } );
-
  # timing
 
  $s->{ time_end } = time ();
@@ -683,8 +671,7 @@ sub after {
 
 sub cachekey {
  (
-  $_[ 0 ]->{ stash }->{ version  }, 
-  $_[ 0 ]->{ stash }->{ protoc   },
+  $_[ 0 ]->{ stash }->{ version  },
   $_[ 0 ]->{ stash }->{ zurl     }
  );
 }

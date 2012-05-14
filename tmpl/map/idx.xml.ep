@@ -3,7 +3,7 @@
 % foreach my $smap ( @$smaps ) {
 %  foreach my $la ( qw ( en fi ) ) {
  <sitemap>
-  <loc><%== $t->{"URL_CATZA_$protoc"} %><%== $la %>/sitemap/<%== $smap %>/</loc>
+  <loc><%== $t->{URL_CATZA} %><%== $la %>/sitemap/<%== $smap %>/</loc>
   <lastmod><%== $version_w3c %></lastmod>
  </sitemap>
 %  }

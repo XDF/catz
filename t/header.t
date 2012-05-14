@@ -86,7 +86,6 @@ foreach my $path ( @okpaths ) {
    ->header_like ( 'X-Catz-Version'   => qr/^\d{14}$/ )
    ->header_like ( 'X-Catz-Timing'    => qr/^\d+ ms$/ )
    ->header_like ( 'X-Catz-Origin'    => qr/^[a-z]+$/ )
-   ->header_like ( 'X-Catz-Protocol'  => qr/^[htps]{4,5}$/ )
    ->header_like ( 'ETag'             => qr/^.{24}$/ );
 
  #>>>

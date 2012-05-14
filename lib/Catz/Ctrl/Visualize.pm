@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,7 +24,7 @@
 
 package Catz::Ctrl::Visualize;
 
-use 5.12.0;
+use 5.14.2;
 use strict;
 use warnings;
 
@@ -47,8 +47,8 @@ sub do {
  # if we make HTTP call on server then we always 
  # use http instead of https 
  $s->{ charturl } = $jmap ? 
-  conf ( "url_chart_http" ) :
-  conf ( "url_chart_$s->{ protoc }" );
+  conf ( "url_chart" ) :
+  conf ( "url_chart" );
 
  my $vurl = $self->render (
   "viz/$s->{action}",

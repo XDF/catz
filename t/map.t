@@ -54,7 +54,7 @@ foreach my $map ( qw ( index core news list pair photo browse ) ) {
  $lang = $map eq 'index' ? '' : "/$lang";
 
  $t->get_ok ( "$lang/sitemap/$map/" )->status_is ( 200 )
-  ->content_type_like ( qr/xml/ )->content_like ( qr/$txt->{URL_CATZA_http}/ );
+  ->content_type_like ( qr/xml/ )->content_like ( qr/$txt->{URL_CATZA}/ );
 
  # without trailing slash
  $t->get_ok ( "$lang/sitemap/$map" )->status_is ( 301 );
