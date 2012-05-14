@@ -109,15 +109,15 @@
 %#
 <div class="bar"><h2><%= $t->{POLICY} %></h2> <%== include 'content/policy', intent => 'front' %></div>
 % 
-<div class="bar"><%== include 'content/credits' %></div>
 <div class="bar"><%== include 'content/privacy' %></div>
+<div class="bar"><%== include 'content/credits' %></div>
 %#
 %# --------------------
 %#
 <% end %>
 %#
 %# Catz - the world's most advanced cat show photo engine
-%# Copyright (c) 2010-2011 Heikki Siltala
+%# Copyright (c) 2010-2012 Heikki Siltala
 %# Licensed under The MIT License
 %# 
 %# Permission is hereby granted, free of charge, to any person obtaining a copy

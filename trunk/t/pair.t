@@ -23,7 +23,7 @@
 # THE SOFTWARE.
 #
 
-use 5.12.0;
+use 5.14.2;
 use strict;
 use warnings;
 
@@ -62,7 +62,7 @@ my @okcombs = qw (
  body/ND-0454020_Digital_Camera/002026
  cat/Piupaws_-034Toykiller-034/081241
  cat/Baila-045Bailan_Rikasr-228m-228el-228m-228/111228
- nat/FR/150036
+ nat/FR/083138
  breeder/Cat-039s-045JM/123100
  cate/1/179012
  cate/4/009030

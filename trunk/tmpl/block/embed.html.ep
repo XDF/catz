@@ -1,4 +1,4 @@
-<iframe src="<%== $intent eq 'render' ? $t->{"URL_CATZX_$protoc"} : '' %><%== $wurl %>" scrolling="no" frameborder="0" allowtransparency="true" style="width:<%= $wwidth %>px; height:<%= $wheight %>px; overflow:hidden; border:none;"></iframe>
+<iframe src="<%== $intent eq 'render' ? $t->{URL_CATZX} : '' %><%== $wurl %>" scrolling="no" frameborder="0" allowtransparency="true" style="width:<%= $wwidth %>px; height:<%= $wheight %>px; overflow:hidden; border:none;"></iframe>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2012 Heikki Siltala

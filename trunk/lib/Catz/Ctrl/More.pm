@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,7 +24,7 @@
 
 package Catz::Ctrl::More;
 
-use 5.12.0;
+use 5.14.2;
 use strict;
 use warnings;
 
@@ -144,69 +144,6 @@ sub quality {
  $self->common;
 
 } ## end sub quality
-
-sub status {
-
- #
- # server status display - added 2012-02
- #
-
- my $self = shift;
- my $s    = $self->{ stash };
- 
- $s->{ topic } = 'status';
- 
- $s->{ status_failed } = 0;
- 
- $self->f_init or return $self->fail ( 'f_init exit' );
- 
- $s->{ meta_index } = $s->{ meta_follow } = 0;
- 
- $s->{ status_data } = undef;
- 
- my $data = filereadcond conf ( 'file_status' );
- 
- defined $data or $s->{ status_failed } = 1;
- 
- defined $data and do {
- 
- $s->{ status_data } = [];
-  
-  my @rows = split /\n/, $data;
-  
-  foreach my $row ( @rows ) {
-  
-   $row !~ /^\#/ and do {
-  
-    my ( $key, $value ) = split /=/, $row;
-   
-    defined $key and defined $value and do {
-    
-     my $error = 0;
-    
-     if ( $value =~ /^(.+)\!$/ ) {
-
-      $value = $1;
-           
-      $error = 1;
-  
-      $s->{ status_failed } = 1;
-     
-     } 
-    
-     push @{ $s->{status_data} }, [ $key, $value, $error ];
-    
-    };
-      
-   };
-  
-  }
- 
- };
-  
- $self->common;
-
-}
 
 sub common {
 

@@ -90,7 +90,7 @@ sub photolist {
 
  $s->{ list } = $self->fetch ( 'bulk#photolist', $s->{ aid } );
 
- $s->{ site } = conf ( "url_site_$s->{ protoc }" );
+ $s->{ site } = conf ( "url_site" );
 
  $self->output ( 'bulk/photolist', 'txt' );
 
