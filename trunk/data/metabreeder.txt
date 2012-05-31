@@ -931,7 +931,7 @@ US
 de Fasel
 FR
 #
-de khazad-Dûm
+de Khazad-Dûm
 FR
 #
 De Lindars
@@ -4854,4 +4854,25 @@ SE
 #
 Wild Angel's
 RU
+#
+Ciliega
+EE
+#
+Perpetuum Mobile
+EE
+#
+Karvanverran
+FI
+#
+Hjortronstigens
+SE
+#
+od Królowych
+PL
+#
+Rais-Kis
+FI
+#
+Sotpe-En-Re
+CH
 #
