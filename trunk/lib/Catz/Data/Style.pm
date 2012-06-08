@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,7 +24,7 @@
 
 package Catz::Data::Style;
 
-use 5.12.0;
+use 5.14.2;
 use strict;
 use warnings;
 
@@ -49,8 +49,8 @@ const my $STYLE => {
   normal => $SIZE_BASE . '%',
   tiny   => round ( $SIZE_BASE * 0.70 ) . '%',
   small  => round ( $SIZE_BASE * 0.86 ) . '%',
-  big    => round ( $SIZE_BASE * 1.35 ) . '%',
-  huge   => round ( $SIZE_BASE * 1.60 ) . '%',
+  big    => round ( $SIZE_BASE * 1.39 ) . '%',
+  huge   => round ( $SIZE_BASE * 1.64 ) . '%',
  },
 
  space => { x => '0.5em', y => '0.8em' },

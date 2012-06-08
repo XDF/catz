@@ -36,7 +36,7 @@
 <% content 'btitle' => begin %>
 % my $stxt =  $t->{SITE};
 % $stxt =~ s|z|<span class="xtra">z</span>|g;
-<h1 class="giga"><%== $stxt %></h1>
+<h1 class="giga"><%== $stxt %></h1> <span class="shrink aero"><%= $t->{LAST_UPDATED} %> <%= dtexpand($version,$lang) %></span>
 <% end %>
 %#
 %# --------------------
