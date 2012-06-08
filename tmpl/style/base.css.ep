@@ -206,7 +206,8 @@ a:hover {
 .middler > div { /* google plus button hacks part 2/2 */
  vertical-align: middle !important;
  position: relative !important;
- top: -3px !important;
+ top: 7px !important;
+ display: inline !important;
 }
 
 .cca { float: right; padding: 2px; }
