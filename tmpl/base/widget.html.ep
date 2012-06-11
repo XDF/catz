@@ -29,6 +29,7 @@
 % } else {
 <meta name="description" content="This page is widget content intented to be embedded inside an iframe, not to be viewed separately. The widget is provided by <%=  $t->{URL_CATZA} %>.">
 % }
+%== include 'elem/analytics';
 </head>
 %#
 %# --------------------

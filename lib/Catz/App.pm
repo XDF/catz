@@ -60,20 +60,21 @@ sub startup {
 
  my $self = shift;
  
- $self->plugin('Config', file => 'script/catz.conf' );
+ $self->plugin('Config', file => 'lib/app.pl' );
 
  # template directory
  $self->renderer->paths ( [ $ENV{ MOJO_HOME } . '/tmpl' ] );
 
  # initialize the key for cookie signing
- # we use no cookies so this is just to prevent warnings
+ # this is a stateless service and we use no 
+ # cookies so this is just to suppress warnings
  $self->secret ( conf ( 'key_cookie' ) );
 
  # map utility subs from different modules to Mojolicious helpers
  # we use dynamically generated subs as bridges
  foreach my $sub (
   qw ( dt dt2epoch dtdate dttime dtexpand s2dhms fmt clean
-  enurl html_escape limit  trim fullnum33 thisyear encode
+  enurl html_escape limit trim fullnum33 thisyear encode
   decode round urirest fuse fuseq ucc lcc ucclcc )
   )
  {
@@ -349,6 +350,11 @@ sub before {
  my $s    = $self->{ stash };
   
  $s->{ time_start } = time ();
+ 
+ # on Linux = production set the Google Analytics key
+ #conf ( 'lin' ) and 
+ 
+ ( $s->{ analytics_key } = conf ( 'key_analytics') );
 
  $s->{ env } = conf ( 'env' );    # copy production enviroment id to stash
  
