@@ -36,7 +36,7 @@
 <% content 'btitle' => begin %>
 % my $stxt =  $t->{SITE};
 % $stxt =~ s|z|<span class="xtra">z</span>|g;
-<h1 class="giga"><%== $stxt %></h1> <span class="shrink aero"><%= $t->{LAST_UPDATED} %> <%= dtexpand($version,$lang) %></span>
+<h1 class="giga"><%== $stxt %></h1> <span class="shrink aero"><%= $t->{LAST_UPDATED} %> <%= substr(dtexpand($version,$lang),0,-3) %></span>
 <% end %>
 %#
 %# --------------------
@@ -67,17 +67,22 @@
 %#
 %# --------------------
 %#
-<div class="bar"><h2><%= $t->{SUBJECTS} %></h2>
+<div class="bar">
+<a title="<%= fmt ( $maxx, $lang ) %> <%= $t->{PHOTOA} %>" href="/<%== $langa %>/browseall/"><%= fmt ( $maxx, $lang ) %> <%= $t->{PHOTOA_CATSHOW} %></a> <%= $sep %>
+% my $rrow = $folders->[0];
+<%= $t->{LATEST} %> <%= $t->{ALBUM} %> <span class="xtra"><%= $pathsep %></span> <a title="<%= $rrow->[1] %> <%= $rrow->[1] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%== $langa %>/browse/folder/<%== $rrow->[0] %>/"><%= $rrow->[3] %> <%= dtexpand ( $rrow->[2], $lang ) %></a>
+</div>
 %#
-<a href="/<%== $langa %>/browseall/"><%= fmt ( $maxx, $lang ) %> <%= $t->{PHOTOA_CATSHOW} %></a>
+%# --------------------
 %#
+<div class="bar"><h2><%= $t->{LISTS} %></h2>
 % foreach my $row ( @$pris ) {
-<%= $sep %> <a href="/<%== $langa %>/list/<%= $row->[0] %>/<%= $matrix->{$row->[0]}->{modes}->[0] %>/">
+<a href="/<%== $langa %>/list/<%= $row->[0] %>/<%= $matrix->{$row->[0]}->{modes}->[0] %>/">
 <%= fmt ( $row->[1], $lang ) %>
-<%= $t->{uc($row->[0]).'A'} %></a>
+<%= $t->{uc($row->[0]).'A'} %></a> <%= $sep %>
 % }
 %#
-<%= $sep %> <a href="<%== $t->{URL_YOUTUBE} %>"><%= $t->{VIDEOS} %></a>
+<a href="<%== $t->{URL_YOUTUBE} %>"><%= $t->{VIDEOS} %></a>
 %#
 <%= $sep %> <a href="/<%== $langa %>/lists/"><%= $t->{ALL} %> <%= $t->{LISTINGS} %></a>
 %#

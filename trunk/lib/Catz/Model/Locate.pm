@@ -283,12 +283,36 @@ sub _folder {
  my ( $self, $n ) = @_;
  my $lang = $self->{ lang };
 
- return $self->dball (
+ my $res = $self->dball (
   qq {
-  select folder,max(n) from album natural join photo 
-  group by folder order by s desc limit $n
- }
+   select folder,max(n) from album natural join photo 
+   group by folder order by s desc limit $n
+  }
  );
+
+ # spice the latest folder with the date and location information
+ # 2012-06-11 for the front page quick link 
+
+ my $date = $self->dbone (
+  qq {
+   select min(sec) from  
+   pri natural join sec_$lang natural join inalbum natural join album 
+   where pri='date' and folder=?
+  },$res->[0]->[0]
+ );
+
+ my $loc = $self->dbone (
+  qq {
+   select min(sec) from  
+   pri natural join sec_$lang natural join inalbum natural join album 
+   where pri='loc' and folder=?
+  },$res->[0]->[0]
+ );
+ 
+ $res->[0]->[2] = $date;
+ $res->[0]->[3] = $loc;
+  
+ return $res;
 
 }
 

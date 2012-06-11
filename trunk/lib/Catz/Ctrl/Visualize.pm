@@ -71,7 +71,7 @@ sub do {
   # using "$vurl" instead of $vurl to force it to be scalar
   # fixed Can't use a Mojo::ByteStream object as a URI at ...
   
-  my $json = $self->fetch ( 'net#get', "$vurl", $pseudo );
+  my $json = $self->fetch ( 'net#get', "$vurl", $pseudo ) // '';
 
   length ( $json ) > 15 or return $self->fail ( '3rd party request failed' );
 
