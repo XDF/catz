@@ -40,22 +40,26 @@ use Catz::Data::Conf;
 
 my $t = Test::Mojo->new ( conf ( 'app' ) );
 
-my @oklangs = qw ( en fi );
+my $lin  = conf ( 'lin' );
+my $akey = conf ( 'key_analytics' );
 
-my @oksetups = qw ( en394211 fi211111 );
+use Catz::Data::Text;
 
-foreach my $lang ( @oklangs ) {
+my $text = text ( 'en' );
 
- $t->get_ok ( "/$lang/info/std/" )->status_is ( 200 )
-  ->content_type_like ( qr/text\/plain/ );
+my @fourfour = qw (
+ /a/ /ZXC/ /en/nothing/to/it/ /fi/unknown123/
+);
 
- $t->get_ok ( "/$lang/info/std" )->status_is ( 301 );
+foreach my $page ( @fourfour ) {
 
-}
-
-foreach my $setup ( @oksetups ) {
-
- $t->get_ok ( "/$setup/info/std/" )->status_is ( 404 );
+ $t->get_ok ( $page )
+   ->status_is ( 404 )
+   ->content_like ( qr/$text->{URL_CATZA}/ )
+   ->content_like ( qr/history\.go/ );
+   
+  $lin and $t->get_ok ( $page )->content_like ( qr/\'$akey\'/ );
+  (not $lin) and $t->get_ok ( $page )->content_unlike ( qr/\'$akey\'/ );
 
 }
 

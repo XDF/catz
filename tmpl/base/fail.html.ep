@@ -3,8 +3,8 @@
 <% content 'main' => begin %>
 <h1><%= content 'msg_en' %><br><%= content 'msg_fi' %></h1>
 % if ( defined ( stash ( 't' ) ) ) {
-<div><a href="" onclick="javascript: history.go(-1);"><%= stash ( 't' )->{BACKTOPREV} %></a>
-<a href="<%== stash ( 't' )->{"URL_CATZA"} %>"><%= stash ( 't' )->{BACKTOFRONT} %></a></div>
+<div><ul><li><a href="" onclick="javascript: history.go(-1);"><%= stash ( 't' )->{BACKTOPREV} %></a></li>
+<li><a href="<%== stash ( 't' )->{"URL_CATZA"} %><%== defined stash('langa') ? stash('langa').'/' : '' %>"><%= stash ( 't' )->{BACKTOFRONT} %></a></li></ul></div>
 % }
 % if ( 
 %  defined ( stash ( 'env' ) ) and 

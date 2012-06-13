@@ -198,17 +198,22 @@ a:hover {
  border-style: none; 
  vertical-align: middle;
 }
-
-.middler { /* google plus button hacks part 1/2 */
- vertical-align: middle;
-}
-
-.middler > div { /* google plus button hacks part 2/2 */
+ 
+.middler { /* google plus button hacks part 1/3 */
  vertical-align: middle !important;
- position: relative !important;
- top: 7px !important;
  display: inline !important;
 }
+
+.middler > div { /* google plus button hacks part 2/3 */
+ vertical-align: middle !important;
+ display: inline !important;
+}
+
+.middler > div > iframe { /* google plus button hacks part 3/3 */
+ vertical-align: middle !important;
+ display: inline !important;
+}
+
 
 .cca { float: right; padding: 2px; }
 
