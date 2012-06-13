@@ -425,16 +425,15 @@ $t->get_ok ( '/en111111/build/' )
   ->content_like ( qr/meta name=\"og:description\" / )
   ->content_like ( qr/meta name=\"keywords\" / );
 
-$lin and do {
 
- # 2012-06-12 test that analytics code exists - Linux = production only
+# 2012-06-12 test that analytics code exists - Linux = production only
 
- foreach my $page ( qw ( /en/ /fi111111/browseall/ /en/more/contrib/ /fi/xyzabc/ ) ) {
+foreach my $page ( qw ( /en/ /fi111111/browseall/ /en/more/contrib/ /fi/xyzabc/ ) ) {
 
-  $t->get_ok ( $page )->content_like ( qr/\'$akey\'/ );
+ $lin and $t->get_ok ( $page )->content_like ( qr/\'$akey\'/ );
+ (not $lin) and $t->get_ok ( $page )->content_unlike ( qr/\'$akey\'/ );
  
- } 
+} 
 
-};
       
 done_testing;

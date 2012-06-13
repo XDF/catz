@@ -1,5 +1,4 @@
-%# defined stash('analytics_key') and do {
-<!-- <%= $t->{ANALYTICS_INFO} %> -->
+% defined stash('analytics_key') and do {
 <script type="text/javascript">
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', '<%== stash('analytics_key') %>']);
@@ -10,4 +9,4 @@ ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www')
 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
 </script>
-%# }; 
+% }; 
