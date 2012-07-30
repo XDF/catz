@@ -18,8 +18,8 @@ o conf build_requires_install_policy yes
 install YAML
 install LWP
 install Bit::Vector
-install Crypt::Blowfish
 install Crypt::CBC
+install Crypt::Blowfish
 install DateTime
 install Digest::HMAC
 install Digest::MD5
@@ -48,4 +48,4 @@ install WWW::Mechanize
 install HTML::Lint
 install DateTime::Format::W3CDTF
 install MIME::Base64
-quit 
+quit
