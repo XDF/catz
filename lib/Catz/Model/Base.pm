@@ -160,18 +160,15 @@ sub db_run {
  my $start;
  my $end;
  
- conf 'win' and do {
-
-  # database queries with non-ASCII characters have started to fail on Windows
-  # so this hack has been added 2012-09-04 to fix the issue on Windows
+ # database queries with non-ASCII characters in query parameters 
+ # have started to fail so this hack has been added 2012-09-04 
+ # to fix the issue
   
-  for ( my $i = 0; $i < scalar @args; $i++ ) {
+ for ( my $i = 0; $i < scalar @args; $i++ ) {
    
-   $args[ $i ] = Encode::encode( 'ISO-8859-1', $args[ $i ] );
+  $args[ $i ] = Encode::encode( 'ISO-8859-1', $args[ $i ] );
  
-  }
- 
- };
+ }
  
  $TIME_DB and $start = time();
 
