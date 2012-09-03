@@ -77,13 +77,11 @@ sub expand {
   return $self->fail ( 'drill target not matrixed for pri' );
     
   $self->f_init or return $self->fail ( 'f_init exit' );
-  
-  $self->f_map or return $self->fail ( 'f_map exit' );
     
-  $s->{ runmode } = 'pair';
+  $self->f_map or return $self->fail ( 'f_map exit' );
    
-  $s->{ sec } = $self->decode ( $s->{ sec } );
-  
+  $self->f_pair_start or return $self->fail ( 'f_pair_start exit' );
+
   $s->{ expand } = $self->fetch (
    'related#refine', $s->{ pri }, $s->{ sec }, 'expand', $s->{ drill }
   );

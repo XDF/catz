@@ -39,7 +39,7 @@ sub pair {
 
  $self->f_map or return $self->fail ( 'f_map exit' );
 
- $self->f_pair_start or return $self->fail ( 'f_pair_args exit' );
+ $self->f_pair_start or return $self->fail ( 'f_pair_start exit' );
 
  $self->f_origin or return $self->fail ( 'f_origin exit' );
 

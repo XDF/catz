@@ -32,9 +32,11 @@ use warnings;
 
 use Const::Fast;
 use DBI;
+use Encode;
 use Time::HiRes qw ( time );
 
 use Catz::Data::Cache;
+use Catz::Data::Conf;
 
 use Catz::Util::Number qw ( fullnum33 round );
 
@@ -77,8 +79,11 @@ sub fetch {
 
   $db =
    DBI->connect ( 'dbi:SQLite:dbname=' . $ENV{ MOJO_HOME } . "/db/$newver.db",
-   undef, undef, { AutoCommit => 1, RaiseError => 1, PrintError => 1 } )
+   undef, undef, { 
+    AutoCommit => 1, RaiseError => 1, PrintError => 1
+   } )
    || die ( $DBI::errstr );
+   
 
   # sequence
   $db->func ( 'fullnum33', 2, \&fullnum33, 'create_function' );
@@ -154,8 +159,21 @@ sub db_run {
 
  my $start;
  my $end;
+ 
+ conf 'win' and do {
 
- $TIME_DB and $start = time ();
+  # database queries with non-ASCII characters have started to fail on Windows
+  # so this hack has been added 2012-09-04 to fix the issue on Windows
+  
+  for ( my $i = 0; $i < scalar @args; $i++ ) {
+   
+   $args[ $i ] = Encode::encode( 'ISO-8859-1', $args[ $i ] );
+ 
+  }
+ 
+ };
+ 
+ $TIME_DB and $start = time();
 
  my $res = cache_get ( $currver, $nspace, $comm, $sql, @args );
 

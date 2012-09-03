@@ -111,6 +111,9 @@ foreach my $mode ( qw ( browse view ) ) {
   if ( $mode eq 'browse' ) {
 
    # ok browse with no photo id
+   
+   # warn "/$setup/$mode/$elem[0]/$elem[1]/";
+   
    $t->get_ok ( "/$setup/$mode/$elem[0]/$elem[1]/" )->status_is ( 200 )
     ->content_type_like ( qr/text\/html/ )
     ->content_like      ( qr/alt=\"\w{4,5} \d{6}/ )    # photo alt text
