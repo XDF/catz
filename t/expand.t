@@ -69,8 +69,13 @@ my @badsets = qw (
 $t->get_ok ( "/fi384321/expand/cat/Miisu/loc" )->status_is ( 301 );
 $t->get_ok ( "/en/expand/cat/Miisu/loc" )->status_is ( 301 );
 
+# this organizer only has one location -> no expand available
 $t->get_ok ( "/fi/expand/org/Pyh-228_Birman_Kissa_-045yhdistys/loc/")->status_is ( 200 );
+
+# language is invalid
 $t->get_ok ( "/if/expand/org/Pyh-228_Birman_Kissa_-045yhdistys/loc/")->status_is ( 404 );
+
+# this organizer is not valid in english
 $t->get_ok ( "/en/expand/org/Pyh-228_Birman_Kissa_-045yhdistys/loc/")->status_is ( 404 );
 
 my $lang;

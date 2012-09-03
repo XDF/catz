@@ -157,6 +157,9 @@ sub _refine {
   $lang eq 'fi' ? $sqlme_fi : $sqlme_en, $pri, $sec
  );
  
+ # unknown pri-sec -combination
+ defined $me or return undef;
+ 
  my $tg = $self->dbone ( $sqltg, $target );
 
  my $set = $self->dbcol ( $lang eq 'fi' ? $sqlrel_fi : $sqlrel_en, $me, $tg );

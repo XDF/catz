@@ -142,16 +142,22 @@ sub _trans {
  # returns the translated sec (that can be the same)
 
  my ( $self, $spri, $ssec ) = @_;
+ 
  my $lang = $self->{ lang };
 
  my $gnal = $lang eq 'fi' ? 'en' : 'fi';
+ 
+ #use Data::Dumper; warn "SEC ". Dumper $ssec;
 
  my $sid = $self->dbone (
   "select sid from sec_$lang natural join pri where pri=? and sec=?",
-  $spri, $ssec );
+ $spri, $ssec );
+  
+ defined $sid or return undef;
 
  return $self->dbone (
-  "select sec from sec_$gnal natural join pri where sid=?", $sid );
+  "select sec from sec_$gnal natural join pri where sid=?", $sid 
+ );
 
 }
 

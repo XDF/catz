@@ -362,8 +362,12 @@ sub f_pair_start {
  # check that pri is acceptable
  $self->fetch ( 'pair#verify', $s->{ pri } )
   or return $self->fail ( 'illegal concept' );
+  
+ #use Data::Dumper; warn "SECa ". Dumper $s->{ sec };
 
  $s->{ sec } = $self->decode ( $s->{ sec } );
+
+ #use Data::Dumper; warn "SECb ". Dumper $s->{ sec };
 
  $s->{ args_array } = [ $s->{ pri }, $s->{ sec } ];
  $s->{ args_count } = 2;
