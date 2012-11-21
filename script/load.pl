@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 #
 
-use 5.12.0;
+use 5.12.4;
 use strict;
 use warnings;
 
@@ -39,7 +39,7 @@ use Catz::Util::File qw (
  dnafolder filecopy fileread finddirs filewrite findlatest pathcut
 );
 use Catz::Util::Log qw ( logclose logopen logit );
-use Catz::Util::String qw ( dna topiles topilex );
+use Catz::Util::String qw ( dna tolines topiles topilex );
 use Catz::Util::Time qw ( dt dtexpand dtlang );
 
 $| = 1;    # unbuffered printing
@@ -138,6 +138,9 @@ foreach my $head ( @metafiles ) {
   if ( $head eq 'metacore' ) {                    # complex loading
 
    foreach my $pile ( topilex ( $data ) ) {
+   
+    # 2012-11-22: quite nasty but must get rid of comment lines
+    my $pile = join "\n", tolines ( $pile ); 
 
     $pile =~ /^\>{3}\s+(20\d{6}[a-z]+\d{0,1})\n/g
      or die "malformed album beginning";

@@ -1,3 +1,12 @@
+;
+; a catza.net core data file
+;
+; Copyright Heikki Siltala 2004-2012
+; Creative Commons Attribution 3.0 License
+;
+; http://catza.net/
+; http://code.google.com/p/catz/
+;
 AMS
 9
 American Shorthair
@@ -7,6 +16,11 @@ AWS
 9
 American Wirehair
 amerikkalainen wirehair
+#
+EXL
+1
+Exotic Longhair
+pitkäkarvainen exotic 
 #
 EXO
 1

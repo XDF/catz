@@ -44,6 +44,10 @@ EOF
 
 $ENV{ MOJO_APP } = conf ( 'app' );
 
+# added 2012-22-11 to prevent "Maximum message size exceeded"
+# seen when running tests on dev with Mojolicious 3.59
+$ENV{ MOJO_MAX_MESSAGE_SIZE } = conf ( 'msglimit' );
+
 # added 2011-10-15 to prevent responses to go
 # to file and issues with page caching
 $ENV{ MOJO_MAX_MEMORY_SIZE } = conf ( 'msgmemlimit' );
@@ -54,9 +58,9 @@ conf ( 'win' ) and do {
 
  $ENV{ MOJO_MODE } = 'production';
 
- #$ENV{MOJO_MODE} = 'development';
+ ### $ENV{MOJO_MODE} = 'development';
 
- #$ENV{MOJO_USERAGENT_DEBUG} = 1;
+ ### $ENV{MOJO_USERAGENT_DEBUG} = 1;
 
 };
 

@@ -1,3 +1,12 @@
+;
+; a catza.net core data file
+;
+; Copyright Heikki Siltala 2004-2012
+; Creative Commons Attribution 3.0 License
+;
+; http://catza.net/
+; http://code.google.com/p/catz/
+;
 subject_approx;breeder;AngelWaves;Angelfalls
 #
 subject_approx;breeder;Ferox;Ferme
@@ -67,4 +76,6 @@ subject_approx;cat;Imladris Indil Hapci;Imladris Indil Freya
 subject_approx;cat;A Winerau's Coral;A Winerau's Louis
 #
 subject_approx;cat;Kultaviiksen Elmore James;Kultaviiksen Etta James
+#
+subject_approx;cat;Vongoivan Elvira;Vongoivan Erik
 #

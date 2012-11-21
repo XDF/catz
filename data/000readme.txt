@@ -1,3 +1,8 @@
-This folder contains the source files (structured tagged text) that are the primary data source of http://catza.net/. The data from the files gets offline loaded to the database by loader and is served from database at runtime. The news articles file metanews.txt is deliberately excluded.
+This folder contains the source files (structured tagged text) that are the 
+primary data source of http://catza.net/. The data from the files gets offline
+loaded to the database by loader and is served from database at runtime. The
+news articles file metanews.txt is deliberately excluded.
 
-Notice that the files here change less often than they are updated in our data process. The files here are updated only when a new version of Catz web application engine is committed.
+Notice that the files here change less often than they are updated in our data
+process. The files here are updated only when a new version of Catz web
+application engine is committed.

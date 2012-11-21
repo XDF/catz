@@ -212,7 +212,15 @@ sub fuse { join '/', ( '', @_, '' ) }
 sub fuseq { join '/', ( '', @_ ) }
 
 sub tolines {
- map { trim ( $_ ) } split /\n/, trim ( $_[ 0 ] );
+
+ # splits a set of lines into separate trimmed lines
+ # exclude lines that start with a semicolon -> they are comments
+ 
+ grep { $_ !~ /^\;/ }
+ map { trim ( $_ ) } 
+ split /\n/, 
+  trim ( $_[ 0 ] );
+  
 }
 
 sub topiles {
