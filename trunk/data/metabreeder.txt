@@ -1,3 +1,12 @@
+;
+; a catza.net core data file
+;
+; Copyright Heikki Siltala 2004-2012
+; Creative Commons Attribution 3.0 License
+;
+; http://catza.net/
+; http://code.google.com/p/catz/
+;
 A'rdnán
 FI
 #
@@ -4893,4 +4902,52 @@ NL
 #
 Rewal Beauty
 EE
+#
+Mistlurens
+SE
+#
+Grand Oray
+RU
+#
+Kyanos
+SE
+#
+Pinkhouse
+FI
+#
+av Buerlia
+NO
+#
+Abbas-Coons
+FI
+#
+Lavender Love
+PL
+#
+Goathill's
+FI
+#
+Shady-Lady's
+FI
+#
+Laureen Chérie
+CZ
+#
+Main Bastet
+CZ
+#
+Aghtamar's
+NL
+#
+Benjin
+FI
+#
+Mount Desert's
+IT
+#
+BlueKaramel
+FI
+#
+Sunnanordica
+RU
 #
