@@ -3,7 +3,7 @@
 
 Here are the basic commands to install the Perl modules used by catz.
 
-All enviroments (dev and prod) are now using Perl 5.14.2.
+Development environments use Perl 5.14.2. Production uses Perl 5.14.3.
 
 In case of trouble, use
  perl -MCPAN -e "CPAN::Shell->force(qw(install Module::In::Question));"
