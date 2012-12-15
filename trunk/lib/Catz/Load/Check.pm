@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2012 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,7 +24,7 @@
 
 package Catz::Load::Check;
 
-use 5.12.0;
+use 5.14.2;
 use strict;
 use warnings;
 
@@ -310,12 +310,12 @@ sub _nation_exists {
 
  foreach my $text ( @text ) {
 
-  if ( $text =~ /([A-Z]+)\*\w/ ) {
+  if ( $text =~ /([A-Z]{2})\*\w/ ) {
 
    exists $nats{ $1 } or item ( 'nation', $1 );
 
   }
-  elsif ( $text =~ /\w\*([A-Z]+)/ ) {
+  elsif ( $text =~ /\w\*([A-Z]{2})/ ) {
 
    exists $nats{ $1 } or item ( 'nation', $1 );
 

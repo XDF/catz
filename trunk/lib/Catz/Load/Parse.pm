@@ -203,10 +203,10 @@ sub comment {
  $text =~ s/\&\&/\&/g;
 
  # find pre nation codes
- my @pre = $text =~ /([A-Za-z]+)\*(?:\{|\w)/g;
+ my @pre = $text =~ /([A-Z]{2,4})\*(?:\{|\w)/g;
 
  # find post nation codes
- my @post = $text =~ /(?:\}|\w)\*([A-Za-z]+)/g;
+ my @post = $text =~ /(?:\}|\w)\*([A-Z]{2,4})/g;
 
  ( scalar @pre > 0 or scalar @post > 0 ) and do {
 
