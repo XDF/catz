@@ -7,6 +7,61 @@
 ; http://catza.net/
 ; http://code.google.com/p/catz/
 ;
+>>> 20121125turku
+>>> 201
+>>> TUROK cat show Turku 2012-11-25
+>>> TUROK ry:n kissanäyttely Turussa 25.11.2012
+P1: [BUR]
+P4: [CRX]
+P5-6: {Lilac's} Esmeralda Gypsygirl [BUR n] %B20120426
+P7-8: [BUR]
+P9-11: {Bajangin} Perle de Culture [OSH n 24]
+P12: [CRX]
+P17-18: [CRX]
+P19: {Conan} Paeluss (Paavo) [MAN ds 53]
+P20: [CRX]
+P21: [CRX]
+P22: SC {Sinimirrin} Uppo-Nalle (Väinö) [CHA]
+P26: [PER]
+P27: [CRX]
+P28-30: {Honey's} Meringue (Markku) [EUR g 23]
+P33: {Conan} Imelik (Iita) [MAN a 03 53]
+P34-35: [PER]
+P36: CH {Hovikissan} Pi-Mu [KOR]
+P37-38: SC {Hovikissan} lek sawat (Lotta) [KOR]
+P39: {Romanxx} Jake Delhomme [CYM]
+P40-43: {Ice-Olive's} Velour Ambrosia (Vicky) [OSH c 24]
+P44-47: {Bajangin} Perle de Culture [OSH n 24]
+P50: {Romanxx} Jake Delhomme [CYM]
+P51: {Deimos} Buon Giorno [CYM e 52]
+P54-55: {Alana*Nay's} Lilly (Lili) [SBI n]
+P57-58: {Tassutuvan} Ansa (Nekku) [SIB e 09]
+P62: {Cat'omatic} Snöhetta [NFO ns 03]
+P65-66: [NFO]
+P67: {Sic'an} Peres (Ruben) [SBI c]
+P73-74: [CRX]
+P75: [BUR]
+P76-79: CH {Inkilee} Huvitus (Hupu) [RUS]
+P80-81: SP,CH {Riiviön} Viiru, DSM [DRX ns 09 22]
+P82-83: {Sweetpurr's} Love Is Blind [CRX n 09]
+P84-85: {Foxkiss} Buteo lagopus (Marius) [SOM p]
+P89: [BUR]
+P90-91: {Cisseli's} Gluay maai [KOR] %B20120507
+P92-93: SC {Ninelli's} Kreisi Kelli (Kelli) [BUR n]
+P94-95: Natalia [SIB n 23]
+P98-99: SC {Ninelli's} Kreisi Kelli (Kelli) [BUR n]
+P100: CH {Kassilan} Lystikäs Lyyli (Pikku Idiootti) [EUR ns 23]
+P104: IP {Feirefiz} Face Of God [BUR c]
+P105: {Kassilan} Outshine Ofira (Fiira) [EUR as 23]
+P106-108: GIP,CH,WW2012 {Mummeli} Vipinha Lila [OLH c]
+P109-112: SP,SC {Sultsinan} Satumaa, DSM (Liu) [OSH n]
+P114: SP,SC {Sultsinan} Satumaa, DSM (Liu) [OSH n]
+P115: [BUR]
+P116-123: SP,SC {Sultsinan} Satumaa, DSM (Liu) [OSH n]
+P124: [BAL]
+P125: SP,EC {Mäkikatin} Utopia [EUR a 24] %A10y
+P126: CH {Suviyön} Bayindir Belemir (Bele) [TUV f 62]
+----------
 >>> 20121111helsinki
 >>> 200
 >>> CFF cat show Helsinki 2012-11-11
@@ -22,6 +77,7 @@ P15: [CRX]
 P16: GC {Fenway} My Glory-B of Changes (Mokka) [CRX a 09] %Pleft
 P17-20: GC {Fenway} My Glory-B of Changes (Mokka) [CRX a 09]
 P25-27: [EXO]
+P28-31: [MCO]
 P32-35: CH {PikesPeak} Sarafina of Wild'n Sweet [OCI ns 24]
 P37: GIC {Topeng} News Flash of Noxx [OLH n 25]
 P38-42: CH {Sunnanordica} Oberon [RUS]
@@ -30,13 +86,17 @@ P51-52: {Iltavilli} Iseret Isis (Thiti) [MAU ns]
 P54: [PER]
 P55-56: [PER]
 P59: GC {Fenway} My Glory-B of Changes (Mokka) [CRX a 09]
-P61-63: GIC {Topeng} News Flash of Noxx [OLH n 25]
+P60-63: GC,GIC {Topeng} News Flash of Noxx (Victor) [OLH n 25]
 P66: {D'Arnaud} Esmeralda [PER]
 P69-70: {My-Champagne} Princess Victoria (Ida) [EXL n 22]
+P71: {Moonwhisper} Iron Knight (Kuru) [EXO a 03 22]
 P72: {D'Arnaud} Esmeralda [PER]
 P74-77: GC,RW,QGC {PikesPeak} Wally Harski Jr. [OCI]
 P78-81: [EXO]
+P82-84: [MCO]
+P90-94: [MCO]
 P95-96: [ABY]
+P97: [BUR]
 P107: [PER]
 P108: "the bird|lintu"
 P109: %Xview
@@ -84,6 +144,7 @@ P28: CH {Kultaviiksen} Elmore James [PER d 22]
 P29: GIC {Luna-Purr} Lord Love Machine (Liikeri) [MCO n 23]
 P30: [OCI]
 P31: [BUR]
+P32-39: {Willicon} Lavacristallo (Ilpo) [BAL w 67] 
 P44-45: [MCO]
 P48: GIC {Vongoivan} Elvira [SBI a]
 P49-52: SP,SC {Moosegrove} Conquistatore, DSM, DVM (Metku) [OCI b 24]
@@ -932,7 +993,7 @@ P131-133: Pikku-Lilla [HCS] %F "URK Miss Housecat 2011|URK Miss kotikissa 2011"
 P135: [OSH]
 P137: "the electric candle|sähkökynttilä"
 P138: "Tikkurilan Tiikerit"
-P139: [KOR]
+P139: SC,SP,SW2011 {Seirene} Amarindra DSM, DVM [KOR]
 P140-142: SP,EC,SGCA {Ipekkedinin} Birinci Bebek (Mikke) [TUV d 62]
 P143: %Xview
 ----------
@@ -3489,6 +3550,7 @@ P102: PR,CH {Grrr} Kallisto Mira Nikita [RUS]
 P103: {Kaizahre} Rainbow Dash (Siri) [RUS]
 P104: IC {Sea Coon's} Wendy, JW (Windy) [OCI n 24]
 P105-106: [ABY]
+P107: {Ballawhane} Cyrano [SIA a 21]
 P108-109: [SIA]
 P110: EP,IC {D'manns} Kirke, DSM (Kike) [MAN g 09 52]
 P111-112: {Recknagel} Harski China Rose (Ginger) [OCI o 24]
