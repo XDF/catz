@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 #
 
-use 5.12.0;
+use 5.14.2;
 use strict;
 use warnings;
 
@@ -31,6 +31,9 @@ use lib '../lib';
 use WWW::Mechanize;
 
 use Catz::Data::Conf;
+use Catz::Data::Text;
+
+my $text = text ( 'en' );
 
 my @urls = 
  map { 'http://127.0.0.1:3' . conf ( 'env' ) . '00' . $_ } qw( 
@@ -54,10 +57,10 @@ sub getobj {
 
  } else {
  
-  $m = WWW::Mechanize->new( autcheck => 1 );
+  $m = WWW::Mechanize->new( autocheck => 1 );
 
   # at least Wikipedia doesn't like the default
-  $m->agent_alias( 'Linux Konqueror' );
+  $m->agent( $text->{SITE} . ' link verifier' );
 
   $m->get( $url );
 
@@ -79,7 +82,9 @@ foreach my $url ( @urls ) {
 
  my $u = getobj ( $url );
  
- foreach my $link ( sort $u->links )  {
+ my @links = $u->links;
+ 
+ foreach my $link ( @links )  {
 
   my $lin = $link->url_abs();
  
@@ -95,7 +100,7 @@ foreach my $url ( @urls ) {
 
   my $ima = $image->url_abs();
 
-  # viz redirects take ages, skip them by grep
+  # viz redirects take ages, skip them
   not ( $ima =~ m|/viz/| ) and do { 
  
    say "checking image $ima";

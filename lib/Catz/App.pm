@@ -547,7 +547,9 @@ sub after {
  my $self = shift;
  my $s    = $self->{ stash };
 
- my $age = 60 * 60; # 1 hour initial lifetime for all content
+ # 2 hours initial lifetime for all content
+ # was 1 hour up to 2012-12-27
+ my $age = 2 * 60 * 60; 
  
  $self->res->headers->header ( 'Last-Modified' ) and do {
 

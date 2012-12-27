@@ -162,6 +162,14 @@ sub mapidx {
 
 }
 
+# define chance frequency constants for sitemaps
+const my $F_YES   => 'always' ;
+const my $F_DAY   => 'daily'  ;
+const my $F_WEEK  => 'weekly' ;
+const my $F_MONTH => 'monthly';
+const my $F_YEAR  => 'yearly' ;
+const my $F_NO    => 'never'  ; 
+
 sub mapsub {
 
  my $self = shift;
@@ -182,7 +190,8 @@ sub mapsub {
      [
       $self->fuse ( 'viewall', $self->fullnum33 ( $_->[ 1 ], $_->[ 2 ] ) ),
       dt2w3c ( $_->[3] ),
-      $i++ < 1000 ? 'weekly' : 'monthly', 
+      # latest 300 photos once per week, older photos once per month
+      $i++ <= 300 ? $F_WEEK : $F_MONTH, 
       0.3
      ]
      } @{ $self->fetch ( 'locate#photos' ) }
@@ -197,14 +206,14 @@ sub mapsub {
    my $news =    dt2w3c $self->fetch ( 'locate#change', 'metanews' );
 
    $s->{ surls } = [
-    [ '/',              $s->{ version_w3c }, 'daily', 1 ],
-    [ '/more/contrib/', $core,               'weekly',  0.9 ],
-    [ '/more/quality/', $quality,            'weekly', 0.2 ],
-    [ '/search/',       $s->{ version_w3c }, 'monthly', 0.8 ],
-    [ '/news/',         $news,               'daily',  0.4 ],
-    [ '/build/',        $core,               'monthly', 0.2 ],
-    [ '/lists/',        $core,               'weekly', 0.1 ],
-    [ '/browseall/',    $core,               'weekly', 0.3 ],
+    [ '/',              $s->{ version_w3c }, $F_DAY  , 1   ],
+    [ '/more/contrib/', $core,               $F_WEEK , 0.9 ],
+    [ '/more/quality/', $quality,            $F_WEEK , 0.2 ],
+    [ '/search/',       $s->{ version_w3c }, $F_WEEK , 0.8 ],
+    [ '/news/',         $news,               $F_DAY  , 0.4 ],
+    [ '/build/',        $core,               $F_WEEK , 0.2 ],
+    [ '/lists/',        $core,               $F_WEEK , 0.1 ],
+    [ '/browseall/',    $core,               $F_WEEK , 0.3 ],
    ];
 
   }
@@ -224,7 +233,7 @@ sub mapsub {
      my $mode = $m->{ $key }->{ modes }->[ 0 ];    
 
      push @urls,
-      [ $self->fuse ( 'list', $key, $mode ), $change, 'weekly', 0.3 ];
+      [ $self->fuse ( 'list', $key, $mode ), $change, $F_MONTH, 0.3 ];
     
     };
 
@@ -246,14 +255,15 @@ sub mapsub {
 
    foreach ( my $i = 0; $i < scalar @$titles; $i++ ) {
 
-    my $p = 1 - ( $i / 20 );
-    $p < 0.1 and $p = 0.1;
+    my $p = 1 - ( $i / 20 ); # run priority down from 1 towards 0
+    
+    $p < 0.1 and $p = 0.1;   # minimun priority is 0.1
 
-    my $cap = 'daily';
+    my $cap = $F_DAY;
 
-    $p < 0.7 and $cap = 'weekly';
+    $p < 0.9 and $cap = $F_WEEK;
 
-    $p < 0.2 and $cap = 'monthly';
+    $p < 0.6 and $cap = $F_MONTH;
 
     push @urls, [ 
      $self->fuse ( 'news', $titles->[ $i ]->[ 0 ] ), $change, $cap, $p 
@@ -273,7 +283,7 @@ sub mapsub {
     map {
      [
       $self->fuse ( 'browse', $_->[ 0 ], $self->encode ( $_->[ 1 ] ) ),
-      $change, 'weekly', 0.6
+      $change, $F_MONTH, 0.6
      ]
      } @{ $self->fetch ( 'locate#secs' ) }
    ];
@@ -297,7 +307,7 @@ sub mapsub {
         'browseall', 
         $self->fetch( 'all#x2id', $xs->[ ( $page - 1 ) * $s->{ perpage} ] ) 
        ),
-      $change, 'weekly', $page == 1 ? 0.3 : 0.2
+      $change, $F_MONTH, $page == 1 ? 0.2 : 0.1
     ]; 
 
    }
