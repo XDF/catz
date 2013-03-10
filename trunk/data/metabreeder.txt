@@ -1,7 +1,7 @@
 ;
 ; a catza.net core data file
 ;
-; Copyright Heikki Siltala 2004-2012
+; Copyright Heikki Siltala 2004-2013
 ; Creative Commons Attribution 3.0 License
 ;
 ; http://catza.net/
@@ -4962,4 +4962,61 @@ FI
 #
 Cisseli's
 FI
+#
+Vuorikatin
+FI
+#
+Moonwhisper
+FI
+#
+Fenway
+USA
+#
+Starglitters
+FI
+#
+Hot Country's
+SE
+#
+Jollydolls
+FI
+#
+CharmingCurl
+RU
+#
+Pilkkumin
+FI
+#
+Punakuun
+FI
+#
+Otomi
+CA
+#
+Uniikki
+FI
+#
+Pyramid's Gold
+ES
+#
+Beartooth Mountain
+DE
+#
+BelleNoire
+FI
+#
+Bigear
+FI
+#
+M'Memories Ragdoll's
+BE
+#
+Moumouni
+FI
+#
+Riquitta's
+FI
+#
+Glamour Queen
+EE
 #

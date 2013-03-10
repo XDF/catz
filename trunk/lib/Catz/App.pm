@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2012 Heikki Siltala
+# Copyright (c) 2010-2013 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,14 +26,14 @@ package Catz::App;
 
 # The Catz Mojolicious application
 
-use 5.14.2;
+use 5.16.2;
 use strict;
 use warnings;
 
 use parent 'Mojolicious';
 
 use Const::Fast;
-use Mojo::Util qw ( html_escape );
+use Mojo::Util qw ( xml_escape );
 use Time::HiRes qw ( time );
 
 use Catz::Data::Cache;
@@ -53,7 +53,7 @@ use Catz::Util::String qw (
  ucc lcc ucclcc 
 );
 
-# controls emitting timing information as warnings
+# controls emitting HTTP request timing information as warnings
 const my $TIME_PAGE => 0;
 
 sub startup {
@@ -74,7 +74,7 @@ sub startup {
  # we use dynamically generated subs as bridges
  foreach my $sub (
   qw ( dt dt2epoch dtdate dttime dtexpand s2dhms fmt clean
-  enurl html_escape limit trim fullnum33 thisyear encode
+  enurl xml_escape limit trim fullnum33 thisyear encode
   decode round urirest fuse fuseq ucc lcc ucclcc )
   )
  {
@@ -87,7 +87,8 @@ sub startup {
 
  my $r = $self->routes;
 
- $r->namespace ( 'Catz::Ctrl' );    # all controllers live at Catz::Ctrl
+ # all controllers live at Catz::Ctrl
+ $r->namespaces ( [ qw ( Catz::Ctrl ) ] ); 
 
  ###
  ### the site's bare root gets passed to language detection mechanism
@@ -672,7 +673,7 @@ sub after {
 
  $self->res->headers->header ( 'X-Catz-Timing' => "$ti ms" );
  
- $TIME_PAGE and warn "PAGE $s->{zurl} -> $ti";
+ $TIME_PAGE and warn "PAGE $s->{zurl} = $ti ms";
 
 } ## end sub after
 
