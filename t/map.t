@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2012 Heikki Siltala
+# Copyright (c) 2010-2013 Heikki Siltala
 # Licensed under The MIT License
 #
 #
@@ -23,9 +23,13 @@
 # THE SOFTWARE.
 #
 
-use 5.14.2;
+use 5.16.2;
 use strict;
 use warnings;
+
+# to give the test cases enough time to run
+# on slow development environment
+$ENV{'MOJO_INACTIVITY_TIMEOUT'} = 60;
 
 # unbuffered outputs
 # from http://perldoc.perl.org/functions/open.html
