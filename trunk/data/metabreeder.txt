@@ -4970,7 +4970,7 @@ Moonwhisper
 FI
 #
 Fenway
-USA
+US
 #
 Starglitters
 FI
@@ -5019,4 +5019,37 @@ FI
 #
 Glamour Queen
 EE
+#
+Chi Chat Cat
+US
+#
+Paladija
+DE
+#
+Amon
+FI
+#
+Gayaneh
+FI
+#
+Mibellas
+FI
+#
+Quarans
+DE
+#
+Siaön's
+SE
+#
+Summerplace
+DE
+#
+Timian's
+DK
+#
+Toy Tricksy
+RU
+#
+Abyssphere
+RU
 #
