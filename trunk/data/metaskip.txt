@@ -1,81 +1,81 @@
 ;
 ; a catza.net core data file
 ;
-; Copyright Heikki Siltala 2004-2012
+; Copyright Heikki Siltala 2004-2013
 ; Creative Commons Attribution 3.0 License
 ;
 ; http://catza.net/
 ; http://code.google.com/p/catz/
 ;
-subject_approx;breeder;AngelWaves;Angelfalls
+subject_approx_1;breeder;AngelWaves;Angelfalls
 #
-subject_approx;breeder;Ferox;Ferme
+subject_approx_1;breeder;Ferox;Ferme
 #
-subject_approx;breeder;Operacoon's;Operadoll's
+subject_approx_1;breeder;Operacoon's;Operadoll's
 #
-subject_approx;breeder;Preciousice;Precious
+subject_approx_1;breeder;Preciousice;Precious
 #
-subject_approx;breeder;Usvaniityn;Usvaneidon
+subject_approx_1;breeder;Usvaniityn;Usvaneidon
 #
-subject_approx;cat;Miiru;Miisu
+subject_approx_1;cat;Miiru;Miisu
 #
-subject_approx;cat;Misu;Miisu
+subject_approx_1;cat;Misu;Miisu
 #
-subject_approx;cat;Pekka;Peku
+subject_approx_1;cat;Pekka;Peku
 #
-subject_approx;cat;SiruCats Bashir;SiruCats Bandhu
+subject_approx_1;cat;SiruCats Bashir;SiruCats Bandhu
 #
-subject_approx;cat;Trollin Hanno;Trollin Sampo
+subject_approx_1;cat;Trollin Hanno;Trollin Sampo
 #
-subject_approx;cat;Tähtitassun Bertil;Tähtitassun Vintiö
+subject_approx_1;cat;Tähtitassun Bertil;Tähtitassun Vintiö
 #
-subject_approx;cat;Udun Silver Apricot Njinyi;Udun Silver Apricot Jewel
+subject_approx_1;cat;Udun Silver Apricot Njinyi;Udun Silver Apricot Jewel
 #
-subject_approx;cat;Udun Silver Apricot Mitra;Udun Silver Apricot Njinyi
+subject_approx_1;cat;Udun Silver Apricot Mitra;Udun Silver Apricot Njinyi
 #
-subject_approx;cat;Udun Silver Apricot Kherpi;Udun Silver Apricot Njinyi
+subject_approx_1;cat;Udun Silver Apricot Kherpi;Udun Silver Apricot Njinyi
 #
-subject_approx;cat;Udun Silver Apricot Ishtar;Udun Silver Apricot Njinyi
+subject_approx_1;cat;Udun Silver Apricot Ishtar;Udun Silver Apricot Njinyi
 #
-subject_approx;cat;Zarin Varinka;Zarin Taika
+subject_approx_1;cat;Zarin Varinka;Zarin Taika
 #
-subject_approx;breeder;Indiana;Indiabi
+subject_approx_1;breeder;Indiana;Indiabi
 #
-subject_approx;breeder;Onnimannin;Onnikatin
+subject_approx_1;breeder;Onnimannin;Onnikatin
 #
-subject_approx;breeder;IndiaInk;Indiana
+subject_approx_1;breeder;IndiaInk;Indiana
 #
-subject_approx;breeder;Purrfurus;Purrur's
+subject_approx_1;breeder;Purrfurus;Purrur's
 #
-subject_approx;breeder;Ziazan;Zildan
+subject_approx_1;breeder;Ziazan;Zildan
 #
-subject_approx;cat;Lovelylife Biisi Biwa;Lovelylife Biisi Banjo
+subject_approx_1;cat;Lovelylife Biisi Biwa;Lovelylife Biisi Banjo
 #
-subject_approx;cat;Greenville Summer of Laire;Greenville Oberon of Laire
+subject_approx_1;cat;Greenville Summer of Laire;Greenville Oberon of Laire
 #
-subject_approx;cat;Aamukasteen Zumba;Aamukasteen Zubr
+subject_approx_1;cat;Aamukasteen Zumba;Aamukasteen Zubr
 #
-subject_approx;cat;Musti;Mustis
+subject_approx_1;cat;Musti;Mustis
 #
-subject_approx;cat;Miina;Miisu
+subject_approx_1;cat;Miina;Miisu
 #
-subject_approx;cat;Valier's Ninian;Valier's Bilgin
+subject_approx_1;cat;Valier's Ninian;Valier's Bilgin
 #
-subject_approx;cat;Vongoivan Biret;Vongoivan Erik
+subject_approx_1;cat;Vongoivan Biret;Vongoivan Erik
 #
-subject_approx;cat;Mistu;Miisu
+subject_approx_1;cat;Mistu;Miisu
 #
-subject_approx;cat;Aamukasteen Uma;Aamukasteen Zumba
+subject_approx_1;cat;Aamukasteen Uma;Aamukasteen Zumba
 #
-subject_approx;cat;Cyrleyn Artemis;Cyrleyn Ares
+subject_approx_1;cat;Cyrleyn Artemis;Cyrleyn Ares
 #
-subject_approx;cat;Udun Silver Apricot Juvel;Udun Silver Apricot Njinyi
+subject_approx_1;cat;Udun Silver Apricot Juvel;Udun Silver Apricot Njinyi
 #
-subject_approx;cat;Imladris Indil Hapci;Imladris Indil Freya
+subject_approx_1;cat;Imladris Indil Hapci;Imladris Indil Freya
 #
-subject_approx;cat;A Winerau's Coral;A Winerau's Louis
+subject_approx_1;cat;A Winerau's Coral;A Winerau's Louis
 #
-subject_approx;cat;Kultaviiksen Elmore James;Kultaviiksen Etta James
+subject_approx_1;cat;Kultaviiksen Elmore James;Kultaviiksen Etta James
 #
-subject_approx;cat;Vongoivan Elvira;Vongoivan Erik
+subject_approx_1;cat;Vongoivan Elvira;Vongoivan Erik
 #

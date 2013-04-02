@@ -28,6 +28,8 @@ use 5.16.2;
 use strict;
 use warnings;
 
+use Const::Fast;
+
 use Catz::Util::File   qw ( fileread        );
 use Catz::Util::String qw ( tolines topiles );
 
@@ -55,6 +57,12 @@ foreach my $pile ( topiles ( $text ) ) {
 
 }
 
-sub text { $_[ 0 ] eq 'fi' ? $tfi : $ten; }
+const my $EN => $ten;
+const my $FI => $tfi;
+
+$ten = undef;
+$tfi = undef;
+
+sub text { $_[ 0 ] eq 'fi' ? $FI : $EN; }
 
 1;
