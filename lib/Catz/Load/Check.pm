@@ -201,7 +201,7 @@ sub _subject_case {
 
 } ## end sub _subject_case
 
-sub _subject_approx {
+sub _subject_approx_1 {
 
  my $stm = $dbc->prepare (
   qq {
@@ -255,7 +255,70 @@ sub _subject_approx {
 
  $stm->finish;
 
-} ## end sub _subject_approx
+}
+
+sub _subject_approx_2 {
+
+ foreach my $pri ( qw ( breeder cat ) ) {
+
+  my $seena = {};
+  my $seenb = {};
+
+  my @secs = @{
+   $dbc->selectall_arrayref ( qq {
+    select sid,sec_en from sec where 
+    pid=(select pid from pri where pri=?)
+    order by sid asc
+   }, undef, $pri )
+  };
+
+  my @coms = ();
+  my @idxs = ();
+  
+  foreach my $row ( @secs ) {
+  
+   $coms[$row->[0]] = $row->[1];
+   
+   push @idxs, $row->[0];
+  
+  }    
+
+  for ( my $i = 0; $i < $#idxs; $i++ ) {
+  
+   my $idx = $idxs[$i];
+   
+   for ( my $j = $i + 1; $j <= $#idxs; $j++  ) {
+   
+    my $jdx = $idxs[$j];
+
+    my $leni = length($coms[$idx]);
+    my $lenj = length($coms[$jdx]);
+    my $allow = 1;
+        
+    if ( ( $leni > 10 ) and ( $lenj > 10 ) and ( abs ( $leni - $lenj ) < 2 ) ) {
+
+     if ( distance ( $coms[$idx], $coms[$jdx] ) <= $allow ) {
+
+      ( exists $seenb->{ $coms[$idx] } and exists $seena->{ $coms[$jdx] } ) or do {
+
+       $seena->{ $coms[$idx] } = 1;
+       $seenb->{ $coms[$jdx] } = 1;
+
+       item ( $pri, $coms[$idx], $coms[$jdx] );
+
+      };
+   
+     }
+     
+    }
+  
+   }
+   
+  }
+
+ }
+
+} 
 
 sub _feature_exists {
 

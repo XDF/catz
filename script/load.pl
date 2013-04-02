@@ -208,7 +208,8 @@ $dt = check_begin ( $DB );
 logit "running data checks";
 
 check_any ( 'subject_case' );
-check_any ( 'subject_approx' );
+check_any ( 'subject_approx_1' );
+check_any ( 'subject_approx_2' );
 check_any ( 'breed_exists' );
 check_any ( 'feature_exists' );
 check_any ( 'title_exists' );
