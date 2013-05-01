@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2012 Heikki Siltala
+# Copyright (c) 2010-2013 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,7 +24,7 @@
 
 package Catz::Load::Data;
 
-use 5.14.2;
+use 5.16.2;
 use strict;
 use warnings;
 
@@ -298,7 +298,8 @@ const my $LENSNAME => {
  'canon200l'     => 'Canon EF 200mm f/2.8 L II USM',
  'lx3leica'      => 'Leica DC Vario-Summicron 5.1-12.8mm f/2.0-2.8',
  'dmwlw64' => 'Leica DC Vario-Summicron 5.1-12.8mm f/2.0-2.8 & DMW-LW46',
- 'nytech_nd4020' => 'Nytech ND-4020 Lens'
+ 'nytech_nd4020' => 'Nytech ND-4020 Lens',
+ 'fujixs1' => 'Fujinon Super EBC 6.1-158.6mm f/2.8-5.6',
 };
 
 memoize ( 'lens' );
@@ -369,7 +370,9 @@ sub body {
 
  m|Mark III| and return 'Canon EOS 1D Mark III';
 
- m|DMC-LX3| and return 'Panasonic Lumix DMC-LX3';
+ m|DMC\-LX3| and return 'Panasonic Lumix DMC-LX3';
+ 
+ m|X\-S1| and return 'Fujifilm X-S1';
 
  return undef;    ## no critic
 

@@ -1678,9 +1678,6 @@ FI
 Hot Chocolate
 LV
 #
-Hot Chokolate
-LV
-#
 Hovikissan
 FI
 #
@@ -2499,9 +2496,6 @@ FI
 #
 Meaow
 FI
-#
-Mega Miaow's
-NO
 #
 Melgaards
 DK
@@ -4645,7 +4639,7 @@ FI
 MayaGold
 EE
 #
-MegaMiaow's
+Mega Miaow's
 NO
 #
 Merloni
@@ -5067,4 +5061,16 @@ SE
 #
 Bast
 RU
+#
+Derekaz
+FI
+#
+Nappatassun
+FI
+#
+Sia Alicia
+CZ
+#
+Vihurin
+FI
 #
