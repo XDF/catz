@@ -79,3 +79,17 @@ subject_approx_1;cat;Kultaviiksen Elmore James;Kultaviiksen Etta James
 #
 subject_approx_1;cat;Vongoivan Elvira;Vongoivan Erik
 #
+subject_approx_2;cat;SolarWind's Anubis;SolarWind's Anukis
+#
+subject_approx_2;cat;Magnificat Figaro;Magnificat Zicaro
+#
+subject_approx_2;cat;Boliviliki Beyla;Boliviliki Bella
+#
+subject_approx_2;cat;Hopeahännän Donatella;Hopeahännän Donatello
+#
+subject_approx_2;cat;Siriuksen LeoCurl;Siriuksen LegoCurl
+#
+subject_approx_2;cat;Kawaii Eiko;Kawaii Emiko
+#
+subject_approx_2;cat;Suvipäivän Igor;Suvipäivän Ivor
+#
