@@ -1,9 +1,9 @@
 
-===== 2013-03-27
+===== 2013-04-29
 
 Here are the basic commands to install the Perl modules used by catz.
 
-All environments use Perl 5.16.2.
+Dev environment uses Perl 5.16.2. Prod uses 5.16.3.
 
 In case of trouble, use
  perl -MCPAN -e "CPAN::Shell->force(qw(install Module::In::Question));"
@@ -11,7 +11,7 @@ that was found here: http://www.perlmonks.org/?node_id=606768
 
 cpan
 install CPAN
-install CPAN:SQLite
+install CPAN::SQLite
 install YAML
 install LWP
 reload cpan
@@ -22,6 +22,7 @@ exit
 
 cpan
 install Bit::Vector
+install CHI
 install Crypt::Blowfish
 install Crypt::CBC
 install DateTime
@@ -40,7 +41,6 @@ install Mojolicious
 install Number::Format
 install URI:Escape::XS
 install XML::RSS
-install Cache::Memcached::Fast
 install Image::Size
 install Image::ExifTool
 install List::MoreUtils
@@ -53,18 +53,3 @@ install HTML::Lint
 install DateTime::Format::W3CDTF
 install MIME::Base64
 quit
-
-***
-    This version of DBI conflicts with the version of
-    module DBD::CSV (0.36) you have installed.
-
-    It's strongly recommended that you update it after
-    installing this version of DBI.
-***
-***
-    This version of DBI conflicts with the version of
-    module SQL::Statement (1.33) you have installed.
-
-    It's strongly recommended that you update it after
-    installing this version of DBI.
-***
