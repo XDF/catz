@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2013 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,7 +26,7 @@ package Catz::Data::Setup;
 
 use strict;
 use warnings;
-use 5.10.0;
+use 5.16.2;
 
 use parent 'Exporter';
 
@@ -42,7 +42,7 @@ use Const::Fast;
 
 const my $CONF => [
  { name => 'palette',   values => [ qw ( dark neutral bright ) ] },
- { name => 'perpage',   values => [ qw( 10 15 20 25 30 35 40 45 50 ) ] },
+ { name => 'perpage',   values => [ qw ( 10 15 20 25 30 35 40 45 50 ) ] },
  { name => 'thumbsize', values => [ qw ( 100 125 150 175 200 ) ] },
  { name => 'display',   values => [ qw ( none text basic full ) ] },
  { name => 'photosize', values => [ qw ( original fit ) ] },

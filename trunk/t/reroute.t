@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2012 Heikki Siltala
+# Copyright (c) 2010-2013 Heikki Siltala
 # Licensed under The MIT License
 #
 #
@@ -23,7 +23,7 @@
 # THE SOFTWARE.
 #
 
-use 5.14.2;
+use 5.16.2;
 use strict;
 use warnings;
 
@@ -83,7 +83,7 @@ foreach my $path (
 # path that should work and lead to photo browsing
 foreach my $path (
  qw (
- /breeders/Bodhidharma-039s.html /breeders/MegaMiaow-039s.html
+ /breeders/Bodhidharma-039s.html /breeders/Mega_Miaow-039s.html
  /breeders/Sic-039an.html /breeders/Is-228-045Brownin.html
  /breeders/Wanderd-252ne-039s.html /breeders/-197bodas.html
  /ems/TUV.html /ems/tuv.html /ems/tuv.html /ems/AbY.htm

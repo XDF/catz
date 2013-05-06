@@ -93,3 +93,15 @@ subject_approx_2;cat;Kawaii Eiko;Kawaii Emiko
 #
 subject_approx_2;cat;Suvip‰iv‰n Igor;Suvip‰iv‰n Ivor
 #
+subject_approx_2;cat;Arokatin Dirim;Arokatin Direm
+#
+subject_approx_2;cat;Arokatin Dirim;Arokatin Dirin
+#
+subject_approx_2;cat;Semiramisin Zekai;Semiramisin Zeki
+#
+subject_approx_2;cat;Siriuksen IdaCurl;Siriuksen InaCurl
+#
+subject_approx_2;cat;Cherry's Maine Pavak;Cherry's Maine Pavan
+#
+subject_approx_2;cat;Kehr‰‰j‰n Ohra;Kehr‰‰j‰n Okra
+#
