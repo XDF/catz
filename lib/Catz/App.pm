@@ -352,10 +352,13 @@ sub before {
   
  $s->{ time_start } = time ();
  
+ #
  # on Linux = production set the Google Analytics key
- conf ( 'lin' ) and 
-  ( $s->{ analytics_key } = conf ( 'key_analytics') );
-
+ # GA disabled altogether 2013-05-03
+ # conf ( 'lin' ) and 
+ # ( $s->{ analytics_key } = conf ( 'key_analytics') );
+ #
+ 
  $s->{ env } = conf ( 'env' );    # copy production enviroment id to stash
  
  # we start the following stash keys with z to prevent 
