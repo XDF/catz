@@ -1,55 +1,23 @@
 
-===== 2013-04-29
+===== 2013-05-06
 
 Here are the basic commands to install the Perl modules used by catz.
 
-Dev environment uses Perl 5.16.2. Prod uses 5.16.3.
+Dev uses Perl 5.16.2. Prod uses Perl 5.16.3.
 
 In case of trouble, use
  perl -MCPAN -e "CPAN::Shell->force(qw(install Module::In::Question));"
 that was found here: http://www.perlmonks.org/?node_id=606768 
 
 cpan
+o conf auto_commit 1
+o conf prerequisites_policy follow
+o conf build_requires_install_policy yes
 install CPAN
 install CPAN::SQLite
 install YAML
 install LWP
 reload cpan
-o conf auto_commit 1
-o conf prerequisites_policy follow
-o conf build_requires_install_policy yes
 exit
 
-cpan
-install Bit::Vector
-install CHI
-install Crypt::Blowfish
-install Crypt::CBC
-install DateTime
-install Digest::HMAC
-install Digest::MD5
-install DBI
-install DBD::SQLite
-install Email::Date::Format
-install File::Slurp
-install GD
-install HTTP::Date
-install I18N::AcceptLanguage
-install IO::Epoll
-install EV
-install Mojolicious
-install Number::Format
-install URI:Escape::XS
-install XML::RSS
-install Image::Size
-install Image::ExifTool
-install List::MoreUtils
-install Text::LevenshteinXS
-install Const::Fast
-install Perl::Tidy
-install Perl::Critic
-install WWW::Mechanize
-install HTML::Lint
-install DateTime::Format::W3CDTF
-install MIME::Base64
-quit
+perl -MCPAN -e"install Bit::Vector, CHI, Cache::Memcached::Fast, Crypt::Blowfish, Crypt::CBC, DateTime, Digest::HMAC, Digest::MD5, DBI, DBD::SQLite, Email::Date::Format, File::Slurp, GD, HTTP::Date, I18N::AcceptLanguage, IO::Epoll, EV, Mojolicious, Number::Format, URI::Escape::XS, XML::RSS, Image::Size, Image::ExifTool, List::MoreUtils, Text::LevenshteinXS, Const::Fast, Perl::Tidy, Perl::Critic, WWW::Mechanize, HTML::Lint, DateTime::Format::W3CDTF, MIME::Base64"
