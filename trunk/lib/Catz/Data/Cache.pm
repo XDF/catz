@@ -27,7 +27,7 @@ package Catz::Data::Cache;
 #
 # The systemwide cache module for all caching purposes
 #
-# This is used to cache (at least)
+# This is used to cache at least
 # * rendered pages and images
 # * Model responses
 # * database result sets
@@ -42,21 +42,21 @@ use parent 'Exporter';
 # the interface is simple, just set and get
 our @EXPORT = qw ( cache_set cache_get cache_isup );
 
-use CHI;
+use Cache::Memcached::Fast;
 use Const::Fast;
+use Digest::MD5 qw( md5_hex );
 
 # we "use Storable" just to set it's static variables to
 # allow storage of CODE references - this appears to be
 # required for Mojo response caching after ugrading to
 # Mojolicious 2.32
-#
-# 2013-05-02: tested and we still need this
-#
 use Storable;
 $Storable::Deparse = 1;
 $Storable::Eval    = 1;
 
 use Catz::Data::Conf;
+
+use Catz::Util::String qw ( enurl );
 
 # for debugging or other needs all caching can be
 # set to NOP setting this to false
@@ -66,27 +66,42 @@ const my $CACHEON => 1;
 const my $CACHETRC => 0;
 
 # set the cache namespace for the Catz application
-const my $SPACE => 'cache_catz';
+# we don't use the cache drivers "native namespace" 
+# feature since appears to disable caching
+const my $SPACE => 'catz';
 
 # we create a static cache object at compile time and this works just fine
 # also the hard-coded values are practically fine for all the environments
-my $cache = CHI->new(
- namespace => $SPACE,
- driver => 'File',
- root_dir  => conf ( 'lin' ) ? '/tmp' : '/temp',
- depth => 4,
- compress_threshold => 15_000,
-); 
+my $cache = new Cache::Memcached::Fast {
+ servers         => [ '127.0.0.1:11211' ],
+ connect_timeout => 0.1,
+ max_failures    => 2,                      # let connect fail 2 times ...
+ failure_timeout => 15,                     # ... and then rest for 15 seconds
+ compress_threshold => 15_000,              # ... over 15 kb and compress
+ nowait => 1 # should speed up set by not waiting for confirmation for success
+};
 
 # the string that separates cache key parts
-my $sep = '_';
+# since we use URL encoding with cache keys this
+# should be an URL safe character and the encoding of it
+# doesn't add unnecessary length to the cache keys
+my $sep = '~';
 
 # force the cache key to be 250 characters or less (Memcached limit)
+# all characters after 218 are hashed to md5 hash in hex encoding
+# so the final key is 218 + 32 = 250 characters
+sub shrink {
+ substr ( $_[ 0 ], 0, 218 ) . md5_hex ( substr ( $_[ 0 ], 218 ) );
+}
 
 # preparing of the cache key by joining the parts
 sub keyer {
 
- return join $sep, ( map { $_ // 'undef' } @_ );
+ my $key = enurl join $sep, ( $SPACE, map { $_ // 'undef' } @_ );
+
+ length $key > 250 and return shrink $key;
+
+ return $key;
 
 }
 
@@ -113,11 +128,14 @@ sub cache_set {
   no warnings qw( uninitialized );
 
   #
-  # we use 'never' -> infinite caching
-  # we rely on external file cleaning
+  # we use no expirity -> infinite caching
   #
+  # Memcached automatically discards LRU items
+  # and when app or data changes, version id
+  # changes and so all keys change rendering
+  # old cache entries unused and to LRU
 
-  $cache->set ( $key, $val, 'never' );
+  $cache->set ( $key, $val );
 
  }
 
