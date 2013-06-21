@@ -105,3 +105,15 @@ subject_approx_2;cat;Cherry's Maine Pavak;Cherry's Maine Pavan
 #
 subject_approx_2;cat;Kehr‰‰j‰n Ohra;Kehr‰‰j‰n Okra
 #
+subject_approx_2;cat;Arokatin Ayda;Arokatin Ayla
+#
+subject_approx_2;cat;Shamirin Sweet Shakira;Shamirin Sweet Shamira
+#
+subject_approx_2;cat;Lumikissan Aina Bob;Lumikissan Aika Bob
+#
+subject_approx_2;cat;Alicton Galip Bilmek;Alicton Galip Oilmek
+#
+subject_approx_2;breeder;CattiCartanon;CattiCartano
+#
+
+

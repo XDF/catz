@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2012 Heikki Siltala
+# Copyright (c) 2010-2013 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 #
 
-use 5.14.2;
+use 5.16.2;
 use strict;
 use warnings;
 
@@ -40,9 +40,6 @@ use Catz::Data::Conf;
 
 my $t = Test::Mojo->new ( conf ( 'app' ) );
 
-my $lin  = conf ( 'lin' );
-my $akey = conf ( 'key_analytics' );
-
 use Catz::Data::Text;
 
 my $text = text ( 'en' );
@@ -58,9 +55,6 @@ foreach my $page ( @fourfour ) {
    ->content_like ( qr/$text->{URL_CATZA}/ )
    ->content_like ( qr/history\.go/ );
    
-  $lin and $t->get_ok ( $page )->content_like ( qr/\'$akey\'/ );
-  (not $lin) and $t->get_ok ( $page )->content_unlike ( qr/\'$akey\'/ );
-
 }
 
 done_testing;

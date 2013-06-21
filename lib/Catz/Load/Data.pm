@@ -300,6 +300,8 @@ const my $LENSNAME => {
  'dmwlw64' => 'Leica DC Vario-Summicron 5.1-12.8mm f/2.0-2.8 & DMW-LW46',
  'nytech_nd4020' => 'Nytech ND-4020 Lens',
  'fujixs1' => 'Fujinon Super EBC 6.1-158.6mm f/2.8-5.6',
+ 'nokiae7' => 'Nokia E7 Lens',
+ 'ricohgr' => 'Ricoh GR 18.3mm f/2.8',
 };
 
 memoize ( 'lens' );
@@ -320,6 +322,19 @@ sub lens {
  given ( $flen ) {
 
   when ( 17 ) { $lens = 'tokina17' }
+  when ( 18 ) {
+  
+   if ( int($date) > 20130601 ) {
+  
+    $lens = 'ricohgr';
+    
+   } else {
+   
+    die "unable to resolve lens '$date' '$flen' '$fnum' (flen 18 branch)";
+   
+   }
+  
+  }
   when ( 28 ) { $lens = 'sigma28' }
   when ( 50 ) {
 
@@ -373,6 +388,10 @@ sub body {
  m|DMC\-LX3| and return 'Panasonic Lumix DMC-LX3';
  
  m|X\-S1| and return 'Fujifilm X-S1';
+ 
+ m|E7\-| and return "Nokia E7";
+ 
+ m|GR| and return "Ricoh GR";
 
  return undef;    ## no critic
 
@@ -402,7 +421,8 @@ const my $LENSFLEN => {
  'sigma85'       => '85 mm' ,
  'canon100l'     => '100 mm',
  'canon135l'     => '135 mm',
- 'canon200l'     => '200 mm'
+ 'canon200l'     => '200 mm',
+ 'ricohgr'       => '18 mm' ,
 };
 
 sub exid {
@@ -540,7 +560,7 @@ sub exif {
      defined $4 and
      defined $5 and 
      defined $6 
-    ) or die "unable to deasseble exif CreateDate '$i->{ $key }'";
+    ) or die "unable to deassemble exif CreateDate '$i->{ $key }'";
     
     my $fixit = int ( $4 );
     
