@@ -1,5 +1,5 @@
 
-===== 2013-05-06
+===== 2013-06-21
 
 Here are the basic commands to install the Perl modules used by catz.
 
@@ -20,4 +20,4 @@ install LWP
 reload cpan
 exit
 
-perl -MCPAN -e"install Bit::Vector, CHI, Cache::Memcached::Fast, Crypt::Blowfish, Crypt::CBC, DateTime, Digest::HMAC, Digest::MD5, DBI, DBD::SQLite, Email::Date::Format, File::Slurp, GD, HTTP::Date, I18N::AcceptLanguage, IO::Epoll, EV, Mojolicious, Number::Format, URI::Escape::XS, XML::RSS, Image::Size, Image::ExifTool, List::MoreUtils, Text::LevenshteinXS, Const::Fast, Perl::Tidy, Perl::Critic, WWW::Mechanize, HTML::Lint, DateTime::Format::W3CDTF, MIME::Base64"
+perl -MCPAN -e"install Bit::Vector, Cache::Memcached::Fast, Crypt::Blowfish, Crypt::CBC, DateTime, Digest::HMAC, Digest::MD5, DBI, DBD::SQLite, Email::Date::Format, File::Slurp, GD, HTTP::Date, I18N::AcceptLanguage, IO::Epoll, EV, Mojolicious, Number::Format, URI::Escape::XS, XML::RSS, Image::Size, Image::ExifTool, List::MoreUtils, Text::LevenshteinXS, Const::Fast, Perl::Tidy, Perl::Critic, WWW::Mechanize, HTML::Lint, DateTime::Format::W3CDTF, MIME::Base64"
