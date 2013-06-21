@@ -313,7 +313,9 @@ sub contact {
   widget_plate ( $s->{ t }->{ MAILTO_TEXT }, $s->{ palette },
   $s->{ intent } );
 
- $self->render_data ( $im, format => 'png' );
+ # $self->render_data ( $im, format => 'png' );
+ # 2013-06-21: Mojolicious 4.x no longer has render_data method
+ $self->render ( data => $im, format => 'png' );
 
 }
 

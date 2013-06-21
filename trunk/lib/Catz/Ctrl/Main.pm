@@ -174,8 +174,10 @@ sub info {
 
  }
 
- $self->render_text ( text => $out, format => 'txt' );
-
+ # $self->render_text ( text => $out, format => 'txt' );
+ # 2013-06-21: Mojolicious 4.x no longer has render_text method
+ $self->render ( text => $out, format => 'txt' );
+ 
 } ## end sub info
 
 

@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2012 Heikki Siltala
+# Copyright (c) 2010-2013 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,7 +28,7 @@ package Catz::Ctrl::Reroute;
 # handles redirection of old site's URLs under /galleries
 #
 
-use 5.14.2;
+use 5.16.2;
 use strict;
 use warnings;
 
@@ -247,7 +247,7 @@ sub reroute {    # does the job
 
     # this is an classic folder still in .com
 
-    return $self->moveto ( "$t->{URL_AUTHOR}photos/$folder/$tail/" );
+    return $self->moveto ( "$t->{URL_CLASSIC}photos/$folder/$tail/" );
 
    }
    elsif ( my $s = $self->fetch ( "reroute#folder2s", $folder ) )
