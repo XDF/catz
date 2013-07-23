@@ -221,10 +221,6 @@ check_end;
 
 SKIP_CHECK:
 
-logit ( 'rolling' );
-
-system ( 'perl roll.pl' );
-
 my $etime = time ();
 
 logit ( 'catz loader finished at '
