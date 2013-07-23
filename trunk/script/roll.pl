@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2013 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,7 +22,7 @@
 # THE SOFTWARE.
 #
 
-use 5.12.0;
+use 5.16.2;
 use strict;
 use warnings;
 
@@ -86,5 +86,9 @@ if ( $rolled and conf ( 'lin' ) ) {
  chmod ( 0444, $dbnew ) || die $!;
 
  say "set read only '$dbnew'";
+ 
+ chmod ( 0444, "$PATH/$dtnew.txt" ) || die $!;
+ 
+ say "set read only '$PATH/$dtnew.txt'";
 
 }
