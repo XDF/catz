@@ -289,6 +289,7 @@ const my $LENSNAME => {
  'canon85usm+2x' => 'Canon EF 85mm f/1.8 USM & Tamron 2X MC7 C-AF1 BBAR',
  'samyang8'      => 'Samyang 8mm f/3.5 Aspherical IF MC Fisheye',
  'sigma10'       => 'Sigma 10mm f/2.8 EX DC HSM Fisheye',
+ 'sigma15'       => 'Sigma 15mm f/2.8 EX DG Fisheye', 
  'sigma28'       => 'Sigma 28mm f/1.8 EX DG',
  'sigma30'       => 'Sigma 30mm f/1.4 EX DC HSM',
  'sigma50'       => 'Sigma 50mm f/1.4 EX DG HSM',
@@ -297,6 +298,7 @@ const my $LENSNAME => {
  'canon135l'     => 'Canon EF 135mm f/2.0 L USM',
  'canon200l'     => 'Canon EF 200mm f/2.8 L II USM',
  'lx3leica'      => 'Leica DC Vario-Summicron 5.1-12.8mm f/2.0-2.8',
+ 'lx7leica'      => 'Leica DC Vario-Summilux 4.7-17.7mm f/1.4-2.3', 
  'dmwlw64' => 'Leica DC Vario-Summicron 5.1-12.8mm f/2.0-2.8 & DMW-LW46',
  'nytech_nd4020' => 'Nytech ND-4020 Lens',
  'fujixs1' => 'Fujinon Super EBC 6.1-158.6mm f/2.8-5.6',
@@ -321,17 +323,30 @@ sub lens {
 
  given ( $flen ) {
 
+  when ( 15 ) { 
+
+   if ( int($date) > 20130801 ) {
+  
+    $lens = 'sigma15';
+    
+   } else { 
+   
+    continue; # allow previous rules for 15 mm to execute
+   
+   }  
+   
+  }
   when ( 17 ) { $lens = 'tokina17' }
   when ( 18 ) {
   
-   if ( int($date) > 20130601 ) {
+   if ( int($date) > 20130601 and int($date) < 20131101 ) {
   
     $lens = 'ricohgr';
     
-   } else {
+   } elsif ( int($date) > 20131101 ) {
    
-    die "unable to resolve lens '$date' '$flen' '$fnum' (flen 18 branch)";
-   
+    $lens = 'lx7leica';
+     
    }
   
   }
@@ -350,18 +365,31 @@ sub lens {
 
   default {
 
-   if ( $flen < 17 ) {
-    if ( $flen < 5 ) {
-     $lens = 'dmwlw64';
+   if ( int($date) > 20131101 ) {
+   
+    if ( $flen < 18 and $flen > 4 ) {
+       $lens = 'lx7leica';
+    } else {
+     die "unable to resolve lens '$date' '$flen' '$fnum'";
     }
-    else {
-     $lens = 'lx3leica';
-    }
-   }
-   else {
+
+   } else {
+   
+    if ( $flen < 17 ) {
+     if ( $flen < 5 ) {
+      $lens = 'dmwlw64';
+     }
+     else {
+      $lens = 'lx3leica';
+     }
+    } else {
     die "unable to resolve lens '$date' '$flen' '$fnum'";
    }
+  
   }
+  
+ }
+  
 
  } ## end given
 
@@ -382,10 +410,14 @@ sub body {
  m|EOS 20D| and return 'Canon EOS 20D';
 
  m|EOS 40D| and return 'Canon EOS 40D';
-
+ 
  m|Mark III| and return 'Canon EOS 1D Mark III';
+ 
+ m|EOS 6D| and return 'Canon EOS 6D';
 
  m|DMC\-LX3| and return 'Panasonic Lumix DMC-LX3';
+
+ m|DMC\-LX7| and return 'Panasonic Lumix DMC-LX7';
  
  m|X\-S1| and return 'Fujifilm X-S1';
  
@@ -419,6 +451,7 @@ const my $LENSFLEN => {
  'sigma10'       => '10 mm' ,
  'sigma50'       => '50 mm' ,
  'sigma85'       => '85 mm' ,
+ 'sigma15'       => '15 mm' ,
  'canon100l'     => '100 mm',
  'canon135l'     => '135 mm',
  'canon200l'     => '200 mm',
