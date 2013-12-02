@@ -372,3 +372,19 @@ HAV
 Havana Brown
 havana brown
 #
+SSS
+9
+Scottish Straight Shorthair
+lyhytkarvainen scottish straight
+#
+BRL
+9
+British Longhair
+pitkäkarvainen brittiläinen
+#
+LEV
+9
+Ukrainian Levkoy
+ukrainalainen levkoy
+#
+
