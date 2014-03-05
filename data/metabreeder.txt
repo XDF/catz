@@ -5200,7 +5200,54 @@ GB
 Delle Lune Saracene
 IT
 #
-
+CoonKitty
+PL
+#
+Macrory
+EE
+#
+Ladystrick
+FI
+#
+Caaleigh
+FI
+#
+Dusado's
+NL
+#
+Formula Uspekha
+RU
+#
+Ulysées
+CZ
+#
+Huimapään
+FI
+#
+Artsycats
+PT
+#
+Midianin
+FI
+#
+Rothe's
+DK
+#
+Carpat Ragdolls
+ES
+#
+Errun
+FI
+#
+Nový vek
+CZ
+#
+Syberjon
+PL
+#
+Wynterwynd
+US
+#
 
 
 

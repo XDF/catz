@@ -32,6 +32,7 @@ package Catz::Ctrl::Present;
 use 5.12.0;
 use strict;
 use warnings;
+no warnings 'experimental';
 
 use parent 'Catz::Ctrl::Base';
 
