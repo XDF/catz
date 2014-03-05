@@ -115,5 +115,8 @@ subject_approx_2;cat;Alicton Galip Bilmek;Alicton Galip Oilmek
 #
 subject_approx_2;breeder;CattiCartanon;CattiCartano
 #
-
+subject_approx_1;cat;Ägirs Hus BC Freke;Ägirs Hus BC Qaffe
+#
+subject_approx_1;cat;Vuorensinen Ian;Vuorensinen Baloo
+#
 

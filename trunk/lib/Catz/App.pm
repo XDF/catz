@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2013 Heikki Siltala
+# Copyright (c) 2010-2014 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -68,7 +68,7 @@ sub startup {
  # initialize the key for cookie signing
  # this is a stateless service and we use no 
  # cookies so this is just to suppress warnings
- $self->secret ( conf ( 'key_cookie' ) );
+ $self->secrets ( conf ( 'key_cookie' ) );
 
  # map utility subs from different modules to Mojolicious helpers
  # we use dynamically generated subs as bridges
