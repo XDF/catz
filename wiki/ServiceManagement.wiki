@@ -4,9 +4,9 @@
 <wiki:toc max_depth="2" />
 
 This page is provided as public to show an example how Perl & Mojolicious 
--based application can be managed in everyday life. This also gives me online access to the notes 24/7 around the globe.
+-based application can be managed in everyday life. This also gives me online access to the notes 24/7 around the globe which is very handy.
 
-Starting from February 4th 2012 the system has automatic backups so backup
+Starting from February 4th 2012 the system and the server has automatic backups so backup
 instructions were removed from this page. 
 
 = Update data (unchanged structures) =
@@ -50,7 +50,8 @@ ps -ef | grep catz
 
 == on development ==
 
-  * make sure that you have made at least one database loading compared to the version in production (data version must have been changed forward) 
+  * make sure that you have made at least one database loading compared to the version in production (data version must have been changed forward)
+    * you can make a pseudo load by manually updating database file name and pointer file name    
   * clean old database versions from /db (leave only the latest db and the latest db key file)
   * clean logs from /log
   * check what is in /temp and clean it if needed     
@@ -83,7 +84,7 @@ rm -fR *
 hypnotoad run.pl
 }}} 
   * test the service via the tunneled port that it appears to work properly
-  * edit nginx config (in two places) so that it points to the deployed environment
+  * edit nginx config so that it points to the deployed environment's port
   * test nginx config 
 {{{
 nginx -t
