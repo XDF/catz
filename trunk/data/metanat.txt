@@ -1,11 +1,12 @@
 ;
 ; a catza.net core data file
 ;
-; Copyright Heikki Siltala 2004-2012
-; Creative Commons Attribution 3.0 License
+; Copyright Heikki Siltala 2004-2014
+; CC BY 4.0 
 ;
 ; http://catza.net/
 ; http://code.google.com/p/catz/
+; http://creativecommons.org/licenses/by/4.0/
 ;
 AT
 Austria

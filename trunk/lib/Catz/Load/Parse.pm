@@ -194,6 +194,9 @@ sub cat {
 
 } ## end sub cat
 
+my @tchar1 = split //, '{[(';
+my @tchar2 = split //, '}])';
+
 sub comment {
 
  my $text = shift;
@@ -240,7 +243,52 @@ sub comment {
  
  $text =~ /\([A-Z][A-Z][A-Z](\s|\))/ and die
   "possible attempt to use () instead of [] to mark EMS code in '$text'";
+    
+ foreach my $tpos ( 0 .. 2 ) {
 
+  my $mark1 = index ( $text, $tchar1[$tpos] );
+  my $mark2 = index ( $text, $tchar2[$tpos] );
+ 
+  if ( $mark1 > -1 and $mark2 == -1 ) {
+ 
+   die "found '$tchar1[$tpos]' in '$text' but no '$tchar2[$tpos]'";
+ 
+  } elsif ( $mark1 == -1 and $mark2 > -1 ) {
+
+   die "found '$tchar2[$tpos]' in '$text' but no '$tchar1[$tpos]'";
+ 
+  } elsif ( $mark1 > $mark2 ) {
+
+   die "found '$tchar1[$tpos]' in '$text' later than '$tchar2[$tpos]'";
+ 
+  } 
+ 
+ }
+ 
+ if ( $text =~ /.*\{.+\}.+\{.+\}.*/ ) {
+ 
+  die "found two or more breeder taggings in text '$text'";
+  
+ }
+
+ if ( $text =~ /.*\[.+\].+\[.+\].*/ ) {
+ 
+  die "found two or more EMS taggings in text '$text'";
+  
+ }
+
+ if ( $text =~ /.*\(.+\).+\(.+\).*/ ) {
+ 
+  die "found two or more nick taggings in text '$text'";
+  
+ }
+
+ if ( $text =~ /.*\[.+\].+\{.+\}.*/ ) {
+ 
+  die "found EMS taagging before breeder tagging '$text'";
+  
+ }
+  
  length ( $text ) > 0
   and index ( $text, '[' ) > -1
   and index ( $text, ']' ) > -1
@@ -379,7 +427,7 @@ sub parse_pile {
  # if there are no data yet for a new album there are no lines left
 
  # pass the lines forward to 'set' to get two arrayrefs,
- # one with data lines and another wiht exif lines
+ # one with data lines and another with exif lines
  ( $d->{ data }, $d->{ exif } ) = set ( \@lines );
 
  return $d;
