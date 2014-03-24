@@ -369,8 +369,6 @@ sub get_sid {
 
  };
 
- # logit ( "sid $sid" );
-
  return $sid;
 
 } ## end sub get_sid
