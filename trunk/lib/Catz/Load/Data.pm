@@ -614,11 +614,17 @@ sub exif {
    when ( 'ISO' ) { $o->{ iso } = 'ISO ' . $i->{ $key } }
 
    when ( 'Model' ) {
-
-    body ( $i->{ $key } )
+    
+    defined $i->{ $key } or 
+     die 'unable to resolve body name from undef';
+     
+    ( length ( $i->{ $key } ) < 5 ) and
+     die "stopped because of a very short input '$i->{ $key }' for body name resolver";  
+    
+    ( my $tmp = body ( $i->{ $key } ) )  
      or die "unable to resolve body name with '$i->{ $key }'";
 
-    $o->{ body } = body ( $i->{ $key } );
+    $o->{ body } = $tmp;
 
    }
 

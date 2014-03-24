@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2012 Heikki Siltala
+# Copyright (c) 2010-2014 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,7 +24,7 @@
 
 package Catz::Util::File;
 
-use 5.14.2;
+use 5.16.2;
 use strict;
 use warnings;
 
@@ -112,9 +112,14 @@ sub fileread {
 
 }
 
+#
+# reads a file if it exists
+# added 2012-02
+#
+# in: filename
+# out: file content as a string, undef if there was any kind of error
+#
 sub filereadcond {
-
- # added 2012-02
  
  my $data = ( read_file ( $_[0], err_mode => 'quiet' ) ) // undef;
 
