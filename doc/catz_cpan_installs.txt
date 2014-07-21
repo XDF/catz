@@ -1,9 +1,10 @@
 
-===== 2014-03-02
+===== 2014-07-20
 
 Here are the basic commands to install the Perl modules used by catz.
 
-All environments Perl 5.18.2.
+Development enviroment Perl 5.18.2
+Production enviroment Perl 5.20.0
 
 In case of trouble, use
  perl -MCPAN -e "CPAN::Shell->force(qw(install Module::In::Question));"
