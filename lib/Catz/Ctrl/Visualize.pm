@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2013 Heikki Siltala
+# Copyright (c) 2010-2014 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -50,10 +50,9 @@ sub do {
   conf ( "url_chart" ) :
   conf ( "url_chart" );
 
- my $vurl = $self->render (
+ my $vurl = $self->render_to_string(
   "viz/$s->{action}",
   format  => 'txt',
-  partial => 1,
   jmap    => $jmap
  );
 

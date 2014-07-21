@@ -9,7 +9,7 @@
 %# all other solutions have not worked so this is the last effort
 %#
 %#
-% my $txt = $self->render ( 'block/strip', partial => 1 );
+% my $txt = $self->render_to_string( 'block/strip' );
 % $txt =~ s|\r||g;
 % $txt =~ s|\n||g;
 %== $txt; 
@@ -19,7 +19,7 @@
 %#
 %#
 %# Catz - the world's most advanced cat show photo engine
-%# Copyright (c) 2010-2011 Heikki Siltala
+%# Copyright (c) 2010-2014 Heikki Siltala
 %# Licensed under The MIT License
 %# 
 %# Permission is hereby granted, free of charge, to any person obtaining a copy

@@ -4986,7 +4986,7 @@ Punakuun
 FI
 #
 Otomi
-CA
+LV
 #
 Uniikki
 FI
@@ -5249,6 +5249,66 @@ PL
 Wynterwynd
 US
 #
-
-
-
+Hakalan
+FI
+#
+Noblesse Oblige
+RU
+#
+Dosis
+FI
+#
+Nordic Glow
+SE
+#
+Galene's
+FI
+#
+LemuNarki
+ES
+#
+Acceptus
+PL
+#
+Burcantiks
+NO
+#
+Jarraun's
+FI
+#
+CiCi's
+FI
+#
+Perun's
+NL
+#
+Jernkrok's
+SE
+#
+Demian
+FI
+#
+PreciousBlue's
+SE
+#
+Moggi
+FI
+#
+Tabula Rasa
+NL
+#
+Hiladoras
+FI
+#
+Mahtitassun
+FI
+#
+Cio Cio San's
+NL
+#
+Velvet Queen
+RU
+#
+Red Gates
+RU
+#
