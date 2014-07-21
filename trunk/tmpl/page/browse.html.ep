@@ -3,7 +3,7 @@
 %#
 %# --------------------
 %#
-% my $titl = $self->render ( 'elem/titleb', intent => 'browse', partial => 1 );
+% my $titl = $self->render_to_string( 'elem/titleb', intent => 'browse' );
 % $titl =~ s|\r||g;
 % $titl =~ s|\n| |g;
 % $titl = trim ( $titl );
@@ -48,9 +48,9 @@ if ( $runmode eq 'pair' ) {
 <% content 'canon' => begin %>
 % my $cn; 
 % if ( $page == 1 ) {
-%  $cn = $self->render('href/id', langh => $lang, toid => 0, partial => 1 );
+%  $cn = $self->render_to_string('href/id', langh => $lang, toid => 0 );
 % } else {
-%  $cn = $self->render('href/id', langh => $lang, toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]), partial => 1 );
+%  $cn = $self->render_to_string('href/id', langh => $lang, toid => fullnum33($thumbs->[0]->[1], $thumbs->[0]->[2]) );
 % }
 <link rel="canonical" href="<%== $cn %>">
 <meta name="og:url" content="<%== $cn %>">
@@ -184,10 +184,10 @@ if ( $runmode eq 'pair' ) {
 % if ( $page == 1 ) {
 %  given ( $runmode ) {
 %   when ( 'all' ) {
-%== include 'elem/ig', igurl => $self->render('href/id', langh => $lang, toid => 0, partial => 1 ), igtext => "$t->{ALL} $total $t->{PHOTOA}";
+%== include 'elem/ig', igurl => $self->render_to_string('href/id', langh => $lang, toid => 0 ), igtext => "$t->{ALL} $total $t->{PHOTOA}";
 %   }
 %   when ( 'pair' ) {
-%== include 'elem/ig', igurl => $self->render('href/id', langh => $lang, toid => 0, partial => 1 ), igtext => $t->{uc($pri)} . ' ' . $sec;
+%== include 'elem/ig', igurl => $self->render_to_string('href/id', langh => $lang, toid => 0), igtext => $t->{uc($pri)} . ' ' . $sec;
 %   }
 %  }
 % }
