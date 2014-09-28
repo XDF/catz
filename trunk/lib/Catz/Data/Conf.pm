@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2012 Heikki Siltala
+# Copyright (c) 2010-2014 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,7 +24,7 @@
 
 package Catz::Data::Conf;
 
-use 5.14.2;
+use 5.20.0;
 use strict;
 use warnings;
 
@@ -38,7 +38,9 @@ use Catz::Util::File qw ( fileread );
 
 my $config = fileread ( '../lib/conf.pl' );
 
-my $CONF = eval $config;
+my $CONF = eval $config; 
+
+die $@ if $@;
 
 # an unified API sub to read any parameter from config
 sub conf { $CONF->{ $_[ 0 ] } }
