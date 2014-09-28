@@ -1,10 +1,13 @@
 
-===== 2014-07-20
+===== 2014-09-28
 
 Here are the basic commands to install the Perl modules used by catz.
 
-Development enviroment Perl 5.18.2
-Production enviroment Perl 5.20.0
+Development enviroment runs Perl 5.20.1.
+Production enviroment runs Perl 5.20.0.
+
+Due to increasing difficulties to make GD library and some 3rd party modules to
+work on Windows this system is now configured to run exclusively on Linux.
 
 In case of trouble, use
  perl -MCPAN -e "CPAN::Shell->force(qw(install Module::In::Question));"
@@ -23,18 +26,5 @@ that was found here: http://www.perlmonks.org/?node_id=606768
 
 Then install all the required modules.
 
-    perl -MCPAN -e"install Bit::Vector, Cache::Memcached::Fast, Crypt::Blowfish, Crypt::CBC, DateTime, Digest::HMAC, Digest::MD5, DBI, DBD::SQLite, Email::Date::Format, File::Slurp, GD, HTTP::Date, I18N::AcceptLanguage, IO::Epoll, EV, Mojolicious, Number::Format, URI::Escape::XS, XML::RSS, Image::Size, Image::ExifTool, List::MoreUtils, Text::LevenshteinXS, Const::Fast, Perl::Tidy, Perl::Critic, WWW::Mechanize, HTML::Lint, DateTime::Format::W3CDTF, MIME::Base64"
+    perl -MCPAN -e"install Bit::Vector, Cache::Memcached::Fast, Crypt::Blowfish, Crypt::CBC, DateTime, Digest::HMAC, Digest::MD5, DBI, DBD::SQLite, Email::Date::Format, File::Slurp, GD, HTTP::Date, I18N::AcceptLanguage, IO::Epoll, EV, Mojolicious, Number::Format, URI::Escape::XS, XML::RSS, Image::Size, Image::ExifTool, List::MoreUtils, Text::LevenshteinXS, Const::Fast, Perl::Tidy, Perl::Critic, WWW::Mechanize, HTML::Lint, DateTime::Format::W3CDTF, MIME::Base64, Linux::Distribution"
 
-On Windows: IO:Epoll won't install (Linux only). Install Win32::Console to get rid of warning when running tests.
-
-   perl -MCPAN -e"install Win32::Console"
-
-2014-03-05: These were necessary on Windows:
-
-   perl -MCPAN -e "CPAN::Shell->force(qw(install GD));"
-   perl -MCPAN -e "CPAN::Shell->force(qw(install Number::Format));"
-   
-2014-03-05: These were necessary on Linux:
-
-   perl -MCPAN -e "CPAN::Shell->force(qw(install GD));"
-   perl -MCPAN -e "CPAN::Shell->force(qw(install Cache::Memcached::Fast));"
