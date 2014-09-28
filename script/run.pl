@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2013 Heikki Siltala
+# Copyright (c) 2010-2014 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,8 +22,7 @@
 # THE SOFTWARE.
 #
 
-
-use 5.16.2;
+use 5.20.0;
 use strict;
 use warnings;
 
@@ -42,7 +41,14 @@ It looks like you don't have the Mojolicious Framework installed.
 Please visit http://mojolicio.us for detailed installation instructions.
 EOF
 
-$ENV{ MOJO_APP } = conf ( 'app' );
+#
+# 2014-09-28
+#
+# Due to increasing difficulties to make GD library and some 3rd party modules to
+# work on Windows this system is now configured to run exclusively on Linux.
+#
+
+$ENV{ MOJO_APP } = conf ( 'app' ); 
 
 # added 2012-22-11 to prevent "Maximum message size exceeded"
 # seen when running tests on dev with Mojolicious 3.59
@@ -52,7 +58,7 @@ $ENV{ MOJO_MAX_MESSAGE_SIZE } = conf ( 'msglimit' );
 # to file and issues with page caching
 $ENV{ MOJO_MAX_MEMORY_SIZE } = conf ( 'msgmemlimit' );
 
-conf ( 'win' ) and do {
+conf ( 'deve' ) and do {
 
  $ENV{ MOJO_HOME } = conf ( 'rootd' );
 
@@ -64,7 +70,7 @@ conf ( 'win' ) and do {
 
 };
 
-conf ( 'lin' ) and do {
+conf ( 'prod' ) and do {
 
  $ENV{ MOJO_MODE } = 'production';
 
