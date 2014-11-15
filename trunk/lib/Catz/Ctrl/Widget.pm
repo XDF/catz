@@ -224,14 +224,14 @@ sub photos {    # the widget renderer
 
   when ( 1 ) { $add = ''; $order = 'latest' }    # latest photos
 
-  when ( 2 ) { $add = '_rand'; $order = 'x' }   # rand photos weight on latest
+  when ( 2 ) { $add = '_rand'; $order = 'x' }    # rand photos weight on latest
 
-  when ( 3 ) { $add = '_rand'; $order = 'rand' }    # totally rand photos
+  when ( 3 ) { $add = '_rand'; $order = 'rand' } # totally rand photos
 
   default { die "internal error: unknown photo choosing method id '$_'" }
 
  }
-
+ 
  # fetch the photo xs to start the processing with
  $s->{ xs } = $self->fetch (                        
   "$s->{runmode}#array$add" . '_n', @{ $s->{ args_array } }, $n
@@ -249,7 +249,7 @@ sub photos {    # the widget renderer
 
 } ## end sub photos
 
-sub do {    # the common entry point for buidler and renderer
+sub do {    # the common entry point for builder and renderer
 
  my $self = shift;
  my $s    = $self->{ stash };

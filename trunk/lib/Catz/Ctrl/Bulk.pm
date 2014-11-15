@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2012 Heikki Siltala
+# Copyright (c) 2010-2014 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -45,6 +45,8 @@ sub photolist {
 
  $s->{ date } = $self->param ( 'd' ) // undef;
  $s->{ loc }  = $self->param ( 'l' ) // undef;
+ 
+ $s->{ site } = conf ( "url_site" );
 
  if ( $s->{ date } and $s->{ loc } ) {
 
@@ -77,22 +79,26 @@ sub photolist {
 
   $s->{ aid } or return $self->fail ( 'folder not found' );
 
+  $s->{ list } = $self->fetch ( 'bulk#photolist', $s->{ aid } );
+
+  $self->output ( 'bulk/photolist', 'txt' );
+
  } ## end if ( $s->{ date } and ...)
- else {    # use latest
+ else {    # use free list
 
   $s->{ date } and return $self->fail ( 'illegal parameters' );
   $s->{ loc }  and return $self->fail ( 'illegal parameters' );
+  
+  # this is a pseudo parameter passed to the model that contains the
+  # current dt down to 1 minute, so this parameter changes in every
+  # minute and this makes cached model data live at most a minute
+  my $pseudo = substr ( $self->dt, 0, -2 );
 
-  ( $s->{ aid } = $self->fetch ( 'bulk#latest' ) )
-   or return $self->fail ( 'no data' );
+  $s->{ list } = $self->fetch ( 'bulk#freelist', $pseudo );
+  
+  $self->output ( 'bulk/freelist', 'txt' );
 
  }
-
- $s->{ list } = $self->fetch ( 'bulk#photolist', $s->{ aid } );
-
- $s->{ site } = conf ( "url_site" );
-
- $self->output ( 'bulk/photolist', 'txt' );
 
 } ## end sub photolist
 

@@ -70,7 +70,7 @@
 <div class="bar">
 <a title="<%= fmt ( $maxx, $lang ) %> <%= $t->{PHOTOA} %>" href="/<%== $langa %>/browseall/"><%= fmt ( $maxx, $lang ) %> <%= $t->{PHOTOA_CATSHOW} %></a> <%= $sep %>
 % my $rrow = $folders->[0];
-<%= $t->{LATEST} %> <%= $t->{ALBUM} %> <span class="xtra"><%= $pathsep %></span> <a title="<%= $rrow->[1] %> <%= $rrow->[1] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%== $langa %>/browse/folder/<%== $rrow->[0] %>/"><%= $rrow->[3] %> <%= dtexpand ( $rrow->[2], $lang ) %></a>
+<%= $t->{FINAL} %> <%= $t->{ALBUM} %> <span class="xtra"><%= $pathsep %></span> <a title="<%= $rrow->[1] %> <%= $rrow->[1] == 1 ? $t->{PHOTO} : $t->{PHOTOA} %>" href="/<%== $langa %>/browse/folder/<%== $rrow->[0] %>/"><%= $rrow->[3] %> <%= dtexpand ( $rrow->[2], $lang ) %></a>
 </div>
 %#
 %# --------------------
