@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2012 Heikki Siltala
+# Copyright (c) 2010-2014 Heikki Siltala
 # Licensed under The MIT License
 #
 #
@@ -126,5 +126,11 @@ foreach my $data ( @badfolders ) {
 
  }
 }
+
+$t->get_ok ( "/lastshow/" )->status_is ( 200 )
+ ->content_type_like ( qr/text\/plain/ )->content_like ( qr/\.JPG/ );
+ 
+# no ending slash -> redirect
+$t->get_ok ( "/lastshow" )->status_is ( 301 );
 
 done_testing;

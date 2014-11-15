@@ -118,8 +118,7 @@ sub startup {
  $r->route ( '/style/:palette', palette => qr/dark|neutral|bright/ )
   ->to ( 'main#base' );
 
- # DEPRECATED - WILL BE REMOVED IN THE FUTURE
- # old case: latest album with sufficient number of data
+ # "lastshow" is for a remote system to fetch a list of photos
  $r->route ( '/lastshow' )->to ( 'bulk#photolist', forcefi => 1 );
 
  # all site's true content is under /:langa where langa is 'en' or 'fi'
@@ -379,7 +378,13 @@ sub before {
  
  # let the status page to go through the caching
  $s->{ zpath } =~ m|^\/.+?/more/status| and $s->{ through } = 1;
+
+ # let the "lastshow" hook to go through the caching
+ $s->{ zpath } =~ m|^\/lastshow| and $s->{ through } = 1;
  
+ # let the embed hook to go through the caching
+ $s->{ zpath } =~ m|^\/.+?/embed| and $s->{ through } = 1;
+
  # mark reroutings to stash -> easy to use later
  $s->{ isrerouted } = ( $s->{ zpath } =~ m|^/reroute| ? 1 : 0 );
 

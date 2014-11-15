@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2012 Heikki Siltala
+# Copyright (c) 2010-2014 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -81,6 +81,29 @@ sub _photolist {
   where p=1 and pri='cat' and album.aid=? 
   order by photo.n asc
  }, $aid
+ );
+
+}
+
+sub _freelist {
+
+ my ( $self, $pseudo ) = @_;
+
+ # get the photos without aid = a random set of some of the latest photos
+
+ $self->dball (
+  qq { 
+  select s,photo.n,folder,file,sec_en 
+  from 
+   photo natural join album natural join inpos
+   natural join sec natural join pri 
+  where 
+   p=1 and pri='cat' and 
+   (album.aid)>=(select (max(aid)-50) from album) and
+   $pseudo = $pseudo
+  order by random()
+  limit 50
+ }
  );
 
 }
