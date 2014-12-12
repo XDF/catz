@@ -352,11 +352,11 @@ sub before {
  $s->{ time_start } = time ();
  
  #
- # on Linux = production set the Google Analytics key
- # GA disabled altogether 2013-05-03
- # conf ( 'lin' ) and 
- # ( $s->{ analytics_key } = conf ( 'key_analytics') );
- #
+ # on production set the Google Analytics key
+ # GA was disabled altogether 2013-05-03
+ # GA was restored 2014-12-12
+ conf ( 'prod' ) and 
+  ( $s->{ analytics_key } = conf ( 'key_analytics') );
  
  $s->{ env } = conf ( 'env' );    # copy production enviroment id to stash
  
@@ -376,15 +376,12 @@ sub before {
  # the default is not to let pages go through the caching
  $s->{ through } = 0;
  
- # let the status page to go through the caching
- $s->{ zpath } =~ m|^\/.+?/more/status| and $s->{ through } = 1;
-
  # let the "lastshow" hook to go through the caching
  $s->{ zpath } =~ m|^\/lastshow| and $s->{ through } = 1;
- 
- # let the embed hook to go through the caching
- $s->{ zpath } =~ m|^\/.+?/embed| and $s->{ through } = 1;
 
+ # let the "result" hook to go through the caching
+ $s->{ zpath } =~ m/^\/(en(?:[1-9]{6})?|fi(?:[1-9]{6})?)\/result/ and $s->{ through } = 1;
+ 
  # mark reroutings to stash -> easy to use later
  $s->{ isrerouted } = ( $s->{ zpath } =~ m|^/reroute| ? 1 : 0 );
 

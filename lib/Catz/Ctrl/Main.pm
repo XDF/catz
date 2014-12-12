@@ -114,9 +114,9 @@ sub result {
   and return;
 
  # this is a pseudo parameter passed to the model that contains the
- # current dt down to 10 minutes, so this parameter changes in every
- # 10 minutes and this makes cached model data live at most 10 minutes
- my $pseudo = substr ( $self->dt, 0, -3 );
+ # current dt down to hours, so this parameter changes in every
+ # hour and this makes cached model data live at most one hour
+ my $pseudo = substr ( $self->dt, 0, -4 );
 
  my $count = $self->fetch ( 'net#count', $keys[ 0 ], $keys[ 1 ], $pseudo )
   // 0;
