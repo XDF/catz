@@ -77,7 +77,7 @@ foreach my $path ( @okstatics ) {
 foreach my $path ( @okpaths ) {
 
  #<<<
-
+ 
  $t->get_ok ( $path )->status_is ( 200 )
    ->header_like ( 'Cache-Control'    => qr/max-age/ )
    ->header_like ( 'Expires'          => qr/GMT/ )

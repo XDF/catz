@@ -90,9 +90,9 @@ sub photolist {
   $s->{ loc }  and return $self->fail ( 'illegal parameters' );
   
   # this is a pseudo parameter passed to the model that contains the
-  # current dt down to 1 minute, so this parameter changes in every
-  # minute and this makes cached model data live at most a minute
-  my $pseudo = substr ( $self->dt, 0, -2 );
+  # current dt down to an hour so this parameter changes in every
+  # hour and this makes cached model data live at most an hour
+  my $pseudo = substr ( $self->dt, 0, -4 );
 
   $s->{ list } = $self->fetch ( 'bulk#freelist', $pseudo );
   
