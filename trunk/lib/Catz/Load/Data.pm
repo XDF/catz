@@ -618,7 +618,7 @@ sub exif {
     defined $i->{ $key } or 
      die 'unable to resolve body name from undef';
      
-    ( length ( $i->{ $key } ) < 5 ) and
+    ( length ( $i->{ $key } ) < 2 ) and
      die "stopped because of a very short input '$i->{ $key }' for body name resolver";  
     
     ( my $tmp = body ( $i->{ $key } ) )  
