@@ -156,7 +156,7 @@ sub fail {    # the fail action for controllers
  # 1st level call -> pass to mojolicious default action
 
  if   ( $origin =~ /Catz::Ctrl/ ) { return 0 }
- else                             { return $self->render_not_found }
+ else                             { return $self->reply->not_found }
 
 }
 

@@ -437,7 +437,7 @@ sub before {
 
  index ( $s->{ zpath }, '.' ) > -1 and ( not $s->{ isrerouted } ) and do {
 
-  $s->{ isstatic } or return $self->render_not_found;
+  $s->{ isstatic } or return $self->reply->not_found;
 
  };
 
@@ -511,7 +511,7 @@ sub before {
   # process and populate stash with setup data
   # returns true if success
   setup_init ( $self, $s->{ setup } )
-   or return $self->render_not_found;
+   or return $self->reply->not_found;
 
  }
 
