@@ -1,6 +1,6 @@
-# catz
+# catz - the world's most advanced cat show photo engine
 
-Catz is the world's most advanced cat show photo engine and the web application engine that runs [catza.net](http://catza.net/), the world's most advanced cat show photo service. Developing Catz is a non-paid hobby. It is targeted only to one specific use and is not a general-purpose software.
+Catz is the web application engine that runs [catza.net](http://catza.net/), the world's most advanced cat show photo service. Developing Catz is a non-paid hobby. It is targeted only to one specific use and is not a general-purpose software.
 
 The project is provided as open source because
 * it is an example of a Perl web application using Mojolicious MVC framework
@@ -15,7 +15,7 @@ If you get the code you don't get a working system since following parts are not
 | /db | the SQLite database that is required by the system to run |
 | /lib/conf.pl | the system configuration module |
 | /lib//text.txt | the visible text strings for pages |
-| /tmpl/content || content-heavy templates to provide textual pages |
+| /tmpl/content | content-heavy templates to provide textual pages |
 | /data/newsmeta.txt | the tagged text source data file for news |
 | ../static | the photos and static assets served by the service | 
 
