@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2014 Heikki Siltala
+# Copyright (c) 2010-2015 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -355,8 +355,9 @@ sub before {
  # on production set the Google Analytics key
  # GA was disabled altogether 2013-05-03
  # GA was restored 2014-12-12
- conf ( 'prod' ) and 
-  ( $s->{ analytics_key } = conf ( 'key_analytics') );
+ # GA was disabled again 2015-04-02
+ # conf ( 'prod' ) and 
+ # ( $s->{ analytics_key } = conf ( 'key_analytics') );
  
  $s->{ env } = conf ( 'env' );    # copy production enviroment id to stash
  

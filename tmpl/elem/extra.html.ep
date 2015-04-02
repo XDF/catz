@@ -1,5 +1,5 @@
 %# notice that $lang is used here on purpose instead of $langa
-<span class="shrink"><a href="/<%== $lang %>/feed/"><%= $t->{FEED} %></a> <%= $sep %> <a href="<%== $t->{URL_FACEBOOK} %>"><%= $t->{FACEBOOK} %></a> <%= $sep %> <a href="<%== $t->{URL_GOOGLECODE} %>"><%= $t->{GOOGLECODE} %></a></span>
+<span class="shrink"><a href="/<%== $lang %>/feed/"><%= $t->{FEED} %></a> <%= $sep %> <a href="<%== $t->{URL_FACEBOOK} %>"><%= $t->{FACEBOOK} %></a> <%= $sep %> <a href="<%== $t->{URL_GITHUB} %>"><%= $t->{GITHUB} %></a></span>
 %#
 %# Catz - the world's most advanced cat show photo engine
 %# Copyright (c) 2010-2011 Heikki Siltala

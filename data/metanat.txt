@@ -5,7 +5,7 @@
 ; CC BY 4.0 
 ;
 ; http://catza.net/
-; http://code.google.com/p/catz/
+; https://github.com/XDF/catz
 ; http://creativecommons.org/licenses/by/4.0/
 ;
 AT
