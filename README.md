@@ -2,8 +2,6 @@
 
 Catz is the web application engine that runs [catza.net](http://catza.net/), the world's most advanced cat show photo service. Developing Catz is a non-paid hobby. It is targeted only to one specific use and is not a general-purpose software.
 
-[Read more about Catz at heikkisiltala.net](http://heikkisiltala.net/en/tag:catz?do=showtag&tag=Catz).
-
 The project is provided as open source because
 * it is an example of a Perl web application using Mojolicious MVC framework
 * maybe somebody learns something by looking at the code
