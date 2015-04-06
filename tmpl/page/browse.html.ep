@@ -133,6 +133,7 @@ if ( $runmode eq 'pair' ) {
 % ( $runmode eq 'pair' ) and do {
 %== include 'elem/js', jstype => 'site', jsfile => 'expand';
 % };
+<%== include 'elem/js', jstype => 'site', jsfile => 'move' =%>
 <% end %>
 %#
 %# --------------------

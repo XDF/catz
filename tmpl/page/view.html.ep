@@ -59,6 +59,7 @@
 % $photosize eq 'fit' and do {
 %== include 'elem/js', jstype => 'site', jsfile => 'fit';
 % };
+<%== include 'elem/js', jstype => 'site', jsfile => 'move' =%>
 <% end %>
 %#
 %# --------------------

@@ -409,7 +409,7 @@ sub f_search_ok {
 
 sub f_search_args {
 
- # prorcess a search string to arguments
+ # process a search string to arguments
 
  my $self = shift;
  my $s    = $self->{ stash };

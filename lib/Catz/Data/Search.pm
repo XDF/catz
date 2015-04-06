@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2011 Heikki Siltala
+# Copyright (c) 2010-2015 Heikki Siltala
 # Licensed under The MIT License
 #
 #
@@ -25,7 +25,7 @@
 
 package Catz::Data::Search;
 
-use 5.10.0;
+use 5.20.0;
 use strict;
 use warnings;
 
@@ -52,7 +52,9 @@ sub search2args {    # covert a search parameter to argument list
  my @args = quotewords ( '\s+', 0, $str );
 
  my @out = ();
-
+ 
+ my %seen = ();
+ 
  foreach my $arg ( @args ) {
 
   my $oper = '';
@@ -74,14 +76,33 @@ sub search2args {    # covert a search parameter to argument list
   }
 
   defined $key and defined $val and do {
+    
+   my $pair = "$oper$key";
 
-   push @out, "$oper$key";
-   push @out, $val;
+   if ( ( index( $val,'*' ) > -1 ) and ( $val =~ /^[\*,\?]{2,}$/ ) ) {
+   
+    # reduce all combinations of * and ? to just single *
+   
+    $val = '*';
+   
+   }
+   
+   if ( not exists $seen{$pair}{$val} ) {
+   
+    # each search pattern part is accepted only once
 
+    push @out, $pair;
+   
+    push @out, $val;
+	
+	$seen{$pair}{$val} = 1;
+   
+   }
+      
   };
-
+ 
  } ## end foreach my $arg ( @args )
-
+ 
  return \@out;
 
 } ## end sub search2args
