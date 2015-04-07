@@ -353,11 +353,8 @@ sub before {
  
  #
  # on production set the Google Analytics key
- # GA was disabled altogether 2013-05-03
- # GA was restored 2014-12-12
- # GA was disabled again 2015-04-02
- # conf ( 'prod' ) and 
- # ( $s->{ analytics_key } = conf ( 'key_analytics') );
+ conf ( 'prod' ) and 
+  ( $s->{ analytics_key } = conf ( 'key_analytics' ) );
  
  $s->{ env } = conf ( 'env' );    # copy production enviroment id to stash
  

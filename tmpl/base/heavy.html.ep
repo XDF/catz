@@ -44,6 +44,7 @@
 <%= content 'metaadd' %>
 <meta name="generator" content="<%= $t->{GENERATOR} %>">
 <meta name="credits" content="<%= $t->{CREDITS} %>">
+%== include 'elem/analytics';
 </head>
 %#
 %# --------------------
