@@ -86,7 +86,7 @@ sub fullnum3 { sprintf ( "%03d", $_[ 0 ] ) }
 # converts two integers to null padded 3 digit integers
 # places them after eachother
 #
-sub fullnum33 { sprintf ( "%03d%03d", $_[ 0 ], $_[ 1 ] ) }
+sub fullnum33 { sprintf ( "%03d%03d", $_[ 0 ], $_[ 1 ] ); }
 
 #
 # converts an integer to null padded 4 digit integer

@@ -105,7 +105,7 @@ const my $SQL_GENERAL => qq {
   select sid from sec where (sec_en like ? or sec_fi like ?)
  )   
 };
-
+ 
 const my $SQL_ID =>
  'select x from album natural join photo where fullnum33(s,n) like ?';
 
@@ -114,7 +114,7 @@ const my $SQL_FILE => 'select x from photo where file like ?';
 sub _base {
 
  my ( $self, $pri, $sec ) = @_;
-
+   
  # handling of secs "id "and "file" added separately 2011-12
 
  # creating an empty bit vector one larger than there are photos
@@ -177,9 +177,9 @@ sub _base {
    # optimize so that if $sec has any other characters than
    # digits, _s and %s it can't match an id
    $sec =~ /^[0-9_\%]*$/ and do {
-
+   
     $res = $self->dbcol ( $SQL_ID, $sec );
-
+	
     $vec->Index_List_Store ( @$res );
 
    };
@@ -210,7 +210,7 @@ sub _base {
    # optimize so that if $sec any other characters than
    # digits, _s and %s it can't match an id
    ( $sec =~ /^[0-9_\%]*$/ )
-    and $res = $self->dbcol ( $SQL_ID, $sec );
+     and $res = $self->dbcol ( $SQL_ID, $sec );
 
   }
 

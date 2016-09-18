@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2014 Heikki Siltala
+# Copyright (c) 2010-2016 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -35,6 +35,8 @@ use Const::Fast;
 
 const my $HR => '.JPG';       # the fixed filename ending for hires photos
 const my $LR => '_LR.JPG';    # the fixed filename ending for lores photos
+
+use Catz::Util::Number qw ( fullnum33 );
 
 sub _thumb {
 
@@ -226,12 +228,12 @@ sub _clusters {
 
  my $res = $self->dball (
   qq { 
-  select sec,fullnum33(album.s,photo.n) from 
+  select sec,album.s,photo.n from 
   album natural join photo natural join pri natural join sec_$lang 
   natural join inpos where pri='text' and photo.x in (}
    . ( join ',', @xs ) . ') order by photo.x,p'
  );
-
+ 
  my $i = 0;
 
  my $seen = {};
@@ -239,24 +241,29 @@ sub _clusters {
  my $keys = [];
 
  while ( $i < scalar @$res ) {
+ 
+  my $fullnum = fullnum33(
+   $res->[ $i ]->[ 1 ],
+   $res->[ $i ]->[ 2 ]
+  );
 
   if ( exists $seen->{ $res->[ $i ]->[ 0 ] } ) {
   
-   push @{ $seen->{ $res->[ $i ]->[ 0 ] } }, $res->[ $i ]->[ 1 ];
+   push @{ $seen->{ $res->[ $i ]->[ 0 ] } }, $fullnum;
 
   }
   else {
 
    push @{ $keys }, $res->[ $i ]->[ 0 ];
 
-   $seen->{ $res->[ $i ]->[ 0 ] } = [ $res->[ $i ]->[ 1 ] ];
+   $seen->{ $res->[ $i ]->[ 0 ] } = [ $fullnum ];
 
   }
 
   $i++;
 
  }
-
+ 
  return [ map { [ $seen->{ $_ }, $_ ] } @$keys ];
 
 } ## end sub _clusters

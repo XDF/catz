@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2014 Heikki Siltala
+# Copyright (c) 2010-2016 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -84,9 +84,11 @@ sub fetch {
     AutoCommit => 1, RaiseError => 1, PrintError => 1
    } )
    || die ( $DBI::errstr );
-   
-
-  # sequence
+  
+  # 2016-09-18: WARNING! Using result of fullnum33
+  # as a return value seems to lead to leading zero removal
+  # (string values started to change to integer after some 
+  # change in Perl or DBI)
   $db->func ( 'fullnum33', 2, \&fullnum33, 'create_function' );
 
   # store the new version as current version
@@ -116,10 +118,13 @@ sub AUTOLOAD {
  my $end;
 
  $TIME_MODEL and $start = time ();
-
+ 
  my $res =
-  cache_get ( $currver, $nspace, $self->{ lang }, $self->{ name }, $sub,
-  @args );
+  cache_get ( 
+   $currver, $nspace, 
+   $self->{ lang }, $self->{ name }, 
+   $sub, @args 
+  );
 
  $res and do {
 
@@ -172,7 +177,7 @@ sub db_run {
  }
  
  $TIME_DB and $start = time();
-
+ 
  my $res = cache_get ( $currver, $nspace, $comm, $sql, @args );
 
  $res and do {
@@ -205,7 +210,8 @@ sub db_run {
   }
 
   when ( 'col' ) {
-
+ 
+   # this gives error
    $res = $db->selectcol_arrayref ( $sql, undef, @args );
 
   }

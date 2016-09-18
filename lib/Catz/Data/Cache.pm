@@ -59,7 +59,7 @@ use Catz::Data::Conf;
 use Catz::Util::String qw ( enurl );
 
 # for debugging or other needs all caching can be
-# set to NOP setting this to false
+# set to NOP by setting this to zero
 const my $CACHEON => 1;
 
 # set on/off cache tracing as warnings
@@ -144,11 +144,11 @@ sub cache_set {
 sub cache_get {
 
  $CACHEON or return;    # immediate NOP if not caching
-
+ 
  my @args = @_;
-
+ 
  my $key = keyer @args;
-
+ 
  my $ret = $cache->get ( $key );
 
  $CACHETRC and do {

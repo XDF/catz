@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2015 Heikki Siltala
+# Copyright (c) 2010-2016 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -350,12 +350,7 @@ sub before {
  my $s    = $self->{ stash };
   
  $s->{ time_start } = time ();
- 
- #
- # on production set the Google Analytics key
- conf ( 'prod' ) and 
-  ( $s->{ analytics_key } = conf ( 'key_analytics' ) );
- 
+  
  $s->{ env } = conf ( 'env' );    # copy production enviroment id to stash
  
  # we start the following stash keys with z to prevent 

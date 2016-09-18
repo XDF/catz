@@ -40,7 +40,7 @@ use Bit::Vector;
 sub _bits {    # fetch a bit vector for a set of arguments
 
  my ( $self, @args ) = @_;
-
+ 
  my $size = $self->maxx + 1;
 
  # OR base vector is a completely empty vector
@@ -65,7 +65,7 @@ sub _bits {    # fetch a bit vector for a set of arguments
   $sec =~ s/\?/\_/g;              # user interface ? -> database interface _
   $sec =~ s/\*/\%/g;              # user interface * -> database interface %
 
-  my $bvec = $self->base ( $pri, $sec );    # fetch te vector
+  my $bvec = $self->base ( $pri, $sec );    # fetch the vector
 
   given ( $oper ) {
 
