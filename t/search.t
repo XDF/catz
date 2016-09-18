@@ -133,8 +133,6 @@ foreach my $mode ( qw ( search display ) ) {
   };
 
   # browse / view results
-  warn $search;
-  warn enurl ( $search );
   $t->get_ok ( "/$setup/$mode?q=" . enurl ( $search ) )->status_is ( 200 )
    ->content_type_like ( qr/text\/html/ )
    ->content_like      ( qr/alt=\".+\d{6}/ )    # photo alt text
