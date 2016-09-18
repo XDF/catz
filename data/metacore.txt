@@ -1,7 +1,7 @@
 ;
 ; a catza.net core data file
 ;
-; Copyright Heikki Siltala 2004-2014
+; Copyright Heikki Siltala 2004-2015
 ; CC BY 4.0 
 ;
 ; http://catza.net/
@@ -1951,7 +1951,8 @@ P36: CH {Hovikissan} Pi-Mu [KOR]
 P37-38: SC {Hovikissan} lek sawat (Lotta) [KOR]
 P39: {Romanxx} Jake Delhomme [CYM d 09 22 51]
 P40-43: {Ice-Olive's} Velour Ambrosia (Vicky) [OSH c 24]
-P44-47: {Bajangin} Perle de Culture [OSH n 24]
+P44-46: %Xdel
+P47: {Bajangin} Perle de Culture [OSH n 24]
 P48-49: [XC3]
 P50: {Romanxx} Jake Delhomme [CYM d 09 22 51]
 P51: {Deimos} Buon Giorno [CYM e 52]
@@ -2263,7 +2264,7 @@ P17: {Godfather's} Deer Hunter [MCO d 22]
 P18: {Mostlycats} Love Passion [MCO n 09 23]
 P19-26: {Fullmoon's} Golden SolarLion (Punkku) [MCO d 23]
 P28: [BEN]
-P27: [OSH w]
+P27: {Willicon} Libellula [BAL w 67]
 P29: [BEN]
 P30-31: [OSH]
 P32-34: SE*{Kyanos} Akaois [RUS]
