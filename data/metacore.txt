@@ -1,7 +1,7 @@
 ;
 ; a catza.net core data file
 ;
-; Copyright Heikki Siltala 2004-2015
+; Copyright Heikki Siltala 2004-2017
 ; CC BY 4.0 
 ;
 ; http://catza.net/
@@ -7128,7 +7128,6 @@ P119-123: CH {Artvan} Alaluna (Luna) [TUV d 62]
 P124-125: SP,EC {Ipekkedinin} Birinci Bebek (Mikke) [TUV d 62]
 P126-128: {Link} Monifa Mosi [ABY a]
 P129-130: IC {Friday} Madeleine [SPH f 09 32]
-P131: [EUR]
 P132-133: {Wanadoo} Dangerous Love (Viivi) [SPH f 32]
 P134-139: CH {Lanion} Blueberry [SPH a 09 21 33]
 P140-142: {J‰‰kukan} Paul Gauguin [CHA]
