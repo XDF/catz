@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2014 Heikki Siltala
+# Copyright (c) 2010-2017 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -47,7 +47,7 @@ sub do {
  # if we make HTTP call on server then we always 
  # use http instead of https 
  $s->{ charturl } = $jmap ? 
-  conf ( "url_chart" ) :
+  conf ( "url_chart_server" ) :
   conf ( "url_chart" );
 
  my $vurl = $self->render_to_string(
@@ -55,7 +55,7 @@ sub do {
   format  => 'txt',
   jmap    => $jmap
  );
-
+ 
  if ( $jmap ) {
 
   # this is a pseudo parameter passed to the model that contains the
@@ -82,7 +82,7 @@ sub do {
 
  }
  else {
-
+warn $vurl;
   return $self->moveto ( $vurl );
 
  }
