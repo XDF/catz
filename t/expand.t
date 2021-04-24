@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2012 Heikki Siltala
+# Copyright (c) 2010-2019 Heikki Siltala
 # Licensed under The MIT License
 #
 #
@@ -26,6 +26,8 @@
 use 5.14.2;
 use strict;
 use warnings;
+
+do '../script/core.pl';
 
 # unbuffered outputs
 # from http://perldoc.perl.org/functions/open.html

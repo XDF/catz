@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2012 Heikki Siltala
+# Copyright (c) 2010-2021 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -43,7 +43,8 @@ use Catz::Util::Time qw ( dtexpand );
 
 my $eng = Crypt::CBC->new (
  -key => conf ( 'key_result' ),
- -cipher => 'Blowfish'
+ -cipher => 'Blowfish',
+ -nodeprecate => 1
 );
 
 const my $RESULTS => {

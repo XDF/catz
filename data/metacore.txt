@@ -3134,7 +3134,7 @@ P124: Teppo Taikatohveli [HCL] %M
 P125: Ukko [HCS] %M
 P126: [HCS]
 P127: Pikku-Lilla [HCS] %F "URK Miss Housecat 2011|URK Miss kotikissa 2011"
-P128: [HCS]
+P128: [MAN]
 P129: Pikku-Lilla [HCS] %F "URK Miss Housecat 2011|URK Miss kotikissa 2011"
 P130: Pikku-Musta [HCS] %F
 P131-133: Pikku-Lilla [HCS] %F "URK Miss Housecat 2011|URK Miss kotikissa 2011"

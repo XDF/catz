@@ -22,54 +22,58 @@
 # THE SOFTWARE.
 #
 
-use 5.14.2;
+use 5.20.0;
 use strict;
 use warnings;
 
-do '../script/core.pl';
+use File::Basename 'dirname';
+use File::Spec;
 
-# unbuffered outputs
-# from http://perldoc.perl.org/functions/open.html
-select STDERR;
-$| = 1;
-select STDOUT;
-$| = 1;
-
-use Test::More;
-use Test::Mojo;
+use lib join '/', File::Spec->splitdir ( dirname ( __FILE__ ) ), 'lib';
+use lib join '/', File::Spec->splitdir ( dirname ( __FILE__ ) ), '..', 'lib';
 
 use Catz::Data::Conf;
-use Catz::Data::Text;
 
-use Catz::Util::String qw ( encode enurl );
+eval { use Mojolicious::Commands };
 
-my $t = Test::Mojo->new ( conf ( 'app' ) );
+die <<EOF if $@;
+It looks like you don't have the Mojolicious Framework installed.
+Please visit http://mojolicio.us for detailed installation instructions.
+EOF
 
-my @oksetups = qw ( en fi en211211 fi171212 en394211 fi211111 );
+#
+# 2014-09-28
+#
+# Due to increasing difficulties to make GD library and some 3rd party modules to
+# work on Windows this system is now configured to run exclusively on Linux.
+#
 
-my @pages = qw ( contrib quality );
+$ENV{ MOJO_APP } = conf ( 'app' ); 
 
-my $buzz = 'more';
+# added 2012-22-11 to prevent "Maximum message size exceeded"
+# seen when running tests on dev with Mojolicious 3.59
+$ENV{ MOJO_MAX_MESSAGE_SIZE } = conf ( 'msglimit' );
 
-my $setup;
+# added 2011-10-15 to prevent responses to go
+# to file and issues with page caching
+$ENV{ MOJO_MAX_MEMORY_SIZE } = conf ( 'msgmemlimit' );
 
-foreach my $setup ( @oksetups ) {
+conf ( 'deve' ) and do {
 
- my $txt = text ( substr ( $setup, 0, 2 ) );
+ $ENV{ MOJO_HOME } = conf ( 'rootd' );
 
- foreach my $page ( @pages ) {
+ $ENV{ MOJO_MODE } = 'production';
 
-  $t->get_ok ( "/$setup/$buzz/$page/" )->status_is ( 200 )
-   ->content_type_like ( qr/text\/html/ )
-   ->content_like ( qr/$txt->{uc($page).'_TITLE'}/ );
+ ### $ENV{MOJO_MODE} = 'development';
 
-  # no ending slash
-  $t->get_ok ( "/$setup/$buzz/$page" )->status_is ( 301 );
+ ### $ENV{MOJO_USERAGENT_DEBUG} = 1;
 
-  $t->get_ok ( "/$setup/about/$page/" )->status_is ( 404 );
+};
 
- }
+conf ( 'prod' ) and do {
 
-}
+ $ENV{ MOJO_MODE } = 'production';
 
-done_testing;
+ $ENV{ MOJO_HOME } = conf ( 'rootd' ) . '/catz' . conf ( 'env' );
+
+};

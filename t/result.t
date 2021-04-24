@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2012 Heikki Siltala
+# Copyright (c) 2010-2019 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,6 +25,8 @@
 use 5.14.2;
 use strict;
 use warnings;
+
+do '../script/core.pl';
 
 # unbuffered outputs
 # from http://perldoc.perl.org/functions/open.html
@@ -115,8 +117,9 @@ foreach my $lang ( qw ( en fi ) ) {
  foreach my $key ( @ok ) {
 
   $t->get_ok ( "/$lang/result?x=$key" )->status_is ( 200 )
-   ->content_type_like ( qr/text\/html/ )
-   ->content_like ( qr/$txt->{RESULT_CREDIT_URL}/ );
+   ->content_type_like ( qr/text\/html/ );
+   # disabled 8.5.2020
+   #->content_like ( qr/$txt->{RESULT_CREDIT_URL}/ );
 
  }
 

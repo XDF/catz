@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2013 Heikki Siltala
+# Copyright (c) 2010-2019 Heikki Siltala
 # Licensed under The MIT License
 #
 #
@@ -26,6 +26,8 @@
 use 5.16.2;
 use strict;
 use warnings;
+
+do '../script/core.pl';
 
 # unbuffered outputs
 # from http://perldoc.perl.org/functions/open.html
@@ -130,16 +132,16 @@ foreach my $path (
 }
 
 # classic non-rerouted paths should work too
-foreach my $folder (
- qw (
- around_finland cesmes_b cesmes_c culture_trip_lake_tuusula hel_sto_hel
- )
- )
-{
-
- $t->get_ok ( "/reroute/$folder" )->status_is ( 200 )
-  ->content_type_like ( qr/text\/html/ );
-}
+# foreach my $folder (
+# qw (
+# around_finland cesmes_b cesmes_c culture_trip_lake_tuusula hel_sto_hel
+# )
+# )
+#{
+#
+# $t->get_ok ( "/reroute/$folder" )->status_is ( 200 )
+#  ->content_type_like ( qr/text\/html/ );
+#}
 
 foreach my $folder (
  qw (

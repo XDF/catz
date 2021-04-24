@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2016 Heikki Siltala
+# Copyright (c) 2010-2021 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -94,32 +94,32 @@ sub startup {
  ### the site's bare root gets passed to language detection mechanism
  ###
 
- $r->route ( '/' )->to ( 'main#detect' );
+ $r->any ( '/' )->to ( 'main#detect' );
 
  ###
  ### rerouting of old site's pages and resources
  ###
  
- $r->route ( '/reroute/*src' )->to ( 'reroute#reroute' );
- $r->route ( '/reroute' )->to      ( 'reroute#reroute' );
+ $r->any ( '/reroute/*src' )->to ( 'reroute#reroute' );
+ $r->any ( '/reroute' )->to      ( 'reroute#reroute' );
 
  ###
  ### the stylesheets
  ###
 
  # reset
- $r->route ( '/style/reset' )->to ( 'main#reset' );
+ $r->any ( '/style/reset' )->to ( 'main#reset' );
 
  # widget
- $r->route ( '/style/widget' )->to ( 'widget#style' );
+ $r->any ( '/style/widget' )->to ( 'widget#style' );
 
  # the single stylesheet contains all style definitions
  # it's color settings are dependent on the palette
- $r->route ( '/style/:palette', palette => qr/dark|neutral|bright/ )
+ $r->any ( '/style/:palette' => [ palette => qr/dark|neutral|bright/ ] )
   ->to ( 'main#base' );
 
  # "lastshow" is for a remote system to fetch a list of photos
- $r->route ( '/lastshow' )->to ( 'bulk#photolist', forcefi => 1 );
+ $r->any ( '/lastshow' )->to ( 'bulk#photolist', forcefi => 1 );
 
  # all site's true content is under /:langa where langa is 'en' or 'fi'
  # and it can be extended by magic code defining the user settings
@@ -127,39 +127,49 @@ sub startup {
  # the language code sets the content language
  #
  my $l =
-  $r->route ( '/:dummy', dummy => qr/en(?:[1-9]{6})?|fi(?:[1-9]{6})?/ );
+  $r->any ( '/:dummy' => 
+   [ dummy => qr/en(?:[1-9]{6})?|fi(?:[1-9]{6})?/ ] 
+  );
 
  # the front page is at the root under the language
- $l->route ( '/' )->to ( 'main#front' );
+ $l->any ( '/' )->to ( 'main#front' );
 
  ###
  ### sitemap(s)
  ###
 
  # without langauge
- $r->route ( '/sitemap/index' )->to ( 'locate#mapidx' );
+ $r->any ( '/sitemap/index' )->to ( 'locate#mapidx' );
 
  # with langauge
- $l->route ( '/sitemap/:mapsub' )->to ( 'locate#mapsub' );
+ $l->any ( '/sitemap/:mapsub' )->to ( 'locate#mapsub' );
 
  ###
  ### content pages
  ###
 
- $l->route ( '/more/:action' )->to ( controller => 'more' );
-
+ # 14.3.2021 
+ # Old routing syntax no longer working with 
+ # the current version of Mojolicious
+ #
+ # $l->any ( '/more/:action' )->to ( controller => 'more' );
+ 
+ $l->any ( '/more/common'  )->to ( 'more#common'  );
+ $l->any ( '/more/contrib' )->to ( 'more#contrib' );
+ $l->any ( '/more/quality' )->to ( 'more#quality' );
+ 
  ###
  ### the news service
  ###
 
  # the index page of all articles
- $l->route ( '/news' )->to ( 'news#index' );
+ $l->any ( '/news' )->to ( 'news#index' );
 
  # single article
- $l->route ( '/news/:article', article => qr/\d{14}/ )->to ( 'news#one' );
+ $l->any ( '/news/:article' => [ article => qr/\d{14}/ ] )->to ( 'news#one' );
 
  # RSS feed
- $l->route ( '/feed' )->to ( 'news#feed' );
+ $l->any ( '/feed' )->to ( 'news#feed' );
 
  ###
  ### the builk interface
@@ -169,20 +179,21 @@ sub startup {
  # please note that although this can be used to other purposes
  # the interface is subject to sudden changes
 
- $l->route ( '/bulk/photolist' )->to ( 'bulk#photolist' );
+ $l->any ( '/bulk/photolist' )->to ( 'bulk#photolist' );
 
  ###
  ### the lists
  ###
 
  # the list of lists (list index)
- $l->route ( '/lists' )->to ( 'locate#lists' );
+ $l->any ( '/lists' )->to ( 'locate#lists' );
 
  # a single list
- $l->route (
-  '/list/:subject/:mode',
+ $l->any (
+  '/list/:subject/:mode' => [
   subject => qr/[a-z]{1,25}/,
   mode    => qr/[a-z0-9]{1,25}/,
+  ]
  )->to ( 'locate#list' );
 
  ###
@@ -190,46 +201,100 @@ sub startup {
  ###
 
  ### #1: browse all & view all
+ 
+ # 14.3.2021 
+ # Old routing syntax no longer working with 
+ # the current version of Mojolicious
+ #
+ # my $a = $l->any ( '/:action', action => qr/browseall|viewall/ );
+ # $a->any ( '/:id', id => qr/\d{6}/ )->to ( controller => 'all' );
+ # $a->any ( '/' )->to ( controller => 'all', id => undef );
 
- my $a = $l->route ( '/:action', action => qr/browseall|viewall/ );
+ my $a1 = $l->any ( '/browseall' )->to ( 'all#browseall' );
+ 
+ $a1->any ( '/:id' => [ id => qr/\d{6}/ ] );
+ 
+ $a1->any ( '/' )->to( id => undef );
 
- # with photo id
- $a->route ( '/:id', id => qr/\d{6}/ )->to ( controller => 'all' );
+ my $a2 = $l->any ( '/viewall' )->to ( 'all#viewall' );
 
- # without photo id
- $a->route ( '/' )->to ( controller => 'all', id => undef );
+ $a2->any ( '/:id' => [ id => qr/\d{6}/ ] );
+
+ $a2->any ( '/' )->to( id => undef );
 
  ### #2: pair browse & pair view
+ 
+ # 14.3.2021 
+ # Old routing syntax no longer working with 
+ # the current version of Mojolicious
+ #
+ # my $p = $l->any ( '/:action', action => qr/browse|view/ );
 
- my $p = $l->route ( '/:action', action => qr/browse|view/ );
+ my $p1 = $l->any ( '/browse' )->to ( "pair#browse" );
+ 
+ my $p2 = $l->any ( '/view' )->to ( "pair#view" );
 
  # with photo id
- $p->route (
-  ':pri/:sec/:id',
+ $p1->any (
+  ':pri/:sec/:id' => [
   pri => qr/[a-z]{1,25}/,
   sec => qr/[A-Za-z0-9_-]{1,500}/,
   id  => qr/\d{6}/
- )->to ( controller => 'pair' );
+  ]
+ );
 
  # without photo id
- $p->route (
-  ':pri/:sec/',
+ $p1->any (
+  ':pri/:sec/' => [
   pri => qr/[a-z]{1,25}/,
   sec => qr/[A-Za-z0-9_-]{1,500}/
-  )->to (
-  controller => 'pair',
+  ]
+ )->to (
   id         => undef
-  );
-
- ### #3: search browse & search view
-
- my $s = $l->route ( '/:action', action => qr/search|display/ );
-
+ );
+ 
  # with photo id
- $s->route ( '/:id', id => qr/\d{6}/ )->to ( controller => 'search' );
+ $p2->any (
+  ':pri/:sec/:id' => [
+  pri => qr/[a-z]{1,25}/,
+  sec => qr/[A-Za-z0-9_-]{1,500}/,
+  id  => qr/\d{6}/
+  ]
+ );
 
  # without photo id
- $s->route ( '/' )->to ( controller => 'search', id => undef );
+ $p2->any (
+  ':pri/:sec/' => [
+  pri => qr/[a-z]{1,25}/,
+  sec => qr/[A-Za-z0-9_-]{1,500}/
+  ]
+ )->to (
+  id         => undef
+ ); 
+
+ ### #3: search browse & search view
+ 
+ # 14.3.2021 
+ # Old routing syntax no longer working with 
+ # the current version of Mojolicious
+ #
+ # my $s = $l->any ( '/:action', action => qr/search|display/ );
+ 
+ my $s1 = $l->any ( '/search' )->to ( 'search#search' );
+
+ my $s2 = $l->any ( '/display' )->to ( 'search#display' );
+
+ # with photo id
+ $s1->any ( '/:id' => [ id => qr/\d{6}/ ] );
+
+ # without photo id
+ $s1->any ( '/' )->to ( id => undef );
+
+ # with photo id
+ $s2->any ( '/:id' => [ id => qr/\d{6}/ ] );
+
+ # without photo id
+ $s2->any ( '/' )->to ( id => undef );
 
  ###
  ### visualizations
@@ -237,82 +302,88 @@ sub startup {
 
  # vkey is required to make request version unique but is not used later
 
- $l->route (
-  '/viz/dist/:full/:breed/:none/:plain/:vkey',
+ $l->any (
+  '/viz/dist/:full/:breed/:none/:plain/:vkey' => [
   full  => qr/\d{1,5}/,
   breed => qr/\d{1,5}/,
   none  => qr/\d{1,5}/,
   plain => qr/\d{1,5}/,
   vkey  => qr/\d{14}/
+  ]
  )->to ( 'visualize#dist' );
 
- $l->route (
-  '/viz/rank/:pri/:sec/:vkey',
+ $l->any (
+  '/viz/rank/:pri/:sec/:vkey' => [
   pri  => qr/[a-z]{1,25}/,
   sec  => qr/[A-Za-z0-9_-]{1,500}/,
   vkey => qr/\d{14}/
+  ]
  )->to ( 'visualize#rank' );
 
- $l->route ( '/viz/globe/:vkey', vkey => qr/\d{14}/ )
+$l->any ( '/viz/globe/:vkey' => [ vkey => qr/\d{14}/ ] )
   ->to ( 'visualize#globe' );
 
  ###
  ### widget features = special graphical elements
  ###
 
- $l->route (
-  '/widget/contact/:intent/:palette',
+ $l->any (
+  '/widget/contact/:intent/:palette' => [
   intent  => qr/contrib|missing|margin/,
   palette => qr/dark|neutral|bright/
+  ]
  )->to ( 'widget#contact' );
 
  ###
  ### the widget builder and renderer
  ###
 
-  my $w = $l->route ( '/:func', func => qr/build|embed/ );
+  my $w = $l->any ( '/:func' => [ func => qr/build|embed/ ] );
 
-  $w->route (
-   '/:pri/:sec/:wspec',
+  $w->any (
+   '/:pri/:sec/:wspec' => [
    pri   => qr/[a-z]{1,25}/,
    sec   => qr/[A-Za-z0-9_-]{1,500}/,
    wspec => qr/[a-z0-9]{1,500}/
+   ]
   )->to ( "widget#do" );
 
-  $w->route (
-   '/:pri/:sec',
+  $w->any (
+   '/:pri/:sec' => [
    pri => qr/[a-z]{1,25}/,
    sec => qr/[A-Za-z0-9_-]{1,500}/
+  ]
   )->to ( "widget#do" );
 
-  $w->route ( '/:wspec', wspec => qr/[a-z0-9]{1,500}/ )->to ( "widget#do" );
+  $w->any ( '/:wspec' => [ wspec => qr/[a-z0-9]{1,500}/ ] )->to ( "widget#do" );
 
-  $w->route ( '/' )->to ( "widget#do" );
+  $w->any ( '/' )->to ( "widget#do" );
 
  ###
  ### AJAX interface(s)
  ###
 
  # the quick find AJAX interface
- $l->route ( '/find' )->to ( 'locate#find' );
+ $l->any ( '/find' )->to ( 'locate#find' );
 
  # the show result AJAX interface
- $l->route ( '/result' )->to ( 'main#result' );
+ $l->any ( '/result' )->to ( 'main#result' );
 
  # the info base data provider AJAX interface
- $l->route ( '/info/:cont', cont => qr/std/ )->to ( 'main#info' );
+$l->any ( '/info/:cont' => [ cont => qr/std/ ] )->to ( 'main#info' );
 
  # front page sample photos
- $l->route ( '/sample/:width', width => qr/\d{3,4}/ )->to ( 'main#sample' );
+ $l->any ( '/sample/:width' => [ width => qr/\d{3,4}/ ] )->to ( 'main#sample' );
 
  # show all related expand feature
- $l->route ( '/related/:width', width => qr/\d{3,4}/ )->to ( 'main#sample' );
+ $l->any ( '/related/:width' => [ width => qr/\d{3,4}/ ] )->to ( 'main#sample' );
  
- $l->route (
-   '/expand/:pri/:sec/:drill',
+ $l->any (
+   '/expand/:pri/:sec/:drill' => [
    pri   => qr/[a-z]{1,25}/,
    sec   => qr/[A-Za-z0-9_-]{1,500}/,
    drill => qr/[a-z]{1,25}/
+   ]
   )->to ( "locate#expand" );
 
 
