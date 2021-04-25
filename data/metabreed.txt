@@ -4,9 +4,12 @@
 ; Copyright Heikki Siltala 2004-2014
 ; CC BY 4.0 
 ;
-; http://catza.net/
+; 2021-04-25: This is the final version.
+; Data is no longer updated.
+;
+; https://catza.net/
 ; https://github.com/XDF/catz
-; http://creativecommons.org/licenses/by/4.0/
+; https://creativecommons.org/licenses/by/4.0/
 ;
 AMS
 9
