@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2019 Heikki Siltala
+# Copyright (c) 2010-2021 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -92,30 +92,10 @@ foreach my $page ( @okpages ) {
 # social media integration
 #
 
-# these pages should have social media integration
-
-my @hassmi = qw (
- /fi/ /en/ /en/news/20111215232708/ /en394211/list/lens/top/
- /fi/browse/app/a_21/ /en394211/browse/app/a_21/
- /fi/browseall/ /en/browseall/ /en/viewall/ 
- /fi/viewall/084157/ /en394211/view/breed/AMS/
- /en394211/view/breed/AMS/171106/ /fi/display/126129?q=text%3D*panel*
- /fi/display?q=text%3D*panel* /en/search/ /fi211111/search/
- /en/more/contrib/ /fi171212/more/contrib/ /fi/build/ /en323321/build/
-);
-
-foreach my $page ( @hassmi ) {
-
- $t->get_ok ( $page )
-  ->status_is ( 200 )
-  ->content_type_like ( qr/text\/html/ )
-  ->content_like ( qr/facebook.com\/sharer\.php/ )
-  ->content_like ( qr/twitter.com\/share/ )
-  ->content_like ( qr/\<g\:plusone / );
-  
-}
-
 # these pages shouldn't have social media integration
+# 2021-04-25:
+#  social media integration removed
+#   these tests shall remail
 
 my @hasnosmi = qw (
  /fi/news/ /fi171212/lists/ /fi/browse/etime/1-047200_s/018175/

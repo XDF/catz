@@ -28,7 +28,6 @@
 %#
 <% content 'path' => begin %>
 <%== $t->{SLOGAN} %>
-%== include 'elem/ig', igurl =>  "/$lang".urirest ( $zurl ), igtext => $t->{SITE}.' - '.$t->{SLOGAN}; 
 <% end %>
 %#
 %# --------------------

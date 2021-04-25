@@ -16,7 +16,6 @@
 %#
 %== include 'elem/js', jstype => 'lib', jsfile => 'jquery';
 %== include 'elem/js', jstype => 'site', jsfile => 'info';
-<script type="text/javascript" src="<%== $t->{"URL_IG_GOOGLE"} %>"><%== $lang eq 'fi' ? " { lang: '$lang' } " : '' %></script>
 <%= content 'jsadd' %>
 %#
 %# --------------------
@@ -99,7 +98,7 @@
 </body></html>
 %#
 %# Catz - the world's most advanced cat show photo engine
-%# Copyright (c) 2010-2016 Heikki Siltala
+%# Copyright (c) 2010-2021 Heikki Siltala
 %# Licensed under The MIT License
 %# 
 %# Permission is hereby granted, free of charge, to any person obtaining a copy

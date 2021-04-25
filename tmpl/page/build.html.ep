@@ -19,9 +19,6 @@
 %#
 <% content 'btitle' => begin %>
 <h1><%== $t->{'WID_TITLE_'.$runmode} %></h1>
-% $runmode eq 'all' and $wspec_loaded and do { 
-%== include 'elem/ig', igurl => "/$lang/build/", igtext => $t->{'WID_TITLE_'.$runmode};
-% };
 <% end %>
 %#
 %# --------------------
