@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2019 Heikki Siltala
+# Copyright (c) 2010-2022 Heikki Siltala
 # Licensed under The MIT License
 #
 #
@@ -110,7 +110,8 @@ foreach my $setup ( @oksetups ) {
   ->content_like ( qr/$txt->{CODE}/ );
 
  # no ending slash -> redirect
- $t->get_ok ( "/$setup/search" )->status_is ( 301 );
+ # 16.7.2022 redirect was removed, removing this test
+ #$t->get_ok ( "/$setup/search" )->status_is ( 301 );
 
  # empty search
  $t->get_ok ( "/$setup/search?q=" )->status_is ( 200 )
@@ -141,7 +142,8 @@ foreach my $mode ( qw ( search display ) ) {
    ->content_like      ( qr/\.JPG/ );
 
   # with ending slash -> redirect
-  $t->get_ok ( "/$setup/$mode/?q=" . enurl ( $search ) )->status_is ( 301 );
+  # 16.7.2022 redirect was removed, removing this test
+  # $t->get_ok ( "/$setup/$mode/?q=" . enurl ( $search ) )->status_is ( 301 );
 
  } ## end foreach my $search ( @oksearches)
 
