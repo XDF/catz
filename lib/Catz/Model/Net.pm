@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2012 Heikki Siltala
+# Copyright (c) 2010-2022 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -96,6 +96,9 @@ sub _data {
 
  # pseudo parameter is not used
  my ( $self, $date, $loc, $name, $pseudo ) = @_;
+ 
+ # 16.7.2022 no longer used
+ return undef;
 
  my $url = urld ( $URL_DATA, $date, $loc, $name );
 
@@ -113,6 +116,9 @@ sub _count {
 
  # pseudo parameter is not used
  my ( $self, $date, $loc, $pseudo ) = @_;
+ 
+ # 16.7.2022 no longer used
+ return undef;
 
  my $url = urlc ( $URL_COUNT, $date, $loc );
 
