@@ -1,6 +1,6 @@
 //
 // Catz - the world's most advanced cat show photo engine
-// Copyright (c) 2010-2012 Heikki Siltala
+// Copyright (c) 2010-2021 Heikki Siltala
 // Licensed under The MIT License
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -37,6 +37,8 @@ function catzFetchResults() {
  $("span.result").each(function() {
 
   $(this).html( '' );
+  
+  /* 2021-04-25: this service is no longer available
 
   $.ajax ({
     url: catzResultURL ( $(this).attr('id') ),
@@ -48,6 +50,8 @@ function catzFetchResults() {
       $(this).html( '' );
     }  
   });
+  
+  */
 
  });
 
