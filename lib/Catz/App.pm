@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2021 Heikki Siltala
+# Copyright (c) 2010-2022 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -367,10 +367,11 @@ $l->any ( '/viz/globe/:vkey' => [ vkey => qr/\d{14}/ ] )
  $l->any ( '/find' )->to ( 'locate#find' );
 
  # the show result AJAX interface
- $l->any ( '/result' )->to ( 'main#result' );
+ # 2021-04-25: this service is no longer available
+ # $l->any ( '/result' )->to ( 'main#result' );
 
  # the info base data provider AJAX interface
-$l->any ( '/info/:cont' => [ cont => qr/std/ ] )->to ( 'main#info' );
+ $l->any ( '/info/:cont' => [ cont => qr/std/ ] )->to ( 'main#info' );
 
  # front page sample photos
  $l->any ( '/sample/:width' => [ width => qr/\d{3,4}/ ] )->to ( 'main#sample' );
@@ -522,13 +523,14 @@ sub before {
  #
  #  again, you may ask why but I think this is cool
  #
-
-      ( not $s->{ isstatic } )
-  and ( $s->{ isquery } )
-  and ( not $s->{ isrerouted } )
-  and ( substr ( $s->{ zpath }, -1, 1 ) eq '/' )
-  and return bounce ( $self,
-  ( substr ( $s->{ zpath }, 0, -1 ) . '?' . $s->{ zquery } ) );
+ # 16.7.2022 Removed due to tendency to cause infinite redirect loop
+ #
+ #     ( not $s->{ isstatic } )
+ # and ( $s->{ isquery } )
+ # and ( not $s->{ isrerouted } )
+ # and ( substr ( $s->{ zpath }, -1, 1 ) eq '/' )
+ # and return bounce ( $self,
+ # ( substr ( $s->{ zpath }, 0, -1 ) . '?' . $s->{ zquery } ) );
 
  #
  # attempt to fetch from cache
