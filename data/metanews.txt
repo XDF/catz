@@ -1,0 +1,1300 @@
+;
+; a catza.net news data file
+;
+; Copyright Heikki Siltala 2004-2022
+; CC BY 4.0 
+;
+; https://catza.net/
+; https://github.com/XDF/catz
+; https://creativecommons.org/licenses/by/4.0/
+;
+20220716164558
+Cat data no longer updated
+Kissatietoja ei enää päivitetä
+Cat data seen on the site has been freezed. Since even the most recent photos on the site are almost eight years old there is no point in facilitating data updates.
+Sivustolla näkyvät kissatiedot on jäädytetty, eli tietoja ei enää päivitetä. Tuoreimmatkin julkaistut kuvat ovat lähes kahdeksan vuotta vanhoja, joten tietojen päivittäminen ei ole enää ajankohtaista.
+#
+20170430042350
+catza.net is available with https
+catza.net käytettävissä myös https-protokollalla
+We are happy to announce that catza.net is now fully https compliant. The site is available with both http and https.
+Meillä on ilo ilmoittaa, että catza.net on nyt täysin https-yhteensopiva. Sivusto on kokonaisuudessaan käytettävissä sekä http- että https-protokollalla.
+#
+20160917020817
+Short service interruptions expected due to maintenance work
+Lyhyitä käyttökatkoja viikonloppuna ylläpitotöiden vuoksi
+Short service interruptions are expected this weekend due to technical maintenance. Apologies for the inconvenience.
+Palvelussa on huoltotöistä johtuvia lyhyitä käyttökatkoja kuluvana viikonloppuna. Pahoittelemme häiriöitä.
+#
+20160116104210
+Not updating to new FIFe categories and breeds
+Vanha kategoria- ja rotujako säilyy
+Since latest photos of catza.net are from July 2014 there are very few reasons to update the service to use the current FIFe categories and breeds. Because of this catza.net will not be updated to the current FIFe categories and breeds.
+Koska catza.netin uusimmat kuvat ovat heinäkuulta 2014, ei tunnu perustellulta, että palvelu päivitettäisiin käyttämään nykyistä FIFe:n katogoria- ja rotujakoa. Tästä johtuen catza.net käyttää jatkossakin vanhaa kategoria- ja rotujakoa.
+#
+20150617014743
+Macro concept test photos have been published
+Makro-koekuvat julkaistu
+Macro concept test photos taken at Jämsä on Saturday 13th June have been published at www.heikkisiltala.com.
+Jämsän näyttelyssä lauantaina 13.6. ottamani makro-koekuvat on julkaistu palvelussa www.heikkisiltala.com
+http://www.heikkisiltala.com/index/category/199
+http://www.heikkisiltala.com/index/category/199
+#
+20150601202201
+I'm about to return - briefly with a new concept
+Teen paluun - lyhyesti ja uudella konseptilla
+I'm planning to make a brief return to cat show world at Jämsä on Saturday 13th June. I'm going to take photos of details of cats like color patterns and textures of fur. The idea is to attempt to capture these details in photos. I've never tried this before so we'll see how it goes. I'm looking forward to be able to take photos of cats having interesting details and not being afraid of the camera.
+Olen tekemässä lyhyen paluun kissanäyttelyihin lauantaina 13.6.2015 Jämsän näyttelyssä. Olen tulossa kuvaamaan yksityiskohtia kissoista, kuten turkkien kuvioita ja turkkien tekstuureja. Ajatuksenani on yrittää tallentaa tällaisia yksityiskohtia lähikuviin. En tiedä vielä, miten tämä onnistuu. Toivoisin kuvausmalleiksi rauhallisia kissoja, joissa on mielenkiintoisia yksityiskohtia, ja jotka eivät pelkää kameraa.
+#
+20150406135746
+Arrow key browsing activated
+Voit nyt selata nuolinäppäimillä
+You can now browse catza.net with arrow keys. On photos, thumbnails and news right arrow key takes you forward and left arrow key takes you backward.
+Voit nyt selata catza.nettiä nuolinäppäimillä. Valokuvien, pikkukuvien ja uutisten katselussa nuoli oikealle vie eteenpäin, nuoli vasemmalle taaksepäin.
+#
+20150402024418
+All systems go
+Kaikki kunnossa
+I just wanted to let you know that catza.net service is running smoothly and is expected to do so in the future. The service will remain open and all photos will remain online. New cat data will be added to the photos at least till October 2015. As a side note I'm not planning to do a comeback so no new photos is expected to be published.
+Halusin vain kertoa, että catza.net toimii tällä hetkellä hyvin ja näin on varmasti tulevaisuudessakin. Palvelu pysyy käytössä ja kaikki kuvat säilyvät katseltavissa. Uusia kissatietoja lisätään kuviin ainakin lokakuuhun 2015 saakka. En kuitenkaan suunnittele paluuta kissanäyttelykuvaamiseen, joten uusia kuvia ei ole näköpiirissä.
+#
+20140814011151
+No more new photos to catza.net
+Ei enää uusia kuvia catza.nettiin
+The last show marked my 10th anniversary as a catshow photographer. As I stated in November 2013 I've decided to end my career as a catshow photographer. The main reason for this decision is that I'm constantly seeking progress and I can't see it in my latest catshow photos. So it is now time to do something else.|This decision affects catza.net in a way that no new photos will be published. The service will remain open and all photos will remain online. New cat data will be added to the photos at least till the end of year 2014.|I've got some other ideas what else could be achieved in photographing cats and catshows. It is possible that you'll see these ideas to materialize but no promises are made. I also reserve the right to make a comeback and start to add new photos to catza.net if I feel so.|Thank you all! 
+Viimeisimmässä näyttelyssä minulle tuli täyteen kymmenen vuotta kissanäyttelyvalokuvausta. Kuten kirjoitin marraskuussa 2013, olen päättänyt lopettaa urani kissanäyttelykuvaajana. Pääsyy tähän on se, että en enää näe viimeisimmissä kissanäyttelykuvissani kehitystä, ja kehitys on se mitä haluan jatkuvasti nähdä. On siis tullut aika tehdä jotakin muuta.|Päätökseni vaikuttaa catza.nettiin siten, että uusia kuvia ei enää julkaista. Palvelu pysyy käytössä ja kaikki kuvat siellä säilyvät. Uusia kissatietoja lisätään kuviin ainakin vuoden 2014 loppuun asti.|Minulla on joitakin ideoita siitä, millä muulla tavalla kissoja ja kissanäyttelyitä voi valokuvata. On mahdollista, että tulette näkemään näiden ideoiden toteutuvan, mutta en lupaa mitään. Varaan myös oikeuden tehdä paluun ja alkaa taas lisätä uusia kuvia catza.nettin, jos minusta siltä tuntuu.|Kiitos kaikille!
+#
+20140801172909
+catza.net has been moved to a brand new server
+catza.net on siirretty uudelle palvelimelle
+We are happy to announce that catza.net has been transparently moved to a brand new server. This server should be enough to keep catza.net up and running for several years.
+Palvelun catza.net siirto uudelle palvelimelle on valmistunut. Se tapahtui läpinäkyvästi ilman käyttökatkoja. Uuden palvelimen odotetaan palvelevan kunnialla useita vuosia.
+#
+20140727182726
+SUROK Helsinki photos have been published
+SUROKin Helsingin näyttelyn kuvat julkaistu
+Photos of the SUROK Helsinki show have been published. This show marked my 10th anniversary as a catshow photographer.
+Kaikki SUROK ry:n Helsingin näyttelyn kuvat on julkaistu. Tässä näyttelyssä minulle tuli täyteen kymmenen vuotta kissanäyttelyvalokuvausta.
+http://catza.net/en/browse/folder/20140726helsinki/
+http://catza.net/fi/browse/folder/20140726helsinki/
+#
+20140723207614
+catza.net @ SUROK Helsinki
+catza.net SUROKissa Helsingissä
+The next set of photos is expected to be from SUROK Helsinki show. This show marks my 10th anniversary as a catshow photographer.
+Seuraavat uudet kuvat ovat tulossa SUROK ry:n Helsingin näyttelystä. Tässä näyttelyssä tulee minulle samalla täyteen kymmenen vuotta kissanäyttelyvalokuvausta.
+http://www.vangora.net/special.htm
+http://www.vangora.net/special.htm
+#
+20140720111930
+FINTICAt Helsinki Sunday photos have been published
+FINTICAt ry:n Helsingin sunnuntain näyttelyn kuvat julkaistu
+All the photos of the FINTICAt Helsinki Sunday show have been published.
+Kaikki FINTICAt ry:n Helsingin sunnuntain näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20140713helsinki/
+http://catza.net/fi/browse/folder/20140713helsinki/
+#
+20140718195212
+FINTICAt Helsinki Saturday photos have been published
+FINTICAt ry:n Helsingin lauantain näyttelyn kuvat julkaistu
+All the photos of the FINTICAt Helsinki Saturday show have been published.
+Kaikki FINTICAt ry:n Helsingin lauantain näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20140712helsinki/
+http://catza.net/fi/browse/folder/20140712helsinki/
+#
+20140716225546
+FINTICAt Helsinki Sunday photos being published
+FINTICAt ry:n Helsingin sunnuntain näyttelyn kuvia
+Photos of the FINTICAt Helsinki Sunday show are being published.
+FINTICAt ry:n Helsingin sunnuntain näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20140713helsinki/
+http://catza.net/fi/browse/folder/20140713helsinki/
+#
+20140714201821
+FINTICAt Helsinki Saturday photos being published
+FINTICAt ry:n Helsingin lauantain näyttelyn kuvia
+Photos of the FINTICAt Helsinki Saturday show are being published.
+FINTICAt ry:n Helsingin lauantain näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20140712helsinki/
+http://catza.net/fi/browse/folder/20140712helsinki/
+#
+20140710191143
+catza.net @ FINTICAt Helsinki
+catza.net @ FINTICAt Helsinki 
+The next set of photos is expected to be from FINTICAt Helsinki show.
+Seuraavat uudet kuvat ovat tulossa Helsingistä FINTICAt ry:n näyttelystä.
+#
+20140622214557
+KES-KIS Jämsä photos have been published
+KES-KIS ry:n näyttelyn kuvat julkaistu
+All the photos of the KES-KIS Jämsä show have been published.
+Kaikki KES-KIS ry:n Jämsän näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20140614jamsa/
+http://catza.net/fi/browse/folder/20140614jamsa/
+#
+20140610210959
+A delay regarding the publishing of KES-KIS photos
+Viivettä KES-KIS -kuvien julkaisussa
+The next set of photos is expected to be from KES-KIS Jämsä show. There will be an additional delay in publishing of the photos. The delay is estimated to be one week. Apologies for the delay.  
+Seuraavat uudet kuvat ovat tulossa KES-KIS ry:n Jämsän näyttelystä. Kuvat tullaan julkaisemaan viiveellä. Viiveen kesto on arviolta yksi viikko. Pahoittelemme viivettä.
+# 
+20140520213203
+catza.net @ KES-KIS Jämsä
+catza.net KES-KISsissä Jämsässä
+The next set of photos is expected to be from KES-KIS Jämsä show. 
+Seuraavat uudet kuvat ovat tulossa KES-KIS ry:n Jämsän näyttelystä.
+#
+20140512215356
+PIROK Tampere photos have been published
+PIROKin Tampereen näyttelyn kuvat julkaistu
+All the photos of the PIROK Tampere show have been published.
+Kaikki PIROKin Tampereen näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20140510tampere/
+http://catza.net/fi/browse/folder/20140510tampere/
+#
+20140508183750
+catza.net @ PIROK Tampere
+catza.net PIROKissa Tampereella
+The next set of photos is expected to be from PIROK Tampere show. 
+Seuraavat uudet kuvat ovat tulossa PIROK ry:n Tampereen näyttelystä.
+#
+20140415205148
+RuRok Helsinki (PetExpo) photos have been published
+RuRokin Helsingin näyttelyn (PetExpo) kuvat julkaistu
+Photos of the RuRok Helsinki show have been published.
+Kaikki RuRokin Helsingin näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20140412helsinki/
+http://catza.net/fi/browse/folder/20140412helsinki/
+#
+20140409000507
+TUROK Turku photos have been published
+TUROK ry:n Turun näyttelyn kuvat julkaistu
+All the photos of the TUROK Turku show have been published.
+Kaikki TUROK ry:n Turun näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20140406turku/
+http://catza.net/fi/browse/folder/20140406turku/
+#
+20140408204948
+catza.net @ RuRok Helsinki (PetExpo)
+catza.net RuRokissa Helsingissä (PetExpo)
+The next set of photos is expected to be from RuRok Helsinki show (PetExpo).
+Seuraavat uudet kuvat ovat tulossa RuRokin Helsingin näyttelystä (PetExpo).
+#
+20140408155314
+TUROK Turku photos being published
+TUROK ry:n Turun näyttelyn kuvia
+Photos of the TUROK Turku show are being published.
+TUROK ry:n Turun näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20140406turku/
+http://catza.net/fi/browse/folder/20140406turku/
+#
+20140402183540
+catza.net @ TUROK Turku
+catza.net TUROKissa Turussa
+The next set of photos is expected to be from TUROK Turku show.
+Seuraavat uudet kuvat ovat tulossa Turusta TUROKin näyttelystä.
+#
+20140323235259
+URK Salo photos have been published
+URKin Salon näyttelyn kuvat julkaistu
+All the photos of the URK Salo show have been published.
+Kaikki URKin Salon näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20140322salo/
+http://catza.net/fi/browse/folder/20140322salo/
+#
+20140314091835
+catza.net @ URK Salo
+catza.net URKissa Salossa
+The next set of photos is expected to be from URK Salo show. 
+Seuraavat uudet kuvat ovat tulossa URKin Salon näyttelystä.
+#
+20140128061303
+SUROK Lahti photos have been published
+SUROK ry:n Lahden näyttelyn kuvat julkaistu
+All the photos of the SUROK Lahti show have been published.
+Kaikki SUROK ry:n Lahden näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20140125lahti/
+http://catza.net/fi/browse/folder/20140125lahti/
+#
+20140126235123
+SUROK Lahti photos being published
+SUROK ry:n Lahden näyttelyn kuvia
+Photos of the SUROK Lahti show are being published.
+SUROK ry:n Lahden näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20140125lahti/
+http://catza.net/fi/browse/folder/20140125lahti/
+#
+20140124052418
+catza.net @ SUROK Lahti
+catza.net SUROKissa Lahdessa
+The next set of photos is expected to be from SUROK Lahti show. 
+Seuraavat uudet kuvat ovat tulossa SUROKin Lahden näyttelystä.
+#
+20131229204900
+RuRok Kirkkonummi photos have been published
+RuRokin Kirkkonummen näyttelyn kuvat julkaistu
+All the photos of the RuRok Kirkkonummi show have been published.
+Kaikki RuRokin Kirkkonummen näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20131228kirkkonummi/
+http://catza.net/fi/browse/folder/20131228kirkkonummi/
+#
+20131201094422
+FINTICAt Helsinki Sunday photos have been published
+FINTICAt ry:n Helsingin sunnuntain näyttelyn kuvat julkaistu
+All the photos of the FINTICAt Helsinki Sunday show have been published.
+Kaikki FINTICAt ry:n Helsingin sunnuntain näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20131124helsinki/
+http://catza.net/fi/browse/folder/20131124helsinki/
+#
+20131130230940
+Next summer will be the last summer
+Ensi kesä on viimeinen kesä
+The summer 2014 means that I've been photographing in Finnish cat shows for ten years. It has been lots of fun but I have come to conclusion that it is time for me to quit. I'm always seeking a continuous progress in my life and I can't see it in my latest cat show photos. I expect my last show to be the SUROK July 2014 show. Of course this decision doesn't affect catza.net as a service: catza.net will remain open and all the photos will remain available. And new cat data will be added to catza.net for at least until December 2014. Thank you all. 
+Ensi kesänä minulle tulee täyteen kymmennen vuotta valokuvaamista suomalaisissa kissanäyttelyissä. Kuvaaminen on ollut hauskaa, mutta olen päättänyt, että on aika lopettaa. Se, mitä haluan nähdä elämässäni, on jatkuva kehitys, enkä näe sitä enää viimeisimmissä kissanäyttelykuvissani. Suunnittelen, että viimeinen näyttelyni on SUROKin näyttely heinäkuussa 2014. Tämä päätös ei vaikuta catza.net-palveluun: catza.net pysyy auki ja kaikki kuvat siellä säilyvät. Ja uusia kissatietoja lisätään catza.netiin ainakin joulukuuhun 2014 saakka. Kiitos kaikille.
+#
+20131130194604
+FINTICAt Helsinki Saturday photos have been published
+FINTICAt ry:n Helsingin launtain näyttelyn kuvat julkaistu
+All the photos of the FINTICAt Helsinki Saturday show have been published.
+Kaikki FINTICAt ry:n Helsingin lauantain näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20131123helsinki/
+http://catza.net/fi/browse/folder/20131123helsinki/
+#
+20131130163550
+catza.net @ RuRok Kirkkonummi
+catza.net RuRokissa Kirkkonummella
+The next set of photos is expected to be from RuRok Kirkkonummi show. 
+Seuraavat uudet kuvat ovat tulossa RuRokin Kirkkonummen näyttelystä.
+#
+20131127204710
+FINTICAt Helsinki Sunday photos being published
+FINTICAt ry:n Helsingin sunnuntain näyttelyn kuvia
+Photos of the FINTICAt Helsinki Sunday show are being published.
+FINTICAt ry:n Helsingin sunnuntain näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20131124helsinki/
+http://catza.net/fi/browse/folder/20131124helsinki/
+#
+20131125222108
+FINTICAt Helsinki Saturday photos being published
+FINTICAt ry:n Helsingin launtain näyttelyn kuvia
+Photos of the FINTICAt Helsinki Saturday show are being published.
+FINTICAt ry:n Helsingin lauantain näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20131123helsinki/
+http://catza.net/fi/browse/folder/20131123helsinki/
+#
+20131118232959
+catza.net @ FINTICAt Helsinki
+catza.net FINTICAtissa Helsingissä
+The next set of photos is expected to be from FINTICAt Helsinki show. 
+Seuraavat uudet kuvat ovat tulossa FINTICAtin Helsingin näyttelystä.
+#
+20131019161946
+URK Kirkkonummi photos have been published
+URKin Kirkkonummen näyttelyn kuvat julkaistu
+All the photos of the URK Kirkkonummi show have been published.
+Kaikki URKin Kirkkonummen näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20131013kirkkonummi/
+http://catza.net/fi/browse/folder/20131013kirkkonummi/
+#
+20131015195242
+URK Kirkkonummi photos being published
+URKin Kirkkonummen näyttelyn kuvia
+Photos of the URK Kirkkonummi show are being published.
+URKin Kirkkonummen näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20131013kirkkonummi/
+http://catza.net/fi/browse/folder/20131013kirkkonummi/
+#
+20131011170820
+catza.net @ URK Kirkkonummi
+catza.net URKissa Kirkkonummella
+The next set of photos is expected to be from URK Kirkkonummi show. 
+Seuraavat uudet kuvat ovat tulossa URKin Kirkkonummen näyttelystä.
+#
+20130910232118
+PIROK Tampere photos have been published
+PIROKin Tampereen näyttelyn kuvat julkaistu
+All the photos of the PIROK Tampere show have been published.
+Kaikki PIROKin Tampereen näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20130907tampere/
+http://catza.net/fi/browse/folder/20130907tampere/
+#
+20130908161519
+PIROK Tampere photos being published
+PIROKin Tampereen näyttelyn kuvia
+Photos of the PIROK Tampere show are being published.
+PIROKin Tampereen näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20130907tampere/
+http://catza.net/fi/browse/folder/20130907tampere/
+#
+20130902212831
+catza.net @ PIROK Tampere
+catza.net PIROKissa Tampereella
+The next set of photos is expected to be from PIROK Tampere show. 
+Seuraavat uudet kuvat ovat tulossa PIROK ry:n Tampereen näyttelystä.
+#
+20130831165800
+RuRok Vantaa photos have been published
+RuRokin Vantaan näyttelyn kuvat julkaistu
+All the photos of the RuRok Vantaa show have been published.
+Kaikki RuRokin Vantaan näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20130824vantaa/
+http://catza.net/fi/browse/folder/20130824vantaa/
+#
+20130826231117
+RuRok Vantaa photos being published
+RuRokin Vantaan näyttelyn kuvia
+Photos of the RuRok Vantaa show are being published.
+RuRokin Vantaan näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20130824vantaa/
+http://catza.net/fi/browse/folder/20130824vantaa/
+#
+20130821162537
+catza.net @ RUROK Vantaa
+catza.net RUROKissa Vantaalla
+The next set of photos is expected to be from RUROK Vantaa show. 
+Seuraavat uudet kuvat ovat tulossa RUROK ry:n Vantaan näyttelystä.
+#
+20130728235739
+SUROK Helsinki photos have been published
+SUROKin Helsingin näyttelyn kuvat julkaistu
+Photos of the SUROK Helsinki show have been published.
+Kaikki SUROK ry:n Helsingin näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20130727helsinki/
+http://catza.net/fi/browse/folder/20130727helsinki/
+#
+20130717211759
+catza.net @ SUROK Helsinki
+catza.net SUROKissa Helsingissä
+The next set of photos is expected to be from SUROK Helsinki show. 
+Seuraavat uudet kuvat ovat tulossa SUROK ry:n Helsingin näyttelystä.
+#
+20130621184025
+Service interruptions expected due to technical maintenance
+Käyttökatkoja tulossa teknisten ylläpitotöiden vuoksi
+Service interruptions are expected within the next 24 hours due to technical maintenance. Apologies for the inconvenience.
+Palvelussa on teknisistä huoltotöistä johtuvia on käyttökatkoja seuraavan 24 tunnin aikana. Pahoittelemme häiriötä.
+#
+20130613220336
+ERY-SYD Hyvinkää photos have been published
+ERY-SYD ry:n Hyvinkään näyttelyn kuvat julkaistu
+Photos of the ERY-SYD Hyvinkää show have been published.
+Kaikki ERY-SYD ry:n Hyvinkään näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20130608hyvinkaa/
+http://catza.net/fi/browse/folder/20130608hyvinkaa/
+#
+20130611200021
+ERY-SYD Hyvinkää photos being published
+ERY-SYD ry:n Hyvinkään näyttelyn kuvia
+Photos of the ERY-SYD Hyvinkää show are being published.
+ERY-SYD ry:n Hyvinkään näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20130608hyvinkaa/
+http://catza.net/fi/browse/folder/20130608hyvinkaa/
+#
+20130604194722
+catza.net @ ERY-SYD Hyvinkää
+catza.net ERY-SYDissä Hyvinkäällä
+The next set of photos is expected to be from ERY-SYD Hyvinkää show. 
+Seuraavat uudet kuvat ovat tulossa ERY-SYD ry:n Hyvinkään näyttelystä.
+#
+20130528181747
+PIROK Tampere photos have been published
+PIROK ry:n Tampereen näyttelyn kuvat julkaistu
+Photos of the PIROK Tampere show have been published.
+Kaikki PIROK ry:n Tampereen näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20130525tampere/
+http://catza.net/fi/browse/folder/20130525tampere/
+#
+20130519223339
+catza.net @ PIROK Tampere
+catza.net PIROKissa Tampereella
+The next set of photos is expected to be from PIROK Tampere show.
+Seuraavat uudet kuvat ovat tulossa Tampereelta PIROK ry:n näyttelystä.
+#
+20130429105800
+RuRok Helsinki (PetExpo) photos have been published
+RuRokin Helsingin näyttelyn (PetExpo) kuvat julkaistu
+Photos of the RuRok Helsinki show have been published.
+Kaikki RuRokin Helsingin näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20130427helsinki/
+http://catza.net/fi/browse/folder/20130427helsinki/
+#
+20130426034220
+catza.net @ RuRok Helsinki (PetExpo) with three cameras
+catza.net RuRokissa Helsingissä (PetExpo) kolmella kameralla
+The next set of photos is expected to be from RuRok Helsinki show (PetExpo). This will be the first show ever to use three cameras.
+Seuraavat uudet kuvat ovat tulossa Helsingistä RuRokin näyttelystä (PetExpo). Tämä on ensimmäinen näyttely koskaan, jossa käytetään kolmea kameraa.
+#
+20130326135544
+TUROK Turku photos have been published
+TUROK ry:n Turun näyttelyn kuvat julkaistu
+Photos of the TUROK Turku show have been published.
+Kaikki TUROK ry:n Turun näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20130324turku/
+http://catza.net/fi/browse/folder/20130324turku/
+#
+20130319231411
+catza.net @ TUROK Turku
+catza.net TUROKissa Turussa
+The next set of photos is expected to be from TUROK Turku show.
+Seuraavat uudet kuvat ovat tulossa Turusta TUROKin näyttelystä.
+#
+20130315022355
+CFF Helsinki photos have been published
+CFF ry:n Helsingin näyttelyn kuvat julkaistu
+Photos of the CFF Helsinki show have been published.
+Kaikki CFF ry:n Helsingin näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20130309helsinki/
+http://catza.net/fi/browse/folder/20130309helsinki/
+#
+20130313004309
+CFF Helsinki photos being published
+CFF ry:n Helsingin näyttelyn kuvia
+Photos of the CFF Helsinki show are being published.
+CFF ry:n Helsingin näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20130309helsinki/
+http://catza.net/fi/browse/folder/20130309helsinki/
+#
+20130308001820
+catza.net @ CFF Helsinki
+catza.net CFF:ssa Helsingissä
+The next set of photos is expected to be from CFF Helsinki show. 
+Seuraavat uudet kuvat ovat tulossa CFF:n Helsingin näyttelystä.
+#
+20130306022450
+URK Helsinki photos have been published
+URKin Helsingin näyttelyn kuvat julkaistu
+Photos of the URK Helsinki show have been published.
+Kaikki URKin Helsingin näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20130302helsinki/
+http://catza.net/fi/browse/folder/20130302helsinki/
+#
+20130303225318
+URK Helsinki photos being published
+URKin Helsingin näyttelyn kuvia
+Photos of the URK Helsinki show are being published.
+URKin Helsingin näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20130302helsinki/
+http://catza.net/fi/browse/folder/20130302helsinki/
+#
+20130228193704
+catza.net @ URK Helsinki
+catza.net URKissa Helsingissä
+The next set of photos is expected to be from URK Helsinki show. 
+Seuraavat uudet kuvat ovat tulossa URKin Helsingin näyttelystä.
+#
+20121231120051
+RuRok Helsinki: Sunday's photos published
+RuRok Helsinki: sunnuntain kuvat julkaistu
+All photos of the Sundays's RuRok Helsinki show have been published.
+Kaikki RuRokin Helsingin sunnuntain näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20121230helsinki/
+http://catza.net/fi/browse/folder/20121230helsinki/
+#
+20121230171212
+RuRok Helsinki: Saturday's photos published
+RuRok Helsinki: lauantain kuvat julkaistu
+All photos of the Saturday's RuRok Helsinki show have been published. Sunday's photos will be published later.
+Kaikki RuRokin Helsingin lauantain näyttelyn kuvat on julkaistu. Sunnuntain kuvat julkaistaan myöhemmin.
+http://catza.net/en/browse/folder/20121229helsinki/
+http://catza.net/fi/browse/folder/20121229helsinki/
+#
+20121227202806
+catza.net @ RUROK Helsinki
+catza.net RUROKissa Helsingissä
+The next sets of photos is expected to be from RUROK Helsinki show. Please note that Sunday has been exclusively reserved for wide angle photography.
+Seuraavat uudet kuvasetit ovat tulossa Helsingistä RUROKin näyttelystä. Sunnuntai on varattu yksinomaan laajakulmavalokuvaukselle. 
+#
+20121227201144
+Short network interruptions detected
+Lyhyitä tietoliikkennekatkoja havaittu
+In recent days we have detected a bunch of short network outages that might have prevented access to catza.net. These outages appear to be occuring somewhere in internet. We are monitoring the issue.
+Viime päivinä on esiintynyt lyhyitä verkkoliikennekatkoja, jotka ovat voineet estää pääsyn kätsänettiin. Nämä katkot näyttävät tapahtuvan jossakin internetissä. Seuraamme tilannetta.  
+#
+20121129221940
+TUROK Turku photos have been published
+TUROK ry:n Turun näyttelyn kuvat julkaistu
+Photos of the TUROK Turku show have been published.
+Kaikki TUROK ry:n Turun näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20121125turku/
+http://catza.net/fi/browse/folder/20121125turku/
+#
+20121127220204
+TUROK Turku photos being published
+TUROK ry:n Turun näyttelyn kuvia
+Photos of the TUROK Turku show are being published.
+TUROK ry:n Turun näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20121125turku/
+http://catza.net/fi/browse/folder/20121125turku/
+#
+20121121235530
+catza.net @ TUROK Turku
+catza.net TUROKissa Turussa
+The next set of photos is expected to be from TUROK Turku show.
+Seuraavat uudet kuvat ovat tulossa Turusta TUROKin näyttelystä.
+#
+20121114232228
+CFF Helsinki photos have been published
+CFF ry:n Helsingin näyttelyn kuvat julkaistu
+Photos of the CFF Helsinki show have been published.
+Kaikki CFF ry:n Helsingin näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20121111helsinki/
+http://catza.net/fi/browse/folder/20121111helsinki/
+#
+20121108191610
+catza.net @ CFF Helsinki
+catza.net CFF:ssa Helsingissä
+The next set of photos is expected to be from CFF Helsinki show. 
+Seuraavat uudet kuvat ovat tulossa CFF:n Helsingin näyttelystä.
+#
+20121106165003
+ERY-SYD Helsinki photos have been published
+ERY-SYD ry:n Helsingin näyttelyn kuvat julkaistu
+Photos of the ERY-SYD Helsinki show have been published.
+Kaikki ERY-SYD ry:n Helsingin näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20121103helsinki/
+http://catza.net/fi/browse/folder/20121103helsinki/
+#
+20121105205844
+ERY-SYD Helsinki photos being published
+ERY-SYD ry:n Helsingin näyttelyn kuvia
+Photos of the ERY-SYD Helsinki show are being published.
+ERY-SYD ry:n Helsingin näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20121103helsinki/
+http://catza.net/fi/browse/folder/20121103helsinki/
+#
+20121030075910
+catza.net @ ERY-SYD Helsinki
+catza.net ERY-SYDissä Helsingissä
+The next set of photos is expected to be from ERY-SYD Helsinki show. 
+Seuraavat uudet kuvat ovat tulossa ERY-SYD ry:n Helsingin näyttelystä.
+#
+20121012215332
+URK Kirkkonummi photos have been published
+URKin Kirkkonummen näyttelyn kuvat julkaistu
+Photos of the URK Kirkkonummi show have been published.
+Kaikki URKin Kirkkonummen näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20121007kirkkonummi/
+http://catza.net/fi/browse/folder/20121007kirkkonummi/
+#
+20121008222827
+URK Kirkkonummi photos being published
+URKin Kirkkonummen näyttelyn kuvia
+Photos of the URK Kirkkonummi show are being published.
+URKin Kirkkonummen näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20121007kirkkonummi/
+http://catza.net/fi/browse/folder/20121007kirkkonummi/
+#
+20121003195732
+catza.net @ URK Kirkkonummi
+catza.net URKissa Kirkkonummella
+The next set of photos is expected to be from URK Kirkkonummi show. 
+Seuraavat uudet kuvat ovat tulossa URKin Kirkkonummen näyttelystä.
+#
+20120831000003
+RuRok Vantaa photos have been published
+RuRokin Vantaan näyttelyn kuvat julkaistu
+Photos of the RuRok Vantaa show have been published.
+Kaikki RuRokin Vantaan näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20120825vantaa/
+http://catza.net/fi/browse/folder/20120825vantaa/
+#
+20120828195449
+RuRok Vantaa photos being published
+RuRokin Vantaan näyttelyn kuvia
+Photos of the RuRok Vantaa show are being published.
+RuRokin Vantaan näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20120825vantaa/
+http://catza.net/fi/browse/folder/20120825vantaa/
+#
+20120823032531
+catza.net @ RUROK Vantaa
+catza.net RUROKissa Vantaalla
+The next set of photos is expected to be from RUROK Vantaa show.
+Seuraavat uudet kuvat ovat tulossa Vantaalta RUROK ry:n näyttelystä.
+#
+20120730021715
+SUROK Espoo photos have been published
+SUROK ry:n Espoon näyttelyn kuvat julkaistu
+All the photos of the SUROK Espoo show have been published.
+Kaikki SUROK ry:n Espoon näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20120728espoo/
+http://catza.net/fi/browse/folder/20120728espoo/
+#
+20120721183409
+catza.net @ SUROK Espoo
+catza.net SUROKissa Espoossa
+The next set of photos is expected to be from SUROK Espoo show.
+Seuraavat uudet kuvat ovat tulossa Espoosta SUROK ry:n näyttelystä.
+#
+20120612190126
+IPv6 up and working
+IPv6 käytössä
+We are happy to announce that catza.net is now available both in IPv4 and IPv6.
+Tekniset päivitykset on tehty ja catza.net on nyt käytettävissä sekä IPv4- että IPv6-verkkoteknologioilla.
+http://www.no-ip.com/company/2012/06/06/june-6th-2012-world-ipv6-launch-day/
+http://www.tekniikkatalous.fi/ict/ipv6kayttoonotto+tapahtui+huomaamattomasti++isot+nettijatit+siirtyivat+tulevaisuuden+reititysjarjestelmaan/a814234
+#
+20120607170606
+IPv6 update
+IPv6-päivitys
+The celebrate the yesterday's World IPv6 Launch catza.net will be enabling a comprehensive IPv6 support within the following days. Short service interruptions can occur. Sorry for any inconvenience.
+Eilen pidetyn maailmanlaajuisen IPv6 -päivän kunniaksi catza.net ottaa käyttöön IPv6-protokollan lähipäivinä. Tästä voi aiheutua lyhyitä käyttökatkoja. Pahoittelemme mahdollisia häiriöitä. 
+http://en.wikipedia.org/wiki/IPv6
+http://fi.wikipedia.org/wiki/IPv6
+#
+20120531031842
+Unable to confirm the next show
+Seuraavan näyttelyn ajankohta auki
+I'm currently unable to confirm what will be the next show due to the reasons stated in the notice published on February.
+Tällä hetkellä en tiedä, mikä tulee olemaan seuraava näyttely. Asian taustat on kerrottu helmikuun uutisessa. 
+http://catza.net/en/news/20120217231755/
+http://catza.net/fi/news/20120217231755/
+#
+20120524204807
+PIROK Tampere photos have been published
+PIROK ry:n Tampereen näyttelyn kuvat julkaistu
+All the photos of the PIROK Tampere show have been published.
+Kaikki PIROK ry:n Tampereen näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20120519tampere/
+http://catza.net/fi/browse/folder/20120519tampere/
+#
+20120522010008
+PIROK Tampere photos being published
+PIROK ry:n Tampereen näyttelyn kuvia
+Photos of the PIROK Tampere show are being published.
+PIROK ry:n Tampereen näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20120519tampere/
+http://catza.net/fi/browse/folder/20120519tampere/
+#
+20120506213539
+catza.net @ PIROK Tampere
+catza.net PIROKissa Tampereella
+The next set of photos is expected to be from PIROK Tampere show.
+Seuraavat uudet kuvat ovat tulossa Tampereelta PIROK ry:n näyttelystä.
+#
+20120503213845
+Miisu has passed away
+Miisu on poissa
+The most remarkable cat I've ever known, Miisu [HCS fs 09 22], has passed away 2012-04-29 at the age of 18 years, 11 months, 20 days.
+Merkittävin tuntemani kissa, Miisu [HCS fs 09 22], on kuollut 29.4.2012 ollessaan 18 vuoden 11 kuukauden ja 20 päivän ikäinen.  
+http://catza.net/en/view/folder/20120428helsinki/194100/
+http://catza.net/fi/view/folder/20120428helsinki/194100/
+#
+20120430134359
+RuRok Helsinki (PetExpo) photos have been published
+RuRokin Helsingin näyttelyn (PetExpo) kuvat julkaistu
+All the photos of the RuRok Helsinki show have been published.
+Kaikki RuRokin Helsingin näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20120428helsinki/
+http://catza.net/fi/browse/folder/20120428helsinki/
+#
+20120430013436
+RuRok Helsinki (PetExpo) photos being published
+RuRokin Helsingin näyttelyn (PetExpo) kuvia  
+Photos of the RuRok Helsinki show are being published.
+RuRok ry:n Helsingin näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20120428helsinki/
+http://catza.net/fi/browse/folder/20120428helsinki/
+#
+20120425221208
+catza.net @ RUROK Helsinki (PetExpo)
+catza.net RUROKissa Helsingissä (PetExpo)
+The next set of photos is expected to be from RUROK Helsinki show.
+Seuraavat uudet kuvat ovat tulossa Helsingistä RUROK ry:n näyttelystä.
+#
+20120419005130
+ISROK Kuopio photos have been published
+ISROK ry:n Kuopion näyttelyn kuvat julkaistu
+All the photos of the ISROK Kuopio show have been published.
+Kaikki ISROK ry:n Kuopion näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20120414kuopio/
+http://catza.net/fi/browse/folder/20120414kuopio/
+#
+20120416201305
+ISROK Kuopio photos being published
+ISROK ry:n Kuopion näyttelyn kuvia
+Photos of the ISROK Kuopio show are being published.
+ISROK ry:n Kuopion näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20120414kuopio/
+http://catza.net/fi/browse/folder/20120414kuopio/
+#
+20120405114120
+catza.net @ ISROK Kuopio
+catza.net ISROKissa Kuopiossa
+The next set of photos is expected to be from ISROK Kuopio show.
+Seuraavat uudet kuvat ovat tulossa Kuopiosta ISROKin näyttelystä.
+#
+20120327012240
+FINTICAt Helsinki photos have been published
+FINTICAt ry:n Helsingin näyttelyn kuvat julkaistu
+All the photos of the FINTICAt Helsinki show have been published.
+Kaikki FINTICAt ry:n Helsingin näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20120324helsinki/
+http://catza.net/fi/browse/folder/20120324helsinki/
+#
+20120321220509
+catza.net @ FINTICAt Helsinki
+catza.net @ FINTICAt Helsinki 
+The next set of photos is expected to be from FINTICAt Helsinki show.
+Seuraavat uudet kuvat ovat tulossa Helsingistä FINTICAt ry:n näyttelystä.
+#
+20120321064859
+TUROK Turku photos have been published
+TUROK ry:n Turun näyttelyn kuvat julkaistu
+All the photos of the TUROK Turku show have been published.
+Kaikki TUROK ry:n Turun näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20120317turku/
+http://catza.net/fi/browse/folder/20120317turku/
+#
+20120319195930
+TUROK Turku photos being published
+TUROK ry:n Turun näyttelyn kuvia
+Photos of the TUROK Turku show are being published.
+TUROK ry:n Turun näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20120317turku/
+http://catza.net/fi/browse/folder/20120317turku/
+#
+20120314062238
+Havana Brown
+Havana brown
+We have a new breed: Havana Brown!
+Uusi rotu kuvattu: havana brown!
+http://catza.net/en/browse/breed/HAV/
+http://catza.net/fi/browse/breed/HAV/
+#
+20120312081114
+catza.net @ TUROK Turku
+catza.net TUROKissa Turussa
+The next set of photos is expected to be from TUROK Turku show.
+Seuraavat uudet kuvat ovat tulossa Turusta TUROKin näyttelystä.
+#
+20120311235402
+CFF Helsinki photos have been published
+CFF ry:n Helsingin näyttelyn kuvat julkaistu
+All the photos of the CFF Helsinki show have been published.
+Kaikki CFF ry:n Helsingin näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20120310helsinki/
+http://catza.net/fi/browse/folder/20120310helsinki/
+#
+20120311203347
+CFF Helsinki photos being published
+CFF ry:n Helsingin näyttelyn kuvia
+Photos of the CFF Helsinki show are being published.
+CFF ry:n Helsingin näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20120310helsinki/
+http://catza.net/fi/browse/folder/20120310helsinki/
+#
+20120306213058
+catza.net @ CFF Helsinki
+catza.net CFF:ssa Helsingissä
+The next set of photos is expected to be from the CFF Helsinki show. 
+Seuraavat uudet kuvat ovat tulossa CFF:n Helsingin näyttelystä.
+#
+20120306212533
+URK Kirkkonummi photos have been published
+URK ry:n Kirkkonummen näyttelyn kuvat julkaistu
+All the photos of the URK Kirkkonummi show have been published.
+Kaikki URK ry:n Kirkkonummen näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20120303kirkkonummi/
+http://catza.net/fi/browse/folder/20120303kirkkonummi/
+#
+20120304193640
+URK Kirkkonummi photos being published
+URK ry:n Kirkkonummen näyttelyn kuvia
+Photos of the URK Kirkkonummi show are being published.
+URK ry:n Kirkkonummen näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20120303kirkkonummi/
+http://catza.net/fi/browse/folder/20120303kirkkonummi/
+#
+20120226205303
+catza.net @ URK Kirkkonummi
+catza.net URKissa Kirkkonummella
+The next set of photos is expected to be from next weekend's URK Kirkkonummi show. 
+Seuraavat uudet kuvat ovat tulossa URKin Kirkkonummen näyttelystä tulevana viikonloppuna.
+#
+20120217231755
+Diminished service regarding of new photos from March to November
+Kuvaamisessa ja julkaisussa rajoituksia maaliskuusta marraskuuhun
+There is expected to be a diminished service level regarding publishing of new cat show photos from March 2012 to November 2012. This is due to a large-scale renovation work of the house were I live in. This will be causing different kinds of short and long obstructions like for example difficulties to travel to shows due to no access to a car and inability to publish new photos due to no access to a properly-equipped desktop computer.|The web service catza.net itself will be unaffected and will remain online without interruptions.
+Kuvaaminen ja uusien kuvien julkaisu voi olla rajoittunutta maaliskuusta 2012 marraskuuhun 2012. Syy tähän on peruskorjaustyö talossa, jossa asun. Tästä aiheutuu erilaisia tilapäisiä tai pidempiaikaisia haasteita kuten näyttelypaikalle pääsyn vaikeutumista koska en voi käyttää autoa normaalisti ja kuvien julkaisun estymistä koska en voi käyttää kuvien käsittelyssä asianmukaista pöytätietokonetta.|Webbipalvelu catza.net toimii sinällään koko ajan normaalisti ilman käyttökatkoja.
+#
+20120211145619
+Cat data overhaul completed
+Kissatietoja korjattu
+Once again we have done a major cat data overhaul. As a result of it the list of the notifications of our internal quality process is empty - for the first time ever!
+Olemme jälleen korjanneet kissatietoja ja sen tuloksena meillä on ilo ja kunnia kertoa, että ensimmäistä kertaa koskaan sisäisen laatuprosessimme laatuhavaintolista on tyhjä.
+http://catza.net/en/more/quality/
+http://catza.net/fi/more/quality/
+#
+20120207224804
+The next show is in March
+Seuraava näyttely on maaliskuussa
+The next set of photos is expected to be from the URK Kirkkonummi show.
+Seuraavat uudet kuvat ovat tulossa URKin Kirkkonummen näyttelystä.
+#
+20120117000402
+SUROK Helsinki photos have been published
+SUROK ry:n Helsingin näyttelyn kuvat julkaistu
+All the photos of the SUROK Helsinki show have been published.
+Kaikki SUROK ry:n Helsingin näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20120114helsinki/
+http://catza.net/fi/browse/folder/20120114helsinki/
+#
+20120110011908
+catza.net @ SUROK Helsinki
+catza.net SUROKissa Helsingissä
+The next set of photos is expected to be from the SUROK Helsinki show.
+Seuraavat uudet kuvat ovat tulossa SUROKin Helsingin näyttelystä.
+#
+20111228140110
+The second set of improvements
+Toinen erä parannuksia
+The second set of minor improvements have been taken into use. The presentation of data has been polished even more and social media buttons have been added to some pages. And behind the scene there are some bug fixes, better page caching scheme and hopefully an improved search engine visibility.
+Toinen erä pieniä parannuksia on otettu käyttöön. Tietojen esittämistä on viimeistelty lisää ja sosiaalisen median nappuloita on lisätty joillekin sivuille. Kulissien takana on korjattu virheitä, parannettu sivujen välimuistiasetuksia ja toivottavasti myös kasvatettu näkyvyyttä hakukoneissa.
+#
+20111220214643
+Photo strip service now online
+Kuvanauhapalvelu on avattu
+With the photo strip service you can dynamically embed catza.net photos to your web page. A strip can be built out of all photos, out of the photos of a selected subject or out of the result of an advanced search. The photo strip service is free. 
+Kuvanauhapalvelun avulla voit upottaa catza.netin kuvia webbisivuillesi dynaamisesti. Kuvanauhan voi rakentaa yhtä hyvin kaikista kuvista, valitun aiheen kuvista tai superhaun hakutuloksesta. Kuvanauhapalvelu on käytettävissä vapaasti ja maksutta.
+http://catza.net/en/build/
+http://catza.net/fi/build/
+#
+20111219162912
+Feature improvements here and there
+Pieniä parannuksia siellä täällä
+Plenty of minor service improvements have been made. Many bugs have been fixed. The presentation of data has been tuned to make it easier to understand.
+Palveluun on tehty monia pieniä parannuksia. Virheitä on korjattu. Tietojen esittämistä on kehitetty siihen suuntaan, että tiedot olisivat entistä helpommin ymmärrettäviä.
+#
+20111215232708
+Advanced search now knows filenames and photo ids
+Superhaku tuntee nyt tiedostonimet ja kuvien tunnisteet
+Advanced search now knows two new concepts: file and id. File is the filename of the photo and id is the photo id. With filename it is easy to track to what album a photo file belongs to. With id it is easy exclude a photo or two from a search result.
+Superhakuun on lisätty kaksi uutta käsitettä, file ja id. Käsite file on kuvan tiedostonimi ja käsite id on kuvan tunniste. Kuvatiedoston nimen avulla voit mm. jäljittää, mihin albumiin jokin kuvatiedosto kuuluu. Kuvan tunnisteen avulla voit esim. rajata hakutuloksesta pois yksittäisiä kuvia.
+http://catza.net/en/search?q=IMG_1717
+http://catza.net/fi/search?q=IMG_1717
+#
+20111215220003
+URK Vantaa photos have been published
+URK ry:n Vantaan näyttelyn kuvat julkaistu
+All the photos of the URK Vantaa show have been published.
+Kaikki URK ry:n Vantaan näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20111210vantaa/
+http://catza.net/fi/browse/folder/20111210vantaa/
+#
+20111213201154
+URK Vantaa photos being published
+URK ry:n Vantaan näyttelyn kuvia
+Photos of the URK Vantaa show are being published.
+URK ry:n Vantaan näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20111210vantaa/
+http://catza.net/fi/browse/folder/20111210vantaa/
+#
+20111208210515
+Data quality notifications presented publicly
+Tietojen laatuhavainnot julkisesti nähtävänä
+The data quality notifications of our internal quality process are now publicly visible.
+Sisäiseen laatuprosessiimme liittyvät laatuhavainnot ovat nyt nähtävänä julkisesti.
+http://catza.net/en/more/quality/
+http://catza.net/fi/more/quality/
+#
+20111130212303
+TUROK Turku photos have been published
+TUROK ry:n Turun näyttelyn kuvat julkaistu
+All the photos of the TUROK Turku show have been published.
+Kaikki TUROK ry:n Turun näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20111126turku/
+http://catza.net/fi/browse/folder/20111126turku/
+#
+20111130045028
+catza.net @ URK Vantaa
+catza.net URKissa Vantaalla
+The next set of photos is expected to be from URK Vantaa show.
+Seuraavat uudet kuvat ovat tulossa URKista Vantaalta.
+#
+20111128232055
+TUROK Turku photos being published
+TUROK ry:n Turun näyttelyn kuvia
+Photos of the TUROK Turku show are being published.
+TUROK ry:n Turun näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20111126turku/
+http://catza.net/fi/browse/folder/20111126turku/
+#
+20111124221731
+ERY-SYD Sunday photos have been published
+ERY-SYD ry:n sunnuntain näyttelyn kuvat julkaistu
+All the photos of the Sunday's ERY-SYD show have been published.
+Kaikki ERY-SYDin sunnuntain näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20111120helsinki/
+http://catza.net/fi/browse/folder/20111120helsinki/
+#
+20111123214910
+ERY-SYD Saturday photos have been published
+ERY-SYD ry:n lauantain näyttelyn kuvat julkaistu
+All the photos of the Saturday's ERY-SYD show have been published. Sunday's photos have not yet been published.
+Kaikki ERY-SYDin lauantain näyttelyn kuvat on julkaistu. Sunnuntain kuvia ei ole vielä julkaistu.
+http://catza.net/en/browse/folder/20111119helsinki/
+http://catza.net/fi/browse/folder/20111119helsinki/
+#
+20111123193844
+catza.net @ TUROK Turku
+catza.net TUROKissa Turussa
+The next set of photos is expected to be from TUROK Turku show.
+Seuraavat uudet kuvat ovat tulossa Turusta TUROKin näyttelystä.
+#
+20111122022816
+ERY-SYD Helsinki photos being published
+ERY-SYD ry:n Helsingin näyttelyiden kuvia
+Photos of the ERY-SYD Helsinki shows are being published.
+ERY-SYD ry:n Helsingin näyttelyjen kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20111119helsinki/
+http://catza.net/fi/browse/folder/20111119helsinki/
+#
+20111117005150
+catza.net @ ERY-SYD Helsinki
+catza.net ERY-SYDissä Helsingissä
+The next sets of photos are expected to be from ERY-SYD Helsinki shows: traditional photos on Saturday, experimental photos on Sunday.
+Seuraavat uudet kuvat ovat tulossa ERY-SYD ry:n Helsingin näyttelyistä: lauantaina perinteisiä kuvia, sunnuntaina vain kokeellista matskua.
+#
+20111116224506
+All Alfa Felis Lohja photos have been published
+Kaikki Alfa Felis ry:n Lohjan näyttelyn kuvat julkaistu
+All the photos of the Alfa Felis Lohja show have been published.
+Kaikki Alfa Felis ry:n Lohjan näyttelyn kuvat on julkaistu.
+http://catza.net/en/browse/folder/20111112lohja/
+http://catza.net/fi/browse/folder/20111112lohja/
+#
+20111116190342
+Alfa Felis Lohja photos being published
+Alfa Felis ry:n Lohjan näyttelyn kuvia
+Photos of the Alfa Felis Lohja show are being published.
+Alfa Felis ry:n Lohjan näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20111112lohja/
+http://catza.net/fi/browse/folder/20111112lohja/
+#
+20111108195830
+catza.net @ Alfa Felis
+catza.net Lohjalla
+The next set of photos is expected to be from Alfa Felis Lohja show.
+Seuraavat uudet kuvat ovat tulossa Alfa Felis ry:n Lohjan näyttelystä.
+#
+20111103051510
+the new contribution page opened
+ohjeita kissatietojen lähettämiseen
+The new contribution page that provides detailed instructions how to send cat data has been opened. Also various small improvements to the service have been taken into use. For example on most browsers all pie charts now appear as clickable to drill to photos.
+Uusi sivu, jolla on ohjeita kissatietojen lähettämiseen, on avattu. Palveluun on tehty myös paljon pieniä parannuksia. Esimerkiksi piirakkakaaviot ovat nyt useimmissa selaimissa klikattavia niin, että kaaviosta voi porautua kuviin.
+http://catza.net/en/more/contrib/
+http://catza.net/fi/more/contrib/
+#
+20111029174309
+testing generalized category breed codes
+yleistetyt kategoriarotukoodit koekäytössä
+We are started the public testing of the generalized category breed codes. These breed codes start with letters XC followed by the FIFe category number. The codes can be used on unidentified cats that have an obvious category but where the breed is hard to identify. At the moment these codes are used exclusively in 2011-10-09 Jyväskylä album. If everything works and we find these codes useful they will spread to other albums aswell.
+Yleistetyt kategoriarotukoodit on otettu julkiseen koekäyttöön. Nämä rotukoodit alkavat kirjaimilla XC jota seuraa FIFe-kategorianumero. Koodeja voidaan käyttää tunnistamattomilla kissoilla, joiden rotukin on vaikea tunnistaa varmasti, mutta joiden kategoria on ilmeinen. Tällä hetkellä uusia koodeja käytetään vain Jyväskylän 9.10.2011 albumissa. Jos kaikki toimii hyvin ja uudet koodit todetaan hyödyllisiksi, niitä tullaan käyttämään muissakin albumeissa.
+http://catza.net/en/browse/folder/20111009jyvaskyla/
+http://catza.net/fi/browse/folder/20111009jyvaskyla/
+#
+20111016072252
+catza.net knows the FIFe categories
+catza.net tuntee FIFe-kategoriat
+A concept called category has been added to catza.net. It is available everywhere in the service (as a list, as a sorting order for breeds, in the quick find and in the advanced search).
+Kategoria-käsite on lisätty palveluun ja se on käytettävissä kaikkialla palvelussa (luettelona, rotujen luettelojärjestyksenä, pikahaussa ja superhaussa).
+http://catza.net/en/list/cate/a2z/
+http://catza.net/fi/list/cate/a2z/
+#
+20111014233350
+All KES-KIS Jyväskylä photos have been published
+Kaikki KES-KIS ry:n Jyväskylän näyttelyn kuvat julkaistu
+All KES-KIS Jyväskylä photos have been published. Cat indentifications are warmly welcome!
+Kaikki KES-KIS ry:n Jyväskylän näyttelyn kuvat on julkaistu. Kissojen tunnistuksia otetaan kiittäen vastaan!
+http://catza.net/en/browse/folder/20111009jyvaskyla/
+http://catza.net/fi/browse/folder/20111009jyvaskyla/
+#
+20111011183442
+KES-KIS Jyväskylä photos being published
+KES-KIS ry:n Jyväskylän näyttelyn kuvia
+Photos of the KES-KIS Jyväskylä show are being published.
+KES-KIS ry:n Jyväskylän näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20111009jyvaskyla/
+http://catza.net/fi/browse/folder/20111009jyvaskyla/
+#
+20111002212228
+catza.net @ KES-KIS Jyväskylä
+catza.net Jyväskylässä
+The next set of photos will be from KES-KIS Jyväskylä show.
+Seuraavat uudet kuvat tulevat KES-KIS ry:n Jyväskylän näyttelystä.
+#
+20110925133532
+Cat data update
+Kissatietopäivitys
+The cat data received so far has been updated to albums. Thank you all for providing the data!
+Tähän mennessä saapuneet kissatiedot on päivitetty albumeihin. Kiitos kaikille tietoja lähettäneille!
+#
+20110923000001
+All SUVAK Orimattila photos have been published
+Kaikki SUVAKin Orimattilan näyttelyn kuvat julkaistu
+All SUVAK Orimattila photos have been published. Cat indentifications are warmly welcome!
+Kaikki SUVAKin Orimattilan näyttelyn kuvat on julkaistu. Kissojen tunnistuksia otetaan kiittäen vastaan!
+http://catza.net/en/browse/folder/20110918orimattila/
+http://catza.net/fi/browse/folder/20110918orimattila/
+#
+20110922011706
+All FINTICAt Helsinki photos have been published
+Kaikki FINTICAtin Helsingin näyttelyn kuvat julkaistu
+All FINTICAt Helsinki photos have been published. Cat indentifications are warmly welcome!
+Kaikki FINTICAtin Helsingin näyttelyn kuvat on julkaistu. Kissojen tunnistuksia otetaan kiittäen vastaan!
+http://catza.net/en/browse/folder/20110917helsinki/
+http://catza.net/fi/browse/folder/20110917helsinki/
+#
+20110921205859
+SUVAK Orimattila photos being published
+SUVAKin Orimattilan näyttelyn kuvia
+Photos of the SUVAK housecat show are being published.
+SUVAKin kotikissanäyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20110918orimattila/
+http://catza.net/fi/browse/folder/20110918orimattila/
+#
+20110920073553
+FINTICAt Helsinki photos being published
+FINTICAtin Helsingin näyttelyn kuvia
+Photos of the FINTICAt Helsinki show are being published.
+FINTICAtin Helsingin näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20110917helsinki/
+http://catza.net/fi/browse/folder/20110917helsinki/
+#
+20110919193407
+All VANGORA Kemiö photos have been published
+Kaikki VANGORAn esittelynäyttelyn kuvat julkaistu
+All the photos from VANGORA Kemiö show have been published. Cat indentifications are warmly welcome!
+Kaikki VANGORAn esittelynäyttelyn kuvat on julkaistu. Kissojen tunnistuksia otetaan kiittäen vastaan!
+http://catza.net/en/browse/folder/20110910kemio/
+http://catza.net/fi/browse/folder/20110910kemio/
+#
+20110916210443
+Service interruptions possible due to name service change
+Käyttökatkot mahdollisia nimipalvelun vaihdon vuoksi
+The service may face service interruptions during the following days due to name service change. Check the public status page for a worldwide status report.
+Palvelussa voi olla lähipäivinä käyttäkatkoja nimipalvelun vaihdon vuoksi. Julkiselta statussivulta näet, mikä on palvelun tila.
+http://stats.pingdom.com/b0lt9rkoppad
+http://stats.pingdom.com/b0lt9rkoppad
+#
+20110916205241
+Saturday @ FINTICAt Helsinki, Sunday @ SUVAK Orimattila
+Lauantaina FINTICAt Helsinki, sunnuntaina SUVAK Orimattila
+The super weekend is starting. On Saturday catza.net will be at FINTICAt Helsinki, on Sunday at SUVAK Orimattila.
+Superviikonloppu alkaa. Lauantaina catza.net on FINTICAtin näyttelyssä Helsingissä, sunnuntaina SUVAKin näytttelyssä Orimattilassa.
+http://catza.net/en/browse/org/FINTICAt/
+http://catza.net/fi/browse/org/SUVAK/
+#
+20110913225259
+VANGORA Kemiö photos are being published
+VANGORAn esittelynäyttelyn kuvia
+Photos of the VANGORA Kemiö presentation show are being published.
+VANGORAn esittelynäyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20110910kemio/
+http://catza.net/fi/browse/folder/20110910kemio/
+#
+20110911195302
+All PIROK Tampere photos have been published
+Kaikki PIROKin Tampereen näyttelyn kuvat julkaistu
+All the photos from the PIROK Tampere show have been published. Cat indentifications are warmly welcome!
+Kaikki PIROKin Tampereen näyttelyn kuvat on julkaistu. Kissojen tunnistuksia otetaan kiittäen vastaan!
+http://catza.net/en/browse/folder/20110903tampere/
+http://catza.net/fi/browse/folder/20110903tampere/
+#
+20110909225639
+About Tampere photos, cat data and next show
+Tampereen kuvista, kissatiedoista ja seuraavasta näyttelystä
+There are approx. 120 photos from PIROK Tampere show in post-processing. They are expected to get released this Sunday.|Next cat data update is expected to happen this Sunday.|The next show for catza.net will be tomorrow's Kemiö Finland show.
+Tampereen PIROK-kuvia on vielä n. 120 kpl käsittelyssä ja ne julkaistaan näillä näkymin sunnuntaina.|Seuraava kissatietopäivitys on tulossa sunnuntaina.|Seuraava näyttely, josta on tulossa uusia kuvia, on huomenna Kemiössä.
+#
+20110907005112
+Presentation show this Saturday at Kemiö Finland
+Rotukissojen esittelynäyttely lauantaina 10.9. Kemiössä
+There is a presentation show this Saturday. The show will be held at Kemiö Finland (Sisu-talo, Tuomarinkehä 27, 25700 Kemiönsaari) by the Finnish association of turkish angora and turkish van. The show is open for general public from 10 to 16.
+Kemiössä (Sisu-talo, Tuomarinkehä 27, 25700 Kemiönsaari) on Vangora ry:n järjestämä rotukissojen esittelynäyttely lauantaina 10.9.2011. Näyttely on avoinna yleisölle kello 10-16.
+http://www.vangora.net/
+http://www.vangora.net/
+#
+20110907004505
+Network traffic no longer slow
+Verkon hitaus ohi
+The network traffic issue caused by a cable failure between Dürrengleina and Saaletal/Jena appears to be fixed now. The service works normally. 
+Verkkoliikenteen hitaus, joka johtui kaapelikatkoksesta välillä Dürrengleina - Saaletal/Jen, on korjattu. Palvelu toimii normaalisti.
+#
+20110907004105
+Cat data update
+Kissatietopäivitys
+The cat data received so far has been updated to albums. Thank you all for providing the data!
+Tähän mennessä saapuneet kissatiedot on päivitetty albumeihin. Kiitos kaikille tietoja lähettäneille!
+#
+20110906200658
+Network slow this evening
+Verkkoliikenne hidasta tämän illan
+Network traffic is running slow this evening. Big photos are having download issues. The reason is an internet backbone failure between Dürrengleina and Saaletal/Jena.
+Verkkoliikenne hidastelee tiistai-illan. Isot kuvat latautuvat huonosti. Syy on runkoverkkokaapelin katkos välillä Dürrengleina - Saaletal/Jena.
+#
+20110904235306
+PIROK Tampere photos being published
+PIROKin näyttelyn kuvia
+Photos from the PIROK Tampere show are being published.
+PIROKin näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20110903tampere/
+http://catza.net/fi/browse/folder/20110903tampere/
+#
+20110901003348
+Cat data update and catza.net @ PIROK Tampere Finland
+Kissatietopäivitys ja catza.net PIROKissa 
+The received cat data has been processed and deployed to the albums. Thank you all for providing the data.|The next set of photos is expected to be from PIROK Tampere Finland this Saturday.
+Saapuneet kissatiedot on käsitelty ja päivitetty albumeihin. Kiitokset kaikille kissatunnistuksia lähettäneille.|Seuraavat uudet kuvat ovat tulossa tämän viikon lauantailta PIROKin Tampereen näyttelystä.
+#
+20110831014128
+All RuRok Vantaa photos have being published
+Kaikki RuRokin Vantaan näyttelyn kuvat julkaistu
+All the photos from the RuRok Vantaa 2011-08-28 show have been published.|Cat indentifications are warmly welcome! Already received identifications will be updated to the service within a day or two.
+Kaikki RuRokin su 28.8.2011 näyttelyn kuvat on julkaistu.|Kissatietoja kuviin otetaan kiittäen vastaan! Jo saapuneet tiedot päivitetään paikoilleen päivän tai parin kuluessa.
+http://catza.net/en/browse/folder/20110828vantaa/
+http://catza.net/fi/browse/folder/20110828vantaa
+#
+20110830004906
+RuRok Vantaa photos are being published
+RuRokin näyttelyn kuvia
+The photos from the RuRok Vantaa show 2011-08-28 are being published.
+RuRokin su 28.8.2011 näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20110828vantaa/
+http://catza.net/fi/browse/folder/20110828vantaa/
+#
+20110827110721
+catza.net @ RuRok Vantaa Finland
+catza.net RuRokissa
+The next set of photos will be from RuRok Vantaa Finland this Sunday.
+Seuraavat uudet kuvat tulevat tämän viikon sunnuntailta RuRokin Vantaan näyttelystä.
+#
+20110827110430
+Tuuri show photos online and cat data update
+Tuurin kuvat julkaistu ja kissatietopäivitys
+The Tuuri presentation show 2011-08-13 photos have been published|New cat data has been deployed to albums.
+Tuurin esittelynäyttelyn 13.8.2011 kuvat on julkaistu.|Uusia kissatietoja on viety albumeihin.
+http://catza.net/en/browse/folder/20110813tuuri/
+http://catza.net/fi/browse/folder/20110813tuuri/
+#
+20110814150618
+Data update and about Tuuri show photos
+Kissatietopäivitys ja Tuurin näyttelykuvista
+The received cat data has been processed and deployed to the albums. Thank you all for providing the data.|There exists a couple of unpublished pocket camera shots from Tuuri 2011-08-13 cat show. The photos are to be published late August or early September.
+Saapuneet kissatiedot on käsitelty ja päivitetty albumeihin. Kiitokset kaikille kissatunnistuksia lähettäneille.|Tuurin 13.8.2011 näyttelyssä pokkarilla otetut muutamat kuvat ovat vielä julkaisematta. Ne ovat tulossa nähtäväksi elo-syyskuun vaihteessa.
+#
+20110807184155
+Data update and feature improvements
+Uusia tietoja ja pieniä parannuksia
+New cat data has been added to albums.|Some minor service improvements have been made.
+Uusia kissatietoja on viety albumeihin.|Palveluun on tehty pieniä parannuksia sinne tänne.
+#
+20110805224335
+New cat data added
+Kissatietoja lisätty
+Thank you for the cat data. The data received so far has been updated to albums.
+Kiitos kissatiedoista. Tähän mennessä saapuneet tiedot on päivitetty albumeihin.
+#
+20110802104446
+Cat data update
+Kissatietoja päivitetty
+Thank you all for the cat identifications that have been coming in. They have been updated to the albums. The next cat data update is scheduled to the end of the week.
+Kiitos saapuneista kissojen tunnistuksista. Tiedot on päivitetty albumeihin. Seuraava kissatietopäivitys on tulossa viikon lopussa.
+#
+20110731233954
+All SUROK Espoo photos have been published
+Kaikki SUROKin Espoon näyttelyn kuvat julkaistu
+All the photos from the SUROK show at 2011-07-30 Espoo have been published. Cat indentifications are warmly welcome!
+Kaikki SUROKin kuvat Espoosta la 30.7.2011 on julkaistu. Kissatietoja kuviin otetaan kiittäen vastaan!
+http://catza.net/en/browse/folder/20110730espoo/
+http://catza.net/fi/browse/folder/20110730espoo/
+#
+20110731105619
+SUROK Espoo photos are being published
+SUROKin Espoon näyttelyn kuvia
+The photos from the SUROK Espoo show 2011-07-30 are being published.
+SUROKin Espoon la 30.7.2011 näyttelyn kuvien julkaisu on käynnistynyt.
+http://catza.net/en/browse/folder/20110730espoo/
+http://catza.net/fi/browse/folder/20110730espoo/
+#
+20110729015103
+catza.net @ SUROK Espoo Finland
+catza.net SUROKissa Espoossa
+The next set of photos will be from SUROK Espoo Finland this Saturday.
+Seuraavat uudet kuvat tulevat tämän viikon lauantailta SUROKin Espoon näyttelystä.
+#
+20110712082302
+www.heikkisiltala.com now redirects to catza.net
+www.heikkisiltala.com kääntyy catza.netiin
+Links pointing to cat show photo galleries of www.heikkisiltala.com have started to redirect to catza.net. This change will propagate through the internet within next 48 hours. The redirection mechanism is comprehensive so that each link automatically finds its correct location on the new service. There is no need to update the links manually. A transparent search converter is included converting each and every old system's search to an advanced search of catza.net.|Please note that www.heikkisiltala.com refuses to die: it still hosts other content although all cat show photos have moved to catza.net. It is also perfectly OK to continue to use www.heikkisiltala.com as the attribution when using the cat show photos for your purposes.
+Kaikki www.heikkisiltala.com-palvelun kissanäyttelygallerioihin osoittavat linkit ovat alkaneet kääntyä catza.netiin. Muutos leviää koko internetiin seuraavan 48 tunnin kuluessa. Uudelleenohjaus on kaikenkattava niin että jokainen linkki löytää automaattisesti oikeaan paikaan uudessa palvelussa. Linkkejä ei siis tarvitse päivittää käsin. Vanhaan hakukoneeseen tehdyt haut muuttuvat läpinäkyvästi uuden hakukoneen mukaisiksi hauiksi.|Vaikka kaikki kissanäyttelykuvat ovatkin muuttaneet catza.netiin, www.heikkisiltala.com ei kuole, vaan siellä on yhä muuta sisältöä. Osoitetta www.heikkisiltala.com voi myös yhä käyttää lähteen nimenä, kun käytät kissanäyttelykuvia omiin tarkoituksiisi.
+http://www.heikkisiltala.com/galleries/xdf/%5Bcrx%5D%20%5Bdrx%5D%20%5Bgrx%5D%20%2B%5B03%5D%20-%5Bb%5D
+http://www.heikkisiltala.com/galleries/xdf/%5Bcrx%5D%20%5Bdrx%5D%20%5Bgrx%5D%20%2B%5B03%5D%20-%5Bb%5D
+#
+20110707150311
+ironing out the bumps
+pientä viilaamista
+The service has been up and running for 14 hours now and some issues have been found regarding both the content and the tech. These bumps will be ironed out within the forthcoming weeks. During that time some functions may be ocassionaly disabled or some infromation may be hidded.|All the technical issues can be tracked at project's Google Code pages.
+Palvelu on pystyssä ja selvinnyt hengissä ensimmäiset 14 tuntia. Pieniä sisällöllisiä ja teknisiä haasteita on jo löydetty ja löytyy varmaan lisää, ja niitä korjataan lähiviikkojen aikana. Tänä aikana jotkut toiminnot voivat olla tilapäisesti pois käytöstä tai osa tiedoista voi olla piilossa.|Teknisten ongelmien osalta tilannetta voi seurata projektin Google Code -sivuilta.
+http://code.google.com/p/catz/issues/list
+http://code.google.com/p/catz/issues/list
+#
+20110707014512
+catza.net is open for public
+catza.net on avattu
+It is now official and it is now public: catza.net!
+Se on nyt julkista ja virallista: catza.net!
+http://catza.net/
+http://catza.net/
+#
+20110705025706
+catza.net will be opened 2011-07-07
+catza.net avataan 7.7.2011
+The new site is will soon be completed. The grand opening will be held Thursday 2011-07-07.
+Työ uuden sivuston parissa on loppusuoralla ja niinpä avajaispäiväkin on nyt voitu päättää. Se on torstai 7.7.2011.
+#
+20110627222128
+The functionality frozen pending release
+Sivuston toiminnot jäädytetty julkaisua varten
+The project has now come to point where no new functionality will be added before the release of the first version. Time is now spent to make the current functionality to work properly, run the test and preparing for the first release.
+Nyt ollaan siinä pisteessä projektissa, että sivustoon ei enää lisätä uusia toimintoja ennen ensimmäisen version julkaisua. Aika käytetään nyt nykyisten toimintojen viimeistelyyn, palvelun testaamiseen ja julkaisun valmisteluun.
+#
+20110606225803
+The project status looks good!
+Projektin tilanne: hyvältä näyttää!
+The website project is looking good. There are still several things to do and under develoment but it seems that all major questions have been answered and all major issues have been resolved.
+Webbisivustoprojektin tilanne näyttää hyvältä. Paljon tehtävää ja parannettavaa on yhä, mutta kaikki isot kysymykset ja suuret ongelmat näyttävät jo ratkenneen.
+#
+20110512234151
+catza.net
+catza.net
+The new website has got a new domain name catza.net that replaces www.heikkisiltala.com when the new site is released. There will be a complete redirect subsystem to make sure each and every link pointing to the old site finds its way to the most correct location on the new site.
+Uusi sivusto on saanut uuden domain-nimen catza.net ja se korvaa nimen www.heikkisiltala.com sitten kun uusi sivusto julkistetaan. Kaikki vanhaan sivustoon osoittavat linkit tulevat toimimaan jatkossakin ja ohjautumaan oikeaan kohtaan uudessa sivustossa, koska tätä varten rakennetaan kaikenkattava uudellenohjausalijärjestelmä.
+#
+20110220221942
+Finding home at Google Code
+Google Code kodiksi
+The new website project has matured enough to be public (open source) and now lives at Google Code. The name of the project is Catz.
+Uuden sivuston rakennusprojekti on tarpeeksi kypsä julkisuuteen ja avoimeen lähdekoodiin. Projekti asuu nyt Google Code -palvelussa. Projektin nimi on Catz.
+http://code.google.com/p/catz/
+http://code.google.com/p/catz/
+#
+20101102215038
+Plenty of work left
+Paljon työtä vielä
+At the moment the project looks both hard and big. It is clear that the release of the new site is not in near future. Hopefully it will happen somewhere in 2011.
+Tällä hetkellä projekti näyttä sekä raskaalta että suurelta. On selvää että uusi sivusto ei valmistu lähiaikoina, mutta toivottavasti kuitenkin vuoden 2011 aikana.
+#
+20100825192018
+It is a thunderstorm!
+Ukonilma!
+Once again a thunderstorm has hit to this rural location and the power is down. But this doesn't stop the website development since I've succesfully installed a backup power system. It provides enough electricity for computer, accessories and lighting to survive a blackout.
+Täällä on jälleen ukonilma ja sen seurauksena sähkökatko. Ukonilmat eivät kuitenkaan enää haittaa uuden sivuston rakentamista koska varavirtalähteestä riittää sähköä tietokoneelle, lisälaitteille ja valaistukselle sähkökatkon ajaksi.
+#
+20100810140222
+Buidling the new website
+Uusi webbisivusto rakenteilla
+The construction of the new website is on its way and today the life was put into the news subsystem. This is the first newsflash of the new website.
+Uuden sivuston rakentaminen on käynnissä ja tänään päivänvalon näki uutisalijärjestelmä. Tämä uutinen on uuden sivuston ensimmäinen uutinen.
+#
