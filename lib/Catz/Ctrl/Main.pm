@@ -1,6 +1,6 @@
 #
 # Catz - the world's most advanced cat show photo engine
-# Copyright (c) 2010-2013 Heikki Siltala
+# Copyright (c) 2010-2022 Heikki Siltala
 # Licensed under The MIT License
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -96,6 +96,9 @@ sub result {
 
  my $self = shift;
  my $s    = $self->{ stash };
+ 
+ # 16.7.2022 This controller is no longer used
+ return;
 
  # result available only without setup
  length $s->{ langa } > 2 and return $self->fail ( 'setup set so stopped' );
