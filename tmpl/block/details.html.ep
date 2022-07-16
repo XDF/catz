@@ -11,22 +11,25 @@
 %   $i > 0 and do {
 <%= $sep %>
 %   };
-%   if ( $comment->[$i] =~ m|^\[[A-Z]{3}| ) { # just a breed code
-<%= $comment->[$i] %> <%== include 'elem/mark' %>
-<span class="shrink"><%= $t->{NO_CAT_A} %> <%== $id %> <%= $t->{NO_CAT_B} %> <%== include 'elem/infox' %></span>
-%   } elsif (  $comment->[$i] =~ m|^\[XC[1-9]| ) { # just a category code
-<%= $comment->[$i] %> <%== include 'elem/mark' %>
-<span class="shrink"><%= $t->{NO_BREED_A} %> <%== $id %> <%= $t->{NO_BREED_B} %> <%== include 'elem/infox' %></span>
-%   } else { # not just a code, has more data, just show it
+%# commented out 16.7.2022, we no longer update cat data
+%#   if ( $comment->[$i] =~ m|^\[[A-Z]{3}| ) { # just a breed code
+%# <%= $comment->[$i] %> <%== include 'elem/mark' %>
+%# <span class="shrink"><%= $t->{NO_CAT_A} %> <%== $id %> <%= $t->{NO_CAT_B} %> <%== include 'elem/infox' %></span>
+%# %   } elsif (  $comment->[$i] =~ m|^\[XC[1-9]| ) { # just a category code
+%# <%= $comment->[$i] %> <%== include 'elem/mark' %>
+%# <span class="shrink"><%= $t->{NO_BREED_A} %> <%== $id %> <%= $t->{NO_BREED_B} %> <%== include 'elem/infox' %></span>
+%#   } else { # not just a code, has more data, just show it
 <%= $comment->[$i] %>
 %    if ( defined $resultkey->[$i] ) { # show result defined, show it
 <span class="result lean shrink" id="<%== $resultkey->[$i] %>"></span>
 %    }
-%   }  
+%#   }  
 %  }
-%  if ( $i == 0 ) { # no comments
-<%== include 'elem/mark' %> <span class="shrink"><%= $t->{NO_COMMENT_A} %> <%== $id %> <%= $t->{NO_COMMENT_B} %> <%== include 'elem/infox' %></span>
-%  }
+%# changed behavior 16.7.2022, we are no longer updating cat data
+% if ( $i == 0 ) { # no comments
+<%= $t->{NO_COMMENT_Z} %>
+%#  <%== include 'elem/mark' %> <span class="shrink"><%= $t->{NO_COMMENT_A} %> <%== $id %> <%= $t->{NO_COMMENT_B} %> <%== include 'elem/infox' %></span>
+% }
 %#
 %# --------------------
 %#
@@ -69,7 +72,7 @@
 % };
 %#
 %# Catz - the world's most advanced cat show photo engine
-%# Copyright (c) 2010-2021 Heikki Siltala
+%# Copyright (c) 2010-2022 Heikki Siltala
 %# Licensed under The MIT License
 %# 
 %# Permission is hereby granted, free of charge, to any person obtaining a copy
